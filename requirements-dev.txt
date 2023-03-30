@@ -1,0 +1,6 @@
+sphinx
+pytest
+coverage
+flake8
+pylint
+pydocstringformatter
