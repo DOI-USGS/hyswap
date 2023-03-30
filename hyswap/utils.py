@@ -15,7 +15,6 @@ def filter_approved_data(data, filter_column=None):
     -------
     pandas.DataFrame
         The filtered data.
-
     """
     if filter_column is None:
         raise ValueError("filter_column must be specified.")
