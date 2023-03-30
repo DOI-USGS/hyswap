@@ -1,0 +1,46 @@
+[
+    {
+      "name": "hyswap",
+      "organization": "U.S. Geological Survey",
+      "description": "Python package to analyze surface water data",
+      "version": "main",
+      "status": "Development",
+
+      "permissions": {
+        "usageType": "openSource",
+        "licenses": [
+          {
+            "name": "Public Domain, CC0-1.0",
+            "URL": "https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/raw/main/LICENSE.md"
+          }
+        ]
+      },
+
+      "homepageURL": "https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap",
+      "downloadURL": "https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/archive/main/hyswap-main.zip",
+      "disclaimerURL": "https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/raw/main/DISCLAIMER.md",
+      "repositoryURL": "https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap.git",
+      "vcs": "git",
+
+      "laborHours": 0,
+
+      "tags": [
+        "USGS",
+        "Python",
+        "water"
+      ],
+
+      "languages": [
+        "Python"
+      ],
+
+      "contact": {
+        "name": "USGS",
+        "email": "comptools@usgs.gov"
+      },
+
+      "date": {
+        "metadataLastUpdated": "2023-03-30"
+      }
+    }
+  ]
