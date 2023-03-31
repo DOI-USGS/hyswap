@@ -4,3 +4,4 @@ coverage
 flake8
 pylint
 pydocstringformatter
+dataretrieval

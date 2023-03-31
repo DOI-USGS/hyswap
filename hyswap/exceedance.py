@@ -55,7 +55,7 @@ def calculate_exceedance_probability_from_values(x, values_to_compare):
     float
         The exceedance probability.
     """
-    return np.sum(values_to_compare > x) / len(values_to_compare)
+    return np.sum(values_to_compare >= x) / len(values_to_compare)
 
 
 def calculate_exceedance_probability_from_distribution_multiple(values, dist,
