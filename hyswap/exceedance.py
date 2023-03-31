@@ -71,6 +71,14 @@ def calculate_exceedance_probability_from_values(x, values_to_compare):
     """
     Calculate the exceedance probability of a value compared to several values.
 
+    This function specifically counts the number of values from the input
+    `values_to_compare` that are *greater than or equal to* the input value
+    `x`. The choice of greater than or equal, as opposed to solely greater than
+    is intentional and follows established USGS practices [1]_.
+
+    .. [1] Searcy, J. K. "Flow-duration curves: Water Supply Paper 1542-A."
+           US Geological Survey, Reston, VA (1959).
+
     Parameters
     ----------
     x : float
