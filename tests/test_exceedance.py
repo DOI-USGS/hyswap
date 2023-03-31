@@ -1,6 +1,7 @@
 """Unit tests for the exceedance module."""
 import pytest
 import numpy as np
+import pandas as pd
 from hyswap import exceedance
 
 
@@ -35,6 +36,12 @@ def test_calculate_exceedance_probability_from_distribution():
     with pytest.raises(TypeError):
         exceedance.calculate_exceedance_probability_from_distribution(
             x, 'exponential', mu, sigma, k=1, lambda_=1)
+    with pytest.raises(TypeError):
+        exceedance.calculate_exceedance_probability_from_distribution(
+            "invalid", 'exponential', mu, sigma)
+    with pytest.raises(TypeError):
+        exceedance.calculate_exceedance_probability_from_distribution(
+            x, 5, mu, sigma)
 
 
 def test_calculate_exceedance_probability_from_values():
@@ -45,11 +52,11 @@ def test_calculate_exceedance_probability_from_values():
     prob = exceedance.calculate_exceedance_probability_from_values(
         x, values_to_compare)
     assert prob == 1.0
-    values_to_compare = np.array([1, 1, 1, 1])
+    values_to_compare = [1, 1, 1, 1]  # use a list
     prob = exceedance.calculate_exceedance_probability_from_values(
         x, values_to_compare)
     assert prob == 1.0
-    values_to_compare = np.array([2, 2, 2, 2])
+    values_to_compare = pd.Series([2, 2, 2, 2])  # use a pandas series
     prob = exceedance.calculate_exceedance_probability_from_values(
         x, values_to_compare)
     assert prob == 1.0

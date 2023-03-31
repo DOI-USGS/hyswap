@@ -1,13 +1,14 @@
 """Exceedance probability calculations."""
 
 import numpy as np
+import pandas as pd
 from scipy import stats
 
 
 def calculate_exceedance_probability_from_distribution(x, dist,
                                                        *args, **kwargs):
     """
-    Calculate the exceedance probability of a value.
+    Calculate the exceedance probability of a value relative to a distribution.
 
     Parameters
     ----------
@@ -25,7 +26,34 @@ def calculate_exceedance_probability_from_distribution(x, dist,
     -------
     float
         The exceedance probability.
+
+    Examples
+    --------
+    Calculating the exceedance probability of a value of 1 from a lognormal
+    distribution with a mean of 1 and a standard deviation of 0.25.
+
+    .. doctest::
+
+        >>> exceedance.calculate_exceedance_probability_from_distribution(
+        ...     1, 'lognormal', 1, 0.25)
+        0.6132049428659028
+
+    Calculating the exceedance probability of a value of 1 from a normal
+    distribution with a mean of 1 and a standard deviation of 0.25.
+
+    .. doctest::
+
+        >>> exceedance.calculate_exceedance_probability_from_distribution(
+        ...     1, 'normal', 1, 0.25)
+        0.5
     """
+    # type check
+    if not isinstance(x, (int, float, np.int64, np.float64, np.float32,
+                          np.float16, np.int32, np.int16, np.int8)):
+        raise TypeError("x must be a float (or integer).")
+    if not isinstance(dist, str):
+        raise TypeError("dist must be a string.")
+    # do calculation
     if dist == 'lognormal':
         return stats.lognorm.sf(x, *args, **kwargs)
     elif dist == 'normal':
@@ -41,7 +69,7 @@ def calculate_exceedance_probability_from_distribution(x, dist,
 
 def calculate_exceedance_probability_from_values(x, values_to_compare):
     """
-    Calculate the exceedance probability of a value.
+    Calculate the exceedance probability of a value compared to several values.
 
     Parameters
     ----------
@@ -54,7 +82,37 @@ def calculate_exceedance_probability_from_values(x, values_to_compare):
     -------
     float
         The exceedance probability.
+
+    Examples
+    --------
+    Calculating the exceedance probability of a value of 1 from a set of values
+    of 1, 2, 3, and 4.
+
+    .. doctest::
+
+        >>> exceedance.calculate_exceedance_probability_from_values(
+        ...     1, [1, 2, 3, 4])
+        1.0
+
+    Calculating the exceedance probability of a value of 5 from a set of values
+    of 1, 2, 3, and 4.
+
+    .. doctest::
+
+        >>> exceedance.calculate_exceedance_probability_from_values(
+        ...     5, [1, 2, 3, 4])
+        0.0
     """
+    # some type conversions to get to a numpy array
+    if isinstance(values_to_compare, list):
+        values_to_compare = np.array(values_to_compare)
+    elif isinstance(values_to_compare, pd.Series):
+        values_to_compare = values_to_compare.values
+    # raise error if not a numpy array
+    if not isinstance(values_to_compare, np.ndarray):
+        raise TypeError("values_to_compare must be a numpy array, list, " +
+                        "or pandas Series.")
+    # calculate the exceedance probability
     return np.sum(values_to_compare >= x) / len(values_to_compare)
 
 
@@ -62,7 +120,7 @@ def calculate_exceedance_probability_from_distribution_multiple(values, dist,
                                                                 *args,
                                                                 **kwargs):
     """
-    Calculate the exceedance probability of multiple values.
+    Calculate the exceedance probability of multiple values vs a distribution.
 
     Parameters
     ----------
@@ -80,6 +138,28 @@ def calculate_exceedance_probability_from_distribution_multiple(values, dist,
     -------
     array-like
         The exceedance probabilities.
+
+    Examples
+    --------
+    Calculating the exceedance probability of a set of values of 1, 1.25 and
+    1.5 from a lognormal distribution with a mean of 1 and a standard
+    deviation of 0.25.
+
+    .. doctest::
+
+        >>> exceedance.calculate_exceedance_probability_from_distribution_multiple(  # noqa: E501
+        ...     [1, 1.25, 1.5], 'lognormal', 1, 0.25)
+        array([0.61320494, 0.5       , 0.41171189])
+
+    Calculating the exceedance probability of a set of values of 1, 2, 3, and 4
+    from a normal distribution with a mean of 1 and a standard deviation of
+    0.25.
+
+    .. doctest::
+
+        >>> exceedance.calculate_exceedance_probability_from_distribution_multiple(  # noqa: E501
+        ...     [1, 2, 3, 4], 'normal', 1, 0.25)
+        array([5.00000000e-01, 3.16712418e-05, 6.22096057e-16, 1.77648211e-33])
     """
     return np.array([calculate_exceedance_probability_from_distribution(
         x, dist, *args, **kwargs) for x in values])
@@ -88,7 +168,7 @@ def calculate_exceedance_probability_from_distribution_multiple(values, dist,
 def calculate_exceedance_probability_from_values_multiple(values,
                                                           values_to_compare):
     """
-    Calculate the exceedance probability of multiple values.
+    Calculate the exceedance probability of multiple values vs a set of values.
 
     Parameters
     ----------
@@ -101,6 +181,31 @@ def calculate_exceedance_probability_from_values_multiple(values,
     -------
     array-like
         The exceedance probabilities.
+
+    Examples
+    --------
+    Calculating the exceedance probability of a set of values of 1, 1.25 and
+    1.5 from a set of values of 1, 2, 3, and 4.
+
+    .. doctest::
+
+        >>> exceedance.calculate_exceedance_probability_from_values_multiple(
+        ...     [1, 1.25, 2.5], [1, 2, 3, 4])
+        array([1.  , 0.75, 0.5 ])
+
+    Fetch some data from NWIS and calculate the exceedance probability for a
+    set of 5 values spaced evenly between the minimum and maximum values.
+
+    .. doctest::
+
+        >>> df, _ = dataretrieval.nwis.get_gwlevels(site='434400121275801',
+        ...                                         start='2000-01-01',
+        ...                                         end='2020-01-01')
+        >>> values = np.linspace(df['lev_va'].min(),
+        ...                      df['lev_va'].max(), 5)
+        >>> exceedance.calculate_exceedance_probability_from_values_multiple(
+        ...     values, df['lev_va'])
+        array([1.        , 0.96363636, 0.83636364, 0.47272727, 0.01818182])
     """
     return np.array([calculate_exceedance_probability_from_values(
         x, values_to_compare) for x in values])
