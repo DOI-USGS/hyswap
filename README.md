@@ -4,6 +4,9 @@
 [![pipeline-status-image](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/badges/main/pipeline.svg)](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/commits/main)
 [![coverage-report-image](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/badges/main/coverage.svg)](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/commits/main)
 
+### Project Documentation
+
+`hyswap` documentation is available at: [Link](https://rconnect.usgs.gov/hyswap-docs/html/)
 
 ## Installation
 
