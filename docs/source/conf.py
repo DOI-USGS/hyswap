@@ -29,7 +29,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'matplotlib.sphinxext.plot_directive'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -86,7 +87,18 @@ doctest_global_setup = '''
 import hyswap
 from hyswap import exceedance
 import numpy as np
-import matplotlib
+import matplotlib.pyplot as plt
+import dataretrieval
+'''
+
+# mpl plots - metadata for the documentation plots
+plot_basedir = 'pyplots'
+plot_html_show_source_link = False
+plot_formats = ['png', ('hires.png', 300)]
+plot_pre_code = '''
+import numpy as np
+from matplotlib import pyplot as plt
+import hyswap
 import dataretrieval
 '''
 
