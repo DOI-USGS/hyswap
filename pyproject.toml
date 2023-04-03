@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hyswap"
+description = "Analysis of surface water data."
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["USGS", "water data", "analysis"]
+license = {file = "LICENSE.md"}
+authors = [
+  {name = "USGS", email = "comptools@usgs.gov"},
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dynamic = ["version", "dependencies"]
+
+[tool.setuptools]
+packages = ["hyswap"]
+
+[project.urls]
+homepage = "https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap"
+repository = "https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap.git"
+
+[tool.setuptools_scm]
+write_to = "hyswap/_version.py"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
