@@ -86,7 +86,9 @@ autodoc_default_options = {
 doctest_global_setup = '''
 import hyswap
 from hyswap import exceedance
+from hyswap import rasterhydrograph
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import dataretrieval
 '''
