@@ -17,3 +17,10 @@ Exceedance Probability Functions
 .. automodule:: hyswap.exceedance
     :members:
     :special-members:
+
+Raster Hydrograph Functions
+---------------------------
+
+.. automodule:: hyswap.rasterhydrograph
+    :members:
+    :special-members:
