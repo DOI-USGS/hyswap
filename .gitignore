@@ -163,3 +163,7 @@ cython_debug/
 
 # MacOS
 *.DS_Store
+
+# for local development and interactive testing
+temp/
+playground/
