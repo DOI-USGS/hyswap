@@ -77,6 +77,22 @@ def test_calculate_date_range():
     assert date_range[-1].year == 2022
     assert date_range[-1].month == 12
     assert date_range[-1].day == 31
+    # define a data frame to use for testing using late months
+    dummy_dates = pd.date_range('2018-10-01', '2022-12-31')
+    df = pd.DataFrame(
+        {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates))}
+        )
+    # test the function using a 'water' year
+    df_out, date_range = rasterhydrograph._calculate_date_range(
+        df, None, None, 'water', 'date')
+    assert len(df_out.index) == len(df.index)
+    assert list(df_out.index.values) == list(df['date'].values)
+    assert date_range[0].year == 2019
+    assert date_range[0].month == 10
+    assert date_range[0].day == 1
+    assert date_range[-1].year == 2023
+    assert date_range[-1].month == 9
+    assert date_range[-1].day == 30
 
 
 def test_check_inputs():
@@ -93,25 +109,25 @@ def test_check_inputs():
                                        None, None, None)
     # test the data column name input
     with pytest.raises(TypeError):
-        rasterhydrograph._check_inputs(pd.DataFrame(), None, None, None,
-                                       None, None, None)
+        rasterhydrograph._check_inputs(pd.DataFrame(), None, None, 'daily',
+                                       'calendar', None, None)
     with pytest.raises(TypeError):
-        rasterhydrograph._check_inputs(pd.DataFrame(), 1, None, None,
-                                       None, None, None)
+        rasterhydrograph._check_inputs(pd.DataFrame(), 1, None, 'daily',
+                                       'calendar', None, None)
     with pytest.raises(TypeError):
-        rasterhydrograph._check_inputs(pd.DataFrame(), 1.0, None, None,
-                                       None, None, None)
+        rasterhydrograph._check_inputs(pd.DataFrame(), 1.0, None, 'daily',
+                                       'calendar', None, None)
 
     # test the date column name input
     with pytest.raises(TypeError):
-        rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None, None,
-                                       None, None, None)
+        rasterhydrograph._check_inputs(pd.DataFrame(), 'data', {"a": 1},
+                                       'daily', 'calendar', None, None)
     with pytest.raises(TypeError):
-        rasterhydrograph._check_inputs(pd.DataFrame(), 'data', 1, None,
-                                       None, None, None)
+        rasterhydrograph._check_inputs(pd.DataFrame(), 'data', 1, 'daily',
+                                       'calendar', None, None)
     with pytest.raises(TypeError):
-        rasterhydrograph._check_inputs(pd.DataFrame(), 'data', 1.0, None,
-                                       None, None, None)
+        rasterhydrograph._check_inputs(pd.DataFrame(), 'data', 1.0, 'daily',
+                                       'calendar', None, None)
 
     # test the data type input
     with pytest.raises(TypeError):
@@ -199,7 +215,7 @@ def test_format_data():
     assert len(df_out.index) == 4
     assert len(df_out.columns) == 366
     # assert day 1 of 2019 has data, is not NaN
-    assert np.isnan(df_out.loc[2019].loc[1]) == False
+    assert ~np.isnan(df_out.loc[2019].loc[1])
     # assert day 350 of 2022 has no data, is NaN
     assert np.isnan(df_out.loc[2022].loc[350])
     # test the function with a dataframe and a date index and ending year
@@ -209,7 +225,7 @@ def test_format_data():
     # assert day 1 of 2018 has no data, is NaN
     assert np.isnan(df_out.loc[2018].loc[1])
     # assert day 350 of 2021 has data, is not NaN
-    assert np.isnan(df_out.loc[2021].loc[350]) == False
+    assert ~np.isnan(df_out.loc[2021].loc[350])
     # test the function with a dataframe and a date index and a different
     # data averaging scheme
     df_7out = rasterhydrograph.format_data(df_date, 'value',
@@ -221,14 +237,14 @@ def test_format_data():
     # assert day 350 of 2022 has no data, is NaN
     assert np.isnan(df_7out.loc[2022].loc[350])
     # check that there are non-NaN values in the data frame
-    assert np.isnan(df_7out.values).all() == False
+    assert ~np.isnan(df_7out.values).all()
     # test the function with a dataframe and a date index and a water year
     df_out_water = rasterhydrograph.format_data(df_date, 'value',
                                                 year_type='water')
     assert len(df_out_water.index) == 4
     assert len(df_out_water.columns) == 366
     # check that there are non-NaN values in the data frame
-    assert np.isnan(df_out_water.values).all() == False
+    assert ~np.isnan(df_out_water.values).all()
     # check that day 1 of year 2019 is 10/1/2018
     assert df_out_water.loc[2019].loc[1] == df_out.loc[2018].loc[274]
     # check that the last day of year 2020 is 9/30/2020

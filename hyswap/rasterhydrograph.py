@@ -71,7 +71,6 @@ def format_data(df, data_column_name, date_column_name=None,
         2000
         >>> len(df_formatted.columns)
         365
-
     """
     # check inputs
     _check_inputs(df, data_column_name, date_column_name,
@@ -166,7 +165,6 @@ def _check_inputs(df, data_column_name, date_column_name,
     Returns
     -------
     None
-
     """
     # check the data frame
     if not isinstance(df, pd.DataFrame):
@@ -253,7 +251,6 @@ def _calculate_date_range(df, begin_year, end_year, year_type,
         The data with the date range set as the index.
     date_range : pandas.DatetimeIndex
         The date range.
-
     """
     # set date column as index
     if date_column_name is not None:
@@ -308,7 +305,6 @@ def _set_data_type(data_type):
         The formatted frequency string to be used with
         pandas.DataFrame.rolling to calculate the average over the correct
         temporal period.
-
     """
     if data_type == 'daily':
         data_type = 'D'
