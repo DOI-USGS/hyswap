@@ -52,7 +52,7 @@ def format_data(df, data_column_name, date_column_name=None,
 
         >>> df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2010'),
         ...                    'data': np.random.rand(365)})
-        >>> df_formatted = rasterhydrograph.format_data(df, 'data')
+        >>> df_formatted = rasterhydrograph.format_data(df, 'data', 'date')
         >>> df_formatted.index[0]
         2010
         >>> len(df_formatted.columns)
@@ -244,11 +244,23 @@ def _calculate_date_range(df, begin_year, end_year, year_type,
 
     # set begin year
     if begin_year is None:
-        begin_year = df.index.year.min()
+        if year_type == 'calendar':
+            begin_year = df.index.year.min()
+        elif year_type == 'water':
+            if df.index.month.min() < 10:
+                begin_year = df.index.year.min()
+            else:
+                begin_year = df.index.year.min() + 1
 
     # set end year
     if end_year is None:
-        end_year = df.index.year.max()
+        if year_type == 'calendar':
+            end_year = df.index.year.max()
+        elif year_type == 'water':
+            if df.index.month.max() < 10:
+                end_year = df.index.year.max() - 1
+            else:
+                end_year = df.index.year.max()
 
     # set date range
     if year_type == 'calendar':
