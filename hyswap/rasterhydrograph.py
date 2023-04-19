@@ -29,7 +29,7 @@ def format_data(df, data_column_name, date_column_name=None,
         The type of year to use. Must be one of 'calendar' or 'water'.
         Default is 'calendar' which starts the year on January 1 and ends on
         December 31. 'water' starts the year on October 1 and ends on
-        September 30.
+        September 30 of the following year which is the "water year".
     begin_year : int, optional
         The first year to include in the data. Default is None which uses the
         first year in the data.
@@ -103,15 +103,24 @@ def format_data(df, data_column_name, date_column_name=None,
 
     # organize data frame
     # rows are years and columns are days in the year
-    # add year column
-    df_out['year'] = df_out.index.year
-    if year_type == 'water':
-        df_out.loc[df_out.index.month < 10, 'year'] -= 1
 
     # add day of year column
-    df_out['day'] = df_out.index.dayofyear
+    df_out['day'] = df_out.index.dayofyear.copy()
     if year_type == 'water':
-        df_out.loc[df_out.index.month < 10, 'day'] += 274
+        # day 1 in a year becomes October 1
+        # in a leap year October 1 is day 275
+        df_out.loc[df_out.index.is_leap_year & (df_out.index.month >= 10),
+                   'day'] -= 274
+        # in a non-leap year, October 1 is day 274
+        df_out.loc[~df_out.index.is_leap_year & (df_out.index.month >= 10),
+                   'day'] -= 273
+        # add dates for early days in year Jan 1 to Oct 1
+        df_out.loc[df_out.index.month < 10, 'day'] += 92
+
+    # add year column
+    df_out['year'] = df_out.index.year.copy()
+    if year_type == 'water':
+        df_out.loc[df_out.index.month >= 10, 'year'] += 1
 
     # set index to year and day of year columns
     df_out = df_out.pivot(index='year', columns='day', values=data_column_name)
@@ -159,12 +168,20 @@ def _check_inputs(df, data_column_name, date_column_name,
     None
 
     """
+    # check the data frame
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError('df must be a pandas.DataFrame')
+
     # check data type
+    if not isinstance(data_type, str):
+        raise TypeError('data_type must be a string')
     if data_type not in ['daily', '7-day', '14-day', '28-day']:
         raise ValueError('data_type must be one of "daily", "7-day", '
                          '"14-day", and "28-day"')
 
     # check year type
+    if not isinstance(year_type, str):
+        raise TypeError('year_type must be a string')
     if year_type not in ['calendar', 'water']:
         raise ValueError('year_type must be one of "calendar" and "water"')
 
@@ -247,7 +264,7 @@ def _calculate_date_range(df, begin_year, end_year, year_type,
         if year_type == 'calendar':
             begin_year = df.index.year.min()
         elif year_type == 'water':
-            if df.index.month.min() < 10:
+            if df.index[0].month < 10:
                 begin_year = df.index.year.min()
             else:
                 begin_year = df.index.year.min() + 1
@@ -257,8 +274,8 @@ def _calculate_date_range(df, begin_year, end_year, year_type,
         if year_type == 'calendar':
             end_year = df.index.year.max()
         elif year_type == 'water':
-            if df.index.month.max() < 10:
-                end_year = df.index.year.max() - 1
+            if df.index[-1].month >= 10:
+                end_year = df.index.year.max() + 1
             else:
                 end_year = df.index.year.max()
 
