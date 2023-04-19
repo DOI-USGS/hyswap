@@ -11,8 +11,8 @@ First we will fetch 20 years of streamflow data for a single site from NWIS usin
     :include-source:
 
     # get data from a single site
-    df, _ = get_dv("03586500", parameterCd="00060",
-                   start="2000-01-01", end="2020-12-31")
+    df, _ = dataretrieval.nwis.get_dv("03586500", parameterCd="00060",
+                                      start="2000-01-01", end="2020-12-31")
 
 This data can be formatted using `hyswap` to prepare it for plotting as a
 raster hydrograph.
@@ -33,10 +33,11 @@ Now the data is arranged with years on the index (rows) and days of the year as 
     # plot
     fig, ax = plt.subplots()
     img = ax.imshow(df_formatted, aspect="auto", cmap="jet_r",
-                    interpolation='none')
-    plt.colorbar(img, ax=ax)
-    ax.set_yticks(np.arange(-0.5, len(df_out.index)), [], minor=True)
-    ax.set_yticks(np.arange(len(df_out.index)), df_out.index)
+                    interpolation='none', vmin=0)
+    plt.colorbar(img, ax=ax, label="Streamflow, cubic feet per second")
+    ax.set_yticks(np.arange(-0.5, len(df_formatted.index)), [], minor=True)
+    ax.set_yticks(np.arange(len(df_formatted.index)), df_formatted.index)
     ax.set_xlabel("Day of Year")
     ax.set_ylabel("Year")
+    ax.set_title("Streamflow Raster Hydrograph for Site 03586500")
     plt.show()
