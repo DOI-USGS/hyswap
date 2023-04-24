@@ -93,7 +93,6 @@ def calculate_percentiles_by_day(
         366
         >>> len(results.columns)  # 8 default percentiles
         8
-
     """
     # based on date, get min and max day of year available
     if date_column_name is None:
