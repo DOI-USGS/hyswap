@@ -29,7 +29,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'matplotlib.sphinxext.plot_directive'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -84,8 +85,21 @@ autodoc_default_options = {
 # doctest
 doctest_global_setup = '''
 import hyswap
+from hyswap import exceedance
 import numpy as np
-import matplotlib
+import matplotlib.pyplot as plt
+import dataretrieval
+'''
+
+# mpl plots - metadata for the documentation plots
+plot_basedir = 'pyplots'
+plot_html_show_source_link = False
+plot_formats = ['png', ('hires.png', 300)]
+plot_pre_code = '''
+import numpy as np
+from matplotlib import pyplot as plt
+import hyswap
+import dataretrieval
 '''
 
 # -- Options for HTML output ----------------------------------------------
@@ -93,14 +107,14 @@ import matplotlib
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 
-html_theme = 'classic'
+html_theme = 'bizstyle'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 
 html_theme_options = {
-    "rightsidebar": False
+    "rightsidebar": True
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

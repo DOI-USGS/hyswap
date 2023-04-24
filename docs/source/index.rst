@@ -10,4 +10,5 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
 
+   examples/index
    reference/index
