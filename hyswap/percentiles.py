@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+from hyswap.utils import filter_data_by_day
 
 
 def calculate_historic_percentiles(
@@ -24,43 +25,8 @@ def calculate_historic_percentiles(
     -------
     percentiles : array_like
         Percentiles of the data.
-
     """
     return np.percentile(data, percentiles, **kwargs)
-
-
-def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
-    """Filter data by day of year.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        DataFrame containing data to filter.
-
-    doy : int
-        Day of year to filter.
-
-    data_column_name : str
-        Name of column containing data to filter.
-
-    date_column_name : str, optional
-        Name of column containing date information. If None, the index of
-        `df` is used.
-
-    Returns
-    -------
-    data : array_like
-        Data from the specified day of year.
-
-    """
-    # grab data from the specified day of year
-    if date_column_name is None:
-        dff = df.loc[df.index.dayofyear == doy, data_column_name]
-    else:
-        dff = df.loc[df[date_column_name].dt.dayofyear == doy,
-                     data_column_name]
-    # return data as a 1-D numpy array
-    return dff.values
 
 
 def calculate_percentiles_by_day(
@@ -88,7 +54,6 @@ def calculate_percentiles_by_day(
     -------
     percentiles : pandas.DataFrame
         DataFrame containing percentiles of data by day of year.
-
     """
     # based on date, get min and max day of year available
     if date_column_name is None:

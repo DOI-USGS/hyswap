@@ -42,3 +42,20 @@ def test_rolling_average():
     assert np.isnan(df_out["data"].tolist()[0])
     assert df_out['data'].tolist()[1:] == [1.5, 2.5, 3.5, 4.5, 5.5, 6.5,
                                            7.5, 8.5, 9.5]
+
+
+def test_filter_data_by_day():
+    """Test the filter_data_by_day function."""
+    # make a dataframe
+    df = pd.DataFrame({
+        'data': [1, 2, 3, 4],
+        'date': pd.date_range('2019-01-01', '2019-01-04')})
+    # test the function
+    data = utils.filter_data_by_day(df, 1, 'data', date_column_name='date')
+    assert data.shape == (1,)
+    assert data == [1]
+    # test the function with no date column and dates in the index
+    df = df.set_index('date')
+    data = utils.filter_data_by_day(df, 2, 'data')
+    assert data.shape == (1,)
+    assert data == [2]
