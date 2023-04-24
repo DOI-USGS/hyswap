@@ -19,3 +19,36 @@ def filter_approved_data(data, filter_column=None):
     if filter_column is None:
         raise ValueError("filter_column must be specified.")
     return data.loc[data[filter_column] == "A"]
+
+
+def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
+    """Filter data by day of year.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing data to filter.
+
+    doy : int
+        Day of year to filter.
+
+    data_column_name : str
+        Name of column containing data to filter.
+
+    date_column_name : str, optional
+        Name of column containing date information. If None, the index of
+        `df` is used.
+
+    Returns
+    -------
+    data : array_like
+        Data from the specified day of year.
+    """
+    # grab data from the specified day of year
+    if date_column_name is None:
+        dff = df.loc[df.index.dayofyear == doy, data_column_name]
+    else:
+        dff = df.loc[df[date_column_name].dt.dayofyear == doy,
+                     data_column_name]
+    # return data as a 1-D numpy array
+    return dff.values
