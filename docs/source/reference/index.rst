@@ -24,3 +24,10 @@ Raster Hydrograph Functions
 .. automodule:: hyswap.rasterhydrograph
     :members:
     :special-members:
+
+Percentile Calculation Functions
+--------------------------------
+
+.. automodule:: hyswap.percentiles
+    :members:
+    :special-members:
