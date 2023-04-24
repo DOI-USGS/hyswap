@@ -71,6 +71,10 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
 
 def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
     """Filter data by day of year.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
         DataFrame containing data to filter.
 
     doy : int
