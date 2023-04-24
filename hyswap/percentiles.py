@@ -25,6 +25,27 @@ def calculate_historic_percentiles(
     -------
     percentiles : array_like
         Percentiles of the data.
+
+    Examples
+    --------
+    Calculate default percentiles from some synthetic data.
+
+    .. doctest::
+
+        >>> data = np.arange(101)
+        >>> results = percentiles.calculate_historic_percentiles(data)
+        >>> results
+        array([  0.,   5.,  10.,  25.,  75.,  90.,  95., 100.])
+
+    Calculate a different set of percentiles from some synthetic data.
+
+    .. doctest::
+
+        >>> data = np.arange(101)
+        >>> results = percentiles.calculate_historic_percentiles(
+        ...     data, percentiles=np.array((0, 10, 50, 90, 100)))
+        >>> results
+        array([  0.,  10.,  50.,  90., 100.])
     """
     return np.percentile(data, percentiles, **kwargs)
 
@@ -54,6 +75,25 @@ def calculate_percentiles_by_day(
     -------
     percentiles : pandas.DataFrame
         DataFrame containing percentiles of data by day of year.
+
+    Examples
+    --------
+    Calculate default percentiles by day of year from some real data in
+    preparation for plotting.
+
+    .. doctest::
+        :skipif: True  # dataretrieval functions break CI pipeline
+
+        >>> df, _ = dataretrieval.nwis.get_dv(
+        ...     "03586500", parameterCd="00060",
+        ...     start="1776-01-01", end="2022-12-31")
+        >>> results = percentiles.calculate_percentiles_by_day(
+        ...     df, "00060_Mean")
+        >>> len(results.index)  # 366 days in a leap year
+        366
+        >>> len(results.columns)  # 8 default percentiles
+        8
+
     """
     # based on date, get min and max day of year available
     if date_column_name is None:

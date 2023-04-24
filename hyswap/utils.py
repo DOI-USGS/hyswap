@@ -15,6 +15,27 @@ def filter_approved_data(data, filter_column=None):
     -------
     pandas.DataFrame
         The filtered data.
+
+    Examples
+    --------
+    Filter synthetic data to only return approved data. First make some
+    synthetic data.
+
+    .. doctest::
+
+        >>> df = pd.DataFrame({
+        ...     'data': [1, 2, 3, 4],
+        ...     'approved': ['A', 'A', 'P', 'P']})
+        >>> df.shape
+        (4, 2)
+
+    Then filter the data to only return approved data.
+
+    .. doctest::
+
+        >>> df = utils.filter_approved_data(df, filter_column='approved')
+        >>> df.shape
+        (2, 2)
     """
     if filter_column is None:
         raise ValueError("filter_column must be specified.")
@@ -43,6 +64,39 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
     -------
     data : array_like
         Data from the specified day of year.
+
+    Examples
+    --------
+    Filter some synthetic data by day of year. First make some synthetic data.
+
+    .. doctest::
+
+        >>> df = pd.DataFrame({
+        ...     'data': [1, 2, 3, 4],
+        ...     'date': pd.date_range('2019-01-01', '2019-01-04')})
+        >>> df.shape
+        (4, 2)
+
+    Then filter the data to get data from day 1.
+
+    .. doctest::
+
+        >>> data = utils.filter_data_by_day(
+        ...     df, 1, 'data', date_column_name='date')
+        >>> data.shape
+        (1,)
+
+    Acquire and filter some real daily data to get all Jan. 1 data.
+
+    .. doctest::
+        :skipif: True  # dataretrieval functions break CI pipeline
+
+        >>> df, _ = dataretrieval.nwis.get_dv(
+        ...     "03586500", parameterCd="00060",
+        ...     start="2000-01-01", end="2003-01-05")
+        >>> data = utils.filter_data_by_day(df, 1, '00060_Mean')
+        >>> data.shape
+        (4,)
     """
     # grab data from the specified day of year
     if date_column_name is None:
