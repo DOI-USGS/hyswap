@@ -2,8 +2,6 @@
 
 import numpy as np
 import pandas as pd
-from hyswap.utils import filter_data_by_day
-from hyswap.percentiles import calculate_historic_percentiles
 
 
 def calculate_daily_cumulative_values(df, data_column_name,
@@ -27,11 +25,11 @@ def calculate_daily_cumulative_values(df, data_column_name,
         input DataFrame, rows are dates and columns include years, days, and
         cumulative values.
     """
+    # if date column is not index, make is so
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
     # get unique years in the data
-    if date_column_name is None:
-        years = df.index.year.unique()
-    else:
-        years = df[date_column_name].dt.year.unique()
+    years = df.index.year.unique()
     # make a dataframe to hold cumulative values for each year
     cdf = pd.DataFrame(index=years, columns=np.arange(1, 367))
     # loop through each year and calculate cumulative values
@@ -63,6 +61,8 @@ def _tidy_cumulative_dataframe(cdf):
     # convert cdf to dataframe organized with full dates on the index
     cdf2 = cdf.stack().reset_index()
     cdf2.columns = ["year", "day", "cumulative"]
-    cdf2["date"] = pd.to_datetime(cdf2["year"].astype(str) + "-" + cdf2["day"].astype(str), format="%Y-%j")
+    cdf2["date"] = pd.to_datetime(
+        cdf2["year"].astype(str) + "-" + cdf2["day"].astype(str),
+        format="%Y-%j")
     cdf2 = cdf2.set_index("date")
     return cdf2
