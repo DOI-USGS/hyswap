@@ -24,6 +24,26 @@ def calculate_daily_cumulative_values(df, data_column_name,
         DataFrame containing daily cumulative values for each year in the
         input DataFrame, rows are dates and columns include years, days, and
         cumulative values.
+
+    Examples
+    --------
+    Calculate daily cumulative values from some synthetic data.
+
+    .. doctest::
+
+        >>> df = pd.DataFrame({
+        ...     "date": pd.date_range("2000-01-01", "2000-12-31"),
+        ...     "data": np.arange(366)})
+        >>> results = cumulative.calculate_daily_cumulative_values(
+        ...     df, "data", date_column_name="date")
+        >>> results.head()
+                    year  day  cumulative
+        date
+        2000-01-01  2000    1           0
+        2000-01-02  2000    2           1
+        2000-01-03  2000    3           3
+        2000-01-04  2000    4           6
+        2000-01-05  2000    5          10
     """
     # if date column is not index, make is so
     if date_column_name is not None:
