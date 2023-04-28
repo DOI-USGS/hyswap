@@ -58,10 +58,10 @@ def test_calculate_date_range():
         df, None, None, 'climate', 'date')
     assert len(df_out.index) == len(df.index)
     assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2018
+    assert date_range[0].year == 2019
     assert date_range[0].month == 4
     assert date_range[0].day == 1
-    assert date_range[-1].year == 2021
+    assert date_range[-1].year == 2022
     assert date_range[-1].month == 3
     assert date_range[-1].day == 31
     # test the function using a 'water' year and specifying start and end years
@@ -120,10 +120,10 @@ def test_calculate_date_range():
         df, None, None, 'climate', 'date')
     assert len(df_out.index) == len(df.index)
     assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2018
+    assert date_range[0].year == 2019
     assert date_range[0].month == 4
     assert date_range[0].day == 1
-    assert date_range[-1].year == 2022
+    assert date_range[-1].year == 2023
     assert date_range[-1].month == 3
     assert date_range[-1].day == 31
 
@@ -303,10 +303,10 @@ def test_format_data():
     assert len(df_out_climate.columns) == 366
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_out_climate.values).all()
-    # check that day 1 of year 2019 is 4/1/2019
-    assert df_out_climate.loc[2019].loc[1] == df_out.loc[2019].loc[91]
-    # check that the last day of year 2020 is 3/31/2021
-    assert df_out_climate.loc[2020].loc[365] == df_out.loc[2021].loc[90]
+    # check that day 1 of year 2020 is 4/1/2019
+    assert df_out_climate.loc[2020].loc[1] == df_out.loc[2019].loc[91]
+    # check that the last day of year 2021 is 3/31/2021
+    assert df_out_climate.loc[2021].loc[365] == df_out.loc[2021].loc[90]
     # test the function with a dataframe and a date index and a different
     # data averaging scheme via kwargs and a climate year
     df_7out_climate = rasterhydrograph.format_data(df_date, 'value',
