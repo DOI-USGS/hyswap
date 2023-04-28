@@ -1,11 +1,12 @@
 """Raster hydrograph functionality."""
 
 import pandas as pd
+from hyswap.utils import rolling_average
 
 
 def format_data(df, data_column_name, date_column_name=None,
                 data_type='daily', year_type='calendar',
-                begin_year=None, end_year=None):
+                begin_year=None, end_year=None, **kwargs):
     """
     Format data for raster hydrograph.
 
@@ -26,16 +27,19 @@ def format_data(df, data_column_name, date_column_name=None,
         values will be used for any days that do not have data. If present,
         NaN values will result in NaN values for the entire period.
     year_type : str, optional
-        The type of year to use. Must be one of 'calendar' or 'water'.
-        Default is 'calendar' which starts the year on January 1 and ends on
-        December 31. 'water' starts the year on October 1 and ends on
-        September 30 of the following year which is the "water year".
+        The type of year to use. Must be one of 'calendar', 'water', or
+        'climate'. Default is 'calendar' which starts the year on January 1
+        and ends on December 31. 'water' starts the year on October 1 and
+        ends on September 30 of the following year which is the "water year".
+        'climate' years begin on April 1
     begin_year : int, optional
         The first year to include in the data. Default is None which uses the
         first year in the data.
     end_year : int, optional
         The last year to include in the data. Default is None which uses the
         last year in the data.
+    **kwargs
+        Keyword arguments to pass to the pandas.DataFrame.rolling method.
 
     Returns
     -------
@@ -88,8 +92,7 @@ def format_data(df, data_column_name, date_column_name=None,
 
     # make output data frame
     # calculation of rolling mean is done on the data column
-    df_out = df[data_column_name].rolling(
-        data_type, center=True).mean().to_frame()
+    df_out = rolling_average(df, data_column_name, data_type, **kwargs)
 
     # convert date index to YYYY-MM-DD format
     df_out.index = df_out.index.strftime('%Y-%m-%d')
