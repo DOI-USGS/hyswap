@@ -1,0 +1,71 @@
+image: ${ARTIFACTORY_URL}/docker-official-mirror/python:3.11
+
+stages:
+  - build
+  - test
+  - deploy
+  - validate
+
+variables:
+  R_PROFILE: "$R_HOME/etc/Rprofile.site"
+
+Build Package:
+  stage: build
+  script:
+    - python -m pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install .
+
+Test and Lint:
+  stage: test
+  script:
+    # Install dependencies
+    - python -m pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
+    - pip install .
+    # Test and report coverage
+    - coverage run -m pytest
+    - coverage report -m
+    - coverage html
+    # Lint
+    - flake8 .
+    - pydocstringformatter .
+    # Test and build documentation
+    - cd docs
+    - make docs
+  artifacts:
+    paths:
+      - htmlcov/
+      - docs/build/
+  coverage: '/TOTAL.*\s+(\d+\%)/'
+
+Deploy Documentation:
+  image: ${ARTIFACTORY_URL}/docker-official-mirror/rocker/shiny-verse:4.1.2
+  stage: deploy
+  script:
+    # set Rprofile repositories
+    - echo "options(Ncpus=$(nproc --all), repos=c(GSPM='$GSPM', CRAN='$CRAN'))" >> $R_PROFILE
+    # install packages
+    - Rscript -e "install.packages(c('rsconnect', 'connectapi'))"
+    # create manifest file for deployment
+    - Rscript -e "rsconnect::writeManifest(appDir='$CI_PROJECT_DIR/docs/build')"
+    # deploy docs to RStudio Connect
+    - Rscript -e "task <- connectapi::deploy(connectapi::connect(), connectapi::bundle_dir('$CI_PROJECT_DIR/docs/build'), name='hyswap-docs') |> connectapi::set_vanity_url(url = 'hyswap-docs') |> connectapi::content_update_access_type('all')"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $CONNECT_API_KEY != null && $CONNECT_SERVER != null'
+
+
+Validate Inventory:
+    stage: validate
+    image: ${INTERNAL_REGISTRY}software/software-management:latest
+    script:
+      - software-management review
+        --project "${CI_PROJECT_PATH}"
+        --ref "${CI_COMMIT_BRANCH}"
+        --type "provisional"
+        --token "${GIT_TOKEN_CUSTOM}"
+    tags:
+        - chs-shared
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "main" && $GIT_TOKEN_CUSTOM != null'
