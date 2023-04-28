@@ -1,7 +1,5 @@
 """Utility functions for hyswap."""
 
-import pandas as pd
-
 
 def filter_approved_data(data, filter_column=None):
     """Filter a dataframe to only return approved "A" data.

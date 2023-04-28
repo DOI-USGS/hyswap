@@ -75,7 +75,7 @@ def test_calculate_date_range():
     assert date_range[-1].year == 2020
     assert date_range[-1].month == 9
     assert date_range[-1].day == 30
-    # test the function using a 'climate' year and specifying start and end years
+    # test the function using a 'climate' year and specifying start / end years
     df_out, date_range = rasterhydrograph._calculate_date_range(
         df, 2019, 2020, 'climate', 'date')
     assert len(df_out.index) == len(df.index)
