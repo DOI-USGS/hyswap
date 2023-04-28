@@ -86,7 +86,9 @@ autodoc_default_options = {
 doctest_global_setup = '''
 import hyswap
 from hyswap import exceedance
+from hyswap import rasterhydrograph
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import dataretrieval
 '''
@@ -97,6 +99,7 @@ plot_html_show_source_link = False
 plot_formats = ['png', ('hires.png', 300)]
 plot_pre_code = '''
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
 import hyswap
 import dataretrieval
