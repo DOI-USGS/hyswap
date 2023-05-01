@@ -59,3 +59,47 @@ def test_filter_data_by_day():
     data = utils.filter_data_by_day(df, 2, 'data')
     assert data.shape == (1,)
     assert data.values == [2]
+
+
+def test_calculate_metadata():
+    """Test the calculate_metadata function."""
+    # make pandas series of data with datetime index
+    data = pd.Series(
+        [1, 2, 3, 4],
+        index=pd.date_range('2019-01-01', '2023-01-01', freq='Y'))
+    # calculate the metadata
+    metadata = utils.calculate_metadata(data)
+    # check the output
+    assert metadata['start_date'] == '2019-12-31'
+    assert metadata['end_date'] == '2022-12-31'
+    assert metadata['n_years'] == 4
+    assert metadata['n_data'] == 4
+    assert metadata['n_nans'] == 0
+    assert metadata['n_zeros'] == 0
+    assert metadata['n_gaps'] == 0
+    assert metadata['n_lows'] == 0
+    # remove the second value and recalculate the metadata
+    data = data.drop(data.index[1])
+    metadata = utils.calculate_metadata(data)
+    # check the output
+    assert metadata['start_date'] == '2019-12-31'
+    assert metadata['end_date'] == '2022-12-31'
+    assert metadata['n_years'] == 3
+    assert metadata['n_data'] == 3
+    assert metadata['n_nans'] == 0
+    assert metadata['n_zeros'] == 0
+    assert metadata['n_gaps'] == 1
+    assert metadata['n_lows'] == 0
+    # make one value a nan and one a zero and recalculate the metadata
+    data[0] = np.nan
+    data[2] = 0
+    metadata = utils.calculate_metadata(data)
+    # check the output
+    assert metadata['start_date'] == '2019-12-31'
+    assert metadata['end_date'] == '2022-12-31'
+    assert metadata['n_years'] == 3
+    assert metadata['n_data'] == 2
+    assert metadata['n_nans'] == 1
+    assert metadata['n_zeros'] == 1
+    assert metadata['n_gaps'] == 1
+    assert metadata['n_lows'] == 1

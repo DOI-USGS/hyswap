@@ -16,9 +16,9 @@ def test_calculate_historic_percentiles():
     assert percentiles_ == pytest.approx((0, 5, 10, 25, 75, 90, 95, 100))
     # set some percentile values as opposed to the defaults
     percentiles_ = percentiles.calculate_historic_percentiles(
-        data, percentiles=np.array((0, 10, 50, 90, 100)), method='linear')
+        data, percentiles=np.array((0, 10, 50, 90, 100)))
     assert percentiles_.shape == (5,)
-    assert percentiles_ == pytest.approx((0, 10, 50, 90, 100))
+    assert percentiles_ == pytest.approx((0, 9.2, 50, 90.8, 100))
     # pass kwarg through to np.percentile
     percentiles_ = percentiles.calculate_historic_percentiles(
         data, method='lower')
@@ -50,3 +50,5 @@ def test_calculate_percentiles_by_day():
     assert percentiles_.shape == (101, 5)
     assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
     assert percentiles_.index.tolist() == list(range(1, 102))
+    # all percentiles should be NaN because demo dataset is 1 year only
+    assert percentiles_.isna().all().all()

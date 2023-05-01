@@ -158,14 +158,14 @@ def calculate_metadata(data):
     meta = {}
     # calculate the number of unique years of data
     meta["n_years"] = len(data.index.year.unique())
-    # calculate the number of data points
-    meta["n_data"] = len(data)
+    # calculate the number of data points that are not nan
+    meta["n_data"] = len(data.loc[~data.isna()])
     # calculate the number of gaps in the data - missing years
     expected_years = data.index.year.max() - data.index.year.min() + 1
     meta["n_gaps"] = expected_years - meta["n_years"]
     # calculate the start and end dates of the data
-    meta["start_date"] = data.index.min()
-    meta["end_date"] = data.index.max()
+    meta["start_date"] = data.index.min().strftime("%Y-%m-%d")
+    meta["end_date"] = data.index.max().strftime("%Y-%m-%d")
     # calculate the number of 0 values
     meta["n_zeros"] = len(data.loc[data == 0])
     # calculate the number of nan values
