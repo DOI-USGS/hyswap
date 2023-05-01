@@ -53,9 +53,9 @@ def test_filter_data_by_day():
     # test the function
     data = utils.filter_data_by_day(df, 1, 'data', date_column_name='date')
     assert data.shape == (1,)
-    assert data == [1]
+    assert data.values == [1]
     # test the function with no date column and dates in the index
     df = df.set_index('date')
     data = utils.filter_data_by_day(df, 2, 'data')
     assert data.shape == (1,)
-    assert data == [2]
+    assert data.values == [2]

@@ -10,12 +10,13 @@ def test_calculate_historic_percentiles():
     # make some data
     data = np.arange(101)
     # test the function
-    percentiles_ = percentiles.calculate_historic_percentiles(data)
+    percentiles_ = percentiles.calculate_historic_percentiles(data,
+                                                              method='linear')
     assert percentiles_.shape == (8,)
     assert percentiles_ == pytest.approx((0, 5, 10, 25, 75, 90, 95, 100))
     # set some percentile values as opposed to the defaults
     percentiles_ = percentiles.calculate_historic_percentiles(
-        data, percentiles=np.array((0, 10, 50, 90, 100)))
+        data, percentiles=np.array((0, 10, 50, 90, 100)), method='linear')
     assert percentiles_.shape == (5,)
     assert percentiles_ == pytest.approx((0, 10, 50, 90, 100))
     # pass kwarg through to np.percentile

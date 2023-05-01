@@ -71,8 +71,15 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
 
 def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
     """Filter data by day of year.
-        DataFrame containing data to filter.
 
+    DataFrame containing data to filter. Expects datetime information to be
+    available in the index or in a column named `date_column_name`. The
+    returned `pandas.Series` object will have the datetimes for the specified
+    day of the year as the index, and the corresponding data from the
+    `data_column_name` column as the values.
+
+    Parameters
+    ----------
     doy : int
         Day of year to filter.
 
@@ -85,7 +92,7 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
 
     Returns
     -------
-    data : array_like
+    data : pandas.Series
         Data from the specified day of year.
 
     Examples
@@ -121,11 +128,49 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
         >>> data.shape
         (4,)
     """
+    # make date column the index if it is not already
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
     # grab data from the specified day of year
-    if date_column_name is None:
-        dff = df.loc[df.index.dayofyear == doy, data_column_name]
-    else:
-        dff = df.loc[df[date_column_name].dt.dayofyear == doy,
-                     data_column_name]
-    # return data as a 1-D numpy array
-    return dff.values
+    dff = df.loc[df.index.dayofyear == doy, data_column_name]
+    # return data as a pandas Series where the index is the date
+    return dff
+
+
+def calculate_metadata(data):
+    """Calculate metadata for a series of data.
+
+    Parameters
+    ----------
+    data : pandas.Series
+        The data to calculate the metadata for. Expected to have a datetime
+        index.
+
+    Returns
+    -------
+    dict
+        The calculated metadata which includes the number of years of data,
+        the number of data points, any gaps in the data, and the start and end
+        dates of the data, the number of 0 values, the number of NA values,
+        as well as the number of low (typically low flow <= 0.01) values.
+    """
+    # initialize the metadata dictionary
+    meta = {}
+    # calculate the number of unique years of data
+    meta["n_years"] = len(data.index.year.unique())
+    # calculate the number of data points
+    meta["n_data"] = len(data)
+    # calculate the number of gaps in the data - missing years
+    expected_years = data.index.year.max() - data.index.year.min() + 1
+    meta["n_gaps"] = expected_years - meta["n_years"]
+    # calculate the start and end dates of the data
+    meta["start_date"] = data.index.min()
+    meta["end_date"] = data.index.max()
+    # calculate the number of 0 values
+    meta["n_zeros"] = len(data.loc[data == 0])
+    # calculate the number of nan values
+    meta["n_nans"] = len(data.loc[data.isna()])
+    # calculate the number of low values (below 0.01)
+    meta["n_lows"] = len(data.loc[data <= 0.01])
+
+    return meta

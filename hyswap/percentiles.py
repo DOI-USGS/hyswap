@@ -3,10 +3,13 @@
 import numpy as np
 import pandas as pd
 from hyswap.utils import filter_data_by_day
+from hyswap.utils import calculate_metadata
 
 
 def calculate_historic_percentiles(
-        data, percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
+        data,
+        percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
+        method='weibull',
         **kwargs):
     """Calculate percentiles of historic data.
 
@@ -17,6 +20,9 @@ def calculate_historic_percentiles(
 
     percentiles : array_like, optional
         Percentiles to calculate. Default is (0, 5, 10, 25, 75, 90, 95, 100).
+
+    method : str, optional
+        Method to use to calculate percentiles. Default is 'weibull'.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -33,7 +39,8 @@ def calculate_historic_percentiles(
     .. doctest::
 
         >>> data = np.arange(101)
-        >>> results = percentiles.calculate_historic_percentiles(data)
+        >>> results = percentiles.calculate_historic_percentiles(
+        ...     data, method='linear')
         >>> results
         array([  0.,   5.,  10.,  25.,  75.,  90.,  95., 100.])
 
@@ -45,15 +52,18 @@ def calculate_historic_percentiles(
         >>> results = percentiles.calculate_historic_percentiles(
         ...     data, percentiles=np.array((0, 10, 50, 90, 100)))
         >>> results
-        array([  0.,  10.,  50.,  90., 100.])
+        array([  0. ,   9.2,  50. ,  90.8, 100. ])
     """
-    return np.percentile(data, percentiles, **kwargs)
+    return np.percentile(data, percentiles, method=method, **kwargs)
 
 
 def calculate_percentiles_by_day(
-        df, data_column_name,
+        df,
+        data_column_name,
         percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
-        date_column_name=None):
+        method='weibull',
+        date_column_name=None,
+        **kwargs):
     """Calculate percentiles of data by day of year.
 
     Parameters
@@ -67,9 +77,15 @@ def calculate_percentiles_by_day(
     percentiles : array_like, optional
         Percentiles to calculate, default is (0, 5, 10, 25, 75, 90, 95, 100).
 
+    method : str, optional
+        Method to use to calculate percentiles. Default is 'weibull'.
+
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` is used.
+
+    **kwargs : dict, optional
+        Additional keyword arguments to pass to `numpy.percentile`.
 
     Returns
     -------
@@ -93,7 +109,6 @@ def calculate_percentiles_by_day(
         366
         >>> len(results.columns)  # 8 default percentiles
         8
-
     """
     # based on date, get min and max day of year available
     if date_column_name is None:
@@ -115,10 +130,18 @@ def calculate_percentiles_by_day(
                                   date_column_name=date_column_name)
         # could insert other functions here to check or modify data
         # as needed or based on any other criteria
+        meta = calculate_metadata(data)
 
-        # calculate percentiles for the day of year and add to DataFrame
-        percentiles_by_day.loc[t_idx == doy, :] = \
-            calculate_historic_percentiles(data, percentiles=percentiles)
+        # only calculate data if there are at least 10 years of data
+        if meta['n_years'] >= 10:
+            # calculate percentiles for the day of year and add to DataFrame
+            percentiles_by_day.loc[t_idx == doy, :] = \
+                calculate_historic_percentiles(data, percentiles=percentiles,
+                                               method=method, **kwargs)
+        else:
+            # if there are not at least 10 years of data,
+            # set percentiles to NaN
+            percentiles_by_day.loc[t_idx == doy, :] = np.nan
 
     # return percentiles by day of year
     return percentiles_by_day
