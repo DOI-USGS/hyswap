@@ -18,9 +18,15 @@ def calculate_exceedance_probability_from_distribution(x, dist,
         The distribution to use. Must be one of 'lognormal', 'normal',
         'weibull', or 'exponential'.
     *args
-        Positional arguments to pass to the distribution.
+        Positional arguments to pass to the distribution, which is one of
+        `stats.lognorm.sf`, `stats.norm.sf`, `stats.exponweib.sf` or
+        `stats.expon.sf`, refer to the `scipy.stats` documentation for more
+        information about these arguments.
     **kwargs
-        Keyword arguments to pass to the distribution.
+        Keyword arguments to pass to the distribution, which is one of
+        `stats.lognorm.sf`, `stats.norm.sf`, `stats.exponweib.sf` or
+        `stats.expon.sf`, refer to the `scipy.stats` documentation for more
+        information about these arguments.
 
     Returns
     -------
@@ -138,9 +144,15 @@ def calculate_exceedance_probability_from_distribution_multiple(values, dist,
         The distribution to use. Must be one of 'lognormal', 'normal',
         'weibull', or 'exponential'.
     *args
-        Positional arguments to pass to the distribution.
+        Positional arguments to pass to the distribution, which is one of
+        `stats.lognorm.sf`, `stats.norm.sf`, `stats.exponweib.sf` or
+        `stats.expon.sf`, refer to the `scipy.stats` documentation for more
+        information about these arguments.
     **kwargs
-        Keyword arguments to pass to the distribution.
+        Keyword arguments to pass to the distribution, which is one of
+        `stats.lognorm.sf`, `stats.norm.sf`, `stats.exponweib.sf` or
+        `stats.expon.sf`, refer to the `scipy.stats` documentation for more
+        information about these arguments.
 
     Returns
     -------
