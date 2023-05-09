@@ -41,3 +41,10 @@ Percentile Calculation Functions
 .. automodule:: hyswap.percentiles
     :members:
     :special-members:
+
+Plotting Functions
+------------------
+
+.. automodule:: hyswap.plots
+    :members:
+    :special-members:

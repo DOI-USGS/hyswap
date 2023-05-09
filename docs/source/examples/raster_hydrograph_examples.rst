@@ -32,12 +32,7 @@ Now the data is arranged with years on the index (rows) and days of the year as 
 
     # plot
     fig, ax = plt.subplots()
-    img = ax.imshow(df_formatted, aspect="auto", cmap="YlGnBu",
-                    interpolation='none', norm=matplotlib.colors.LogNorm())
-    plt.colorbar(img, ax=ax, label="Streamflow, cubic feet per second")
-    ax.set_yticks(np.arange(-0.5, len(df_formatted.index)), [], minor=True)
-    ax.set_yticks(np.arange(len(df_formatted.index)), df_formatted.index)
-    ax.set_xlabel("Day of Year")
-    ax.set_ylabel("Year")
-    ax.set_title("Streamflow Raster Hydrograph for Site 03586500")
+    ax = hyswap.plots.plot_raster_hydrograph(
+        df_formatted, ax=ax,
+        title="Streamflow Raster Hydrograph for Site 03586500")
     plt.show()

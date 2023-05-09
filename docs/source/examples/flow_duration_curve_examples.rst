@@ -2,7 +2,7 @@
 Flow Duration Curve Examples
 ----------------------------
 
-These examples show how flow duration curves can be constructed by fetching data from NWIS using `dataretrieval`, analyzing that data using functions provided by `hyswap` (:obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`), and then plotted using `matplotlib`.
+These examples show how flow duration curves can be constructed by fetching data from NWIS using `dataretrieval`, analyzing that data using functions provided by `hyswap` (:obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`), and then plotted using another `hyswap` function (:obj:`hyswap.plots.plot_flow_duration_curve`).
 For more information on flow duration curves, see the USGS report titled "Flow-duration curves" by James K. Searcy and published in 1959 (https://doi.org/10.3133/wsp1542A).
 
 First we will fetch all streamflow data for a single site from NWIS using the `dataretrieval` package.
@@ -48,24 +48,10 @@ Finally, we can plot the flow duration curve using these exceedance probability 
 
     # plot
     fig, ax = plt.subplots(figsize=(8, 8))
-    ax.plot(exceedance_probabilities * 100, values, linewidth=2)
-    ax.set_xlabel(
-        'Exceedance Probability\n' +
-        '(Percent of Time Indicated Discharge was Equaled or Exceeded)')
-    ax.set_ylabel('Discharge, ft$^3$/s')
-    ax.set_title('Flow Duration Curve for Site # ' + siteno)
-    # set log scales for axes
-    ax.set_yscale('log')
-    # set limits for axes
-    ax.set_xlim(0.1, 99.9)
-    ax.set_ylim(100, 1000000)
-    # set ticks for axes
-    ax.set_xticks([0.1, 5, 10, 25, 50, 75, 90, 95, 99.9])
-    ax.set_xticklabels(['0.1', '5', '10', '25', '50', '75', '90', '95', '99.9'])
-    ax.set_yticks([100, 1000, 10000, 100000, 1000000])
-    ax.set_yticklabels(['100', '1,000', '10,000', '100,000', '1,000,000'])
-    # add grid lines
-    ax.grid(which='both', axis='both', alpha=0.5)
+    # plot the flow duration curve
+    ax = hyswap.plots.plot_flow_duration_curve(
+        values, exceedance_probabilities, ax=ax,
+        title=f'Flow Duration Curve for USGS Site {siteno}')
     # show the plot
     plt.tight_layout()
     plt.show()

@@ -37,6 +37,8 @@ Next we can use the :obj:`hyswap.percentiles.calculate_variable_percentile_thres
         cdf, data_column_name='cumulative', percentiles=[25, 50, 75])
 
 Finally we can plot the cumulative streamflow hydrograph using `matplotlib`.
+Finally we can plot the cumulative streamflow hydrograph using the
+:obj:`hyswap.plots.plot_cumulative_hydrograph` function.
 
 .. plot::
     :context:
@@ -44,19 +46,6 @@ Finally we can plot the cumulative streamflow hydrograph using `matplotlib`.
 
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
-    # plot the 25-75 percentile envelope
-    ax.fill_between(np.arange(365),
-                    list(pdf[25].sort_values()),
-                    list(pdf[75].sort_values()),
-                    color='xkcd:bright green', alpha=0.5,
-                    label='25-75 Percentile Envelope')
-    # get data from water year 2020 and plot it over top the envelope
-    data_2020 = cdf.loc[cdf['year'] == 2020]
-    ax.plot(data_2020['doy'], data_2020['cumulative'],
-            color='k', label='2020 Water Year')
-    ax.legend(loc='upper left')
-    # add labels
-    ax.set_xlabel('Day of Water Year')
-    ax.set_ylabel('Cumulative Streamflow (cfs)')
-    ax.set_title('Cumulative Streamflow Hydrograph')
+    ax = hyswap.plots.plot_cumulative_hydrograph(
+        cdf, 2020, ax=ax, title='Cumulative Streamflow Hydrograph')
     plt.show()
