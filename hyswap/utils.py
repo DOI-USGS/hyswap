@@ -72,12 +72,12 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
 def filter_data_by_time(df, value, data_column_name, date_column_name=None,
                         time_interval='day',
                         leading_values=0, trailing_values=0):
-    """Filter data by day of year.
+    """Filter data by some time interval.
 
     DataFrame containing data to filter. Expects datetime information to be
     available in the index or in a column named `date_column_name`. The
     returned `pandas.Series` object will have the datetimes for the specified
-    day of the year as the index, and the corresponding data from the
+    time (day, month, year) as the index, and the corresponding data from the
     `data_column_name` column as the values.
 
     Parameters
@@ -126,7 +126,7 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
 
     .. doctest::
 
-        >>> data = utils.filter_data_by_day(
+        >>> data = utils.filter_data_by_time(
         ...     df, 1, 'data', date_column_name='date')
         >>> data.shape
         (1,)
@@ -139,7 +139,7 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
         >>> df, _ = dataretrieval.nwis.get_dv(
         ...     "03586500", parameterCd="00060",
         ...     start="2000-01-01", end="2003-01-05")
-        >>> data = utils.filter_data_by_day(df, 1, '00060_Mean')
+        >>> data = utils.filter_data_by_time(df, 1, '00060_Mean')
         >>> data.shape
         (4,)
     """
