@@ -69,7 +69,9 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
     return df_out
 
 
-def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
+def filter_data_by_time(df, value, data_column_name, date_column_name=None,
+                        time_interval='day',
+                        leading_values=0, trailing_values=0):
     """Filter data by day of year.
 
     DataFrame containing data to filter. Expects datetime information to be
@@ -80,8 +82,9 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
 
     Parameters
     ----------
-    doy : int
-        Day of year to filter.
+    value : int
+        Time value to use for filtering; if days then 1-366, if months then
+        1-12, if years then 4-digit year.
 
     data_column_name : str
         Name of column containing data to filter.
@@ -89,6 +92,18 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` is used.
+
+    time_interval : str, optional
+        Time interval to filter by. Must be one of 'day', 'month', or 'year'.
+        Default is 'day'.
+
+    leading_values : int, optional
+        Number of leading values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
+
+    trailing_values : int, optional
+        Number of trailing values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
 
     Returns
     -------
@@ -131,8 +146,27 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
     # make date column the index if it is not already
     if date_column_name is not None:
         df = df.set_index(date_column_name)
-    # grab data from the specified day of year
-    dff = df.loc[df.index.dayofyear == doy, data_column_name]
+    # check that time_interval is valid
+    if time_interval not in ['day', 'month', 'year']:
+        raise ValueError(
+            'time_interval must be one of "day", "month", or "year".')
+    if time_interval == 'day':
+        if (leading_values == 0) and (trailing_values == 0):
+            # grab data from the specified day of year
+            dff = df.loc[df.index.dayofyear == value, data_column_name]
+        else:
+            # grab data from the specified day of year and include leading
+            # and trailing values
+            dff = df.loc[
+                (df.index.dayofyear >= value - leading_values) &
+                (df.index.dayofyear <= value + trailing_values),
+                data_column_name]
+    elif time_interval == 'month':
+        # grab data from the specified month
+        dff = df.loc[df.index.month == value, data_column_name]
+    elif time_interval == 'year':
+        # grab data from the specified year
+        dff = df.loc[df.index.year == value, data_column_name]
     # return data as a pandas Series where the index is the date
     return dff
 

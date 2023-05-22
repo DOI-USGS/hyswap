@@ -44,21 +44,50 @@ def test_rolling_average():
                                            7.5, 8.5, 9.5]
 
 
-def test_filter_data_by_day():
-    """Test the filter_data_by_day function."""
+def test_filter_data_by_time():
+    """Test the filter_data_by_time function."""
     # make a dataframe
     df = pd.DataFrame({
         'data': [1, 2, 3, 4],
         'date': pd.date_range('2019-01-01', '2019-01-04')})
     # test the function
-    data = utils.filter_data_by_day(df, 1, 'data', date_column_name='date')
+    data = utils.filter_data_by_time(df, 1, 'data', date_column_name='date')
     assert data.shape == (1,)
     assert data.values == [1]
     # test the function with no date column and dates in the index
     df = df.set_index('date')
-    data = utils.filter_data_by_day(df, 2, 'data')
+    data = utils.filter_data_by_time(df, 2, 'data')
     assert data.shape == (1,)
     assert data.values == [2]
+    # test the filtering by month
+    df = pd.DataFrame({
+        'data': [1, 2, 3, 4],
+        'date': pd.date_range('2019-01-01', '2019-05-01', freq='M')})
+    data = utils.filter_data_by_time(df, 1, 'data', date_column_name='date',
+                                     time_interval='month')
+    assert data.shape == (1,)
+    assert data.values == [1]
+    # test the filtering by year
+    df = pd.DataFrame({
+        'data': [1, 2, 3, 4],
+        'date': pd.date_range('2019-01-01', '2023-01-01', freq='Y')})
+    data = utils.filter_data_by_time(df, 2019, 'data', date_column_name='date',
+                                     time_interval='year')
+    assert data.shape == (1,)
+    assert data.values == [1]
+    # test the windowing
+    df = pd.DataFrame({
+        'data': [1, 2, 3, 4],
+        'date': pd.date_range('2019-01-01', '2019-01-04')})
+    data = utils.filter_data_by_time(df, 2, 'data', date_column_name='date',
+                                     leading_values=1)
+    assert data.shape == (2,)
+    assert np.all(data.values == [1, 2])
+    # test tailing window
+    data = utils.filter_data_by_time(df, 1, 'data', date_column_name='date',
+                                     trailing_values=1)
+    assert data.shape == (2,)
+    assert np.all(data.values == [1, 2])
 
 
 def test_calculate_metadata():

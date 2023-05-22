@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from hyswap.utils import filter_data_by_day
+from hyswap.utils import filter_data_by_time
 from hyswap.utils import calculate_metadata
 
 
@@ -63,6 +63,7 @@ def calculate_percentiles_by_day(
         percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
         method='weibull',
         date_column_name=None,
+        min_years=10,
         **kwargs):
     """Calculate percentiles of data by day of year.
 
@@ -83,6 +84,10 @@ def calculate_percentiles_by_day(
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` is used.
+
+    min_years : int, optional
+        Minimum number of years of data required to calculate percentiles for
+        a given day of year. Default is 10.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -120,20 +125,18 @@ def calculate_percentiles_by_day(
     # make temporal index
     t_idx = np.arange(min_day, max_day)
     # initialize a DataFrame to hold percentiles by day of year
-    percentiles_by_day = pd.DataFrame(
-        index=t_idx, columns=percentiles
-    )
+    percentiles_by_day = pd.DataFrame(index=t_idx, columns=percentiles)
     # loop through days of year available
     for doy in range(min_day, max_day):
         # get historical data for the day of year
-        data = filter_data_by_day(df, doy, data_column_name,
-                                  date_column_name=date_column_name)
+        data = filter_data_by_time(df, doy, data_column_name,
+                                   date_column_name=date_column_name)
         # could insert other functions here to check or modify data
         # as needed or based on any other criteria
         meta = calculate_metadata(data)
 
-        # only calculate data if there are at least 10 years of data
-        if meta['n_years'] >= 10:
+        # only calculate data if there are at least min_years of data
+        if meta['n_years'] >= min_years:
             # calculate percentiles for the day of year and add to DataFrame
             percentiles_by_day.loc[t_idx == doy, :] = \
                 calculate_historic_percentiles(data, percentiles=percentiles,
