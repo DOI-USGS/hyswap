@@ -5,9 +5,11 @@ import matplotlib.pyplot as plt
 from hyswap.percentiles import calculate_percentiles_by_day
 
 
-def plot_flow_duration_curve(values, exceedance_probabilities,
-                             ax=None, title=None, ylab=None,
-                             grid=True, **kwargs):
+def plot_flow_duration_curve(
+        values, exceedance_probabilities, ax=None, title='Flow Duration Curve',
+        xlab='Exceedance Probability\n' +
+        '(Percent of Time Indicated Discharge was Equaled or Exceeded)',
+        ylab='Discharge, ft$^3$/s', grid=True, **kwargs):
     """Make flow duration curve plot.
 
     Parameters
@@ -21,8 +23,15 @@ def plot_flow_duration_curve(values, exceedance_probabilities,
         Axes to plot on. If not provided, a new figure and axes will be
         created.
     title : str, optional
-        Title for the plot. If not provided, a default title will be
-        used.
+        Title for the plot. If not provided, the default title will be
+        'Flow Duration Curve'.
+    xlab : str, optional
+        Label for the x-axis. If not provided, the default label will be
+        'Exceedance Probability\n(Percent of Time Indicated Discharge was
+        Equaled or Exceeded)'.
+    ylab : str, optional
+        Label for the y-axis. If not provided, the default label will be
+        'Discharge, ft$^3$/s'.
     grid : bool, optional
         Whether to show grid lines on the plot. Default is True.
     **kwargs
@@ -60,17 +69,9 @@ def plot_flow_duration_curve(values, exceedance_probabilities,
         _, ax = plt.subplots()
     # do plotting
     ax.plot(exceedance_probabilities*100, values, **kwargs)
-    ax.set_xlabel(
-        'Exceedance Probability\n' +
-        '(Percent of Time Indicated Discharge was Equaled or Exceeded)')
-    if ylab is None:
-        ax.set_ylabel('Discharge, ft$^3$/s')
-    else:
-        ax.set_ylabel(ylab)
-    if title is None:
-        ax.set_title('Flow Duration Curve')
-    else:
-        ax.set_title(title)
+    ax.set_xlabel(xlab)
+    ax.set_ylabel(ylab)
+    ax.set_title(title)
     # set log scales for x axis
     ax.set_yscale('log')
     # set limits for axes
@@ -91,8 +92,10 @@ def plot_flow_duration_curve(values, exceedance_probabilities,
     return ax
 
 
-def plot_raster_hydrograph(df_formatted, ax=None, title=None,
-                           xlab=None, ylab=None, cbarlab=None,
+def plot_raster_hydrograph(df_formatted, ax=None,
+                           title='Streamflow Raster Hydrograph',
+                           xlab='Day of Year', ylab='Year',
+                           cbarlab='Streamflow, cubic feet per second',
                            **kwargs):
     """Make raster hydrograph plot.
 
@@ -104,17 +107,17 @@ def plot_raster_hydrograph(df_formatted, ax=None, title=None,
         Axes to plot on. If not provided, a new figure and axes will be
         created.
     title : str, optional
-        Title for the plot. If not provided, a default title will be
-        used.
+        Title for the plot. If not provided, the default title will be
+        'Streamflow Raster Hydrograph'.
     xlab : str, optional
-        Label for the x-axis. If not provided, a default label will be
-        used.
+        Label for the x-axis. If not provided, the default label will be
+        'Day of Year'.
     ylab : str, optional
-        Label for the y-axis. If not provided, a default label will be
-        used.
+        Label for the y-axis. If not provided, the default label will be
+        'Year'.
     cbarlab : str, optional
-        Label for the colorbar. If not provided, a default label will be
-        used.
+        Label for the colorbar. If not provided, the default label will be
+        'Streamflow, cubic feet per second'.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.imshow`.
 
@@ -154,25 +157,13 @@ def plot_raster_hydrograph(df_formatted, ax=None, title=None,
     img = ax.imshow(df_formatted, aspect=aspect, cmap=cmap,
                     interpolation=interpolation, norm=norm, **kwargs)
     # set labels
-    if xlab is None:
-        ax.set_xlabel('Day of Year')
-    else:
-        ax.set_xlabel(xlab)
-    if ylab is None:
-        ax.set_ylabel('Year')
-    else:
-        ax.set_ylabel(ylab)
-    if title is None:
-        ax.set_title('Streamflow Raster Hydrograph')
-    else:
-        ax.set_title(title)
+    ax.set_xlabel(xlab)
+    ax.set_ylabel(ylab)
+    ax.set_title(title)
     # add colorbar
     cbar = plt.colorbar(img, ax=ax)
     # set colorbar label
-    if cbarlab is None:
-        cbar.set_label('Streamflow, cubic feet per second')
-    else:
-        cbar.set_label(cbarlab)
+    cbar.set_label(cbarlab)
     # cbar height to be same as axes
     cbar.ax.set_aspect('auto')
     # set ticks
@@ -184,7 +175,8 @@ def plot_raster_hydrograph(df_formatted, ax=None, title=None,
 
 def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
                              data_label=None, ax=None,
-                             title=None, ylab=None, xlab=None,
+                             title="Percentiles of Discharge by Day of Year",
+                             ylab="Discharge (cfs)", xlab="Day of Year",
                              colors=None, **kwargs):
     """Make duration hydrograph plot.
 
@@ -205,14 +197,14 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         Axes to plot on. If not provided, a new figure and axes will be
         created.
     title : str, optional
-        Title for the plot. If not provided, a default title will be
-        used.
+        Title for the plot. If not provided, the default title will be
+        'Percentiles of Discharge by Day of Year'.
     ylab : str, optional
-        Label for the y-axis. If not provided, a default label will be
-        used.
+        Label for the y-axis. If not provided, the default label will be
+        'Discharge (cfs)'.
     xlab : str, optional
-        Label for the x-axis. If not provided, a default label will be
-        used.
+        Label for the x-axis. If not provided, the default label will be
+        'Day of Year'.
     colors : list, optional
         List of colors to use for the lines. If not provided, a default
         list of colors will be used.
@@ -278,21 +270,12 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
             zorder=zorder, **kwargs
         )
     # set labels
-    if xlab is None:
-        ax.set_xlabel("Day of Year")
-    else:
-        ax.set_xlabel(xlab)
+    ax.set_xlabel(xlab)
     ax.set_xlim(1, 366)
     ax.set_xticks([1] + list(np.arange(30, 360, 30)) + [366])
-    if ylab is None:
-        ax.set_ylabel("Discharge (cfs)")
-    else:
-        ax.set_ylabel(ylab)
+    ax.set_ylabel(ylab)
     ax.set_yscale("log")
-    if title is None:
-        ax.set_title("Percentiles of Discharge by Day of Year")
-    else:
-        ax.set_title(title)
+    ax.set_title(title)
     # two column legend
     ax.legend(loc="best", ncol=2)
     # return axes
@@ -300,8 +283,10 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
 
 
 def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
-                               ax=None, title=None, ylab=None, xlab=None,
-                               **kwargs):
+                               ax=None,
+                               title="Cumulative Discharge by Day of Year",
+                               ylab="Cumulative Discharge (cfs)",
+                               xlab="Day of Year", **kwargs):
     """Make cumulative hydrograph plot.
 
     Parameters
@@ -315,14 +300,14 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
         Axes to plot on. If not provided, a new figure and axes will be
         created.
     title : str, optional
-        Title for the plot. If not provided, a default title will be
-        used.
+        Title for the plot. If not provided, the default title will be
+        'Cumulative Discharge by Day of Year'.
     ylab : str, optional
-        Label for the y-axis. If not provided, a default label will be
-        used.
+        Label for the y-axis. If not provided, the default label will be
+        'Cumulative Discharge (cfs)'.
     xlab : str, optional
-        Label for the x-axis. If not provided, a default label will be
-        used.
+        Label for the x-axis. If not provided, the default label will be
+        'Day of Year'.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
 
@@ -374,21 +359,12 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     ax.plot(target_year_data.index.dayofyear, target_year_data,
             color='k', label="{} Cumulative Discharge".format(target_year))
     # set labels
-    if xlab is None:
-        ax.set_xlabel("Day of Year")
-    else:
-        ax.set_xlabel(xlab)
+    ax.set_xlabel(xlab)
     ax.set_xlim(1, 366)
     ax.set_xticks([1] + list(np.arange(30, 360, 30)) + [366])
-    if ylab is None:
-        ax.set_ylabel("Cumulative Discharge (cfs)")
-    else:
-        ax.set_ylabel(ylab)
+    ax.set_ylabel(ylab)
     # title
-    if title is None:
-        ax.set_title("Cumulative Discharge by Day of Year")
-    else:
-        ax.set_title(title)
+    ax.set_title(title)
     # legend
     ax.legend(loc="upper left")
     # return
