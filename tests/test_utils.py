@@ -197,3 +197,31 @@ def test_define_year_doy_columns():
     assert df['year'].unique().tolist() == [2020, 2021]
     assert df['doy'].tolist() == list(range(276, 366)) + list(range(1, 276))
     assert len(df['doy']) == 365
+    assert data == [2]
+
+
+def test_munge_nwis_stats():
+    """Test the munge_nwis_stats function."""
+    # make a dataframe
+    df = pd.DataFrame({
+        'month_nu': [1, 2, 3, 4],
+        'day_nu': [1, 2, 3, 4],
+        'end_yr': [2019, 2019, 2019, 2019],
+        'min_va': [1, 2, 3, 4],
+        'max_va': [5, 6, 7, 8],
+        'mean_va': [9, 10, 11, 12],
+        'p05_va': [13, 14, 15, 16],
+        'p10_va': [17, 18, 19, 20],
+        'p25_va': [21, 22, 23, 24],
+        'p50_va': [25, 26, 27, 28],
+        'p75_va': [29, 30, 31, 32],
+        'p90_va': [33, 34, 35, 36],
+        'p95_va': [37, 38, 39, 40],
+    })
+    # apply the function
+    df_slim = utils.munge_nwis_stats(df)
+    # check the output
+    assert df_slim.shape == (4, 8)
+    assert len(df.columns) > len(df_slim.columns)
+    assert 0 in df_slim.columns
+    assert df_slim.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
