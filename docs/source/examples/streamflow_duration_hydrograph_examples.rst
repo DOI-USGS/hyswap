@@ -52,3 +52,54 @@ Finally, we will plot the streamflow data for 2022 on top of the historical perc
     )
     plt.tight_layout()
     plt.show()
+
+
+You don't have to compute the percentiles using `hyswap`.
+If you'd rather use the NWIS web service daily percentiles, you can use those values instead.
+We provide a convenience utility function to help make this possible, :obj:`hyswap.utils.munge_nwis_stats`.
+Below is an example of fetching NWIS daily statistics data using the `dataretrieval` package, and then munging and plotting the data with `hyswap`.
+
+First, we will use `dataretrieval` to fetch both the statistics data from NWIS,
+as well as streamflow data from the year 2022.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    df_stats, _ = dataretrieval.nwis.get_stats(
+        "03586500",
+        parameterCd="00060",
+        statReportType="daily"
+    )
+
+    df_flow, _ = dataretrieval.nwis.get_dv(
+        "03586500",
+        parameterCd="00060",
+        start="2022-01-01",
+        end="2022-12-31"
+    )
+
+Now that we've retrieved our web data, we will apply some `hyswap` functions to make a duration hydrograph plot.
+
+.. plot::
+    :context:
+    :include-source:
+
+    # plotting percentiles by day with line shade between
+    fig, ax = plt.subplots(figsize=(10, 6))
+    # munge the statistics data
+    df_stats = hyswap.utils.munge_nwis_stats(df_stats)
+    # add day of year column to the flow data
+    df_flow["doy"] = df_flow.index.dayofyear
+    # plot the duration hydrograph
+    ax = hyswap.plots.plot_duration_hydrograph(
+        df_stats,
+        df_flow,
+        "00060_Mean",
+        "doy",
+        ax=ax,
+        data_label="2022",
+        title="Percentiles of Discharge by Day of Year - Site 03586500"
+    )
+    plt.tight_layout()
+    plt.show()

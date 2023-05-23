@@ -1,4 +1,5 @@
 """Utility functions for hyswap."""
+import pandas as pd
 
 
 def filter_approved_data(data, filter_column=None):
@@ -330,3 +331,57 @@ def leap_year_adjustment(df, year_type='calendar'):
                (df.index.month > 2) &
                (df.index.month < 4), 'doy'] -= 1
     return df
+
+
+def munge_nwis_stats(df):
+    """Function to munge and reformat NWIS statistics data.
+
+    This is a utility function that exists to help munge NWIS percentile data
+    served via the NWIS statistics web service. This function is intended to
+    be used on Python dataretrieval dataframe returns for the nwis.get_stats()
+    function for "daily" data, a single site, and a single parameter code.
+        DataFrame containing NWIS statistics data retrieved from the statistics
+        web service. Assumed to come in as a dataframe retrieved with a
+        package like dataretrieval or similar.
+
+    Returns
+    -------
+    df_slim : pandas.DataFrame
+        DataFrame containing munged and reformatted NWIS statistics data.
+        Reformatting is for use with the hyswap package plotting function for
+        duration hydrographs with statistical information in background of
+        the plot.
+
+    Examples
+    --------
+    Get some NWIS statistics data.
+
+    .. doctest::
+
+        >>> df, md = dataretrieval.nwis.get_stats(
+        ...     "03586500", parameterCd="00060", statReportType="daily")
+
+    Then apply the function to munge the data.
+
+    .. doctest::
+
+        >>> df = utils.munge_nwis_stats(df)
+        >>> df.shape
+        (366, 8)
+    """
+    # rename date columns
+    df.rename(columns={'month_nu': 'month', 'day_nu': 'day', 'end_yr': 'year'},
+              inplace=True)
+    # make end year 2020 for leap year
+    df['year'] = 2020
+    # construct date column
+    df['date'] = pd.to_datetime(df[['day', 'month', 'year']])
+    # set day of year as the index
+    df = df.set_index(df['date'].dt.dayofyear)
+    # slim down to just the columns used for the plot
+    df_slim = df[['min_va', 'p05_va', 'p10_va', 'p25_va',
+                  'p75_va', 'p90_va', 'p95_va', 'max_va']]
+    # rename columns
+    df_slim.columns = [0, 5, 10, 25, 75, 90, 95, 100]
+    # return the dataframe
+    return df_slim
