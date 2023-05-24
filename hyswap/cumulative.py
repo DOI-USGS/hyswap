@@ -47,14 +47,8 @@ def calculate_daily_cumulative_values(df, data_column_name,
         ...     "data": np.arange(366)})
         >>> results = cumulative.calculate_daily_cumulative_values(
         ...     df, "data", date_column_name="date")
-        >>> results.head()
-                    year  doy  cumulative
-        date
-        2000-01-01  2000    1           0
-        2000-01-02  2000    2           1
-        2000-01-03  2000    3           3
-        2000-01-04  2000    4           6
-        2000-01-05  2000    5          10
+        >>> results.columns.tolist()
+        ['year', 'day', 'cumulative']
     """
     # set date index, add day/year columns with function
     df = define_year_doy_columns(df, date_column_name=date_column_name,

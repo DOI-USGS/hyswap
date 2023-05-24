@@ -90,6 +90,7 @@ from hyswap import exceedance
 from hyswap import rasterhydrograph
 from hyswap import utils
 from hyswap import percentiles
+from hyswap import cumulative
 from hyswap import plots
 import numpy as np
 import pandas as pd

@@ -42,6 +42,13 @@ Percentile Calculation Functions
     :members:
     :special-members:
 
+Cumulative Calculation Functions
+--------------------------------
+
+.. automodule:: hyswap.cumulative
+    :members:
+    :special-members:
+
 Plotting Functions
 ------------------
 
