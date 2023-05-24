@@ -230,3 +230,6 @@ def test_munge_nwis_stats():
     assert df_slim.shape == (4, 2)
     assert df_slim.columns.tolist() == [0, 100]
     assert len(df.columns) > len(df_slim.columns)
+    # raise error if column lists are of different lengths
+    with pytest.raises(ValueError):
+        utils.munge_nwis_stats(df, ['min_va', 'max_va'], [0, 100, 200])
