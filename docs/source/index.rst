@@ -10,5 +10,8 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
 
+   meta/installation
    examples/index
+   meta/contributing
+   meta/disclaimer
    reference/index

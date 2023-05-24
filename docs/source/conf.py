@@ -30,6 +30,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages',
     'matplotlib.sphinxext.plot_directive'
 ]
 
@@ -131,6 +132,11 @@ html_static_path = ['_static']
 # -- Options for linkcheck -------------------------------------------
 
 # Links to not "check" because they are problematic for the link checker
-# linkcheck_ignore = [
-#     r'https://google.com'
-# ]
+linkcheck_ignore = [
+    r'https://doi.org/10.3133/wsp1542A'
+]
+
+linkcheck_exclude_documents = [
+    r'meta/disclaimer*',
+    r'meta/contributing*'
+]
