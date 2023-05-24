@@ -333,7 +333,7 @@ def leap_year_adjustment(df, year_type='calendar'):
     return df
 
 
-def munge_nwis_stats(df):
+def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
     """Function to munge and reformat NWIS statistics data.
 
     This is a utility function that exists to help munge NWIS percentile data
@@ -343,6 +343,14 @@ def munge_nwis_stats(df):
         DataFrame containing NWIS statistics data retrieved from the statistics
         web service. Assumed to come in as a dataframe retrieved with a
         package like dataretrieval or similar.
+    source_pct_col : list, optional
+        List of column names to use as the source percentiles. If None, the
+        values are assumed to correspond to the 0, 5, 10, 25, 75, 90, 95,
+        and 100 percentiles in the NWIS statistics service return.
+    target_pct_col : list, optional
+        List of column names to use as the target percentiles. If None, then
+        integer values are used as the column names corresponding to the
+        default source values.
 
     Returns
     -------
@@ -369,6 +377,16 @@ def munge_nwis_stats(df):
         >>> df.shape
         (366, 8)
     """
+    # set defaults
+    if source_pct_col is None:
+        source_pct_col = ['min_va', 'p05_va', 'p10_va', 'p25_va',
+                          'p75_va', 'p90_va', 'p95_va', 'max_va']
+    if target_pct_col is None:
+        target_pct_col = [0, 5, 10, 25, 75, 90, 95, 100]
+    # check lengths of lists for column names
+    if len(source_pct_col) != len(target_pct_col):
+        raise ValueError('source_pct_col and target_pct_col must be the same '
+                         'length')
     # rename date columns
     df.rename(columns={'month_nu': 'month', 'day_nu': 'day', 'end_yr': 'year'},
               inplace=True)
@@ -379,9 +397,8 @@ def munge_nwis_stats(df):
     # set day of year as the index
     df = df.set_index(df['date'].dt.dayofyear)
     # slim down to just the columns used for the plot
-    df_slim = df[['min_va', 'p05_va', 'p10_va', 'p25_va',
-                  'p75_va', 'p90_va', 'p95_va', 'max_va']]
+    df_slim = df[source_pct_col]
     # rename columns
-    df_slim.columns = [0, 5, 10, 25, 75, 90, 95, 100]
+    df_slim.columns = target_pct_col
     # return the dataframe
     return df_slim

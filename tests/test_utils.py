@@ -225,3 +225,8 @@ def test_munge_nwis_stats():
     assert len(df.columns) > len(df_slim.columns)
     assert 0 in df_slim.columns
     assert df_slim.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+    # function w/ additional parameters
+    df_slim = utils.munge_nwis_stats(df, ['min_va', 'max_va'], [0, 100])
+    assert df_slim.shape == (4, 2)
+    assert df_slim.columns.tolist() == [0, 100]
+    assert len(df.columns) > len(df_slim.columns)

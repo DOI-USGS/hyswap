@@ -174,6 +174,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 
 
 def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
+                             pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
                              data_label=None, ax=None,
                              title="Percentiles of Discharge by Day of Year",
                              ylab="Discharge (cfs)", xlab="Day of Year",
@@ -190,6 +191,9 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         Column name of the data to plot.
     doy_col : str
         Column name of the day of year.
+    pct_list : list, optional
+        List of integers corresponding to the percentile values to be
+        plotted. Defaults to 0, 5, 10, 25, 75, 90, 95, 100.
     data_label : str, optional
         Label for the data to plot. If not provided, a default label will
         be used.
@@ -257,7 +261,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     # plot the latest data
     ax.plot(df[doy_col], df[data_col], color='k', zorder=10, label=label)
     # plot the historic percentiles filling between each pair
-    pct_list = [0, 5, 10, 25, 75, 90, 95, 100]
+    pct_list.sort()  # sort the list in ascending order
     for i in range(1, len(pct_list)):
         ax.fill_between(
             percentiles_by_day.index,
