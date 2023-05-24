@@ -20,6 +20,11 @@ Test and Lint:
   stage: test
   script:
     # Install dependencies
+    - apt-get update -y
+    - apt-get upgrade -y
+    - apt-get install -y xdg-utils
+    - apt-get install -y lynx
+    - apt-get install -y graphviz
     - python -m pip install --upgrade pip
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
@@ -31,6 +36,9 @@ Test and Lint:
     # Lint
     - flake8 .
     - pydocstringformatter .
+    # Run pydeps
+    - pydeps hyswap -T png --max-bacon=3 --cluster
+    - mv hyswap.png docs/source/reference/hyswap.png  # move pydeps graph to docs
     # Test and build documentation
     - cd docs
     - make docs
