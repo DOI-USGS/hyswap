@@ -5,4 +5,4 @@ flake8
 pylint
 pydocstringformatter
 dataretrieval
-pydeps
+pydeps==1.12.3
