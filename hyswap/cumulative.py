@@ -68,8 +68,11 @@ def calculate_daily_cumulative_values(df, data_column_name,
     for year in years:
         # get data for the year
         year_data = df.loc[df.index.year == year, data_column_name]
-        # calculate cumulative values and assign to cdf
-        cdf.loc[cdf.index == year, :len(year_data)] = year_data.cumsum().values
+        # year must be complete
+        if len(year_data) >= 365:
+            # calculate cumulative values and assign to cdf
+            cdf.loc[cdf.index == year, :len(year_data)] = \
+                year_data.cumsum().values
     # reformat the dataframe
     cdf = _tidy_cumulative_dataframe(cdf)
     # adjust for water or climate year if needed

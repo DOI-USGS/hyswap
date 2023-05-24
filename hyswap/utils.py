@@ -2,7 +2,7 @@
 
 
 def filter_approved_data(data, filter_column=None):
-    """Filter a dataframe to only return approved "A" data.
+    """Filter a dataframe to only return approved "A" (or "A, e") data.
 
     Parameters
     ----------
@@ -39,7 +39,8 @@ def filter_approved_data(data, filter_column=None):
     """
     if filter_column is None:
         raise ValueError("filter_column must be specified.")
-    return data.loc[data[filter_column] == "A"]
+    return data.loc[((data[filter_column] == "A") |
+                     (data[filter_column] == "A, e"))]
 
 
 def rolling_average(df, data_column_name, data_type, **kwargs):
