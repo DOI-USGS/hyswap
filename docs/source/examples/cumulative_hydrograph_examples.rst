@@ -1,6 +1,6 @@
 
-Cumulative Streamflow Hydrograph Examples
------------------------------------------
+Cumulative Streamflow Hydrographs
+---------------------------------
 
 The following examples show how to fetch some data, and then calculate values for a cumulative streamflow hydrograph.
 Then an example plotting routine to plot the cumulative hydrograph is shown.

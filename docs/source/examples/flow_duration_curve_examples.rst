@@ -1,9 +1,13 @@
 
-Flow Duration Curve Examples
-----------------------------
+Flow Duration Curves
+--------------------
 
 These examples show how flow duration curves can be constructed by fetching data from NWIS using `dataretrieval`, analyzing that data using functions provided by `hyswap` (:obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`), and then plotted using another `hyswap` function (:obj:`hyswap.plots.plot_flow_duration_curve`).
 For more information on flow duration curves, see the USGS report titled "Flow-duration curves" by James K. Searcy and published in 1959 (https://doi.org/10.3133/wsp1542A).
+
+
+Creating a Flow Duration Curve for Site 01646500
+************************************************
 
 First we will fetch all streamflow data for a single site from NWIS using the `dataretrieval` package.
 
@@ -53,5 +57,77 @@ Finally, we can plot the flow duration curve using these exceedance probability 
         values, exceedance_probabilities, ax=ax,
         title=f'Flow Duration Curve for USGS Site {siteno}')
     # show the plot
+    plt.tight_layout()
+    plt.show()
+
+
+Creating a Combined Flow Duration Curve for Multiple Sites
+**********************************************************
+
+In this example we will fetch streamflow data for multiple USGS sites and construct a single flow duration curve for all of them.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # get data from multiple sites
+    sitenos = ["07108900", "07103980", "07103987"]
+    df, md = dataretrieval.nwis.get_dv(sitenos, parameterCd="00060", startDT="1776-07-04")
+
+    # create 10,000 evenly spaced values min-max
+    values = np.linspace(df['00060_Mean'].min(), df['00060_Mean'].max(), 10000)
+
+    # calculate exceedance probabilities
+    exp = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
+        values, df['00060_Mean'])
+
+    # make the plot
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax = hyswap.plots.plot_flow_duration_curve(
+        values, exp, ax=ax,
+        title="Combined Flow Duration Curve for USGS Sites " +
+            f"{', '.join(str(i) for i in sitenos)}"
+    )
+    plt.tight_layout()
+    plt.show()
+
+
+Plotting Multiple Flow Duration Curves on the Same Axes
+********************************************************
+
+In this example we will plot multiple flow duration curves on the same axes.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # set up the axes
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # create list of sites
+    sitenos = ["07108900", "07103980", "07103987"]
+
+    # loop through sites to get data and plot it
+    for site in sitenos:
+        df, md = dataretrieval.nwis.get_dv(
+            site, parameterCd="00060", startDT="1776-07-04")
+
+        # create 10,000 evenly spaced values min-max
+        values = np.linspace(
+            df['00060_Mean'].min(), df['00060_Mean'].max(), 10000)
+
+        # calculate exceedance probabilities
+        exp = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
+            values, df['00060_Mean'])
+
+        # plot flow duration curve for this site
+        ax = hyswap.plots.plot_flow_duration_curve(
+            values, exp, ax=ax, label=f"USGS Site {site}"
+        )
+
+    # visualize the plot
+    ax.set_title("Flow Duration Curves for USGS Sites " +
+                 f"{', '.join(str(i) for i in sitenos)}")
+    ax.legend(loc='best', title='EXPLANATION')
     plt.tight_layout()
     plt.show()
