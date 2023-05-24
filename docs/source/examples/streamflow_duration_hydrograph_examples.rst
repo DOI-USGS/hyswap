@@ -16,13 +16,13 @@ First, we will fetch streamflow data for a single gage from NWIS using the `data
                                       start="1776-01-01",
                                       end="2022-12-31")
 
-Next we will calculate the percentiles for each day of the year based on historic streamflow data using the :obj:`hyswap.percentiles.calculate_percentiles_by_day` function.
+Next we will calculate the percentiles for each day of the year based on historic streamflow data using the :obj:`hyswap.percentiles.calculate_variable_percentile_thresholds_by_day` function.
 
 .. plot::
     :context:
     :include-source:
 
-    percentiles_by_day = hyswap.percentiles.calculate_fixed_percentile_thresholds_by_day(
+    percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
         df, "00060_Mean"
     )
 

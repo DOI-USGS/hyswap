@@ -109,7 +109,7 @@ def calculate_variable_percentile_thresholds_by_day(
         >>> df, _ = dataretrieval.nwis.get_dv(
         ...     "03586500", parameterCd="00060",
         ...     start="1776-01-01", end="2022-12-31")
-        >>> results = percentiles.calculate_fixed_percentile_thresholds_by_day(
+        >>> results = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
         ...     df, "00060_Mean")
         >>> len(results.index)  # 366 days in a leap year
         366
