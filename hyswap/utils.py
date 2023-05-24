@@ -83,8 +83,8 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
     Parameters
     ----------
     value : int
-        Time value to use for filtering; if days then 1-366, if months then
-        1-12, if years then 4-digit year.
+        Time value to use for filtering; value can be a day of year (1-366),
+        month (1-12), or year (4 digit year).
 
     data_column_name : str
         Name of column containing data to filter.
