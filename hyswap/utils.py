@@ -196,7 +196,7 @@ def calculate_metadata(data):
     meta["n_data"] = len(data.loc[~data.isna()])
     # calculate the number of gaps in the data - missing years
     expected_years = data.index.year.max() - data.index.year.min() + 1
-    meta["n_gaps"] = expected_years - meta["n_years"]
+    meta["n_missing_years"] = expected_years - meta["n_years"]
     # calculate the start and end dates of the data
     meta["start_date"] = data.index.min().strftime("%Y-%m-%d")
     meta["end_date"] = data.index.max().strftime("%Y-%m-%d")
