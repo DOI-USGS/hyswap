@@ -57,7 +57,7 @@ def calculate_fixed_percentile_thresholds(
     return np.percentile(data, percentiles, method=method, **kwargs)
 
 
-def calculate_fixed_percentile_thresholds_by_day(
+def calculate_variable_percentile_thresholds_by_day(
         df,
         data_column_name,
         percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
@@ -65,7 +65,7 @@ def calculate_fixed_percentile_thresholds_by_day(
         date_column_name=None,
         min_years=10,
         **kwargs):
-    """Calculate fixed percentile thresholds of data by day of year.
+    """Calculate variable percentile thresholds of data by day of year.
 
     Parameters
     ----------
