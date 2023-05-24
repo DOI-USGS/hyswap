@@ -318,3 +318,17 @@ def test_format_data():
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_7out_climate.values).all()
     # this is a different averaging method so the values will be different
+    # set up some data starting earlier in the year
+    dummy_dates = pd.date_range('2018-02-01', '2022-01-31')
+    df = pd.DataFrame(
+        {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates))}
+        )
+    df_date = df.set_index('date')
+    # test the function with a dataframe and a date index and in a
+    # climate year
+    df_out_climate = rasterhydrograph.format_data(df_date, 'value',
+                                                  year_type='climate')
+    assert len(df_out_climate.index) == 4
+    assert len(df_out_climate.columns) == 366
+    # check that there are non-NaN values in the data frame
+    assert ~np.isnan(df_out_climate.values).all()

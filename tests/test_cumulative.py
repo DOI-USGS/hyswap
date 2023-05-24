@@ -43,3 +43,25 @@ def test_calculate_daily_cumulative_values():
     assert cdf.index.year.unique().tolist() == [2019]
     assert cdf['day'].tolist() == list(range(1, 366))
     assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))
+    # try for a water year
+    cdf = cumulative.calculate_daily_cumulative_values(
+        df, 'data', year_type='water')
+    assert cdf.shape == (365, 3)
+    assert cdf.columns.tolist() == ['year', 'day', 'cumulative']
+    assert cdf.index.year.unique().tolist() == [2019]
+    assert cdf['day'].tolist()[0] == 93
+    d_list = cdf['day'].tolist()
+    d_list.sort()
+    assert d_list == list(range(1, 366))
+    assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))
+    # try for a climate year
+    cdf = cumulative.calculate_daily_cumulative_values(
+        df, 'data', year_type='climate')
+    assert cdf.shape == (365, 3)
+    assert cdf.columns.tolist() == ['year', 'day', 'cumulative']
+    assert cdf.index.year.unique().tolist() == [2019]
+    assert cdf['day'].tolist()[0] == 276
+    d_list = cdf['day'].tolist()
+    d_list.sort()
+    assert d_list == list(range(1, 366))
+    assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))

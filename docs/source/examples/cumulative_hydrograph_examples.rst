@@ -16,7 +16,7 @@ In this example we will fetch 20 years of data from a single site and then calcu
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2000-01-01', end='2020-12-31')
 
-Now we can calculate the cumulative streamflow values per year using the `:obj:hyswap.cumulative.calculate_daily_cumulative_values` function.
+Now we can calculate the cumulative streamflow values per year using the :obj:`hyswap.cumulative.calculate_daily_cumulative_values` function.
 
 .. plot::
     :context:
@@ -25,14 +25,14 @@ Now we can calculate the cumulative streamflow values per year using the `:obj:h
     # calculate the cumulative streamflow values per year
     cdf = hyswap.cumulative.calculate_daily_cumulative_values(df, '00060_Mean')
 
-Next we can use the `:obj:hyswap.percentiles.calculate_percentiles_by_day` function to calculate the percentiles for each day of the year.
+Next we can use the :obj:`hyswap.percentiles.calculate_variable_percentile_thresholds_by_day` function to calculate the percentiles for each day of the year.
 
 .. plot::
     :context:
     :include-source:
 
     # calculate the percentiles for each day of the year
-    pdf = hyswap.percentiles.calculate_percentiles_by_day(
+    pdf = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
         cdf, data_column_name='cumulative', percentiles=[25, 50, 75])
 
 Finally we can plot the cumulative streamflow hydrograph using `matplotlib`.

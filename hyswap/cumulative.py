@@ -2,10 +2,13 @@
 
 import numpy as np
 import pandas as pd
+from hyswap.utils import adjust_doy_for_water_year
+from hyswap.utils import adjust_doy_for_climate_year
 
 
 def calculate_daily_cumulative_values(df, data_column_name,
-                                      date_column_name=None):
+                                      date_column_name=None,
+                                      year_type='calendar'):
     """Calculate daily cumulative values.
 
     Parameters
@@ -17,6 +20,15 @@ def calculate_daily_cumulative_values(df, data_column_name,
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` will be used.
+    year_type : str, optional
+        The type of year to use. Must be one of 'calendar', 'water', or
+        'climate'. Default is 'calendar' which starts the year on January 1
+        and ends on December 31. 'water' starts the year on October 1 and
+        ends on September 30 of the following year which is the "water year".
+        For example, October 1, 2010 to September 30, 2011 is "water year
+        2011". 'climate' years begin on April 1 and end on March 31 of the
+        following year, they are numbered by the ending year. For example,
+        April 1, 2010 to March 31, 2011 is "climate year 2011".
 
     Returns
     -------
@@ -60,6 +72,11 @@ def calculate_daily_cumulative_values(df, data_column_name,
         cdf.loc[cdf.index == year, :len(year_data)] = year_data.cumsum().values
     # reformat the dataframe
     cdf = _tidy_cumulative_dataframe(cdf)
+    # adjust for water or climate year if needed
+    if year_type == 'water':
+        cdf = adjust_doy_for_water_year(cdf, "day")
+    elif year_type == 'climate':
+        cdf = adjust_doy_for_climate_year(cdf, "day")
     return cdf
 
 

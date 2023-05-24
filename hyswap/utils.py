@@ -213,3 +213,65 @@ def calculate_metadata(data):
     meta["n_lows"] = len(data.loc[data <= 0.01])
 
     return meta
+
+
+def adjust_doy_for_water_year(df, doy_col):
+    """Adjust days of year for water year.
+
+    The water year is defined beginning on October 1 and ending on September
+    30, of the water year. This function adjusts the days of year so that
+    October 1 is day 1 as opposed to January 1.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing the data to adjust. Requires the index to be a
+        valid pandas datetime object, as this is needed to detect whether the
+        year is a leap year or not.
+    doy_col : str
+        Name of the column containing the days of year to adjust.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        DataFrame with the adjusted days of year.
+    """
+    # day 1 in a year becomes October 1
+    # in a leap year October 1 is day 275
+    df.loc[df.index.is_leap_year & (df.index.month >= 10), doy_col] -= 274
+    # in a non-leap year, October 1 is day 274
+    df.loc[~df.index.is_leap_year & (df.index.month >= 10), doy_col] -= 273
+    # add 92 to account for days from Oct 1 to end of year to bump Jan 1+
+    df.loc[df.index.month < 10, doy_col] += 92
+    return df
+
+
+def adjust_doy_for_climate_year(df, doy_col):
+    """Adjust days of year for climate year.
+
+    The climate year is defined beginning on April 1 and ending on March 31,
+    of the climate year. This function adjusts the days of year so that
+    April 1 is day 1 as opposed to January 1.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing the data to adjust. Requires the index to be a
+        valid pandas datetime object, as this is needed to detect whether the
+        year is a leap year or not.
+    doy_col : str
+        Name of the column containing the days of year to adjust.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        DataFrame with the adjusted days of year.
+    """
+    # day 1 in a year becomes April 1
+    # in a leap year April 1 is day 92
+    df.loc[df.index.is_leap_year & (df.index.month >= 4), doy_col] -= 91
+    # in a non-leap year, April 1 is day 91
+    df.loc[~df.index.is_leap_year & (df.index.month >= 4), doy_col] -= 90
+    # add 275 to account for days from April 1 to end of year to bump Jan 1+
+    df.loc[df.index.month < 4, doy_col] += 275
+    return df
