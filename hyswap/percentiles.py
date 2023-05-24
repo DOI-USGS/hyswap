@@ -6,17 +6,17 @@ from hyswap.utils import filter_data_by_time
 from hyswap.utils import calculate_metadata
 
 
-def calculate_historic_percentiles(
+def calculate_fixed_percentile_thresholds(
         data,
         percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
         method='weibull',
         **kwargs):
-    """Calculate percentiles of historic data.
+    """Calculate fixed percentile thresholds using historic data.
 
     Parameters
     ----------
     data : array_like
-        1D array of data from which to calculate percentiles.
+        1D array of data from which to calculate percentile thresholds.
 
     percentiles : array_like, optional
         Percentiles to calculate. Default is (0, 5, 10, 25, 75, 90, 95, 100).
@@ -34,22 +34,22 @@ def calculate_historic_percentiles(
 
     Examples
     --------
-    Calculate default percentiles from some synthetic data.
+    Calculate default percentile thresholds from some synthetic data.
 
     .. doctest::
 
         >>> data = np.arange(101)
-        >>> results = percentiles.calculate_historic_percentiles(
+        >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, method='linear')
         >>> results
         array([  0.,   5.,  10.,  25.,  75.,  90.,  95., 100.])
 
-    Calculate a different set of percentiles from some synthetic data.
+    Calculate a different set of thresholds from some synthetic data.
 
     .. doctest::
 
         >>> data = np.arange(101)
-        >>> results = percentiles.calculate_historic_percentiles(
+        >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, percentiles=np.array((0, 10, 50, 90, 100)))
         >>> results
         array([  0. ,   9.2,  50. ,  90.8, 100. ])
@@ -57,7 +57,7 @@ def calculate_historic_percentiles(
     return np.percentile(data, percentiles, method=method, **kwargs)
 
 
-def calculate_percentiles_by_day(
+def calculate_fixed_percentile_thresholds_by_day(
         df,
         data_column_name,
         percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
@@ -65,18 +65,19 @@ def calculate_percentiles_by_day(
         date_column_name=None,
         min_years=10,
         **kwargs):
-    """Calculate percentiles of data by day of year.
+    """Calculate fixed percentile thresholds of data by day of year.
 
     Parameters
     ----------
     df : pandas.DataFrame
-        DataFrame containing data to calculate daily percentiles for.
+        DataFrame containing data to calculate daily percentile thresholds for.
 
     data_column_name : str
         Name of column containing data to analyze.
 
     percentiles : array_like, optional
-        Percentiles to calculate, default is (0, 5, 10, 25, 75, 90, 95, 100).
+        Percentile thresholds to calculate, default is
+        (0, 5, 10, 25, 75, 90, 95, 100).
 
     method : str, optional
         Method to use to calculate percentiles. Default is 'weibull'.
@@ -86,8 +87,8 @@ def calculate_percentiles_by_day(
         `df` is used.
 
     min_years : int, optional
-        Minimum number of years of data required to calculate percentiles for
-        a given day of year. Default is 10.
+        Minimum number of years of data required to calculate percentile
+        thresholds for a given day of year. Default is 10.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -95,11 +96,11 @@ def calculate_percentiles_by_day(
     Returns
     -------
     percentiles : pandas.DataFrame
-        DataFrame containing percentiles of data by day of year.
+        DataFrame containing threshold percentiles of data by day of year.
 
     Examples
     --------
-    Calculate default percentiles by day of year from some real data in
+    Calculate default thresholds by day of year from some real data in
     preparation for plotting.
 
     .. doctest::
@@ -108,7 +109,7 @@ def calculate_percentiles_by_day(
         >>> df, _ = dataretrieval.nwis.get_dv(
         ...     "03586500", parameterCd="00060",
         ...     start="1776-01-01", end="2022-12-31")
-        >>> results = percentiles.calculate_percentiles_by_day(
+        >>> results = percentiles.calculate_fixed_percentile_thresholds_by_day(
         ...     df, "00060_Mean")
         >>> len(results.index)  # 366 days in a leap year
         366
@@ -139,8 +140,8 @@ def calculate_percentiles_by_day(
         if meta['n_years'] >= min_years:
             # calculate percentiles for the day of year and add to DataFrame
             percentiles_by_day.loc[t_idx == doy, :] = \
-                calculate_historic_percentiles(data, percentiles=percentiles,
-                                               method=method, **kwargs)
+                calculate_fixed_percentile_thresholds(
+                data, percentiles=percentiles, method=method, **kwargs)
         else:
             # if there are not at least 10 years of data,
             # set percentiles to NaN

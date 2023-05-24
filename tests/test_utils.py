@@ -105,7 +105,7 @@ def test_calculate_metadata():
     assert metadata['n_data'] == 4
     assert metadata['n_nans'] == 0
     assert metadata['n_zeros'] == 0
-    assert metadata['n_gaps'] == 0
+    assert metadata['n_missing_years'] == 0
     assert metadata['n_lows'] == 0
     # remove the second value and recalculate the metadata
     data = data.drop(data.index[1])
@@ -117,7 +117,7 @@ def test_calculate_metadata():
     assert metadata['n_data'] == 3
     assert metadata['n_nans'] == 0
     assert metadata['n_zeros'] == 0
-    assert metadata['n_gaps'] == 1
+    assert metadata['n_missing_years'] == 1
     assert metadata['n_lows'] == 0
     # make one value a nan and one a zero and recalculate the metadata
     data[0] = np.nan
@@ -130,5 +130,5 @@ def test_calculate_metadata():
     assert metadata['n_data'] == 2
     assert metadata['n_nans'] == 1
     assert metadata['n_zeros'] == 1
-    assert metadata['n_gaps'] == 1
+    assert metadata['n_missing_years'] == 1
     assert metadata['n_lows'] == 1

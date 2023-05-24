@@ -22,7 +22,7 @@ Next we will calculate the percentiles for each day of the year based on histori
     :context:
     :include-source:
 
-    percentiles_by_day = hyswap.percentiles.calculate_percentiles_by_day(
+    percentiles_by_day = hyswap.percentiles.calculate_fixed_percentile_thresholds_by_day(
         df, "00060_Mean"
     )
 
