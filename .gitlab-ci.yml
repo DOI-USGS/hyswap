@@ -29,6 +29,7 @@ Test and Lint:
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
     - pip install .
+    - pip install pydeps
     # Test and report coverage
     - coverage run -m pytest
     - coverage report -m
