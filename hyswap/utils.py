@@ -45,6 +45,11 @@ def filter_approved_data(data, filter_column=None):
 def rolling_average(df, data_column_name, data_type, **kwargs):
     """Calculate a rolling average for a dataframe.
 
+    Default behavior right-aligns the window used for the rolling average,
+    and returns NaN values if any of the values in the window are NaN.
+    Properties of the windowing can be changed by passing additional keyword
+    arguments which are fed to `pandas.DataFrame.rolling`.
+
     Parameters
     ----------
     df : pandas.DataFrame
@@ -57,7 +62,7 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
         temporal period.
     **kwargs
         Additional keyword arguments to be passed to
-        pandas.DataFrame.rolling.
+        `pandas.DataFrame.rolling`.
 
     Returns
     -------
@@ -69,16 +74,22 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
     return df_out
 
 
-def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
-    """Filter data by day of year.
+def filter_data_by_time(df, value, data_column_name, date_column_name=None,
+                        time_interval='day',
+                        leading_values=0, trailing_values=0):
+    """Filter data by some time interval.
+
+    DataFrame containing data to filter. Expects datetime information to be
+    available in the index or in a column named `date_column_name`. The
+    returned `pandas.Series` object will have the datetimes for the specified
+    time (day, month, year) as the index, and the corresponding data from the
+    `data_column_name` column as the values.
 
     Parameters
     ----------
-    df : pandas.DataFrame
-        DataFrame containing data to filter.
-
-    doy : int
-        Day of year to filter.
+    value : int
+        Time value to use for filtering; value can be a day of year (1-366),
+        month (1-12), or year (4 digit year).
 
     data_column_name : str
         Name of column containing data to filter.
@@ -87,9 +98,21 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
         Name of column containing date information. If None, the index of
         `df` is used.
 
+    time_interval : str, optional
+        Time interval to filter by. Must be one of 'day', 'month', or 'year'.
+        Default is 'day'.
+
+    leading_values : int, optional
+        Number of leading values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
+
+    trailing_values : int, optional
+        Number of trailing values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
+
     Returns
     -------
-    data : array_like
+    data : pandas.Series
         Data from the specified day of year.
 
     Examples
@@ -108,7 +131,7 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
 
     .. doctest::
 
-        >>> data = utils.filter_data_by_day(
+        >>> data = utils.filter_data_by_time(
         ...     df, 1, 'data', date_column_name='date')
         >>> data.shape
         (1,)
@@ -121,15 +144,72 @@ def filter_data_by_day(df, doy, data_column_name, date_column_name=None):
         >>> df, _ = dataretrieval.nwis.get_dv(
         ...     "03586500", parameterCd="00060",
         ...     start="2000-01-01", end="2003-01-05")
-        >>> data = utils.filter_data_by_day(df, 1, '00060_Mean')
+        >>> data = utils.filter_data_by_time(df, 1, '00060_Mean')
         >>> data.shape
         (4,)
     """
-    # grab data from the specified day of year
-    if date_column_name is None:
-        dff = df.loc[df.index.dayofyear == doy, data_column_name]
-    else:
-        dff = df.loc[df[date_column_name].dt.dayofyear == doy,
-                     data_column_name]
-    # return data as a 1-D numpy array
-    return dff.values
+    # make date column the index if it is not already
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
+    # check that time_interval is valid
+    if time_interval not in ['day', 'month', 'year']:
+        raise ValueError(
+            'time_interval must be one of "day", "month", or "year".')
+    if time_interval == 'day':
+        if (leading_values == 0) and (trailing_values == 0):
+            # grab data from the specified day of year
+            dff = df.loc[df.index.dayofyear == value, data_column_name]
+        else:
+            # grab data from the specified day of year and include leading
+            # and trailing values
+            dff = df.loc[
+                (df.index.dayofyear >= value - leading_values) &
+                (df.index.dayofyear <= value + trailing_values),
+                data_column_name]
+    elif time_interval == 'month':
+        # grab data from the specified month
+        dff = df.loc[df.index.month == value, data_column_name]
+    elif time_interval == 'year':
+        # grab data from the specified year
+        dff = df.loc[df.index.year == value, data_column_name]
+    # return data as a pandas Series where the index is the date
+    return dff
+
+
+def calculate_metadata(data):
+    """Calculate metadata for a series of data.
+
+    Parameters
+    ----------
+    data : pandas.Series
+        The data to calculate the metadata for. Expected to have a datetime
+        index.
+
+    Returns
+    -------
+    dict
+        The calculated metadata which includes the number of years of data,
+        the number of data points, any gaps in the data, and the start and end
+        dates of the data, the number of 0 values, the number of NA values,
+        as well as the number of low (typically low flow <= 0.01) values.
+    """
+    # initialize the metadata dictionary
+    meta = {}
+    # calculate the number of unique years of data
+    meta["n_years"] = len(data.index.year.unique())
+    # calculate the number of data points that are not nan
+    meta["n_data"] = len(data.loc[~data.isna()])
+    # calculate the number of gaps in the data - missing years
+    expected_years = data.index.year.max() - data.index.year.min() + 1
+    meta["n_missing_years"] = expected_years - meta["n_years"]
+    # calculate the start and end dates of the data
+    meta["start_date"] = data.index.min().strftime("%Y-%m-%d")
+    meta["end_date"] = data.index.max().strftime("%Y-%m-%d")
+    # calculate the number of 0 values
+    meta["n_zeros"] = len(data.loc[data == 0])
+    # calculate the number of nan values
+    meta["n_nans"] = len(data.loc[data.isna()])
+    # calculate the number of low values (below 0.01)
+    meta["n_lows"] = len(data.loc[data <= 0.01])
+
+    return meta

@@ -101,6 +101,7 @@ plot_html_show_source_link = False
 plot_formats = ['png', ('hires.png', 300)]
 plot_pre_code = '''
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
 import hyswap
 import dataretrieval
