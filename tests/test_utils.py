@@ -88,6 +88,10 @@ def test_filter_data_by_time():
                                      trailing_values=1)
     assert data.shape == (2,)
     assert np.all(data.values == [1, 2])
+    # raise value error for invalid time interval
+    with pytest.raises(ValueError):
+        utils.filter_data_by_time(df, 1, 'data', date_column_name='date',
+                                  time_interval='invalid')
 
 
 def test_calculate_metadata():
@@ -132,3 +136,59 @@ def test_calculate_metadata():
     assert metadata['n_zeros'] == 1
     assert metadata['n_missing_years'] == 1
     assert metadata['n_lows'] == 1
+
+
+def test_adjust_doy_for_water_year():
+    """Test the adjust_doy_for_water_year function."""
+    # make dummy df
+    df = pd.DataFrame({
+        'data': np.arange(1, 366),
+        'date': pd.date_range('2019-01-01', '2019-12-31')})
+    # set date as index
+    df = df.set_index('date')
+    # set day of year as a column called day
+    df['day'] = df.index.dayofyear
+    # adjust the day of year for a water year
+    df = utils.adjust_doy_for_water_year(df, 'day')
+    # check the output, Jan 1 should be day 93
+    assert df['day'].tolist()[0] == 93
+    # check a leap year
+    df = pd.DataFrame({
+        'data': np.arange(1, 367),
+        'date': pd.date_range('2020-01-01', '2020-12-31')})
+    # set date as index
+    df = df.set_index('date')
+    # set day of year as a column called day
+    df['day'] = df.index.dayofyear
+    # adjust the day of year for a water year
+    df = utils.adjust_doy_for_water_year(df, 'day')
+    # check the output, Jan 1 should be day 93
+    assert df['day'].tolist()[0] == 93
+
+
+def test_adjust_doy_for_climate_year():
+    """Test the adjust_doy_for_climate_year function."""
+    # make dummy df
+    df = pd.DataFrame({
+        'data': np.arange(1, 366),
+        'date': pd.date_range('2019-01-01', '2019-12-31')})
+    # set date as index
+    df = df.set_index('date')
+    # set day of year as a column called day
+    df['day'] = df.index.dayofyear
+    # adjust the day of year for a water year
+    df = utils.adjust_doy_for_climate_year(df, 'day')
+    # check the output, Jan 1 should be day 276
+    assert df['day'].tolist()[0] == 276
+    # check a leap year
+    df = pd.DataFrame({
+        'data': np.arange(1, 367),
+        'date': pd.date_range('2020-01-01', '2020-12-31')})
+    # set date as index
+    df = df.set_index('date')
+    # set day of year as a column called day
+    df['day'] = df.index.dayofyear
+    # adjust the day of year for a water year
+    df = utils.adjust_doy_for_climate_year(df, 'day')
+    # check the output, Jan 1 should be day 276
+    assert df['day'].tolist()[0] == 276

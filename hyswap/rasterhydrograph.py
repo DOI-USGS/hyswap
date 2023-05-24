@@ -2,6 +2,8 @@
 
 import pandas as pd
 from hyswap.utils import rolling_average
+from hyswap.utils import adjust_doy_for_water_year
+from hyswap.utils import adjust_doy_for_climate_year
 
 
 def format_data(df, data_column_name, date_column_name=None,
@@ -112,25 +114,9 @@ def format_data(df, data_column_name, date_column_name=None,
     # add day of year column
     df_out['day'] = df_out.index.dayofyear.copy()
     if year_type == 'water':
-        # day 1 in a year becomes October 1
-        # in a leap year October 1 is day 275
-        df_out.loc[df_out.index.is_leap_year & (df_out.index.month >= 10),
-                   'day'] -= 274
-        # in a non-leap year, October 1 is day 274
-        df_out.loc[~df_out.index.is_leap_year & (df_out.index.month >= 10),
-                   'day'] -= 273
-        # add dates for early days in year Jan 1 to Oct 1
-        df_out.loc[df_out.index.month < 10, 'day'] += 92
+        df_out = adjust_doy_for_water_year(df_out, 'day')
     elif year_type == 'climate':
-        # day 1 in a year becomes April 1
-        # in a leap year April 1 is day 92
-        df_out.loc[df_out.index.is_leap_year & (df_out.index.month >= 4),
-                   'day'] -= 91
-        # in a non-leap year, April 1 is day 91
-        df_out.loc[~df_out.index.is_leap_year & (df_out.index.month >= 4),
-                   'day'] -= 90
-        # add dates for early days in year Jan 1 to April 1
-        df_out.loc[df_out.index.month < 4, 'day'] += 275
+        df_out = adjust_doy_for_climate_year(df_out, 'day')
 
     # add year column
     df_out['year'] = df_out.index.year.copy()
