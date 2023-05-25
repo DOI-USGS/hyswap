@@ -23,7 +23,8 @@ Now we can calculate the cumulative streamflow values per year using the :obj:`h
     :include-source:
 
     # calculate the cumulative streamflow values per year
-    cdf = hyswap.cumulative.calculate_daily_cumulative_values(df, '00060_Mean')
+    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
+        df, '00060_Mean', year_type='water')
 
 Next we can use the :obj:`hyswap.percentiles.calculate_variable_percentile_thresholds_by_day` function to calculate the percentiles for each day of the year.
 
@@ -33,7 +34,8 @@ Next we can use the :obj:`hyswap.percentiles.calculate_variable_percentile_thres
 
     # calculate the percentiles for each day of the year
     pdf = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        cdf, data_column_name='cumulative', percentiles=[25, 50, 75])
+        cdf, data_column_name='cumulative', percentiles=[25, 50, 75],
+        year_type='water')
 
 Finally we can plot the cumulative streamflow hydrograph using `matplotlib`.
 
@@ -48,7 +50,7 @@ Finally we can plot the cumulative streamflow hydrograph using `matplotlib`.
                     list(pdf[25]), list(pdf[75]),
                     color='xkcd:bright green', alpha=0.5,
                     label='25-75 Percentile Envelope')
-    # get data from 2020 and plot it over top the envelope
+    # get data from water year 2020 and plot it over top the envelope
     data_2020 = cdf.loc[cdf.index.year == 2020, 'cumulative']
     ax.plot(data_2020.index.dayofyear, data_2020.values,
             color='k', label='2020 Cumulative Streamflow')

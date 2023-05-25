@@ -138,57 +138,62 @@ def test_calculate_metadata():
     assert metadata['n_lows'] == 1
 
 
-def test_adjust_doy_for_water_year():
-    """Test the adjust_doy_for_water_year function."""
+def test_define_year_doy_columns():
+    """Test the define_year_doy_columns function."""
     # make dummy df
     df = pd.DataFrame({
         'data': np.arange(1, 366),
         'date': pd.date_range('2019-01-01', '2019-12-31')})
-    # set date as index
-    df = df.set_index('date')
-    # set day of year as a column called day
-    df['day'] = df.index.dayofyear
-    # adjust the day of year for a water year
-    df = utils.adjust_doy_for_water_year(df, 'day')
-    # check the output, Jan 1 should be day 93
-    assert df['day'].tolist()[0] == 93
-    # check a leap year
+    # apply function
+    df = utils.define_year_doy_columns(df, date_column_name='date')
+    assert df['year'].tolist() == [2019] * 365
+    assert df['doy'].tolist() == list(range(1, 366))
+    assert df.index.dayofyear.tolist() == list(range(1, 366))
+    # test with a different year type
+    df = utils.define_year_doy_columns(df, year_type='water')
+    assert df.index.year.unique().tolist() == [2019]
+    assert df['year'].unique().tolist() == [2019, 2020]
+    assert df['doy'].tolist() == list(range(93, 366)) + list(range(1, 93))
+    # test with climate year
+    df = utils.define_year_doy_columns(df, year_type='climate')
+    assert df.index.year.unique().tolist() == [2019]
+    assert df['year'].unique().tolist() == [2019, 2020]
+    assert df['doy'].tolist() == list(range(276, 366)) + list(range(1, 276))
+    # test with leap year
     df = pd.DataFrame({
         'data': np.arange(1, 367),
         'date': pd.date_range('2020-01-01', '2020-12-31')})
-    # set date as index
-    df = df.set_index('date')
-    # set day of year as a column called day
-    df['day'] = df.index.dayofyear
-    # adjust the day of year for a water year
-    df = utils.adjust_doy_for_water_year(df, 'day')
-    # check the output, Jan 1 should be day 93
-    assert df['day'].tolist()[0] == 93
-
-
-def test_adjust_doy_for_climate_year():
-    """Test the adjust_doy_for_climate_year function."""
-    # make dummy df
-    df = pd.DataFrame({
-        'data': np.arange(1, 366),
-        'date': pd.date_range('2019-01-01', '2019-12-31')})
-    # set date as index
-    df = df.set_index('date')
-    # set day of year as a column called day
-    df['day'] = df.index.dayofyear
-    # adjust the day of year for a water year
-    df = utils.adjust_doy_for_climate_year(df, 'day')
-    # check the output, Jan 1 should be day 276
-    assert df['day'].tolist()[0] == 276
-    # check a leap year
+    df = utils.define_year_doy_columns(df, date_column_name='date',
+                                       clip_leap_day=False)
+    assert df.index.year.unique().tolist() == [2020]
+    assert df['year'].unique().tolist() == [2020]
+    assert df['doy'].tolist() == list(range(1, 367))
+    assert len(df['doy']) == 366
+    # test with leap year and clip leap day
+    df = utils.define_year_doy_columns(df, clip_leap_day=True)
+    assert df.index.year.unique().tolist() == [2020]
+    assert df['year'].unique().tolist() == [2020]
+    assert df['doy'].tolist() == list(range(1, 366))
+    assert len(df['doy']) == 365
+    # water year leap with clip
     df = pd.DataFrame({
         'data': np.arange(1, 367),
         'date': pd.date_range('2020-01-01', '2020-12-31')})
-    # set date as index
-    df = df.set_index('date')
-    # set day of year as a column called day
-    df['day'] = df.index.dayofyear
-    # adjust the day of year for a water year
-    df = utils.adjust_doy_for_climate_year(df, 'day')
-    # check the output, Jan 1 should be day 276
-    assert df['day'].tolist()[0] == 276
+    df = utils.define_year_doy_columns(df, date_column_name='date',
+                                       year_type='water',
+                                       clip_leap_day=True)
+    assert df.index.year.unique().tolist() == [2020]
+    assert df['year'].unique().tolist() == [2020, 2021]
+    assert df['doy'].tolist() == list(range(93, 366)) + list(range(1, 93))
+    assert len(df['doy']) == 365
+    # climate year leap with clip
+    df = pd.DataFrame({
+        'data': np.arange(1, 367),
+        'date': pd.date_range('2020-01-01', '2020-12-31')})
+    df = utils.define_year_doy_columns(df, date_column_name='date',
+                                       year_type='climate',
+                                       clip_leap_day=True)
+    assert df.index.year.unique().tolist() == [2020]
+    assert df['year'].unique().tolist() == [2020, 2021]
+    assert df['doy'].tolist() == list(range(276, 366)) + list(range(1, 276))
+    assert len(df['doy']) == 365

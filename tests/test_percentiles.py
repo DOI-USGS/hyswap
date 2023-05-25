@@ -58,7 +58,8 @@ def test_calculate_variable_percentile_thresholds_by_day():
         df, 'data', year_type='water')
     assert percentiles_.shape == (101, 8)
     assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-    assert percentiles_.index.tolist()[0] == 93
+    assert percentiles_.index.tolist()[0] == 1
+    assert percentiles_.index.tolist()[-1] == 101
     # all percentiles should be NaN because demo dataset is 1 year only
     assert percentiles_.isna().all().all()
     # test the function with a different year type and a different set of
@@ -68,7 +69,7 @@ def test_calculate_variable_percentile_thresholds_by_day():
         percentiles=np.array((0, 10, 50, 90, 100)))
     assert percentiles_.shape == (101, 5)
     assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
-    assert percentiles_.index.tolist()[0] == 276
+    assert percentiles_.index.tolist()[0] == 1
     # all percentiles should be NaN because demo dataset is 1 year only
     assert percentiles_.isna().all().all()
     # make a bigger dummy dataset so values are not NaN
@@ -90,7 +91,8 @@ def test_calculate_variable_percentile_thresholds_by_day():
         df, 'data', date_column_name='date', year_type='water')
     assert percentiles_.shape == (366, 8)
     assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-    assert percentiles_.index.tolist()[0] == 93
+    assert percentiles_.index.tolist()[0] == 1
+    assert percentiles_.index.tolist()[-1] == 366
     # test a longer dummy set that exceeds 1 year
     df = pd.DataFrame({
         'data': np.random.random(
@@ -101,4 +103,5 @@ def test_calculate_variable_percentile_thresholds_by_day():
         df, 'data', date_column_name='date', year_type='water')
     assert percentiles_.shape == (365, 8)
     assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-    assert percentiles_.index.tolist()[0] == 93
+    assert percentiles_.index.tolist()[0] == 1
+    assert percentiles_.index.tolist()[-1] == 365
