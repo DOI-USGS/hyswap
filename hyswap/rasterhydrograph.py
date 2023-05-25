@@ -2,8 +2,7 @@
 
 import pandas as pd
 from hyswap.utils import rolling_average
-from hyswap.utils import adjust_doy_for_water_year
-from hyswap.utils import adjust_doy_for_climate_year
+from hyswap.utils import define_year_doy_columns
 
 
 def format_data(df, data_column_name, date_column_name=None,
@@ -81,13 +80,12 @@ def format_data(df, data_column_name, date_column_name=None,
         >>> len(df_formatted.columns)
         365
     """
-    # check inputs
-    _check_inputs(df, data_column_name, date_column_name,
-                  data_type, year_type, begin_year, end_year)
+    # check inputs, set date to index, define year/doy columns
+    df = _check_inputs(df, data_column_name, date_column_name,
+                       data_type, year_type, begin_year, end_year)
 
     # calculate the date range
-    df, date_range = _calculate_date_range(df, begin_year, end_year,
-                                           year_type, date_column_name)
+    date_range = _calculate_date_range(df, begin_year, end_year)
 
     # format date_range as YYYY-MM-DD
     date_range = date_range.strftime('%Y-%m-%d')
@@ -108,28 +106,15 @@ def format_data(df, data_column_name, date_column_name=None,
     # convert date index to datetime format
     df_out.index = pd.to_datetime(df_out.index)
 
-    # organize data frame
-    # rows are years and columns are days in the year
-
-    # add day of year column
-    df_out['day'] = df_out.index.dayofyear.copy()
-    if year_type == 'water':
-        df_out = adjust_doy_for_water_year(df_out, 'day')
-    elif year_type == 'climate':
-        df_out = adjust_doy_for_climate_year(df_out, 'day')
-
-    # add year column
-    df_out['year'] = df_out.index.year.copy()
-    if year_type == 'water':
-        df_out.loc[df_out.index.month >= 10, 'year'] += 1
-    elif year_type == 'climate':
-        df_out.loc[df_out.index.month >= 4, 'year'] += 1
-
     # set index to year and day of year columns
-    df_out = df_out.pivot(index='year', columns='day', values=data_column_name)
+    df_out = df_out.pivot(index='year', columns='doy', values=data_column_name)
 
     # reverse order of the index so year order matches legacy Water Watch
     df_out = df_out.iloc[::-1]
+
+    # remove all NaN columns and rows
+    df_out = df_out.dropna(axis=1, how='all')
+    df_out = df_out.dropna(axis=0, how='all')
 
     return df_out
 
@@ -168,7 +153,11 @@ def _check_inputs(df, data_column_name, date_column_name,
 
     Returns
     -------
-    None
+    df : pandas.DataFrame
+        The dataframe with the date column formatted as a datetime and set as
+        the index. New year and doy (day of year) columns are added too and
+        are set based on the year_type. Feb 29th is also removed from the
+        dataframe if it exists.
     """
     # check the data frame
     if not isinstance(df, pd.DataFrame):
@@ -180,12 +169,6 @@ def _check_inputs(df, data_column_name, date_column_name,
     if data_type not in ['daily', '7-day', '14-day', '28-day']:
         raise ValueError('data_type must be one of "daily", "7-day", '
                          '"14-day", and "28-day"')
-
-    # check year type
-    if not isinstance(year_type, str):
-        raise TypeError('year_type must be a string')
-    if year_type not in ['calendar', 'water', 'climate']:
-        raise ValueError('year_type must "calendar", "water", or "climate"')
 
     # check data column name
     if not isinstance(data_column_name, str):
@@ -222,11 +205,14 @@ def _check_inputs(df, data_column_name, date_column_name,
                 raise ValueError('end_year must be less than or equal to the '
                                  'maximum year in the data')
 
-    return None
+    # define year and doy columns and set index as date col if needed
+    df = define_year_doy_columns(df, date_column_name, year_type,
+                                 clip_leap_day=True)
+
+    return df
 
 
-def _calculate_date_range(df, begin_year, end_year, year_type,
-                          date_column_name):
+def _calculate_date_range(df, begin_year, end_year):
     """Private function to calculate the date range and set the index.
 
     Parameters
@@ -240,72 +226,26 @@ def _calculate_date_range(df, begin_year, end_year, year_type,
     end_year : int, None
         The last year to include in the data. If None, the last year in the
         data will be used.
-    year_type : str, optional
-        The type of year to use. Must be one of 'calendar', 'water', or
-        'climate'. Default is 'calendar' which starts the year on January 1
-        and ends on December 31. 'water' starts the year on October 1 and
-        ends on September 30 of the following year which is the "water year".
-        For example, October 1, 2010 to September 30, 2011 is "water year
-        2011". 'climate' years begin on April 1 and end on March 31 of the
-        following year, they are numbered by the ending year. For example,
-        April 1, 2010 to March 31, 2011 is "climate year 2011".
-    date_column_name : str, None
-        The name of the column containing the date or None if the index is
-        the date.
 
     Returns
     -------
-    df : pandas.DataFrame
-        The data with the date range set as the index.
     date_range : pandas.DatetimeIndex
         The date range.
     """
-    # set date column as index
-    if date_column_name is not None:
-        df = df.set_index(date_column_name)
-
     # set begin year
     if begin_year is None:
-        if year_type == 'calendar':
-            begin_year = df.index.year.min()
-        elif year_type == 'water':
-            if df.index[0].month < 10:
-                begin_year = df.index.year.min()
-            else:
-                begin_year = df.index.year.min() + 1
-        elif year_type == 'climate':
-            if df.index[0].month < 4:
-                begin_year = df.index.year.min()
-            else:
-                begin_year = df.index.year.min() + 1
+        begin_year = df['year'].min()
+    begin_date = df.loc[df['year'] == begin_year].index.min()
 
     # set end year
     if end_year is None:
-        if year_type == 'calendar':
-            end_year = df.index.year.max()
-        elif year_type == 'water':
-            if df.index[-1].month >= 10:
-                end_year = df.index.year.max() + 1
-            else:
-                end_year = df.index.year.max()
-        elif year_type == 'climate':
-            if df.index[-1].month >= 4:
-                end_year = df.index.year.max() + 1
-            else:
-                end_year = df.index.year.max()
+        end_year = df['year'].max()
+    end_date = df.loc[df['year'] == end_year].index.max()
 
     # set date range
-    if year_type == 'calendar':
-        date_range = pd.date_range(f'{begin_year}-01-01',
-                                   f'{end_year}-12-31')
-    elif year_type == 'water':
-        date_range = pd.date_range(f'{begin_year}-10-01',
-                                   f'{end_year}-09-30')
-    elif year_type == 'climate':
-        date_range = pd.date_range(f'{begin_year}-04-01',
-                                   f'{end_year}-03-31')
+    date_range = pd.date_range(begin_date, end_date)
 
-    return df, date_range
+    return date_range
 
 
 def _set_data_type(data_type):

@@ -4,8 +4,7 @@ import numpy as np
 import pandas as pd
 from hyswap.utils import filter_data_by_time
 from hyswap.utils import calculate_metadata
-from hyswap.utils import adjust_doy_for_water_year
-from hyswap.utils import adjust_doy_for_climate_year
+from hyswap.utils import define_year_doy_columns
 
 
 def calculate_fixed_percentile_thresholds(
@@ -129,13 +128,13 @@ def calculate_variable_percentile_thresholds_by_day(
         >>> len(results.columns)  # 8 default percentiles
         8
     """
+    # define year and day of year columns and convert date column to datetime
+    # if necessary
+    df = define_year_doy_columns(df, date_column_name=date_column_name,
+                                 year_type=year_type, clip_leap_day=True)
     # based on date, get min and max day of year available
-    if date_column_name is None:
-        min_day = df.index.dayofyear.min()
-        max_day = df.index.dayofyear.max() + 1
-    else:
-        min_day = df[date_column_name].dt.dayofyear.min()
-        max_day = df[date_column_name].dt.dayofyear.max() + 1
+    min_day = df.index.dayofyear.min()
+    max_day = df.index.dayofyear.max() + 1
     # make temporal index
     t_idx = np.arange(min_day, max_day)
     # initialize a DataFrame to hold percentiles by day of year
@@ -143,8 +142,7 @@ def calculate_variable_percentile_thresholds_by_day(
     # loop through days of year available
     for doy in range(min_day, max_day):
         # get historical data for the day of year
-        data = filter_data_by_time(df, doy, data_column_name,
-                                   date_column_name=date_column_name)
+        data = filter_data_by_time(df, doy, data_column_name)
         # could insert other functions here to check or modify data
         # as needed or based on any other criteria
         meta = calculate_metadata(data)
@@ -159,32 +157,6 @@ def calculate_variable_percentile_thresholds_by_day(
             # if there are not at least 10 years of data,
             # set percentiles to NaN
             percentiles_by_day.loc[t_idx == doy, :] = np.nan
-    # adjust for water or climate year if needed
-    if (year_type == 'water') or (year_type == 'climate'):
-        # make a column of days in the percentiles df
-        percentiles_by_day['day'] = percentiles_by_day.index
-        # based on size of data frame set index
-        min_date = pd.to_datetime('2000-01-01') + \
-            pd.DateOffset(days=int(min_day - 1))
-        min_date = min_date.strftime('%Y-%m-%d')
-        # convert max day of year to YYYY-MM-DD
-        max_date = pd.to_datetime('2000-01-01') + pd.DateOffset(
-            days=int(min_day + percentiles_by_day.shape[0] - 2))
-        max_date = max_date.strftime('%Y-%m-%d')
-        # set index to be time from beginning to max_date
-        percentiles_by_day.index = pd.date_range(min_date, max_date)
-        # do water year adjustment
-        if year_type == 'water':
-            # do adjustment
-            percentiles_by_day = adjust_doy_for_water_year(
-                percentiles_by_day, 'day')
-        elif year_type == 'climate':
-            # do adjustment
-            percentiles_by_day = adjust_doy_for_climate_year(
-                percentiles_by_day, 'day')
-        # use day column to rewrite the index
-        percentiles_by_day.index = percentiles_by_day['day']
-        # drop the day column
-        percentiles_by_day.drop('day', axis=1, inplace=True)
+
     # return percentiles by day of year
     return percentiles_by_day

@@ -13,7 +13,7 @@ def test_tidy_cumulative_dataframe():
         columns=np.arange(1, 367),
         data=np.arange(1, 1099).reshape(3, 366))
     # test the function
-    cdf = cumulative._tidy_cumulative_dataframe(cdf)
+    cdf = cumulative._tidy_cumulative_dataframe(cdf, 'calendar')
     assert cdf.shape == (1098, 3)
     assert cdf.columns.tolist() == ['year', 'day', 'cumulative']
     assert cdf.index.year.unique().tolist() == [2000, 2001, 2002, 2003]
@@ -44,24 +44,27 @@ def test_calculate_daily_cumulative_values():
     assert cdf['day'].tolist() == list(range(1, 366))
     assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))
     # try for a water year
+    df = pd.DataFrame({
+        'data': np.ones(len(pd.date_range('2016-01-01', '2019-12-31'))),
+        'date': pd.date_range('2016-01-01', '2019-12-31')})
     cdf = cumulative.calculate_daily_cumulative_values(
-        df, 'data', year_type='water')
-    assert cdf.shape == (365, 3)
+        df, 'data', date_column_name='date', year_type='water')
+    assert cdf.shape == (365*3, 3)
     assert cdf.columns.tolist() == ['year', 'day', 'cumulative']
-    assert cdf.index.year.unique().tolist() == [2019]
-    assert cdf['day'].tolist()[0] == 93
-    d_list = cdf['day'].tolist()
+    assert cdf.index.year.unique().tolist() == [2017, 2018, 2019, 2020]
+    assert cdf['day'].tolist()[0] == 1
+    d_list = cdf['day'].unique().tolist()
     d_list.sort()
     assert d_list == list(range(1, 366))
-    assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))
+    assert cdf['cumulative'].tolist()[:365] == list(np.cumsum(np.ones(365)))
     # try for a climate year
     cdf = cumulative.calculate_daily_cumulative_values(
-        df, 'data', year_type='climate')
-    assert cdf.shape == (365, 3)
+        df, 'data', date_column_name='date', year_type='climate')
+    assert cdf.shape == (365*3, 3)
     assert cdf.columns.tolist() == ['year', 'day', 'cumulative']
-    assert cdf.index.year.unique().tolist() == [2019]
-    assert cdf['day'].tolist()[0] == 276
-    d_list = cdf['day'].tolist()
+    assert cdf.index.year.unique().tolist() == [2017, 2018, 2019, 2020]
+    assert cdf['day'].tolist()[0] == 1
+    d_list = cdf['day'].unique().tolist()
     d_list.sort()
     assert d_list == list(range(1, 366))
-    assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))
+    assert cdf['cumulative'].tolist()[:365] == list(np.cumsum(np.ones(365)))
