@@ -5,6 +5,10 @@ Cumulative Streamflow Hydrographs
 The following examples show how to fetch some data, and then calculate values for a cumulative streamflow hydrograph.
 Then an example plotting routine to plot the cumulative hydrograph is shown.
 
+
+Cumulative Streamflow Over The 2020 Water Year
+**********************************************
+
 First we will fetch some streamflow data from the NWIS service using the `dataretrieval` package.
 In this example we will fetch 20 years of data from a single site and then calculate the cumulative streamflow percentiles from that data.
 

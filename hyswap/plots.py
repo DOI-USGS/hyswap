@@ -287,6 +287,8 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
 
 
 def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
+                               envelope_pct=[25, 75],
+                               max_pct=False, min_pct=False,
                                ax=None,
                                title="Cumulative Discharge by Day of Year",
                                ylab="Cumulative Discharge (cfs)",
@@ -346,26 +348,36 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     # calculations for percentiles by day
     pdf = calculate_variable_percentile_thresholds_by_day(
         cumulative_percentiles, data_column_name='cumulative',
-        percentiles=[25, 75])
+        percentiles=[min_pct] + envelope_pct + [max_pct])
     # pop some kwargs
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
     color = kwargs.pop('color', 'xkcd:bright green')
     # plot 25-75 percentile envelope
-    ax.fill_between(pdf.index, list(pdf[25].values), list(pdf[75].values),
+    ax.fill_between(pdf.index,
+                    list(pdf[envelope_pct[0]].values),
+                    list(pdf[envelope_pct[1]].values),
                     color=color, alpha=alpha,
-                    label="25th - 75th Percentile Envelope",
+                    label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
+                          "Percentile Envelope",
                     zorder=zorder, **kwargs)
+    # plot min/max if desired
+    if min_pct:
+        ax.plot(pdf.index, pdf[min_pct], color='k', alpha=0.5,
+                linestyle='--', label="Min. Curve")
+    if max_pct:
+        ax.plot(pdf.index, pdf[max_pct], color='k', alpha=0.5,
+                linestyle='--', label="Max. Curve")
     # get data from target year
     target_year_data = cumulative_percentiles.loc[
         cumulative_percentiles.index.year == target_year, 'cumulative']
     # plot target year
     ax.plot(target_year_data.index.dayofyear, target_year_data,
-            color='k', label="{} Cumulative Discharge".format(target_year))
+            color='k', label=f"{target_year} Cumulative Discharge")
     # set labels
     ax.set_xlabel(xlab)
-    ax.set_xlim(1, 366)
-    ax.set_xticks([1] + list(np.arange(30, 360, 30)) + [366])
+    ax.set_xlim(1, 365)
+    ax.set_xticks([1] + list(np.arange(30, 360, 30)) + [365])
     ax.set_ylabel(ylab)
     # title
     ax.set_title(title)
