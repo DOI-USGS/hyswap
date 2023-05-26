@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from hyswap.percentiles import calculate_percentiles_by_day
+from hyswap.percentiles import calculate_variable_percentile_thresholds_by_day
 
 
 def plot_flow_duration_curve(
@@ -231,7 +231,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         ...                                   parameterCd='00060',
         ...                                   start='1900-01-01',
         ...                                   end='2022-12-31')
-        >>> pct_by_day = hyswap.percentiles.calculate_percentiles_by_day(
+        >>> pct_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
         ...     df, '00060_Mean')
         >>> df_2022 = df[df.index.year == 2022]
         >>> df_2022['doy'] = df_2022.index.dayofyear
@@ -344,7 +344,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     if ax is None:
         _, ax = plt.subplots()
     # calculations for percentiles by day
-    pdf = calculate_percentiles_by_day(cumulative_percentiles,
+    pdf = calculate_variable_percentile_thresholds_by_day(cumulative_percentiles,
                                        data_column_name='cumulative',
                                        percentiles=[25, 75])
     # pop some kwargs

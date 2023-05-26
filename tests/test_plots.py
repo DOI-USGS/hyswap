@@ -72,7 +72,7 @@ def test_plot_duration_hydrograph():
     df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2012'),
                        'data': np.random.rand(1096)})
     df.index = df['date']
-    pct = percentiles.calculate_percentiles_by_day(
+    pct = percentiles.calculate_variable_percentile_thresholds_by_day(
         df, 'data')
     df['doy'] = df.index.dayofyear
     ax = plots.plot_duration_hydrograph(pct, df, 'data', 'doy')

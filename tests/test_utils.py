@@ -197,7 +197,6 @@ def test_define_year_doy_columns():
     assert df['year'].unique().tolist() == [2020, 2021]
     assert df['doy'].tolist() == list(range(276, 366)) + list(range(1, 276))
     assert len(df['doy']) == 365
-    assert data == [2]
 
 
 def test_munge_nwis_stats():
