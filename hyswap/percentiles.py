@@ -129,12 +129,12 @@ def calculate_variable_percentile_thresholds_by_day(
         8
     """
     # define year and day of year columns and convert date column to datetime
-    # if necessary
-    df = define_year_doy_columns(df, date_column_name=date_column_name,
+    # if necessary - copy input df so it is not modified by the function
+    df = define_year_doy_columns(df.copy(), date_column_name=date_column_name,
                                  year_type=year_type, clip_leap_day=True)
     # based on date, get min and max day of year available
-    min_day = df.index.dayofyear.min()
-    max_day = df.index.dayofyear.max() + 1
+    min_day = np.nanmax((1, df.index.dayofyear.min()))
+    max_day = np.nanmin((366, df.index.dayofyear.max() + 1))
     # make temporal index
     t_idx = np.arange(min_day, max_day)
     # initialize a DataFrame to hold percentiles by day of year

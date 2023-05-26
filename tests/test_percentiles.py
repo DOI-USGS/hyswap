@@ -89,10 +89,10 @@ def test_calculate_variable_percentile_thresholds_by_day():
     # test the function
     percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day(
         df, 'data', date_column_name='date', year_type='water')
-    assert percentiles_.shape == (366, 8)
+    assert percentiles_.shape == (365, 8)
     assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
     assert percentiles_.index.tolist()[0] == 1
-    assert percentiles_.index.tolist()[-1] == 366
+    assert percentiles_.index.tolist()[-1] == 365
     # test a longer dummy set that exceeds 1 year
     df = pd.DataFrame({
         'data': np.random.random(

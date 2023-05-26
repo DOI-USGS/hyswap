@@ -48,7 +48,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
         >>> results = cumulative.calculate_daily_cumulative_values(
         ...     df, "data", date_column_name="date")
         >>> results.head()
-                    year  day  cumulative
+                    year  doy  cumulative
         date
         2000-01-01  2000    1           0
         2000-01-02  2000    2           1
@@ -99,23 +99,23 @@ def _tidy_cumulative_dataframe(cdf, year_type):
     -------
     cdf : pandas.DataFrame
         DataFrame containing cumulative values, rows are dates, columns include
-        years, days, and cumulative values.
+        years, day of year (doy), and cumulative values.
     """
     # convert cdf to dataframe organized with full dates on the index
     cdf2 = cdf.stack().reset_index()
-    cdf2.columns = ["year", "day", "cumulative"]
+    cdf2.columns = ["year", "doy", "cumulative"]
     # create date column
     if year_type == "calendar":
         cdf2["date"] = pd.to_datetime(
-            cdf2["year"].astype(str) + "-" + cdf2["day"].astype(str),
+            cdf2["year"].astype(str) + "-" + cdf2["doy"].astype(str),
             format="%Y-%j")
     elif year_type == "water":
         cdf2["date"] = pd.to_datetime(
-            cdf2["year"].astype(str) + "-" + cdf2["day"].astype(str),
+            cdf2["year"].astype(str) + "-" + cdf2["doy"].astype(str),
             format="%Y-%j") + pd.DateOffset(days=273)
     elif year_type == "climate":
         cdf2["date"] = pd.to_datetime(
-            cdf2["year"].astype(str) + "-" + cdf2["day"].astype(str),
+            cdf2["year"].astype(str) + "-" + cdf2["doy"].astype(str),
             format="%Y-%j") + pd.DateOffset(days=90)
     # set date to index
     cdf2 = cdf2.set_index("date")
