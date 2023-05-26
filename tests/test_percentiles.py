@@ -53,3 +53,55 @@ def test_calculate_variable_percentile_thresholds_by_day():
     assert percentiles_.index.tolist() == list(range(1, 102))
     # all percentiles should be NaN because demo dataset is 1 year only
     assert percentiles_.isna().all().all()
+    # test the function with a different year type
+    percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, 'data', year_type='water')
+    assert percentiles_.shape == (101, 8)
+    assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+    assert percentiles_.index.tolist()[0] == 1
+    assert percentiles_.index.tolist()[-1] == 101
+    # all percentiles should be NaN because demo dataset is 1 year only
+    assert percentiles_.isna().all().all()
+    # test the function with a different year type and a different set of
+    # percentiles
+    percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, 'data', year_type='climate',
+        percentiles=np.array((0, 10, 50, 90, 100)))
+    assert percentiles_.shape == (101, 5)
+    assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
+    assert percentiles_.index.tolist()[0] == 1
+    # all percentiles should be NaN because demo dataset is 1 year only
+    assert percentiles_.isna().all().all()
+    # make a bigger dummy dataset so values are not NaN
+    df = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2000-01-01', '2020-12-31'))),
+        'date': pd.date_range('2000-01-01', '2020-12-31')})
+    # test the function and check that the percentiles are not NaN
+    percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, 'data', date_column_name='date')
+    assert not percentiles_.isna().all().all()
+    # test a longer dummy set that exceeds 1 year
+    df = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2000-01-01', '2001-12-31'))),
+        'date': pd.date_range('2000-01-01', '2001-12-31')})
+    # test the function
+    percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, 'data', date_column_name='date', year_type='water')
+    assert percentiles_.shape == (365, 8)
+    assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+    assert percentiles_.index.tolist()[0] == 1
+    assert percentiles_.index.tolist()[-1] == 365
+    # test a longer dummy set that exceeds 1 year
+    df = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2001-01-01', '2002-12-31'))),
+        'date': pd.date_range('2001-01-01', '2002-12-31')})
+    # test the function
+    percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, 'data', date_column_name='date', year_type='water')
+    assert percentiles_.shape == (365, 8)
+    assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+    assert percentiles_.index.tolist()[0] == 1
+    assert percentiles_.index.tolist()[-1] == 365

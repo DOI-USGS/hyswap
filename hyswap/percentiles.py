@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from hyswap.utils import filter_data_by_time
 from hyswap.utils import calculate_metadata
+from hyswap.utils import define_year_doy_columns
 
 
 def calculate_fixed_percentile_thresholds(
@@ -60,9 +61,10 @@ def calculate_fixed_percentile_thresholds(
 def calculate_variable_percentile_thresholds_by_day(
         df,
         data_column_name,
-        percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
+        percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
         method='weibull',
         date_column_name=None,
+        year_type='calendar',
         min_years=10,
         **kwargs):
     """Calculate variable percentile thresholds of data by day of year.
@@ -77,7 +79,7 @@ def calculate_variable_percentile_thresholds_by_day(
 
     percentiles : array_like, optional
         Percentile thresholds to calculate, default is
-        (0, 5, 10, 25, 75, 90, 95, 100).
+        [0, 5, 10, 25, 75, 90, 95, 100].
 
     method : str, optional
         Method to use to calculate percentiles. Default is 'weibull'.
@@ -85,6 +87,16 @@ def calculate_variable_percentile_thresholds_by_day(
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` is used.
+
+    year_type : str, optional
+        The type of year to use. Must be one of 'calendar', 'water', or
+        'climate'. Default is 'calendar' which starts the year on January 1
+        and ends on December 31. 'water' starts the year on October 1 and
+        ends on September 30 of the following year which is the "water year".
+        For example, October 1, 2010 to September 30, 2011 is "water year
+        2011". 'climate' years begin on April 1 and end on March 31 of the
+        following year, they are numbered by the ending year. For example,
+        April 1, 2010 to March 31, 2011 is "climate year 2011".
 
     min_years : int, optional
         Minimum number of years of data required to calculate percentile
@@ -116,13 +128,13 @@ def calculate_variable_percentile_thresholds_by_day(
         >>> len(results.columns)  # 8 default percentiles
         8
     """
+    # define year and day of year columns and convert date column to datetime
+    # if necessary - copy input df so it is not modified by the function
+    df = define_year_doy_columns(df.copy(), date_column_name=date_column_name,
+                                 year_type=year_type, clip_leap_day=True)
     # based on date, get min and max day of year available
-    if date_column_name is None:
-        min_day = df.index.dayofyear.min()
-        max_day = df.index.dayofyear.max() + 1
-    else:
-        min_day = df[date_column_name].dt.dayofyear.min()
-        max_day = df[date_column_name].dt.dayofyear.max() + 1
+    min_day = np.nanmax((1, df.index.dayofyear.min()))
+    max_day = np.nanmin((366, df.index.dayofyear.max() + 1))
     # make temporal index
     t_idx = np.arange(min_day, max_day)
     # initialize a DataFrame to hold percentiles by day of year
@@ -130,8 +142,7 @@ def calculate_variable_percentile_thresholds_by_day(
     # loop through days of year available
     for doy in range(min_day, max_day):
         # get historical data for the day of year
-        data = filter_data_by_time(df, doy, data_column_name,
-                                   date_column_name=date_column_name)
+        data = filter_data_by_time(df, doy, data_column_name)
         # could insert other functions here to check or modify data
         # as needed or based on any other criteria
         meta = calculate_metadata(data)

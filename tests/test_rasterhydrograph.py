@@ -18,113 +18,28 @@ def test_calculate_date_range():
     # define a data frame to use for testing
     dummy_dates = pd.date_range('2018-06-01', '2022-01-31')
     df = pd.DataFrame(
-        {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates))}
+        {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates)),
+         'index_year': dummy_dates.year.tolist(),
+         'month': dummy_dates.month.tolist(),
+         'day': dummy_dates.day.tolist(),
+         'index_doy': dummy_dates.dayofyear.tolist()}
         )
+    df.set_index('date', inplace=True)
     # test the function with default values
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, None, None, 'calendar', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
+    date_range = rasterhydrograph._calculate_date_range(df, None, None)
     assert date_range[0].year == 2018
-    assert date_range[0].month == 1
+    assert date_range[0].month == 6
     assert date_range[0].day == 1
     assert date_range[-1].year == 2022
-    assert date_range[-1].month == 12
+    assert date_range[-1].month == 1
     assert date_range[-1].day == 31
     # test the function specifying start and end years
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, 2019, 2020, 'calendar', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
+    date_range = rasterhydrograph._calculate_date_range(df, 2019, 2020)
     assert date_range[0].year == 2019
     assert date_range[0].month == 1
     assert date_range[0].day == 1
     assert date_range[-1].year == 2020
     assert date_range[-1].month == 12
-    assert date_range[-1].day == 31
-    # test the function using a 'water' year
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, None, None, 'water', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2018
-    assert date_range[0].month == 10
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2022
-    assert date_range[-1].month == 9
-    assert date_range[-1].day == 30
-    # test the function using a 'climate' year
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, None, None, 'climate', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2019
-    assert date_range[0].month == 4
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2022
-    assert date_range[-1].month == 3
-    assert date_range[-1].day == 31
-    # test the function using a 'water' year and specifying start and end years
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, 2019, 2020, 'water', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2019
-    assert date_range[0].month == 10
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2020
-    assert date_range[-1].month == 9
-    assert date_range[-1].day == 30
-    # test the function using a 'climate' year and specifying start / end years
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, 2019, 2020, 'climate', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2019
-    assert date_range[0].month == 4
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2020
-    assert date_range[-1].month == 3
-    assert date_range[-1].day == 31
-    # make the index of the dataframe the date values
-    df = df.set_index('date')
-    # test the function with the date as the index
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, None, None, 'calendar', None)
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df.index.values)
-    assert date_range[0].year == 2018
-    assert date_range[0].month == 1
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2022
-    assert date_range[-1].month == 12
-    assert date_range[-1].day == 31
-    # define a data frame to use for testing using late months
-    dummy_dates = pd.date_range('2018-10-01', '2022-12-31')
-    df = pd.DataFrame(
-        {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates))}
-        )
-    # test the function using a 'water' year
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, None, None, 'water', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2019
-    assert date_range[0].month == 10
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2023
-    assert date_range[-1].month == 9
-    assert date_range[-1].day == 30
-    # test the function using a 'climate' year
-    df_out, date_range = rasterhydrograph._calculate_date_range(
-        df, None, None, 'climate', 'date')
-    assert len(df_out.index) == len(df.index)
-    assert list(df_out.index.values) == list(df['date'].values)
-    assert date_range[0].year == 2019
-    assert date_range[0].month == 4
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2023
-    assert date_range[-1].month == 3
     assert date_range[-1].day == 31
 
 
@@ -177,13 +92,13 @@ def test_check_inputs():
                                        None, None, None)
 
     # test the year type input
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None, 'daily',
                                        1, None, None)
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None, 'daily',
                                        1.0, None, None)
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None, 'daily',
                                        None, None, None)
     with pytest.raises(ValueError):
@@ -225,12 +140,12 @@ def test_format_data():
     dummy_dates = pd.date_range('2018-06-01', '2022-01-31')
     df = pd.DataFrame(
         {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates))}
-        )
+    )
     df_date = df.set_index('date')
     # test the function with a dataframe and a date column
     df_out = rasterhydrograph.format_data(df, 'value', 'date')
     assert len(df_out.index) == 5
-    assert len(df_out.columns) == 366
+    assert len(df_out.columns) == 365
     # assert day 1 of 2018 has no data, is NaN
     assert np.isnan(df_out.loc[2018].loc[1])
     # assert day 350 of 2022 has no data, is NaN
@@ -238,7 +153,7 @@ def test_format_data():
     # test the function with a dataframe and a date index
     df_out = rasterhydrograph.format_data(df_date, 'value')
     assert len(df_out.index) == 5
-    assert len(df_out.columns) == 366
+    assert len(df_out.columns) == 365
     # assert day 1 of 2018 has no data, is NaN
     assert np.isnan(df_out.loc[2018].loc[1])
     # assert day 350 of 2022 has no data, is NaN
@@ -246,7 +161,7 @@ def test_format_data():
     # test the function with a dataframe and a date index and beginning year
     df_out = rasterhydrograph.format_data(df_date, 'value', begin_year=2019)
     assert len(df_out.index) == 4
-    assert len(df_out.columns) == 366
+    assert len(df_out.columns) == 365
     # assert day 1 of 2019 has data, is not NaN
     assert ~np.isnan(df_out.loc[2019].loc[1])
     # assert day 350 of 2022 has no data, is NaN
@@ -254,7 +169,7 @@ def test_format_data():
     # test the function with a dataframe and a date index and ending year
     df_out = rasterhydrograph.format_data(df_date, 'value', end_year=2021)
     assert len(df_out.index) == 4
-    assert len(df_out.columns) == 366
+    assert len(df_out.columns) == 365
     # assert day 1 of 2018 has no data, is NaN
     assert np.isnan(df_out.loc[2018].loc[1])
     # assert day 350 of 2021 has data, is not NaN
@@ -264,7 +179,7 @@ def test_format_data():
     df_7out = rasterhydrograph.format_data(df_date, 'value',
                                            data_type='7-day')
     assert len(df_7out.index) == 5
-    assert len(df_7out.columns) == 366
+    assert len(df_7out.columns) == 365
     # assert day 1 of 2018 has no data, is NaN
     assert np.isnan(df_7out.loc[2018].loc[1])
     # assert day 350 of 2022 has no data, is NaN
@@ -274,8 +189,8 @@ def test_format_data():
     # test the function with a dataframe and a date index and a water year
     df_out_water = rasterhydrograph.format_data(df_date, 'value',
                                                 year_type='water')
-    assert len(df_out_water.index) == 4
-    assert len(df_out_water.columns) == 366
+    assert len(df_out_water.index) == 5
+    assert len(df_out_water.columns) == 365
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_out_water.values).all()
     # check that day 1 of year 2019 is 10/1/2018
@@ -287,8 +202,8 @@ def test_format_data():
     df_7out_water = rasterhydrograph.format_data(df_date, 'value',
                                                  data_type='7-day',
                                                  year_type='water')
-    assert len(df_7out_water.index) == 4
-    assert len(df_7out_water.columns) == 366
+    assert len(df_7out_water.index) == 5
+    assert len(df_7out_water.columns) == 365
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_7out_water.values).all()
     # check that day 1 of year 2019 is 10/1/2018
@@ -299,8 +214,8 @@ def test_format_data():
     # climate year
     df_out_climate = rasterhydrograph.format_data(df_date, 'value',
                                                   year_type='climate')
-    assert len(df_out_climate.index) == 3
-    assert len(df_out_climate.columns) == 366
+    assert len(df_out_climate.index) == 4
+    assert len(df_out_climate.columns) == 365
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_out_climate.values).all()
     # check that day 1 of year 2020 is 4/1/2019
@@ -313,8 +228,22 @@ def test_format_data():
                                                    data_type='7-day',
                                                    year_type='climate',
                                                    center=True)
-    assert len(df_7out_climate.index) == 3
-    assert len(df_7out_climate.columns) == 366
+    assert len(df_7out_climate.index) == 4
+    assert len(df_7out_climate.columns) == 365
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_7out_climate.values).all()
     # this is a different averaging method so the values will be different
+    # set up some data starting earlier in the year
+    dummy_dates = pd.date_range('2018-02-01', '2022-01-31')
+    df = pd.DataFrame(
+        {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates))}
+    )
+    df_date = df.set_index('date')
+    # test the function with a dataframe and a date index and in a
+    # climate year
+    df_out_climate = rasterhydrograph.format_data(df_date, 'value',
+                                                  year_type='climate')
+    assert len(df_out_climate.index) == 5
+    assert len(df_out_climate.columns) == 365
+    # check that there are non-NaN values in the data frame
+    assert ~np.isnan(df_out_climate.values).all()
