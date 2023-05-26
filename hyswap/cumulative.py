@@ -48,7 +48,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
         >>> results = cumulative.calculate_daily_cumulative_values(
         ...     df, "data", date_column_name="date")
         >>> results.columns.tolist()
-        ['year', 'day', 'cumulative']
+        ['index_year', 'index_doy', 'cumulative']
     """
     # set date index, add day/year columns with function
     df = define_year_doy_columns(df, date_column_name=date_column_name,
