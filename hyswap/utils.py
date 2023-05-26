@@ -259,35 +259,39 @@ def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
             'year_type must be one of "calendar", "water", or "climate".')
     # add year and day of year columns
     if year_type == 'calendar':
-        df['year'] = df.index.year
-        df['doy'] = df.index.dayofyear
+        df['index_year'] = df.index.year
+        df['index_doy'] = df.index.dayofyear
     elif year_type == 'water':
         # set water years
-        df['year'] = df.index.year.where(df.index.month < 10,
-                                         df.index.year + 1)
+        df['index_year'] = df.index.year.where(df.index.month < 10,
+                                               df.index.year + 1)
         # get calendar day of year
-        df['doy'] = df.index.dayofyear
+        df['index_doy'] = df.index.dayofyear
         # adjust Oct 1 to be day 1 of water year for leap and non-leap years
-        df.loc[df.index.is_leap_year & (df.index.month >= 10), 'doy'] -= 274
-        df.loc[~df.index.is_leap_year & (df.index.month >= 10), 'doy'] -= 273
+        df.loc[df.index.is_leap_year & (df.index.month >= 10),
+               'index_doy'] -= 274
+        df.loc[~df.index.is_leap_year & (df.index.month >= 10),
+               'index_doy'] -= 273
         # adjust Jan 1 accordingly for leap and non-leap years
-        df.loc[df.index.month < 10, 'doy'] += 92
+        df.loc[df.index.month < 10, 'index_doy'] += 92
     elif year_type == 'climate':
         # set climate years
-        df['year'] = df.index.year.where(df.index.month < 4,
-                                         df.index.year + 1)
+        df['index_year'] = df.index.year.where(df.index.month < 4,
+                                               df.index.year + 1)
         # get calendar day of year
-        df['doy'] = df.index.dayofyear
+        df['index_doy'] = df.index.dayofyear
         # adjust Apr 1 to be day 1 of climate year for leap and non-leap years
-        df.loc[df.index.is_leap_year & (df.index.month >= 4), 'doy'] -= 91
-        df.loc[~df.index.is_leap_year & (df.index.month >= 4), 'doy'] -= 90
+        df.loc[df.index.is_leap_year & (df.index.month >= 4),
+               'index_doy'] -= 91
+        df.loc[~df.index.is_leap_year & (df.index.month >= 4),
+               'index_doy'] -= 90
         # adjust Jan 1 to be day 276 of climate year for all years
-        df.loc[df.index.month < 4, 'doy'] += 275
+        df.loc[df.index.month < 4, 'index_doy'] += 275
     # clip leap year and adjustment
     if clip_leap_day:
         df = leap_year_adjustment(df, year_type=year_type)
     # sort the df by year and day of year
-    df = df.sort_values(['year', 'doy'])
+    df = df.sort_values(['index_year', 'index_doy'])
     return df
 
 
@@ -320,13 +324,14 @@ def leap_year_adjustment(df, year_type='calendar'):
     """
     df = df.loc[~((df.index.month == 2) & (df.index.day == 29))]
     if year_type == 'calendar':
-        df.loc[df.index.is_leap_year & (df.index.month > 2), 'doy'] -= 1
+        df.loc[df.index.is_leap_year & (df.index.month > 2),
+               'index_doy'] -= 1
     elif year_type == 'water':
         df.loc[df.index.is_leap_year &
                (df.index.month > 2) &
-               (df.index.month < 10), 'doy'] -= 1
+               (df.index.month < 10), 'index_doy'] -= 1
     elif year_type == 'climate':
         df.loc[df.index.is_leap_year &
                (df.index.month > 2) &
-               (df.index.month < 4), 'doy'] -= 1
+               (df.index.month < 4), 'index_doy'] -= 1
     return df

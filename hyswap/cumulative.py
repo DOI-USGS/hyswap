@@ -60,13 +60,13 @@ def calculate_daily_cumulative_values(df, data_column_name,
     df = define_year_doy_columns(df, date_column_name=date_column_name,
                                  year_type=year_type, clip_leap_day=True)
     # get unique years in the data
-    years = df['year'].unique()
+    years = df['index_year'].unique()
     # make a dataframe to hold cumulative values for each year
     cdf = pd.DataFrame(index=years, columns=np.arange(1, 366))
     # loop through each year and calculate cumulative values
     for year in years:
         # get data for the year
-        year_data = df.loc[df['year'] == year, data_column_name]
+        year_data = df.loc[df['index_year'] == year, data_column_name]
         # year must be complete
         if len(year_data) == 365:
             # calculate cumulative values and assign to cdf
@@ -103,19 +103,22 @@ def _tidy_cumulative_dataframe(cdf, year_type):
     """
     # convert cdf to dataframe organized with full dates on the index
     cdf2 = cdf.stack().reset_index()
-    cdf2.columns = ["year", "doy", "cumulative"]
+    cdf2.columns = ["index_year", "index_doy", "cumulative"]
     # create date column
     if year_type == "calendar":
         cdf2["date"] = pd.to_datetime(
-            cdf2["year"].astype(str) + "-" + cdf2["doy"].astype(str),
+            cdf2["index_year"].astype(str) + "-" +
+            cdf2["index_doy"].astype(str),
             format="%Y-%j")
     elif year_type == "water":
         cdf2["date"] = pd.to_datetime(
-            cdf2["year"].astype(str) + "-" + cdf2["doy"].astype(str),
+            cdf2["index_year"].astype(str) + "-" +
+            cdf2["index_doy"].astype(str),
             format="%Y-%j") + pd.DateOffset(days=273)
     elif year_type == "climate":
         cdf2["date"] = pd.to_datetime(
-            cdf2["year"].astype(str) + "-" + cdf2["doy"].astype(str),
+            cdf2["index_year"].astype(str) + "-" +
+            cdf2["index_doy"].astype(str),
             format="%Y-%j") + pd.DateOffset(days=90)
     # set date to index
     cdf2 = cdf2.set_index("date")

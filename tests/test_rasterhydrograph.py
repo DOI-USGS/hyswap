@@ -19,10 +19,10 @@ def test_calculate_date_range():
     dummy_dates = pd.date_range('2018-06-01', '2022-01-31')
     df = pd.DataFrame(
         {'date': dummy_dates, 'value': np.random.rand(len(dummy_dates)),
-         'year': dummy_dates.year.tolist(),
+         'index_year': dummy_dates.year.tolist(),
          'month': dummy_dates.month.tolist(),
          'day': dummy_dates.day.tolist(),
-         'doy': dummy_dates.dayofyear.tolist()}
+         'index_doy': dummy_dates.dayofyear.tolist()}
         )
     df.set_index('date', inplace=True)
     # test the function with default values

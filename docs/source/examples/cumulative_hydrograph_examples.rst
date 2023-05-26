@@ -51,8 +51,8 @@ Finally we can plot the cumulative streamflow hydrograph using `matplotlib`.
                     color='xkcd:bright green', alpha=0.5,
                     label='25-75 Percentile Envelope')
     # get data from water year 2020 and plot it over top the envelope
-    data_2020 = cdf.loc[cdf['year'] == 2020]
-    ax.plot(data_2020['doy'], data_2020['cumulative'],
+    data_2020 = cdf.loc[cdf['index_year'] == 2020]
+    ax.plot(data_2020['index_doy'], data_2020['cumulative'],
             color='k', label='2020 Water Year')
     ax.legend(loc='upper left')
     # add labels
