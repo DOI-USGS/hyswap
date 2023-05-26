@@ -106,6 +106,9 @@ def format_data(df, data_column_name, date_column_name=None,
     # convert date index to datetime format
     df_out.index = pd.to_datetime(df_out.index)
 
+    # adjust for leap years by removing NaN rows
+    df_out = df_out.dropna(axis=0, how='all')
+
     # set index to year and day of year columns
     df_out = df_out.pivot(index='year', columns='doy', values=data_column_name)
 
