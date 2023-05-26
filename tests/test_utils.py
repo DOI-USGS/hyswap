@@ -146,19 +146,21 @@ def test_define_year_doy_columns():
         'date': pd.date_range('2019-01-01', '2019-12-31')})
     # apply function
     df = utils.define_year_doy_columns(df, date_column_name='date')
-    assert df['year'].tolist() == [2019] * 365
-    assert df['doy'].tolist() == list(range(1, 366))
+    assert df['index_year'].tolist() == [2019] * 365
+    assert df['index_doy'].tolist() == list(range(1, 366))
     assert df.index.dayofyear.tolist() == list(range(1, 366))
     # test with a different year type
     df = utils.define_year_doy_columns(df, year_type='water')
     assert df.index.year.unique().tolist() == [2019]
-    assert df['year'].unique().tolist() == [2019, 2020]
-    assert df['doy'].tolist() == list(range(93, 366)) + list(range(1, 93))
+    assert df['index_year'].unique().tolist() == [2019, 2020]
+    assert df['index_doy'].tolist() == list(range(93, 366)) + \
+        list(range(1, 93))
     # test with climate year
     df = utils.define_year_doy_columns(df, year_type='climate')
     assert df.index.year.unique().tolist() == [2019]
-    assert df['year'].unique().tolist() == [2019, 2020]
-    assert df['doy'].tolist() == list(range(276, 366)) + list(range(1, 276))
+    assert df['index_year'].unique().tolist() == [2019, 2020]
+    assert df['index_doy'].tolist() == list(range(276, 366)) + \
+        list(range(1, 276))
     # test with leap year
     df = pd.DataFrame({
         'data': np.arange(1, 367),
@@ -166,15 +168,15 @@ def test_define_year_doy_columns():
     df = utils.define_year_doy_columns(df, date_column_name='date',
                                        clip_leap_day=False)
     assert df.index.year.unique().tolist() == [2020]
-    assert df['year'].unique().tolist() == [2020]
-    assert df['doy'].tolist() == list(range(1, 367))
-    assert len(df['doy']) == 366
+    assert df['index_year'].unique().tolist() == [2020]
+    assert df['index_doy'].tolist() == list(range(1, 367))
+    assert len(df['index_doy']) == 366
     # test with leap year and clip leap day
     df = utils.define_year_doy_columns(df, clip_leap_day=True)
     assert df.index.year.unique().tolist() == [2020]
-    assert df['year'].unique().tolist() == [2020]
-    assert df['doy'].tolist() == list(range(1, 366))
-    assert len(df['doy']) == 365
+    assert df['index_year'].unique().tolist() == [2020]
+    assert df['index_doy'].tolist() == list(range(1, 366))
+    assert len(df['index_doy']) == 365
     # water year leap with clip
     df = pd.DataFrame({
         'data': np.arange(1, 367),
@@ -183,9 +185,10 @@ def test_define_year_doy_columns():
                                        year_type='water',
                                        clip_leap_day=True)
     assert df.index.year.unique().tolist() == [2020]
-    assert df['year'].unique().tolist() == [2020, 2021]
-    assert df['doy'].tolist() == list(range(93, 366)) + list(range(1, 93))
-    assert len(df['doy']) == 365
+    assert df['index_year'].unique().tolist() == [2020, 2021]
+    assert df['index_doy'].tolist() == list(range(93, 366)) + \
+        list(range(1, 93))
+    assert len(df['index_doy']) == 365
     # climate year leap with clip
     df = pd.DataFrame({
         'data': np.arange(1, 367),
@@ -194,9 +197,10 @@ def test_define_year_doy_columns():
                                        year_type='climate',
                                        clip_leap_day=True)
     assert df.index.year.unique().tolist() == [2020]
-    assert df['year'].unique().tolist() == [2020, 2021]
-    assert df['doy'].tolist() == list(range(276, 366)) + list(range(1, 276))
-    assert len(df['doy']) == 365
+    assert df['index_year'].unique().tolist() == [2020, 2021]
+    assert df['index_doy'].tolist() == list(range(276, 366)) + \
+        list(range(1, 276))
+    assert len(df['index_doy']) == 365
 
 
 def test_munge_nwis_stats():

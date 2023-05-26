@@ -110,7 +110,8 @@ def format_data(df, data_column_name, date_column_name=None,
     df_out = df_out.dropna(axis=0, how='all')
 
     # set index to year and day of year columns
-    df_out = df_out.pivot(index='year', columns='doy', values=data_column_name)
+    df_out = df_out.pivot(index='index_year', columns='index_doy',
+                          values=data_column_name)
 
     # reverse order of the index so year order matches legacy Water Watch
     df_out = df_out.iloc[::-1]
@@ -237,13 +238,13 @@ def _calculate_date_range(df, begin_year, end_year):
     """
     # set begin year
     if begin_year is None:
-        begin_year = df['year'].min()
-    begin_date = df.loc[df['year'] == begin_year].index.min()
+        begin_year = df['index_year'].min()
+    begin_date = df.loc[df['index_year'] == begin_year].index.min()
 
     # set end year
     if end_year is None:
-        end_year = df['year'].max()
-    end_date = df.loc[df['year'] == end_year].index.max()
+        end_year = df['index_year'].max()
+    end_date = df.loc[df['index_year'] == end_year].index.max()
 
     # set date range
     date_range = pd.date_range(begin_date, end_date)

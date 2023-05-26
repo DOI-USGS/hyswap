@@ -36,7 +36,6 @@ Next we can use the :obj:`hyswap.percentiles.calculate_variable_percentile_thres
     pdf = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
         cdf, data_column_name='cumulative', percentiles=[25, 50, 75])
 
-Finally we can plot the cumulative streamflow hydrograph using `matplotlib`.
 Finally we can plot the cumulative streamflow hydrograph using the
 :obj:`hyswap.plots.plot_cumulative_hydrograph` function.
 
