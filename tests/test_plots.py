@@ -48,11 +48,11 @@ def test_plot_flow_duration_curve():
 def test_plot_raster_hydrograph():
     """Test the plot_raster_hydrograph function."""
     df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2010'),
-                       'data': np.random.rand(365)})
+                       'data': np.random.rand(365)+100})
     df_formatted = rasterhydrograph.format_data(df, 'data', 'date')
     ax = plots.plot_raster_hydrograph(df_formatted)
     assert isinstance(ax, plt.Axes)
-    assert ax.get_xlabel() == 'Day of Year'
+    assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Year'
     assert ax.get_title() == 'Streamflow Raster Hydrograph'
     # make one with custom labels

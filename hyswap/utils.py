@@ -220,7 +220,7 @@ def calculate_metadata(data):
 
 def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
                             clip_leap_day=False):
-    """Function to add year and day of year columns to a DataFrame.
+    """Function to add year, day of year, and month-day columns to a DataFrame.
 
     Parameters
     ----------
@@ -248,8 +248,8 @@ def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
     Returns
     -------
     df : pandas.DataFrame
-        DataFrame with year and day of year columns added. Also makes the
-        date_column_name the index of the DataFrame.
+        DataFrame with year, day of year, and month-day columns added. Also
+        makes the date_column_name the index of the DataFrame.
     """
     # set the df index
     if date_column_name is not None:
@@ -288,6 +288,8 @@ def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
                'index_doy'] -= 90
         # adjust Jan 1 to be day 276 of climate year for all years
         df.loc[df.index.month < 4, 'index_doy'] += 275
+    # add month and day columns
+    df['index_month_day'] = df.index.strftime('%m-%d')
     # clip leap year and adjustment
     if clip_leap_day:
         df = leap_year_adjustment(df, year_type=year_type)

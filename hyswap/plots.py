@@ -1,4 +1,5 @@
 """Functions to make plots."""
+import calendar
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -94,7 +95,7 @@ def plot_flow_duration_curve(
 
 def plot_raster_hydrograph(df_formatted, ax=None,
                            title='Streamflow Raster Hydrograph',
-                           xlab='Day of Year', ylab='Year',
+                           xlab='Month', ylab='Year',
                            cbarlab='Streamflow, cubic feet per second',
                            **kwargs):
     """Make raster hydrograph plot.
@@ -173,13 +174,29 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     cbar.set_label(cbarlab)
     # cbar height to be same as axes
     cbar.ax.set_aspect('auto')
-    # set ticks
+    # set yticks
     ax.set_yticks(np.arange(-0.5, len(df_formatted.index)), [], minor=True)
     ax.set_yticks(np.arange(len(df_formatted.index)), df_formatted.index)
     # convert yticklabels to 4 digit years
     yticklabels = ax.get_yticklabels()
     yticklabels = [f'{y.get_text()[:4]}' for y in yticklabels]
     ax.set_yticklabels(yticklabels)
+    # set xticks at start/end of each month
+    xvals = df_formatted.columns.values
+    months = [int(i.split('-')[1]) for i in xvals]
+    month_transitions = np.where(np.diff(months) != 0)[0]
+    ax.set_xticks([0] + list(month_transitions),
+                  labels=[], minor=False)
+    # set xticklabels to be month name at middle of each month
+    unique_months = []
+    [unique_months.append(x) for x in months if x not in unique_months]
+    month_names = [calendar.month_abbr[i] for i in unique_months]
+    month_names = [f'{m}' for m in month_names]
+    days = [int(i.split('-')[2]) for i in xvals]
+    midway_pts = np.where(np.array(days) == 15)[0]
+    ax.set_xticks(midway_pts, labels=month_names, minor=True)
+    # make minor ticks invisible
+    ax.tick_params(which='minor', length=0)
     # return axes
     return ax
 
