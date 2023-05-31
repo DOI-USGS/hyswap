@@ -112,7 +112,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
         'Streamflow Raster Hydrograph'.
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
-        'Day of Year'.
+        'Month'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
         'Year'.
@@ -204,8 +204,8 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
                              pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
                              data_label=None, ax=None,
-                             title="Percentiles of Discharge by Day of Year",
-                             ylab="Discharge (cfs)", xlab="Day of Year",
+                             title="Duration Hydrograph",
+                             ylab="Discharge (cfs)", xlab="Month",
                              colors=None, **kwargs):
     """Make duration hydrograph plot.
 
@@ -230,13 +230,13 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         created.
     title : str, optional
         Title for the plot. If not provided, the default title will be
-        'Percentiles of Discharge by Day of Year'.
+        'Duration Hydrograph'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
         'Discharge (cfs)'.
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
-        'Day of Year'.
+        'Month'.
     colors : list, optional
         List of colors to use for the lines. If not provided, a default
         list of colors will be used.
@@ -297,6 +297,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
             list(percentiles_by_day[pct_list[i]].values),
             color=colors[i - 1],
             alpha=alpha,
+            linewidth=0,
             label="{}th - {}th Percentile".format(
                 pct_list[i - 1], pct_list[i]),
             zorder=zorder, **kwargs
@@ -304,7 +305,21 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     # set labels
     ax.set_xlabel(xlab)
     ax.set_xlim(1, 366)
-    ax.set_xticks([1] + list(np.arange(30, 360, 30)) + [366])
+    # major xticks at first/end of each month
+    months = [int(m.split('-')[0]) for m in percentiles_by_day.index.to_list()]  # noqa: E501
+    month_switch = np.where(np.diff(months) != 0)[0]
+    ax.set_xticks([0] + list(month_switch + 1) + [366], labels=[], minor=False)
+    # minor xticks at 15th of each month
+    unique_months = []
+    [unique_months.append(x) for x in months if x not in unique_months]
+    month_names = [calendar.month_abbr[i] for i in unique_months]
+    month_names = [f'{m}' for m in month_names]
+    days = [int(m.split('-')[1]) for m in percentiles_by_day.index.to_list()]
+    mid_days = np.where(np.array(days) == 15)[0]
+    ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
+    # make minor ticks invisible
+    ax.tick_params(axis='x', which='minor', length=0)
+    # other labels
     ax.set_ylabel(ylab)
     ax.set_yscale("log")
     ax.set_title(title)

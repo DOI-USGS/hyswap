@@ -158,5 +158,9 @@ def calculate_variable_percentile_thresholds_by_day(
             # set percentiles to NaN
             percentiles_by_day.loc[t_idx == doy, :] = np.nan
 
+    # replace index with month-day values
+    percentiles_by_day.index = pd.to_datetime(
+        percentiles_by_day.index, format='%j').strftime('%m-%d')
+
     # return percentiles by day of year
     return percentiles_by_day
