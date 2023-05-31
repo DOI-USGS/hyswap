@@ -150,7 +150,9 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     if ax is None:
         _, ax = plt.subplots()
     # define min/max values
-    min_10 = np.floor(np.log10(np.nanmin(df_formatted.to_numpy())))
+    min_10 = np.nanmax(
+        [np.floor(np.log10(np.nanmin(df_formatted.to_numpy()))), 0]
+    )
     max_10 = np.ceil(np.log10(np.nanmax(df_formatted.to_numpy())))
     # pop some kwargs
     cmap = kwargs.pop('cmap', 'YlGnBu')
