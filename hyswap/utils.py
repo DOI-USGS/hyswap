@@ -401,8 +401,8 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
     df['year'] = 2020
     # construct date column
     df['date'] = pd.to_datetime(df[['day', 'month', 'year']])
-    # set day of year as the index
-    df = df.set_index(df['date'].dt.dayofyear)
+    # set month-day as index
+    df.index = df['date'].dt.strftime('%m-%d')
     # slim down to just the columns used for the plot
     df_slim = df[source_pct_col]
     # rename columns
