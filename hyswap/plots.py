@@ -148,11 +148,16 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     # Create axes if not provided
     if ax is None:
         _, ax = plt.subplots()
+    # define min/max values
+    min_10 = np.floor(np.log10(np.nanmin(df_formatted.to_numpy())))
+    max_10 = np.ceil(np.log10(np.nanmax(df_formatted.to_numpy())))
     # pop some kwargs
     cmap = kwargs.pop('cmap', 'YlGnBu')
     aspect = kwargs.pop('aspect', 'auto')
     interpolation = kwargs.pop('interpolation', 'none')
-    norm = kwargs.pop('norm', matplotlib.colors.LogNorm())
+    vmin = kwargs.pop('vmin', int(10**min_10))
+    vmax = kwargs.pop('vmax', int(10**max_10))
+    norm = kwargs.pop('norm', matplotlib.colors.LogNorm(vmin=vmin, vmax=vmax))
     # do plotting
     img = ax.imshow(df_formatted, aspect=aspect, cmap=cmap,
                     interpolation=interpolation, norm=norm, **kwargs)
@@ -162,6 +167,8 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     ax.set_title(title)
     # add colorbar
     cbar = plt.colorbar(img, ax=ax)
+    # set colorbar ticks
+    cbar.ax.set_yticklabels([f'{int(v):,}' for v in cbar.get_ticks()])
     # set colorbar label
     cbar.set_label(cbarlab)
     # cbar height to be same as axes
@@ -169,6 +176,10 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     # set ticks
     ax.set_yticks(np.arange(-0.5, len(df_formatted.index)), [], minor=True)
     ax.set_yticks(np.arange(len(df_formatted.index)), df_formatted.index)
+    # convert yticklabels to 4 digit years
+    yticklabels = ax.get_yticklabels()
+    yticklabels = [f'{y.get_text()[:4]}' for y in yticklabels]
+    ax.set_yticklabels(yticklabels)
     # return axes
     return ax
 
