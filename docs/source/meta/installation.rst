@@ -46,12 +46,16 @@ command in the console:
 
     pytest
 
-The documentation can be built locally with the following commands:
+The documentation can be built and tested locally with the following commands:
 
 .. code-block:: bash
 
     cd docs
     make docs
+
+
+For a faster local documentation build you can skip running the documentation
+tests by running ``make html`` instead of ``make docs``.
 
 To run the linting and formatting checks locally, run the following commands
 from the root of the repository:

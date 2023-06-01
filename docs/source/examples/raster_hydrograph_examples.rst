@@ -39,7 +39,7 @@ Now the data is arranged with years on the index (rows) and days of the year as 
     fig, ax = plt.subplots()
     ax = hyswap.plots.plot_raster_hydrograph(
         df_formatted, ax=ax,
-        title=f"Streamflow Raster Hydrograph for Site {siteno}")
+        title=f"Raster Hydrograph for Site {siteno}")
     plt.show()
 
 
@@ -65,7 +65,7 @@ The same data can be plotted as a 7-day average raster hydrograph by passing the
     fig, ax = plt.subplots()
     ax = hyswap.plots.plot_raster_hydrograph(
         df_formatted, ax=ax,
-        title=f"7-Day Average Streamflow Raster Hydrograph for Site {siteno}")
+        title=f"7-Day Average Raster Hydrograph for Site {siteno}")
     plt.show()
 
 
@@ -95,8 +95,8 @@ The ending year is the year that is displayed on the y-axis of the raster hydrog
     fig, ax = plt.subplots()
     ax = hyswap.plots.plot_raster_hydrograph(
         df_formatted, ax=ax,
-        title=f"Streamflow Water Year Raster Hydrograph for Site {siteno}",
-        xlab='Day of Water Year', ylab='Water Year')
+        title=f"'Water Year' Raster Hydrograph for Site {siteno}",
+        xlab='Month', ylab='Water Year')
     plt.show()
 
 
@@ -125,7 +125,90 @@ In this example, we will also change the color of the raster hydrograph to be sh
     fig, ax = plt.subplots()
     ax = hyswap.plots.plot_raster_hydrograph(
         df_formatted, ax=ax,
-        title=f"Streamflow Climate Year Raster Hydrograph for Site {siteno}",
-        xlab='Day of Climate Year', ylab='Climate Year',
+        title=f"'Climate Year' Raster Hydrograph for Site {siteno}",
+        xlab='Month', ylab='Climate Year',
         cmap='YlOrRd')
+    plt.show()
+
+
+We can also use just a subset of the available data if we wish by specifying start and end years using the `begin_year` and `end_year` keyword arguments to :obj:`hyswap.rasterhydrograph.format_data`.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # get data from a single site
+    siteno = "12205000"
+    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd="00060",
+                                      start="1995-01-01", end="2015-12-31")
+
+    # format the data to years 2000-2010
+    df_formatted = hyswap.rasterhydrograph.format_data(
+        df, '00060_Mean', year_type='climate',
+        begin_year=2000, end_year=2010)
+
+    # plot
+    fig, ax = plt.subplots()
+    ax = hyswap.plots.plot_raster_hydrograph(
+        df_formatted, ax=ax,
+        title=f"2000-2010 'Climate Year' Raster Hydrograph for Site {siteno}",
+        xlab='Month', ylab='Climate Year',
+        cmap='YlOrRd')
+    plt.show()
+
+
+Raster Hydrograph of Non-Streamflow Data
+****************************************
+
+The functions used above to generate raster hydrographs graphically depicting streamflow over time can also be used to visualize other types of data.
+For example, we can visualize a "raster hydrograph" of the water level at a station over time.
+We will use station 02311500 in Florida as an example.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # get stage data from a single site
+    siteno = "02311500"
+    parameterCd = "00065"  # code for gage height
+    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd=parameterCd,
+                                      start="2000-01-01", end="2020-12-31")
+
+    # format the data
+    df_formatted = hyswap.rasterhydrograph.format_data(
+        df, '00065_Mean')
+
+    # plot
+    fig, ax = plt.subplots()
+    ax = hyswap.plots.plot_raster_hydrograph(
+        df_formatted, ax=ax,
+        title=f"Stage 'Raster Hydrograph' for Site {siteno}",
+        cmap='cool', cbarlab='Gage height, feet')
+    plt.show()
+
+
+We can improve this visualization by turning off the logarithmic color scale by setting the normalization of the colorbar to be `None` which overrides the default normalization of `matplotlib.colors.LogNorm`.
+The default scheme is logarithmic because this is the most common way to visualize streamflow data, but for other types of data, a linear scale may be more appropriate.
+
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # get stage data from a single site
+    siteno = "02311500"
+    parameterCd = "00065"  # code for gage height
+    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd=parameterCd,
+                                      start="2000-01-01", end="2020-12-31")
+
+    # format the data
+    df_formatted = hyswap.rasterhydrograph.format_data(
+        df, '00065_Mean')
+
+    # plot
+    fig, ax = plt.subplots()
+    ax = hyswap.plots.plot_raster_hydrograph(
+        df_formatted, ax=ax,
+        title=f"Stage 'Raster Hydrograph' for Site {siteno}",
+        cmap='cool', cbarlab='Gage height, feet', norm=None)
     plt.show()

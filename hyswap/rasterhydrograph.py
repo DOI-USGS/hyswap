@@ -262,11 +262,11 @@ def _calculate_date_range(df, year_type, begin_year, end_year):
         end_date = pd.to_datetime(str(end_year) + '-12-31')
     # water year from Oct 1 to Sep 30
     elif year_type == 'water':
-        begin_date = pd.to_datetime(str(begin_year) + '-10-01')
+        begin_date = pd.to_datetime(str(begin_year-1) + '-10-01')
         end_date = pd.to_datetime(str(end_year) + '-09-30')
     # climate year from Apr 1 to Mar 31
     elif year_type == 'climate':
-        begin_date = pd.to_datetime(str(begin_year) + '-04-01')
+        begin_date = pd.to_datetime(str(begin_year-1) + '-04-01')
         end_date = pd.to_datetime(str(end_year) + '-03-31')
 
     # set date range
