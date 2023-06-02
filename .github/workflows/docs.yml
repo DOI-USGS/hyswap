@@ -21,11 +21,11 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
         pip install .
-        apt-get update -y
-        apt-get upgrade -y
-        apt-get install -y xdg-utils
-        apt-get install -y lynx
-        apt-get install -y graphviz
+        sudo apt-get update -y
+        sudo apt-get upgrade -y
+        sudo apt-get install -y xdg-utils
+        sudo apt-get install -y lynx
+        sudo apt-get install -y graphviz
         pydeps hyswap -T png --max-bacon=3 --cluster
         mv hyswap.png docs/source/reference/hyswap.png
         (cd docs && make docs)
