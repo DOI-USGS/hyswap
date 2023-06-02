@@ -1,0 +1,152 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Raster Hydrograph Examples &#8212; hyswap 0.1.dev1+ga62ceda documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Streamflow Duration Hydrograph Examples" href="streamflow_duration_hydrograph_examples.html" />
+    <link rel="prev" title="Flow Duration Curve Examples" href="flow_duration_curve_examples.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrograph Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="flow_duration_curve_examples.html" title="Flow Duration Curve Examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga62ceda documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Raster Hydrograph Examples</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="raster-hydrograph-examples">
+<h1>Raster Hydrograph Examples<a class="headerlink" href="#raster-hydrograph-examples" title="Permalink to this heading">¶</a></h1>
+<p>These examples show how raster hydrographs can be constructed by fetching data from NWIS using <cite>dataretrieval</cite>, formatting that data using functions provided by <cite>hyswap</cite> (<a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a>), and then plotted using <cite>matplotlib</cite>.</p>
+<p>First we will fetch 20 years of streamflow data for a single site from NWIS using the <cite>dataretrieval</cite> package.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This data can be formatted using <cite>hyswap</cite> to prepare it for plotting as a
+raster hydrograph.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># format the data</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now the data is arranged with years on the index (rows) and days of the year as columns, this makes it easy to plot as a raster hydrograph.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df_formatted</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span>
+                <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LogNorm</span><span class="p">())</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Streamflow, cubic feet per second&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="p">[],</span> <span class="n">minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Day of Year&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Year&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Streamflow Raster Hydrograph for Site 03586500&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/4cd32d1fd5169e27b172af5525b77a5a/raster_hydrograph_examples-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/e7d2a2e982bf933dec5ed29def05fdda/raster_hydrograph_examples-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/raster_hydrograph_examples-3.png" class="plot-directive" src="../_images/raster_hydrograph_examples-3.png" />
+</figure>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="flow_duration_curve_examples.html"
+                          title="previous chapter">Flow Duration Curve Examples</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="streamflow_duration_hydrograph_examples.html"
+                          title="next chapter">Streamflow Duration Hydrograph Examples</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/raster_hydrograph_examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrograph Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="flow_duration_curve_examples.html" title="Flow Duration Curve Examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga62ceda documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Raster Hydrograph Examples</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.0.1.
+    </div>
+  </body>
+</html>

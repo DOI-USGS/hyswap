@@ -1,0 +1,176 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Flow Duration Curve Examples &#8212; hyswap 0.1.dev1+ga62ceda documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Raster Hydrograph Examples" href="raster_hydrograph_examples.html" />
+    <link rel="prev" title="Examples" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="raster_hydrograph_examples.html" title="Raster Hydrograph Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga62ceda documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Flow Duration Curve Examples</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="flow-duration-curve-examples">
+<h1>Flow Duration Curve Examples<a class="headerlink" href="#flow-duration-curve-examples" title="Permalink to this heading">¶</a></h1>
+<p>These examples show how flow duration curves can be constructed by fetching data from NWIS using <cite>dataretrieval</cite>, analyzing that data using functions provided by <cite>hyswap</cite> (<a class="reference internal" href="../reference/index.html#hyswap.exceedance.calculate_exceedance_probability_from_values_multiple" title="hyswap.exceedance.calculate_exceedance_probability_from_values_multiple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.exceedance.calculate_exceedance_probability_from_values_multiple</span></code></a>), and then plotted using <cite>matplotlib</cite>.
+For more information on flow duration curves, see the USGS report titled “Flow-duration curves” by James K. Searcy and published in 1959 (<a class="reference external" href="https://doi.org/10.3133/wsp1542A">https://doi.org/10.3133/wsp1542A</a>).</p>
+<p>First we will fetch all streamflow data for a single site from NWIS using the <cite>dataretrieval</cite> package.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s1">&#39;01646500&#39;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+                                   <span class="n">startDT</span><span class="o">=</span><span class="s1">&#39;1900-01-01&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This data can be filtered to only include “approved” data.
+Data quality is coded as “A” for “approved” and “P” for “provisional”.
+<cite>hyswap</cite> has a utility function to help with this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># filter to only approved data</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">filter_approved_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean_cd&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can calculate the exceedance probabilities for 10,000 evenly spaced values between the minimum and maximum values in the data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate 10,000 evenly spaced values between the min and max</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">10000</span><span class="p">)</span>
+
+<span class="c1"># calculate exceedance probabilities</span>
+<span class="n">exceedance_probabilities</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_values_multiple</span><span class="p">(</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Finally, we can plot the flow duration curve using these exceedance probability values and <cite>matplotlib</cite>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exceedance_probabilities</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span>
+    <span class="s1">&#39;Exceedance Probability</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+    <span class="s1">&#39;(Percent of Time Indicated Discharge was Equaled or Exceeded)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Discharge, ft$^3$/s&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Flow Duration Curve for Site # &#39;</span> <span class="o">+</span> <span class="n">siteno</span><span class="p">)</span>
+<span class="c1"># set log scales for axes</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="c1"># set limits for axes</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">99.9</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">)</span>
+<span class="c1"># set ticks for axes</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mf">99.9</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s1">&#39;0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;25&#39;</span><span class="p">,</span> <span class="s1">&#39;50&#39;</span><span class="p">,</span> <span class="s1">&#39;75&#39;</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="s1">&#39;95&#39;</span><span class="p">,</span> <span class="s1">&#39;99.9&#39;</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s1">&#39;100&#39;</span><span class="p">,</span> <span class="s1">&#39;1,000&#39;</span><span class="p">,</span> <span class="s1">&#39;10,000&#39;</span><span class="p">,</span> <span class="s1">&#39;100,000&#39;</span><span class="p">,</span> <span class="s1">&#39;1,000,000&#39;</span><span class="p">])</span>
+<span class="c1"># add grid lines</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="c1"># show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/57ed8610b3bf488e373aa52cb753936c/flow_duration_curve_examples-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/cf679bd8812ecfcec558377d79794621/flow_duration_curve_examples-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/flow_duration_curve_examples-4.png" class="plot-directive" src="../_images/flow_duration_curve_examples-4.png" />
+</figure>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Examples</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="raster_hydrograph_examples.html"
+                          title="next chapter">Raster Hydrograph Examples</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/flow_duration_curve_examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="raster_hydrograph_examples.html" title="Raster Hydrograph Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga62ceda documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Flow Duration Curve Examples</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.0.1.
+    </div>
+  </body>
+</html>
