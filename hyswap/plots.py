@@ -288,13 +288,13 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     if colors is None:
         colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
                   "#7bdbd2", "#7587bf", "#ad63ba"]
-    # plot the latest data
-    ax.plot(df[doy_col], df[data_col], color='k', zorder=10, label=label)
+    # plot the latest data -1 to 0-index day of year
+    ax.plot(df[doy_col]-1, df[data_col], color='k', zorder=10, label=label)
     # plot the historic percentiles filling between each pair
     pct_list.sort()  # sort the list in ascending order
     for i in range(1, len(pct_list)):
         ax.fill_between(
-            percentiles_by_day.index,
+            percentiles_by_day.index.get_level_values(1),
             list(percentiles_by_day[pct_list[i - 1]].values),
             list(percentiles_by_day[pct_list[i]].values),
             color=colors[i - 1],
@@ -306,17 +306,17 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         )
     # set labels
     ax.set_xlabel(xlab)
-    ax.set_xlim(1, 366)
+    ax.set_xlim(0, 365)
     # major xticks at first/end of each month
-    months = [int(m.split('-')[0]) for m in percentiles_by_day.index.to_list()]  # noqa: E501
+    months = [int(m.split('-')[0]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
     month_switch = np.where(np.diff(months) != 0)[0]
-    ax.set_xticks([0] + list(month_switch + 1) + [366], labels=[], minor=False)
+    ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
     # minor xticks at 15th of each month
     unique_months = []
     [unique_months.append(x) for x in months if x not in unique_months]
     month_names = [calendar.month_abbr[i] for i in unique_months]
     month_names = [f'{m}' for m in month_names]
-    days = [int(m.split('-')[1]) for m in percentiles_by_day.index.to_list()]
+    days = [int(m.split('-')[1]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
     mid_days = np.where(np.array(days) == 15)[0]
     ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
     # make minor ticks invisible
@@ -399,7 +399,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     zorder = kwargs.pop('zorder', -20)
     color = kwargs.pop('color', 'xkcd:bright green')
     # plot 25-75 percentile envelope
-    ax.fill_between(pdf.index,
+    ax.fill_between(pdf.index.get_level_values(1),
                     list(pdf[envelope_pct[0]].values),
                     list(pdf[envelope_pct[1]].values),
                     color=color, alpha=alpha,
@@ -408,11 +408,11 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
                     zorder=zorder, **kwargs)
     # plot min/max if desired
     if min_pct:
-        ax.plot(pdf.index, pdf[min_pct], color='k', alpha=0.5,
-                linestyle='--', label="Min. Curve")
+        ax.plot(pdf.index.get_level_values(1), pdf[min_pct], color='k',
+                alpha=0.5, linestyle='--', label="Min. Curve")
     if max_pct:
-        ax.plot(pdf.index, pdf[max_pct], color='k', alpha=0.5,
-                linestyle='--', label="Max. Curve")
+        ax.plot(pdf.index.get_level_values(1), pdf[max_pct], color='k',
+                alpha=0.5, linestyle='--', label="Max. Curve")
     # get data from target year
     target_year_data = cumulative_percentiles.loc[
         cumulative_percentiles.index.year == target_year, 'cumulative']

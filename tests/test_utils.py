@@ -236,3 +236,15 @@ def test_munge_nwis_stats():
     # raise error if column lists are of different lengths
     with pytest.raises(ValueError):
         utils.munge_nwis_stats(df, ['min_va', 'max_va'], [0, 100, 200])
+    # specify year type
+    df_slim = utils.munge_nwis_stats(df, year_type='water')
+    assert df_slim.shape == (4, 8)
+    assert len(df.columns) > len(df_slim.columns)
+    assert 0 in df_slim.columns
+    assert df_slim.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+    # check with climate year
+    df_slim = utils.munge_nwis_stats(df, year_type='climate')
+    assert df_slim.shape == (4, 8)
+    assert len(df.columns) > len(df_slim.columns)
+    assert 0 in df_slim.columns
+    assert df_slim.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]

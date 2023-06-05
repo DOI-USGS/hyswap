@@ -340,7 +340,8 @@ def leap_year_adjustment(df, year_type='calendar'):
     return df
 
 
-def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
+def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
+                     year_type='calendar'):
     """Function to munge and reformat NWIS statistics data.
 
     This is a utility function that exists to help munge NWIS percentile data
@@ -358,6 +359,15 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
         List of column names to use as the target percentiles. If None, then
         integer values are used as the column names corresponding to the
         default source values.
+    year_type : str, optional
+        The type of year to use. Must be one of 'calendar', 'water', or
+        'climate'. Default is 'calendar' which starts the year on January 1
+        and ends on December 31. 'water' starts the year on October 1 and
+        ends on September 30 of the following year which is the "water year".
+        For example, October 1, 2010 to September 30, 2011 is "water year
+        2011". 'climate' years begin on April 1 and end on March 31 of the
+        following year, they are numbered by the ending year. For example,
+        April 1, 2010 to March 31, 2011 is "climate year 2011".
 
     Returns
     -------
@@ -401,8 +411,17 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
     df['year'] = 2020
     # construct date column
     df['date'] = pd.to_datetime(df[['day', 'month', 'year']])
-    # set month-day as index
-    df.index = df['date'].dt.strftime('%m-%d')
+    # set doy_index and month-day as multi-index
+    month_day = df['date'].dt.strftime('%m-%d')
+    doy_index = df['date'].dt.dayofyear
+    if year_type == 'water':
+        doy_index = doy_index - 273
+        doy_index[doy_index < 1] += 365
+    elif year_type == 'climate':
+        doy_index = doy_index - 90
+        doy_index[doy_index < 1] += 365
+    df.index = pd.MultiIndex.from_arrays(
+        [doy_index, month_day], names=['doy', 'month-day'])
     # slim down to just the columns used for the plot
     df_slim = df[source_pct_col]
     # rename columns

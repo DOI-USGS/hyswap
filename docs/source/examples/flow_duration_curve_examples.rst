@@ -131,3 +131,37 @@ In this example we will plot multiple flow duration curves on the same axes.
     ax.legend(loc='best', title='EXPLANATION')
     plt.tight_layout()
     plt.show()
+
+
+Customizing Flow Duration Curve Plots
+*************************************
+
+In this example we will generate a synthetic set of exceedance probabilities from a statistical distribution to demonstrate how one can pass `**kwargs` to the :obj:`hyswap.plots.plot_flow_duration_curve` which are passed through to the underlying :meth:`matplotlib.axes.Axes.plot` and can be used to customize the line that is plotted.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # set up the axes
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # generate synthetic values from a normal distribution with
+    # a mean of 1,000 and a standard deviation of 100
+    values = np.linspace(500, 1500, 10000)  # 10,000 evenly spaced values
+
+    exp = hyswap.exceedance.calculate_exceedance_probability_from_distribution_multiple(
+        values, 'normal', 1000, 100)
+
+    # plot synthetic flow duration curve as a black dashed line with a heavier
+    # line weight than the default and red filled in between the line dashes
+    ax = hyswap.plots.plot_flow_duration_curve(
+        values, exp, ax=ax, title="Synthetic Flow Duration Curve",
+        color='k', linestyle='--', linewidth=5, gapcolor='r'
+    )
+
+    # set the y axes to have a linear scale
+    ax.set_yscale('linear')
+
+    # visualize the plot
+    plt.tight_layout()
+    plt.show()
