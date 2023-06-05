@@ -30,8 +30,8 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
-    'matplotlib.sphinxext.plot_directive'
+    'matplotlib.sphinxext.plot_directive',
+    'sphinx.ext.githubpages'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
