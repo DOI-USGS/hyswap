@@ -332,6 +332,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
 
 
 def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
+                               year_type='calendar',
                                envelope_pct=[25, 75],
                                max_pct=False, min_pct=False,
                                ax=None,
@@ -347,6 +348,21 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
         from :obj:`hyswap.cumulative.calculate_daily_cumulative_values`.
     target_year : int
         Target year to plot in black as the line.
+    year_type : str, optional
+        The type of year to use. Must be one of 'calendar', 'water', or
+        'climate'. Default is 'calendar' which starts the year on January 1
+        and ends on December 31. 'water' starts the year on October 1 and
+        ends on September 30 of the following year which is the "water year".
+        For example, October 1, 2010 to September 30, 2011 is "water year
+        2011". 'climate' years begin on April 1 and end on March 31 of the
+        following year, they are numbered by the ending year. For example,
+        April 1, 2010 to March 31, 2011 is "climate year 2011".
+    envelope_pct : list, optional
+        List of percentiles to plot as the envelope. Default is [25, 75].
+    max_pct : bool, optional
+        If True, plot the maximum value as a dashed line. Default is False.
+    min_pct : bool, optional
+        If True, plot the minimum value as a dotted line. Default is False.
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
@@ -393,7 +409,8 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     # calculations for percentiles by day
     pdf = calculate_variable_percentile_thresholds_by_day(
         cumulative_percentiles, data_column_name='cumulative',
-        percentiles=[min_pct] + envelope_pct + [max_pct])
+        percentiles=[0] + envelope_pct + [100],
+        year_type=year_type)
     # pop some kwargs
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
@@ -408,25 +425,40 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
                     zorder=zorder, **kwargs)
     # plot min/max if desired
     if min_pct:
-        ax.plot(pdf.index.get_level_values(1), pdf[min_pct], color='k',
-                alpha=0.5, linestyle='--', label="Min. Curve")
+        ax.plot(pdf.index.get_level_values(1), pdf[0], color='k',
+                alpha=0.5, linestyle=':', label="Min. Curve")
     if max_pct:
-        ax.plot(pdf.index.get_level_values(1), pdf[max_pct], color='k',
+        ax.plot(pdf.index.get_level_values(1), pdf[100], color='k',
                 alpha=0.5, linestyle='--', label="Max. Curve")
     # get data from target year
     target_year_data = cumulative_percentiles.loc[
-        cumulative_percentiles.index.year == target_year, 'cumulative']
+        cumulative_percentiles['index_year'] == target_year]
     # plot target year
-    ax.plot(target_year_data.index.dayofyear, target_year_data,
+    ax.plot(target_year_data['index_doy'], target_year_data['cumulative'],
             color='k', label=f"{target_year} Cumulative Discharge")
+
     # set labels
     ax.set_xlabel(xlab)
-    ax.set_xlim(1, 365)
-    ax.set_xticks([1] + list(np.arange(30, 360, 30)) + [365])
+    ax.set_xlim(0, 365)
+    # major xticks at first/end of each month
+    months = [int(m.split('-')[0]) for m in pdf.index.get_level_values(1).to_list()]  # noqa: E501
+    month_switch = np.where(np.diff(months) != 0)[0]
+    ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
+    # minor xticks at 15th of each month
+    unique_months = []
+    [unique_months.append(x) for x in months if x not in unique_months]
+    month_names = [calendar.month_abbr[i] for i in unique_months]
+    month_names = [f'{m}' for m in month_names]
+    days = [int(m.split('-')[1]) for m in pdf.index.get_level_values(1).to_list()]  # noqa: E501
+    mid_days = np.where(np.array(days) == 15)[0]
+    ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
+    # make minor ticks invisible
+    ax.tick_params(axis='x', which='minor', length=0)
+    # other labels
     ax.set_ylabel(ylab)
-    # title
     ax.set_title(title)
-    # legend
-    ax.legend(loc="upper left")
+    # two column legend
+    ax.legend(loc="best")
+
     # return
     return ax
