@@ -191,7 +191,7 @@ def test_format_data():
     # test the function with a dataframe and a date index and a water year
     df_out_water = rasterhydrograph.format_data(df_date, 'value',
                                                 year_type='water')
-    assert len(df_out_water.index) == 4
+    assert len(df_out_water.index) == 5
     assert len(df_out_water.columns) == 365
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_out_water.values).all()
@@ -204,7 +204,7 @@ def test_format_data():
     df_7out_water = rasterhydrograph.format_data(df_date, 'value',
                                                  data_type='7-day',
                                                  year_type='water')
-    assert len(df_7out_water.index) == 4
+    assert len(df_7out_water.index) == 5
     assert len(df_7out_water.columns) == 365
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_7out_water.values).all()
@@ -245,7 +245,7 @@ def test_format_data():
     # climate year
     df_out_climate = rasterhydrograph.format_data(df_date, 'value',
                                                   year_type='climate')
-    assert len(df_out_climate.index) == 4
+    assert len(df_out_climate.index) == 5
     assert len(df_out_climate.columns) == 365
     # check that there are non-NaN values in the data frame
     assert ~np.isnan(df_out_climate.values).all()
