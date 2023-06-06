@@ -103,9 +103,10 @@ def test_plot_cumulative_hydrograph():
     # apply plot function
     ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010)
     assert isinstance(ax, plt.Axes)
-    assert ax.get_xlabel() == 'Day of Year'
+    assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative Discharge (cfs)'
-    assert ax.get_title() == 'Cumulative Discharge by Day of Year'
+    assert ax.get_title() == 'Cumulative Discharge'
+    assert len(ax.lines) == 1
     # make one with custom labels
     ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010,
                                           title='Test Title',
@@ -115,3 +116,15 @@ def test_plot_cumulative_hydrograph():
     assert ax.get_xlabel() == 'Test X Label'
     assert ax.get_ylabel() == 'Test Y Label'
     assert ax.get_title() == 'Test Title'
+    assert len(ax.lines) == 1
+    # make one with min/max lines plotted
+    ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010,
+                                          max_pct=True, min_pct=True)
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Month'
+    assert ax.get_ylabel() == 'Cumulative Discharge (cfs)'
+    assert ax.get_title() == 'Cumulative Discharge'
+    assert len(ax.lines) == 3
+    assert len(ax.collections) == 1
+    # close plot
+    plt.close()

@@ -336,9 +336,9 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
                                envelope_pct=[25, 75],
                                max_pct=False, min_pct=False,
                                ax=None,
-                               title="Cumulative Discharge by Day of Year",
+                               title="Cumulative Discharge",
                                ylab="Cumulative Discharge (cfs)",
-                               xlab="Day of Year", **kwargs):
+                               xlab="Month", **kwargs):
     """Make cumulative hydrograph plot.
 
     Parameters
@@ -368,13 +368,13 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
         created.
     title : str, optional
         Title for the plot. If not provided, the default title will be
-        'Cumulative Discharge by Day of Year'.
+        'Cumulative Discharge'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
         'Cumulative Discharge (cfs)'.
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
-        'Day of Year'.
+        'Month'.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
 
