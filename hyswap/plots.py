@@ -325,6 +325,10 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     ax.set_ylabel(ylab)
     ax.set_yscale("log")
     ax.set_title(title)
+    # get y-axis ticks and convert to comma-separated strings
+    yticks = ax.get_yticks()
+    yticklabels = [f'{int(y):,}' for y in yticks]
+    ax.set_yticklabels(yticklabels)
     # two column legend
     ax.legend(loc="best", ncol=2)
     # return axes
@@ -457,6 +461,10 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     # other labels
     ax.set_ylabel(ylab)
     ax.set_title(title)
+    # get y-axis ticks and convert to comma-separated strings
+    yticks = ax.get_yticks()
+    yticklabels = [f'{int(y):,}' for y in yticks]
+    ax.set_yticklabels(yticklabels)
     # two column legend
     ax.legend(loc="best")
 
