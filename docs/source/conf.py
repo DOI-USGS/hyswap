@@ -133,8 +133,10 @@ html_static_path = ['_static']
 # -- Options for linkcheck -------------------------------------------
 
 # Links to not "check" because they are problematic for the link checker
+# typically DOI links don't work
 linkcheck_ignore = [
-    r'https://doi.org/10.3133/wsp1542A'
+    r'https://doi.org/10.3133/wsp1542A',
+    r'https://doi.org/10.1029/2022WR031930'
 ]
 
 linkcheck_exclude_documents = [

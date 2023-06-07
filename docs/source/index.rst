@@ -20,4 +20,5 @@ Table of Contents
    examples/index
    meta/contributing
    meta/disclaimer
+   meta/glossary
    reference/index
