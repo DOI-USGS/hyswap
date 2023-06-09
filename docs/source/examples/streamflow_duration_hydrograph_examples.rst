@@ -48,7 +48,7 @@ Finally, we will plot the streamflow data for 2022 on top of the historical perc
         "index_doy",
         ax=ax,
         data_label="2022",
-        title="Percentiles of Discharge by Day of Year - Site 03586500"
+        title="Percentiles of Streamflow by Day of Year - Site 03586500"
     )
     plt.tight_layout()
     plt.show()
@@ -102,7 +102,7 @@ Now that we've retrieved our web data, we will apply some `hyswap` functions to 
         "doy",
         ax=ax,
         data_label="2022",
-        title="Percentiles of Discharge by Day of Year - Site 03586500"
+        title="Percentiles of Streamflow by Day of Year - Site 03586500"
     )
     plt.tight_layout()
     plt.show()
@@ -142,7 +142,7 @@ The only change this requires from above is specifying the type of year we are p
         "index_doy",
         ax=ax,
         data_label="Water Year 2022",
-        title="Percentiles of Discharge by Day of Year - Site 03586500"
+        title="Percentiles of Streamflow by Day of Year - Site 03586500"
     )
     plt.tight_layout()
     plt.show()
@@ -182,7 +182,7 @@ The only change this requires from above is specifying the type of year we are p
         "index_doy",
         ax=ax,
         data_label="Climate Year 2022",
-        title="Percentiles of Discharge by Day of Year - Site 03586500"
+        title="Percentiles of Streamflow by Day of Year - Site 03586500"
     )
     plt.tight_layout()
     plt.show()
@@ -222,7 +222,7 @@ We will also specify the colors to be used for the percentile envelopes.
         pct_list=[0, 25, 50, 75, 100],
         ax=ax,
         data_label="Water Year 2022",
-        title="Percentiles of Discharge by Day of Year - Site 03586500",
+        title="Percentiles of Streamflow by Day of Year - Site 03586500",
         colors=['r', 'm', 'c', 'b']
     )
     plt.tight_layout()
@@ -262,7 +262,7 @@ Specifically we will set the `alpha` argument to 1.0 to make the fill areas opaq
         "index_doy",
         ax=ax,
         data_label="Water Year 2022",
-        title="Percentiles of Discharge by Day of Year - Site 03586500",
+        title="Percentiles of Streamflow by Day of Year - Site 03586500",
         alpha=1.0
     )
     plt.tight_layout()
