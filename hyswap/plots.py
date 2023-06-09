@@ -169,9 +169,9 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     # add colorbar
     cbar = plt.colorbar(img, ax=ax)
     # set colorbar ticks
-    cticks = cbar.get_ticks()
-    cbar.ax.set_yticks(cticks,
-                       labels=[f'{int(v):,}' for v in cticks])
+    cticks = cbar.ax.get_yticks()
+    cbar.ax.set_yticks(cticks[1:-1],
+                       labels=[f'{int(v):,}' for v in cticks[1:-1]])
     # set colorbar label
     cbar.set_label(cbarlab)
     # cbar height to be same as axes
@@ -328,7 +328,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticks(yticks, labels=yticklabels)
+    ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
     # two column legend
     ax.legend(loc="best", ncol=2)
     # return axes
@@ -464,7 +464,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticks(yticks, labels=yticklabels)
+    ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
     # two column legend
     ax.legend(loc="best")
 
