@@ -430,10 +430,10 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     # plot min/max if desired
     if min_pct:
         ax.plot(pdf.index.get_level_values(1), pdf[0], color='k',
-                alpha=0.5, linestyle=':', label="Min. Curve")
+                alpha=0.5, linestyle=':', label="Minimum")
     if max_pct:
         ax.plot(pdf.index.get_level_values(1), pdf[100], color='k',
-                alpha=0.5, linestyle='--', label="Max. Curve")
+                alpha=0.5, linestyle='--', label="Maximum")
     # get data from target year
     target_year_data = cumulative_percentiles.loc[
         cumulative_percentiles['index_year'] == target_year]
