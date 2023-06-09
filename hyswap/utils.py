@@ -348,6 +348,8 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
     served via the NWIS statistics web service. This function is intended to
     be used on Python dataretrieval dataframe returns for the nwis.get_stats()
     function for "daily" data, a single site, and a single parameter code.
+
+    df : pandas.DataFrame
         DataFrame containing NWIS statistics data retrieved from the statistics
         web service. Assumed to come in as a dataframe retrieved with a
         package like dataretrieval or similar.

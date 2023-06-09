@@ -11,7 +11,8 @@ def plot_flow_duration_curve(
         xlab='Exceedance Probability\n' +
         '(Percent of Time Indicated Discharge was Equaled or Exceeded)',
         ylab='Discharge, ft$^3$/s', grid=True, **kwargs):
-    """Make flow duration curve plot.
+    """
+    Make flow duration curve plot.
 
     Parameters
     ----------
@@ -19,7 +20,7 @@ def plot_flow_duration_curve(
         Values to plot along y-axis.
     exceedance_probabilities : array-like
         Exceedance probabilities for each value, likely calculated from
-        a function in :obj:`hyswap.stats.exceedance`.
+        a function like :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
@@ -27,12 +28,9 @@ def plot_flow_duration_curve(
         Title for the plot. If not provided, the default title will be
         'Flow Duration Curve'.
     xlab : str, optional
-        Label for the x-axis. If not provided, the default label will be
-        'Exceedance Probability\n(Percent of Time Indicated Discharge was
-        Equaled or Exceeded)'.
+        Label for the x-axis. If not provided, a default label will be used.
     ylab : str, optional
-        Label for the y-axis. If not provided, the default label will be
-        'Discharge, ft$^3$/s'.
+        Label for the y-axis. If not provided, a default label will be used.
     grid : bool, optional
         Whether to show grid lines on the plot. Default is True.
     **kwargs
@@ -85,7 +83,7 @@ def plot_flow_duration_curve(
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticklabels(yticklabels)
+    ax.set_yticks(yticks, labels=yticklabels)
     # add grid lines
     if grid:
         ax.grid(which='both', axis='both', alpha=0.5)
@@ -171,7 +169,9 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     # add colorbar
     cbar = plt.colorbar(img, ax=ax)
     # set colorbar ticks
-    cbar.ax.set_yticklabels([f'{int(v):,}' for v in cbar.get_ticks()])
+    cticks = cbar.get_ticks()
+    cbar.ax.set_yticks(cticks,
+                       labels=[f'{int(v):,}' for v in cticks])
     # set colorbar label
     cbar.set_label(cbarlab)
     # cbar height to be same as axes
@@ -328,7 +328,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticklabels(yticklabels)
+    ax.set_yticks(yticks, labels=yticklabels)
     # two column legend
     ax.legend(loc="best", ncol=2)
     # return axes
@@ -464,7 +464,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticklabels(yticklabels)
+    ax.set_yticks(yticks, labels=yticklabels)
     # two column legend
     ax.legend(loc="best")
 
