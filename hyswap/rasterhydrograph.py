@@ -85,7 +85,7 @@ def format_data(df, data_column_name, date_column_name=None,
                        data_type, year_type, begin_year, end_year)
 
     # calculate the date range
-    date_range = _calculate_date_range(df, begin_year, end_year)
+    date_range = _calculate_date_range(df, year_type, begin_year, end_year)
 
     # format date_range as YYYY-MM-DD
     date_range = date_range.strftime('%Y-%m-%d')
@@ -100,18 +100,30 @@ def format_data(df, data_column_name, date_column_name=None,
     # convert date index to YYYY-MM-DD format
     df_out.index = df_out.index.strftime('%Y-%m-%d')
 
-    # fill in missing dates as nan values to complete the years
-    df_out = df_out.reindex(index=date_range)
+    # expand data frame to include all dates in date_range
+    df_out = df_out.reindex(date_range)
 
     # convert date index to datetime format
     df_out.index = pd.to_datetime(df_out.index)
 
-    # adjust for leap years by removing NaN rows
-    df_out = df_out.dropna(axis=0, how='all')
+    # re-define year and doy columns
+    df_out = define_year_doy_columns(df_out, year_type=year_type,
+                                     clip_leap_day=True)
+
+    # sort by date
+    df_out = df_out.sort_index()
+
+    # define future columns as doy_month-day
+    fut_col = [str(df_out['index_doy'][i]) + '-' +
+               str(df_out['index_month_day'][i])
+               for i in range(len(df_out['index_doy'].unique()))]
 
     # set index to year and day of year columns
     df_out = df_out.pivot(index='index_year', columns='index_doy',
                           values=data_column_name)
+
+    # rename columns to be index_doy, index_month_day
+    df_out.columns = fut_col
 
     # reverse order of the index so year order matches legacy Water Watch
     df_out = df_out.iloc[::-1]
@@ -216,7 +228,7 @@ def _check_inputs(df, data_column_name, date_column_name,
     return df
 
 
-def _calculate_date_range(df, begin_year, end_year):
+def _calculate_date_range(df, year_type, begin_year, end_year):
     """Private function to calculate the date range and set the index.
 
     Parameters
@@ -224,6 +236,9 @@ def _calculate_date_range(df, begin_year, end_year):
     df : pandas.DataFrame
         The data to format. Must have a date column or the index must be the
         date values.
+    year_type : str
+        The type of year to use. Must be one of 'calendar', 'water', or
+        'climate'.
     begin_year : int, None
         The first year to include in the data. If None, the first year in
         the data will be used.
@@ -236,15 +251,23 @@ def _calculate_date_range(df, begin_year, end_year):
     date_range : pandas.DatetimeIndex
         The date range.
     """
-    # set begin year
+    # set begin/end year if not provided
     if begin_year is None:
-        begin_year = df['index_year'].min()
-    begin_date = df.loc[df['index_year'] == begin_year].index.min()
-
-    # set end year
+        begin_year = df.index.year.min()
     if end_year is None:
-        end_year = df['index_year'].max()
-    end_date = df.loc[df['index_year'] == end_year].index.max()
+        end_year = df.index.year.max()
+    # calendar year from Jan 1 to Dec 31
+    if year_type == 'calendar':
+        begin_date = pd.to_datetime(str(begin_year) + '-01-01')
+        end_date = pd.to_datetime(str(end_year) + '-12-31')
+    # water year from Oct 1 to Sep 30
+    elif year_type == 'water':
+        begin_date = pd.to_datetime(str(begin_year-1) + '-10-01')
+        end_date = pd.to_datetime(str(end_year) + '-09-30')
+    # climate year from Apr 1 to Mar 31
+    elif year_type == 'climate':
+        begin_date = pd.to_datetime(str(begin_year-1) + '-04-01')
+        end_date = pd.to_datetime(str(end_year) + '-03-31')
 
     # set date range
     date_range = pd.date_range(begin_date, end_date)

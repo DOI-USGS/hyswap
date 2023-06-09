@@ -1,4 +1,5 @@
 """Utility functions for hyswap."""
+import pandas as pd
 
 
 def filter_approved_data(data, filter_column=None):
@@ -219,7 +220,7 @@ def calculate_metadata(data):
 
 def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
                             clip_leap_day=False):
-    """Function to add year and day of year columns to a DataFrame.
+    """Function to add year, day of year, and month-day columns to a DataFrame.
 
     Parameters
     ----------
@@ -247,8 +248,8 @@ def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
     Returns
     -------
     df : pandas.DataFrame
-        DataFrame with year and day of year columns added. Also makes the
-        date_column_name the index of the DataFrame.
+        DataFrame with year, day of year, and month-day columns added. Also
+        makes the date_column_name the index of the DataFrame.
     """
     # set the df index
     if date_column_name is not None:
@@ -287,6 +288,8 @@ def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
                'index_doy'] -= 90
         # adjust Jan 1 to be day 276 of climate year for all years
         df.loc[df.index.month < 4, 'index_doy'] += 275
+    # add month and day columns
+    df['index_month_day'] = df.index.strftime('%m-%d')
     # clip leap year and adjustment
     if clip_leap_day:
         df = leap_year_adjustment(df, year_type=year_type)
@@ -335,3 +338,95 @@ def leap_year_adjustment(df, year_type='calendar'):
                (df.index.month > 2) &
                (df.index.month < 4), 'index_doy'] -= 1
     return df
+
+
+def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
+                     year_type='calendar'):
+    """Function to munge and reformat NWIS statistics data.
+
+    This is a utility function that exists to help munge NWIS percentile data
+    served via the NWIS statistics web service. This function is intended to
+    be used on Python dataretrieval dataframe returns for the nwis.get_stats()
+    function for "daily" data, a single site, and a single parameter code.
+
+    df : pandas.DataFrame
+        DataFrame containing NWIS statistics data retrieved from the statistics
+        web service. Assumed to come in as a dataframe retrieved with a
+        package like dataretrieval or similar.
+    source_pct_col : list, optional
+        List of column names to use as the source percentiles. If None, the
+        values are assumed to correspond to the 0, 5, 10, 25, 75, 90, 95,
+        and 100 percentiles in the NWIS statistics service return.
+    target_pct_col : list, optional
+        List of column names to use as the target percentiles. If None, then
+        integer values are used as the column names corresponding to the
+        default source values.
+    year_type : str, optional
+        The type of year to use. Must be one of 'calendar', 'water', or
+        'climate'. Default is 'calendar' which starts the year on January 1
+        and ends on December 31. 'water' starts the year on October 1 and
+        ends on September 30 of the following year which is the "water year".
+        For example, October 1, 2010 to September 30, 2011 is "water year
+        2011". 'climate' years begin on April 1 and end on March 31 of the
+        following year, they are numbered by the ending year. For example,
+        April 1, 2010 to March 31, 2011 is "climate year 2011".
+
+    Returns
+    -------
+    df_slim : pandas.DataFrame
+        DataFrame containing munged and reformatted NWIS statistics data.
+        Reformatting is for use with the hyswap package plotting function for
+        duration hydrographs with statistical information in background of
+        the plot.
+
+    Examples
+    --------
+    Get some NWIS statistics data.
+
+    .. doctest::
+
+        >>> df, md = dataretrieval.nwis.get_stats(
+        ...     "03586500", parameterCd="00060", statReportType="daily")
+
+    Then apply the function to munge the data.
+
+    .. doctest::
+
+        >>> df = utils.munge_nwis_stats(df)
+        >>> df.shape
+        (366, 8)
+    """
+    # set defaults
+    if source_pct_col is None:
+        source_pct_col = ['min_va', 'p05_va', 'p10_va', 'p25_va',
+                          'p75_va', 'p90_va', 'p95_va', 'max_va']
+    if target_pct_col is None:
+        target_pct_col = [0, 5, 10, 25, 75, 90, 95, 100]
+    # check lengths of lists for column names
+    if len(source_pct_col) != len(target_pct_col):
+        raise ValueError('source_pct_col and target_pct_col must be the same '
+                         'length')
+    # rename date columns
+    df.rename(columns={'month_nu': 'month', 'day_nu': 'day', 'end_yr': 'year'},
+              inplace=True)
+    # make end year 2020 for leap year
+    df['year'] = 2020
+    # construct date column
+    df['date'] = pd.to_datetime(df[['day', 'month', 'year']])
+    # set doy_index and month-day as multi-index
+    month_day = df['date'].dt.strftime('%m-%d')
+    doy_index = df['date'].dt.dayofyear
+    if year_type == 'water':
+        doy_index = doy_index - 273
+        doy_index[doy_index < 1] += 365
+    elif year_type == 'climate':
+        doy_index = doy_index - 90
+        doy_index[doy_index < 1] += 365
+    df.index = pd.MultiIndex.from_arrays(
+        [doy_index, month_day], names=['doy', 'month-day'])
+    # slim down to just the columns used for the plot
+    df_slim = df[source_pct_col]
+    # rename columns
+    df_slim.columns = target_pct_col
+    # return the dataframe
+    return df_slim

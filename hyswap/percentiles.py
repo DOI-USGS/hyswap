@@ -129,8 +129,8 @@ def calculate_variable_percentile_thresholds_by_day(
         8
     """
     # define year and day of year columns and convert date column to datetime
-    # if necessary - copy input df so it is not modified by the function
-    df = define_year_doy_columns(df.copy(), date_column_name=date_column_name,
+    # if necessary
+    df = define_year_doy_columns(df, date_column_name=date_column_name,
                                  year_type=year_type, clip_leap_day=True)
     # based on date, get min and max day of year available
     min_day = np.nanmax((1, df.index.dayofyear.min()))
@@ -152,11 +152,29 @@ def calculate_variable_percentile_thresholds_by_day(
             # calculate percentiles for the day of year and add to DataFrame
             percentiles_by_day.loc[t_idx == doy, :] = \
                 calculate_fixed_percentile_thresholds(
-                data, percentiles=percentiles, method=method, **kwargs)
+                    data, percentiles=percentiles, method=method, **kwargs)
         else:
             # if there are not at least 10 years of data,
             # set percentiles to NaN
             percentiles_by_day.loc[t_idx == doy, :] = np.nan
+
+    # replace index with multi-index of doy_index and month-day values
+    # month_day values
+    month_day = pd.to_datetime(
+        percentiles_by_day.index, format='%j').strftime('%m-%d')
+    # doy_index values
+    doy_index = percentiles_by_day.index.values
+    if year_type == 'water':
+        doy_index = doy_index - 273
+        doy_index[doy_index < 1] += 365
+    elif year_type == 'climate':
+        doy_index = doy_index - 90
+        doy_index[doy_index < 1] += 365
+    percentiles_by_day.index = pd.MultiIndex.from_arrays(
+        [doy_index, month_day], names=['doy', 'month-day'])
+
+    # sort percentiles by index
+    percentiles_by_day.sort_index(inplace=True)
 
     # return percentiles by day of year
     return percentiles_by_day
