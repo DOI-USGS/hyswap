@@ -1,0 +1,559 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hyswap.plots &#8212; hyswap 0.1.dev1+g841a96f documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for hyswap.plots</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Functions to make plots.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">hyswap.percentiles</span> <span class="kn">import</span> <span class="n">calculate_variable_percentile_thresholds_by_day</span>
+
+
+<div class="viewcode-block" id="plot_flow_duration_curve"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_flow_duration_curve">[docs]</a><span class="k">def</span> <span class="nf">plot_flow_duration_curve</span><span class="p">(</span>
+        <span class="n">values</span><span class="p">,</span> <span class="n">exceedance_probabilities</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Flow Duration Curve&#39;</span><span class="p">,</span>
+        <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Exceedance Probability</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+        <span class="s1">&#39;(Percent of Time Indicated Discharge was Equaled or Exceeded)&#39;</span><span class="p">,</span>
+        <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Discharge, ft$^3$/s&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make flow duration curve plot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values : array-like</span>
+<span class="sd">        Values to plot along y-axis.</span>
+<span class="sd">    exceedance_probabilities : array-like</span>
+<span class="sd">        Exceedance probabilities for each value, likely calculated from</span>
+<span class="sd">        a function like :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.</span>
+<span class="sd">    ax : matplotlib.axes.Axes, optional</span>
+<span class="sd">        Axes to plot on. If not provided, a new figure and axes will be</span>
+<span class="sd">        created.</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title for the plot. If not provided, the default title will be</span>
+<span class="sd">        &#39;Flow Duration Curve&#39;.</span>
+<span class="sd">    xlab : str, optional</span>
+<span class="sd">        Label for the x-axis. If not provided, a default label will be used.</span>
+<span class="sd">    ylab : str, optional</span>
+<span class="sd">        Label for the y-axis. If not provided, a default label will be used.</span>
+<span class="sd">    grid : bool, optional</span>
+<span class="sd">        Whether to show grid lines on the plot. Default is True.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Keyword arguments passed to :meth:`matplotlib.axes.Axes.plot`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        Axes object containing the plot.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Fetch some data from NWIS, calculate the exceedance probabilities and then</span>
+<span class="sd">    make the flow duration curve.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(site=&#39;06892350&#39;,</span>
+<span class="sd">        ...                                   parameterCd=&#39;00060&#39;,</span>
+<span class="sd">        ...                                   start=&#39;1776-07-04&#39;,</span>
+<span class="sd">        ...                                   end=&#39;2020-01-01&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; values = np.linspace(df[&#39;00060_Mean&#39;].min(),</span>
+<span class="sd">        ...                      df[&#39;00060_Mean&#39;].max(), 10000)</span>
+<span class="sd">        &gt;&gt;&gt; exceedance_probabilities = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(  # noqa</span>
+<span class="sd">        ...     values, df[&#39;00060_Mean&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; ax = hyswap.plots.plot_flow_duration_curve(</span>
+<span class="sd">        ...     values, exceedance_probabilities,</span>
+<span class="sd">        ...     title=&#39;Flow Duration Curve for USGS Site 06892350&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; plt.tight_layout()</span>
+<span class="sd">        &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create axes if not provided</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="c1"># do plotting</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exceedance_probabilities</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="c1"># set log scales for x axis</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+    <span class="c1"># set limits for axes</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">99.9</span><span class="p">)</span>
+    <span class="c1"># set ticks for axes</span>
+    <span class="c1"># always use same ticks for x-axis</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mf">99.9</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span>
+        <span class="s1">&#39;0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;25&#39;</span><span class="p">,</span> <span class="s1">&#39;50&#39;</span><span class="p">,</span> <span class="s1">&#39;75&#39;</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="s1">&#39;95&#39;</span><span class="p">,</span> <span class="s1">&#39;99.9&#39;</span><span class="p">])</span>
+    <span class="c1"># get y-axis ticks and convert to comma-separated strings</span>
+    <span class="n">yticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
+    <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">)</span>
+    <span class="c1"># add grid lines</span>
+    <span class="k">if</span> <span class="n">grid</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="c1"># return the axes</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="plot_raster_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_raster_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_raster_hydrograph</span><span class="p">(</span><span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Streamflow Raster Hydrograph&#39;</span><span class="p">,</span>
+                           <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span>
+                           <span class="n">cbarlab</span><span class="o">=</span><span class="s1">&#39;Streamflow, cubic feet per second&#39;</span><span class="p">,</span>
+                           <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make raster hydrograph plot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_formatted : pandas.DataFrame</span>
+<span class="sd">        Formatted dataframe containing the raster hydrograph data.</span>
+<span class="sd">    ax : matplotlib.axes.Axes, optional</span>
+<span class="sd">        Axes to plot on. If not provided, a new figure and axes will be</span>
+<span class="sd">        created.</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title for the plot. If not provided, the default title will be</span>
+<span class="sd">        &#39;Streamflow Raster Hydrograph&#39;.</span>
+<span class="sd">    xlab : str, optional</span>
+<span class="sd">        Label for the x-axis. If not provided, the default label will be</span>
+<span class="sd">        &#39;Month&#39;.</span>
+<span class="sd">    ylab : str, optional</span>
+<span class="sd">        Label for the y-axis. If not provided, the default label will be</span>
+<span class="sd">        &#39;Year&#39;.</span>
+<span class="sd">    cbarlab : str, optional</span>
+<span class="sd">        Label for the colorbar. If not provided, the default label will be</span>
+<span class="sd">        &#39;Streamflow, cubic feet per second&#39;.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Keyword arguments passed to :meth:`matplotlib.axes.Axes.imshow`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        Axes object containing the plot.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Fetch some data from NWIS, format it for a raster hydrograph plot and then</span>
+<span class="sd">    make the raster hydrograph plot.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(site=&#39;09380000&#39;,</span>
+<span class="sd">        ...                                   parameterCd=&#39;00060&#39;,</span>
+<span class="sd">        ...                                   start=&#39;1960-01-01&#39;,</span>
+<span class="sd">        ...                                   end=&#39;1970-12-31&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df_rh = hyswap.rasterhydrograph.format_data(df, &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; fig, ax = plt.subplots(figsize=(6, 6))</span>
+<span class="sd">        &gt;&gt;&gt; ax = hyswap.plots.plot_raster_hydrograph(</span>
+<span class="sd">        ...     df_rh, ax=ax, title=&#39;Raster Hydrograph for USGS Site 09380000&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; plt.tight_layout()</span>
+<span class="sd">        &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create axes if not provided</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="c1"># define min/max values</span>
+    <span class="n">min_10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()))),</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">max_10</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())))</span>
+    <span class="c1"># pop some kwargs</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cmap&#39;</span><span class="p">,</span> <span class="s1">&#39;YlGnBu&#39;</span><span class="p">)</span>
+    <span class="n">aspect</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;aspect&#39;</span><span class="p">,</span> <span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="n">interpolation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;interpolation&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">)</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;vmin&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">min_10</span><span class="p">))</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;vmax&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">max_10</span><span class="p">))</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;norm&#39;</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LogNorm</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">))</span>
+    <span class="c1"># do plotting</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df_formatted</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="n">aspect</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                    <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1"># set labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="c1"># add colorbar</span>
+    <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="c1"># set colorbar ticks</span>
+    <span class="n">cticks</span> <span class="o">=</span> <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
+    <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">cticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                       <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="c1"># set colorbar label</span>
+    <span class="n">cbar</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">cbarlab</span><span class="p">)</span>
+    <span class="c1"># cbar height to be same as axes</span>
+    <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="c1"># set yticks</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="p">[],</span> <span class="n">minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="c1"># convert yticklabels to 4 digit years</span>
+    <span class="n">yticklabels</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">()</span>
+    <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">get_text</span><span class="p">()[:</span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticklabels</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">yticklabels</span><span class="p">)</span>
+    <span class="c1"># set xticks at start/end of each month</span>
+    <span class="n">xvals</span> <span class="o">=</span> <span class="n">df_formatted</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xvals</span><span class="p">]</span>
+    <span class="n">month_transitions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">months</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">month_transitions</span><span class="p">),</span>
+                  <span class="n">labels</span><span class="o">=</span><span class="p">[],</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># set xticklabels to be month name at middle of each month</span>
+    <span class="n">unique_months</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="p">[</span><span class="n">unique_months</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">months</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_months</span><span class="p">]</span>
+    <span class="n">month_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span><span class="o">.</span><span class="n">month_abbr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_months</span><span class="p">]</span>
+    <span class="n">month_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">month_names</span><span class="p">]</span>
+    <span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xvals</span><span class="p">]</span>
+    <span class="n">midway_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">days</span><span class="p">)</span> <span class="o">==</span> <span class="mi">15</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">midway_pts</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">month_names</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># make minor ticks invisible</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># return axes</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="plot_duration_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_duration_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_duration_hydrograph</span><span class="p">(</span><span class="n">percentiles_by_day</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">doy_col</span><span class="p">,</span>
+                             <span class="n">pct_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                             <span class="n">data_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Duration Hydrograph&quot;</span><span class="p">,</span>
+                             <span class="n">ylab</span><span class="o">=</span><span class="s2">&quot;Discharge (cfs)&quot;</span><span class="p">,</span> <span class="n">xlab</span><span class="o">=</span><span class="s2">&quot;Month&quot;</span><span class="p">,</span>
+                             <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make duration hydrograph plot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    percentiles_by_day : pandas.DataFrame</span>
+<span class="sd">        Dataframe containing the percentiles by day.</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        Dataframe containing the data to plot.</span>
+<span class="sd">    data_col : str</span>
+<span class="sd">        Column name of the data to plot.</span>
+<span class="sd">    doy_col : str</span>
+<span class="sd">        Column name of the day of year.</span>
+<span class="sd">    pct_list : list, optional</span>
+<span class="sd">        List of integers corresponding to the percentile values to be</span>
+<span class="sd">        plotted. Defaults to 0, 5, 10, 25, 75, 90, 95, 100.</span>
+<span class="sd">    data_label : str, optional</span>
+<span class="sd">        Label for the data to plot. If not provided, a default label will</span>
+<span class="sd">        be used.</span>
+<span class="sd">    ax : matplotlib.axes.Axes, optional</span>
+<span class="sd">        Axes to plot on. If not provided, a new figure and axes will be</span>
+<span class="sd">        created.</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title for the plot. If not provided, the default title will be</span>
+<span class="sd">        &#39;Duration Hydrograph&#39;.</span>
+<span class="sd">    ylab : str, optional</span>
+<span class="sd">        Label for the y-axis. If not provided, the default label will be</span>
+<span class="sd">        &#39;Discharge (cfs)&#39;.</span>
+<span class="sd">    xlab : str, optional</span>
+<span class="sd">        Label for the x-axis. If not provided, the default label will be</span>
+<span class="sd">        &#39;Month&#39;.</span>
+<span class="sd">    colors : list, optional</span>
+<span class="sd">        List of colors to use for the lines. If not provided, a default</span>
+<span class="sd">        list of colors will be used.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        Axes object containing the plot.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Fetch some data from NWIS and make a streamflow duration hydrograph plot.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(site=&#39;06892350&#39;,</span>
+<span class="sd">        ...                                   parameterCd=&#39;00060&#39;,</span>
+<span class="sd">        ...                                   start=&#39;1900-01-01&#39;,</span>
+<span class="sd">        ...                                   end=&#39;2022-12-31&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; pct_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
+<span class="sd">        ...     df, &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df_2022 = df[df.index.year == 2022]</span>
+<span class="sd">        &gt;&gt;&gt; df_2022[&#39;doy&#39;] = df_2022.index.dayofyear</span>
+<span class="sd">        &gt;&gt;&gt; df_2022 = df_2022.sort_values(by=&#39;doy&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; fig, ax = plt.subplots(figsize=(12, 6))</span>
+<span class="sd">        &gt;&gt;&gt; ax = hyswap.plots.plot_duration_hydrograph(</span>
+<span class="sd">        ...     pct_by_day, df_2022, &#39;00060_Mean&#39;, &#39;doy&#39;,</span>
+<span class="sd">        ...     data_label=&#39;2022 Daily Mean Discharge&#39;,</span>
+<span class="sd">        ...     ax=ax, title=&#39;Duration Hydrograph for USGS Site 06892350&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; plt.tight_layout()</span>
+<span class="sd">        &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create axes if not provided</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="c1"># pop some kwargs</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">zorder</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;zorder&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data_label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">data_label</span>
+    <span class="c1"># get colors</span>
+    <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#e37676&quot;</span><span class="p">,</span> <span class="s2">&quot;#e8c285&quot;</span><span class="p">,</span> <span class="s2">&quot;#dbf595&quot;</span><span class="p">,</span> <span class="s2">&quot;#a1cc9f&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;#7bdbd2&quot;</span><span class="p">,</span> <span class="s2">&quot;#7587bf&quot;</span><span class="p">,</span> <span class="s2">&quot;#ad63ba&quot;</span><span class="p">]</span>
+    <span class="c1"># plot the latest data -1 to 0-index day of year</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">doy_col</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="c1"># plot the historic percentiles filling between each pair</span>
+    <span class="n">pct_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>  <span class="c1"># sort the list in ascending order</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pct_list</span><span class="p">)):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
+            <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">percentiles_by_day</span><span class="p">[</span><span class="n">pct_list</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">percentiles_by_day</span><span class="p">[</span><span class="n">pct_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">th - </span><span class="si">{}</span><span class="s2">th Percentile&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">pct_list</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pct_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+            <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+    <span class="c1"># set labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">365</span><span class="p">)</span>
+    <span class="c1"># major xticks at first/end of each month</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">month_switch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">months</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">month_switch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">365</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[],</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># minor xticks at 15th of each month</span>
+    <span class="n">unique_months</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="p">[</span><span class="n">unique_months</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">months</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_months</span><span class="p">]</span>
+    <span class="n">month_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span><span class="o">.</span><span class="n">month_abbr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_months</span><span class="p">]</span>
+    <span class="n">month_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">month_names</span><span class="p">]</span>
+    <span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">mid_days</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">days</span><span class="p">)</span> <span class="o">==</span> <span class="mi">15</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mid_days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">=</span><span class="n">month_names</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># make minor ticks invisible</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># other labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="c1"># get y-axis ticks and convert to comma-separated strings</span>
+    <span class="n">yticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
+    <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># two column legend</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># return axes</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="plot_cumulative_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_cumulative_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_cumulative_hydrograph</span><span class="p">(</span><span class="n">cumulative_percentiles</span><span class="p">,</span> <span class="n">target_year</span><span class="p">,</span>
+                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
+                               <span class="n">envelope_pct</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">],</span>
+                               <span class="n">max_pct</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_pct</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                               <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Cumulative Discharge&quot;</span><span class="p">,</span>
+                               <span class="n">ylab</span><span class="o">=</span><span class="s2">&quot;Cumulative Discharge (cfs)&quot;</span><span class="p">,</span>
+                               <span class="n">xlab</span><span class="o">=</span><span class="s2">&quot;Month&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make cumulative hydrograph plot.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cumulative_percentiles : pandas.DataFrame</span>
+<span class="sd">        Dataframe containing the cumulative percentiles per year, output</span>
+<span class="sd">        from :obj:`hyswap.cumulative.calculate_daily_cumulative_values`.</span>
+<span class="sd">    target_year : int</span>
+<span class="sd">        Target year to plot in black as the line.</span>
+<span class="sd">    year_type : str, optional</span>
+<span class="sd">        The type of year to use. Must be one of &#39;calendar&#39;, &#39;water&#39;, or</span>
+<span class="sd">        &#39;climate&#39;. Default is &#39;calendar&#39; which starts the year on January 1</span>
+<span class="sd">        and ends on December 31. &#39;water&#39; starts the year on October 1 and</span>
+<span class="sd">        ends on September 30 of the following year which is the &quot;water year&quot;.</span>
+<span class="sd">        For example, October 1, 2010 to September 30, 2011 is &quot;water year</span>
+<span class="sd">        2011&quot;. &#39;climate&#39; years begin on April 1 and end on March 31 of the</span>
+<span class="sd">        following year, they are numbered by the ending year. For example,</span>
+<span class="sd">        April 1, 2010 to March 31, 2011 is &quot;climate year 2011&quot;.</span>
+<span class="sd">    envelope_pct : list, optional</span>
+<span class="sd">        List of percentiles to plot as the envelope. Default is [25, 75].</span>
+<span class="sd">    max_pct : bool, optional</span>
+<span class="sd">        If True, plot the maximum value as a dashed line. Default is False.</span>
+<span class="sd">    min_pct : bool, optional</span>
+<span class="sd">        If True, plot the minimum value as a dotted line. Default is False.</span>
+<span class="sd">    ax : matplotlib.axes.Axes, optional</span>
+<span class="sd">        Axes to plot on. If not provided, a new figure and axes will be</span>
+<span class="sd">        created.</span>
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title for the plot. If not provided, the default title will be</span>
+<span class="sd">        &#39;Cumulative Discharge&#39;.</span>
+<span class="sd">    ylab : str, optional</span>
+<span class="sd">        Label for the y-axis. If not provided, the default label will be</span>
+<span class="sd">        &#39;Cumulative Discharge (cfs)&#39;.</span>
+<span class="sd">    xlab : str, optional</span>
+<span class="sd">        Label for the x-axis. If not provided, the default label will be</span>
+<span class="sd">        &#39;Month&#39;.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        Axes object containing the plot.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Fetch some data from NWIS and make a cumulative hydrograph plot.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(site=&#39;06892350&#39;,</span>
+<span class="sd">        ...                                   parameterCd=&#39;00060&#39;,</span>
+<span class="sd">        ...                                   start=&#39;1900-01-01&#39;,</span>
+<span class="sd">        ...                                   end=&#39;2021-12-31&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; cdf = hyswap.cumulative.calculate_daily_cumulative_values(</span>
+<span class="sd">        ...     df, &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; fig, ax = plt.subplots(figsize=(8, 5))</span>
+<span class="sd">        &gt;&gt;&gt; ax = hyswap.plots.plot_cumulative_hydrograph(</span>
+<span class="sd">        ...     cdf, 2020, ax=ax,</span>
+<span class="sd">        ...     title=&#39;2020 Cumulative Streamflow Hydrograph, site 06892350&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; plt.tight_layout()</span>
+<span class="sd">        &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create axes if not provided</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="c1"># calculations for percentiles by day</span>
+    <span class="n">pdf</span> <span class="o">=</span> <span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
+        <span class="n">cumulative_percentiles</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;cumulative&#39;</span><span class="p">,</span>
+        <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">envelope_pct</span> <span class="o">+</span> <span class="p">[</span><span class="mi">100</span><span class="p">],</span>
+        <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">)</span>
+    <span class="c1"># pop some kwargs</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">zorder</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;zorder&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;xkcd:bright green&#39;</span><span class="p">)</span>
+    <span class="c1"># plot 25-75 percentile envelope</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">th - </span><span class="si">{</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">th &quot;</span> <span class="o">+</span>
+                          <span class="s2">&quot;Percentile Envelope&quot;</span><span class="p">,</span>
+                    <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1"># plot min/max if desired</span>
+    <span class="k">if</span> <span class="n">min_pct</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">pdf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Minimum&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_pct</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">pdf</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Maximum&quot;</span><span class="p">)</span>
+    <span class="c1"># get data from target year</span>
+    <span class="n">target_year_data</span> <span class="o">=</span> <span class="n">cumulative_percentiles</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="n">cumulative_percentiles</span><span class="p">[</span><span class="s1">&#39;index_year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">target_year</span><span class="p">]</span>
+    <span class="c1"># plot target year</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">target_year_data</span><span class="p">[</span><span class="s1">&#39;index_doy&#39;</span><span class="p">],</span> <span class="n">target_year_data</span><span class="p">[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">],</span>
+            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_year</span><span class="si">}</span><span class="s2"> Cumulative Discharge&quot;</span><span class="p">)</span>
+
+    <span class="c1"># set labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">365</span><span class="p">)</span>
+    <span class="c1"># major xticks at first/end of each month</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">month_switch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">months</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">month_switch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">365</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[],</span> <span class="n">minor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># minor xticks at 15th of each month</span>
+    <span class="n">unique_months</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="p">[</span><span class="n">unique_months</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">months</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">unique_months</span><span class="p">]</span>
+    <span class="n">month_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span><span class="o">.</span><span class="n">month_abbr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_months</span><span class="p">]</span>
+    <span class="n">month_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">month_names</span><span class="p">]</span>
+    <span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">pdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">mid_days</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">days</span><span class="p">)</span> <span class="o">==</span> <span class="mi">15</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mid_days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">labels</span><span class="o">=</span><span class="n">month_names</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># make minor ticks invisible</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;minor&#39;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># other labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="c1"># get y-axis ticks and convert to comma-separated strings</span>
+    <span class="n">yticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
+    <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># two column legend</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
+
+    <span class="c1"># return</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.0.1.
+    </div>
+  </body>
+</html>

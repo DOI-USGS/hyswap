@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Cumulative Streamflow Hydrograph Examples &#8212; hyswap 0.1.dev1+gb6c8069 documentation</title>
+    <title>Cumulative Streamflow Hydrographs &#8212; hyswap 0.1.dev1+g841a96f documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -18,8 +18,8 @@
     <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Module Dependency Graph" href="../reference/index.html" />
-    <link rel="prev" title="Streamflow Duration Hydrograph Examples" href="streamflow_duration_hydrograph_examples.html" />
+    <link rel="next" title="Contributing Guidelines" href="../meta/contributing.html" />
+    <link rel="prev" title="Streamflow Duration Hydrographs" href="streamflow_duration_hydrograph_examples.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
@@ -35,14 +35,14 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../reference/index.html" title="Module Dependency Graph"
+          <a href="../meta/contributing.html" title="Contributing Guidelines"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrograph Examples"
+          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrographs"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb6c8069 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Cumulative Streamflow Hydrograph Examples</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Cumulative Streamflow Hydrographs</a></li> 
       </ul>
     </div>  
 
@@ -51,10 +51,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="cumulative-streamflow-hydrograph-examples">
-<h1>Cumulative Streamflow Hydrograph Examples<a class="headerlink" href="#cumulative-streamflow-hydrograph-examples" title="Permalink to this heading">¶</a></h1>
+  <section id="cumulative-streamflow-hydrographs">
+<h1>Cumulative Streamflow Hydrographs<a class="headerlink" href="#cumulative-streamflow-hydrographs" title="Permalink to this heading">¶</a></h1>
 <p>The following examples show how to fetch some data, and then calculate values for a cumulative streamflow hydrograph.
 Then an example plotting routine to plot the cumulative hydrograph is shown.</p>
+<section id="cumulative-streamflow-over-the-2020-water-year">
+<h2>Cumulative Streamflow Over The 2020 Water Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-water-year" title="Permalink to this heading">¶</a></h2>
 <p>First we will fetch some streamflow data from the NWIS service using the <cite>dataretrieval</cite> package.
 In this example we will fetch 20 years of data from a single site and then calculate the cumulative streamflow percentiles from that data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
@@ -62,36 +64,43 @@ In this example we will fetch 20 years of data from a single site and then calcu
     <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2020-12-31&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now we can calculate the cumulative streamflow values per year using the <code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.cumulative.calculate_daily_cumulative_values</span></code> function.</p>
+<p>Now we can calculate the cumulative streamflow values per year using the <a class="reference internal" href="../reference/index.html#hyswap.cumulative.calculate_daily_cumulative_values" title="hyswap.cumulative.calculate_daily_cumulative_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.cumulative.calculate_daily_cumulative_values</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculate the cumulative streamflow values per year</span>
 <span class="n">cdf</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">cumulative</span><span class="o">.</span><span class="n">calculate_daily_cumulative_values</span><span class="p">(</span>
     <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Next we can use the <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="hyswap.percentiles.calculate_variable_percentile_thresholds_by_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_variable_percentile_thresholds_by_day</span></code></a> function to calculate the percentiles for each day of the year.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculate the percentiles for each day of the year</span>
-<span class="n">pdf</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">cdf</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;cumulative&#39;</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>Finally we can plot the cumulative streamflow hydrograph using <cite>matplotlib</cite>.</p>
+<p>Then we can plot the cumulative streamflow hydrograph using the
+<a class="reference internal" href="../reference/index.html#hyswap.plots.plot_cumulative_hydrograph" title="hyswap.plots.plot_cumulative_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_cumulative_hydrograph</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="c1"># plot the 25-75 percentile envelope</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">365</span><span class="p">),</span>
-                <span class="nb">list</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()),</span>
-                <span class="nb">list</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="mi">75</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()),</span>
-                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;xkcd:bright green&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;25-75 Percentile Envelope&#39;</span><span class="p">)</span>
-<span class="c1"># get data from water year 2020 and plot it over top the envelope</span>
-<span class="n">data_2020</span> <span class="o">=</span> <span class="n">cdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cdf</span><span class="p">[</span><span class="s1">&#39;index_year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2020</span><span class="p">]</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data_2020</span><span class="p">[</span><span class="s1">&#39;index_doy&#39;</span><span class="p">],</span> <span class="n">data_2020</span><span class="p">[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">],</span>
-        <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;2020 Water Year&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">)</span>
-<span class="c1"># add labels</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Day of Water Year&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative Streamflow (cfs)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
+    <span class="n">cdf</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/fe8745dbb581a9faaa773cc3a47f27a3/cumulative_hydrograph_examples-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f876865936b8bb8ca6b00ad9db8e399c/cumulative_hydrograph_examples-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/cumulative_hydrograph_examples-3.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-3.png" />
+</figure>
+</section>
+<section id="cumulative-streamflow-over-the-2020-calendar-year">
+<h2>Cumulative Streamflow Over The 2020 Calendar Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-calendar-year" title="Permalink to this heading">¶</a></h2>
+<p>We can also calculate and visualize the cumulative streamflow hydrograph for the 2020 calendar year, rather than the water year.
+The code is very similar, we simply do not specify the <cite>year_type</cite> argument in the <a class="reference internal" href="../reference/index.html#hyswap.cumulative.calculate_daily_cumulative_values" title="hyswap.cumulative.calculate_daily_cumulative_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.cumulative.calculate_daily_cumulative_values</span></code></a> function, as the default is to use the calendar year.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
+    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2020-12-31&#39;</span><span class="p">)</span>
+
+<span class="c1"># calculate the cumulative streamflow values per year</span>
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">cumulative</span><span class="o">.</span><span class="n">calculate_daily_cumulative_values</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot the cumulative streamflow hydrograph</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
+    <span class="n">cdf</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -99,6 +108,84 @@ In this example we will fetch 20 years of data from a single site and then calcu
 <figure class="align-default">
 <img alt="../_images/cumulative_hydrograph_examples-4.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-4.png" />
 </figure>
+</section>
+<section id="cumulative-streamflow-over-the-2020-climate-year">
+<h2>Cumulative Streamflow Over The 2020 Climate Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-climate-year" title="Permalink to this heading">¶</a></h2>
+<p>We can also calculate and visualize the cumulative streamflow hydrograph for the 2020 climate year, rather than the water year or the calendar year.
+The code is very similar, we simply specify the <cite>year_type</cite> argument in the <a class="reference internal" href="../reference/index.html#hyswap.cumulative.calculate_daily_cumulative_values" title="hyswap.cumulative.calculate_daily_cumulative_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.cumulative.calculate_daily_cumulative_values</span></code></a> function to be ‘climate’.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
+    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2020-12-31&#39;</span><span class="p">)</span>
+
+<span class="c1"># calculate the cumulative streamflow values per year</span>
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">cumulative</span><span class="o">.</span><span class="n">calculate_daily_cumulative_values</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot the cumulative streamflow hydrograph</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
+    <span class="n">cdf</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/3275920d3d15a7112a99aae1f32ae126/cumulative_hydrograph_examples-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/2f6eea78a95eb37d3ffa6eb6c5205161/cumulative_hydrograph_examples-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/cumulative_hydrograph_examples-5.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-5.png" />
+</figure>
+</section>
+<section id="visualizing-the-minimum-and-maximum-cumulative-percentile-values">
+<h2>Visualizing the Minimum and Maximum Cumulative Percentile Values<a class="headerlink" href="#visualizing-the-minimum-and-maximum-cumulative-percentile-values" title="Permalink to this heading">¶</a></h2>
+<p>We can also visualize the minimum and maximum cumulative percentile values for a given year as dotted and dashed lines respectively.
+We will use the calendar year example to showcase this functionality.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
+    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2020-12-31&#39;</span><span class="p">)</span>
+
+<span class="c1"># calculate the cumulative streamflow values per year</span>
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">cumulative</span><span class="o">.</span><span class="n">calculate_daily_cumulative_values</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot the cumulative streamflow hydrograph</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
+    <span class="n">cdf</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">max_pct</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_pct</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/b633a5cc98dd530663b0ef35d417b202/cumulative_hydrograph_examples-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/a62c0be1f5b2af241479893bd9f2880d/cumulative_hydrograph_examples-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/cumulative_hydrograph_examples-6.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-6.png" />
+</figure>
+</section>
+<section id="customizing-the-filled-envelope">
+<h2>Customizing the Filled Envelope<a class="headerlink" href="#customizing-the-filled-envelope" title="Permalink to this heading">¶</a></h2>
+<p>We can customize both the percentile thresholds between which a shaded area is plotted, as well as the color and transparency of the shaded area.
+The percentile thresholds used as the upper and lower-bound of the shaded area can be specified using the <cite>envelope_pct</cite> argument.
+The color and transparency, as well as other properties, of the filled region can be customized by passing keyword arguments to the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_cumulative_hydrograph" title="hyswap.plots.plot_cumulative_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_cumulative_hydrograph</span></code></a> function, as those arguments are passed to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.fill_between()</span></code> function.
+We provide an example of doing this by filling between the 10th and 90th percentiles, and making the filled region red and semi-transparent.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
+    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2020-12-31&#39;</span><span class="p">)</span>
+
+<span class="c1"># calculate the cumulative streamflow values per year</span>
+<span class="n">cdf</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">cumulative</span><span class="o">.</span><span class="n">calculate_daily_cumulative_values</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot the cumulative streamflow hydrograph</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
+    <span class="n">cdf</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="n">envelope_pct</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/2f440a274d1d16adf488eeea47275fb7/cumulative_hydrograph_examples-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/1a5dbba4097dca7f9964b9e52be1fefa/cumulative_hydrograph_examples-7.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/cumulative_hydrograph_examples-7.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-7.png" />
+</figure>
+</section>
 </section>
 
 
@@ -109,14 +196,28 @@ In this example we will fetch 20 years of data from a single site and then calcu
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Cumulative Streamflow Hydrographs</a><ul>
+<li><a class="reference internal" href="#cumulative-streamflow-over-the-2020-water-year">Cumulative Streamflow Over The 2020 Water Year</a></li>
+<li><a class="reference internal" href="#cumulative-streamflow-over-the-2020-calendar-year">Cumulative Streamflow Over The 2020 Calendar Year</a></li>
+<li><a class="reference internal" href="#cumulative-streamflow-over-the-2020-climate-year">Cumulative Streamflow Over The 2020 Climate Year</a></li>
+<li><a class="reference internal" href="#visualizing-the-minimum-and-maximum-cumulative-percentile-values">Visualizing the Minimum and Maximum Cumulative Percentile Values</a></li>
+<li><a class="reference internal" href="#customizing-the-filled-envelope">Customizing the Filled Envelope</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="streamflow_duration_hydrograph_examples.html"
-                          title="previous chapter">Streamflow Duration Hydrograph Examples</a></p>
+                          title="previous chapter">Streamflow Duration Hydrographs</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="../reference/index.html"
-                          title="next chapter">Module Dependency Graph</a></p>
+    <p class="topless"><a href="../meta/contributing.html"
+                          title="next chapter">Contributing Guidelines</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -149,14 +250,14 @@ In this example we will fetch 20 years of data from a single site and then calcu
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../reference/index.html" title="Module Dependency Graph"
+          <a href="../meta/contributing.html" title="Contributing Guidelines"
              >next</a> |</li>
         <li class="right" >
-          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrograph Examples"
+          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrographs"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb6c8069 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Cumulative Streamflow Hydrograph Examples</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Cumulative Streamflow Hydrographs</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

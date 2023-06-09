@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gb6c8069 documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+g841a96f documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb6c8069 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -174,8 +174,8 @@
 <span class="sd">        8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># define year and day of year columns and convert date column to datetime</span>
-    <span class="c1"># if necessary - copy input df so it is not modified by the function</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">date_column_name</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">,</span>
+    <span class="c1"># if necessary</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">,</span>
                                  <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">,</span> <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># based on date, get min and max day of year available</span>
     <span class="n">min_day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span><span class="o">.</span><span class="n">min</span><span class="p">()))</span>
@@ -197,11 +197,29 @@
             <span class="c1"># calculate percentiles for the day of year and add to DataFrame</span>
             <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t_idx</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> \
                 <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-                <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if there are not at least 10 years of data,</span>
             <span class="c1"># set percentiles to NaN</span>
             <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t_idx</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># replace index with multi-index of doy_index and month-day values</span>
+    <span class="c1"># month_day values</span>
+    <span class="n">month_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+        <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%j&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># doy_index values</span>
+    <span class="n">doy_index</span> <span class="o">=</span> <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">if</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;water&#39;</span><span class="p">:</span>
+        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="mi">273</span>
+        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">365</span>
+    <span class="k">elif</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;climate&#39;</span><span class="p">:</span>
+        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="mi">90</span>
+        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">365</span>
+    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">doy_index</span><span class="p">,</span> <span class="n">month_day</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;doy&#39;</span><span class="p">,</span> <span class="s1">&#39;month-day&#39;</span><span class="p">])</span>
+
+    <span class="c1"># sort percentiles by index</span>
+    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># return percentiles by day of year</span>
     <span class="k">return</span> <span class="n">percentiles_by_day</span></div>
@@ -236,7 +254,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb6c8069 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>

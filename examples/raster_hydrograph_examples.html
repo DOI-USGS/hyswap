@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Raster Hydrograph Examples &#8212; hyswap 0.1.dev1+gb6c8069 documentation</title>
+    <title>Raster Hydrographs &#8212; hyswap 0.1.dev1+g841a96f documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -18,8 +18,8 @@
     <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Streamflow Duration Hydrograph Examples" href="streamflow_duration_hydrograph_examples.html" />
-    <link rel="prev" title="Flow Duration Curve Examples" href="flow_duration_curve_examples.html" />
+    <link rel="next" title="Streamflow Duration Hydrographs" href="streamflow_duration_hydrograph_examples.html" />
+    <link rel="prev" title="Flow Duration Curves" href="flow_duration_curve_examples.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
@@ -35,14 +35,14 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrograph Examples"
+          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrographs"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="flow_duration_curve_examples.html" title="Flow Duration Curve Examples"
+          <a href="flow_duration_curve_examples.html" title="Flow Duration Curves"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb6c8069 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Raster Hydrograph Examples</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Raster Hydrographs</a></li> 
       </ul>
     </div>  
 
@@ -51,12 +51,15 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="raster-hydrograph-examples">
-<h1>Raster Hydrograph Examples<a class="headerlink" href="#raster-hydrograph-examples" title="Permalink to this heading">¶</a></h1>
-<p>These examples show how raster hydrographs can be constructed by fetching data from NWIS using <cite>dataretrieval</cite>, formatting that data using functions provided by <cite>hyswap</cite> (<a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a>), and then plotted using <cite>matplotlib</cite>.</p>
+  <section id="raster-hydrographs">
+<h1>Raster Hydrographs<a class="headerlink" href="#raster-hydrographs" title="Permalink to this heading">¶</a></h1>
+<p>These examples show how raster hydrographs can be constructed by fetching data from NWIS using <cite>dataretrieval</cite>, formatting that data using functions provided by <cite>hyswap</cite> (<a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a>), and then plotting using <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_raster_hydrograph" title="hyswap.plots.plot_raster_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_raster_hydrograph</span></code></a>.</p>
+<section id="daily-data-raster-hydrograph-example-site-03586500">
+<h2>Daily Data Raster Hydrograph Example (Site 03586500)<a class="headerlink" href="#daily-data-raster-hydrograph-example-site-03586500" title="Permalink to this heading">¶</a></h2>
 <p>First we will fetch 20 years of streamflow data for a single site from NWIS using the <cite>dataretrieval</cite> package.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;03586500&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
                                   <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -69,14 +72,9 @@ raster hydrograph.</p>
 <p>Now the data is arranged with years on the index (rows) and days of the year as columns, this makes it easy to plot as a raster hydrograph.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">img</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">df_formatted</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;YlGnBu&quot;</span><span class="p">,</span>
-                <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LogNorm</span><span class="p">())</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Streamflow, cubic feet per second&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="p">[],</span> <span class="n">minor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)),</span> <span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Day of Year&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Year&quot;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Streamflow Raster Hydrograph for Site 03586500&quot;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_raster_hydrograph</span><span class="p">(</span>
+    <span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Raster Hydrograph for Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -84,6 +82,169 @@ raster hydrograph.</p>
 <figure class="align-default">
 <img alt="../_images/raster_hydrograph_examples-3.png" class="plot-directive" src="../_images/raster_hydrograph_examples-3.png" />
 </figure>
+</section>
+<section id="day-average-raster-hydrograph-example-site-03586500">
+<h2>7-Day Average Raster Hydrograph Example (Site 03586500)<a class="headerlink" href="#day-average-raster-hydrograph-example-site-03586500" title="Permalink to this heading">¶</a></h2>
+<p>The same data can be plotted as a 7-day average raster hydrograph by passing the <cite>data_type</cite> argument to <a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;03586500&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># format the data for a 7-day rolling average</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;7-day&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_raster_hydrograph</span><span class="p">(</span>
+    <span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;7-Day Average Raster Hydrograph for Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">cbarlab</span><span class="o">=</span><span class="s1">&#39;7-Day Average Streamflow, cubic feet per second&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/905d406c6b8b38a781c5378fc92cdb10/raster_hydrograph_examples-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/0f16192e7f00a99f19489b19bbe2366a/raster_hydrograph_examples-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/raster_hydrograph_examples-4.png" class="plot-directive" src="../_images/raster_hydrograph_examples-4.png" />
+</figure>
+<p>This resulting 7-day averaged raster hydrograph should look “smoother” than the single day raster hydrograph shown previously.</p>
+</section>
+<section id="raster-hydrograph-over-a-water-year">
+<h2>Raster Hydrograph Over a “Water Year”<a class="headerlink" href="#raster-hydrograph-over-a-water-year" title="Permalink to this heading">¶</a></h2>
+<p>There is also support for visualizing the raster hydrograph over the course of a water year, which begins on October 1st and ends on September 30th of the following year.
+The ending year is the year that is displayed on the y-axis of the raster hydrograph, for example, the water year 2020 would be displayed as 2020 on the y-axis, but would actually contain data from October 1st, 2019 to September 30th, 2020.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;08110500&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1975-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;1995-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># format the data</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_raster_hydrograph</span><span class="p">(</span>
+    <span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&#39;Water Year&#39; Raster Hydrograph for Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Water Year&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/d685b20252ae6795e4d6b2170f6afa55/raster_hydrograph_examples-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/edc220ab84d8d192499afd0210242404/raster_hydrograph_examples-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/raster_hydrograph_examples-5.png" class="plot-directive" src="../_images/raster_hydrograph_examples-5.png" />
+</figure>
+</section>
+<section id="raster-hydrograph-over-a-climate-year-with-alt-colors">
+<h2>Raster Hydrograph Over a “Climate Year” with Alt. Colors<a class="headerlink" href="#raster-hydrograph-over-a-climate-year-with-alt-colors" title="Permalink to this heading">¶</a></h2>
+<p>There is also support for visualizing the raster hydrograph over the course of a climate year, which begins on April 1st and ends on March 31th of the following year.
+The ending year is the year that is displayed on the y-axis of the raster hydrograph, for example, the climate year 2020 would be displayed as 2020 on the y-axis, but would actually contain data from April 1st, 2019 to March 31th, 2020.</p>
+<p>In this example, we will also change the color of the raster hydrograph to be shades of yellow, orange, and red, and show how that can be done by passing the <cite>cmap</cite> keyword argument to <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_raster_hydrograph" title="hyswap.plots.plot_raster_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_raster_hydrograph</span></code></a> while specifying a <cite>matplotlib</cite> colormap.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;12205000&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1995-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2015-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># format the data</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_raster_hydrograph</span><span class="p">(</span>
+    <span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&#39;Climate Year&#39; Raster Hydrograph for Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Climate Year&#39;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;YlOrRd&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/adf248567f200f03f3a8791bea0749f9/raster_hydrograph_examples-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/6f5715769257447d64910ae9562bf2ef/raster_hydrograph_examples-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/raster_hydrograph_examples-6.png" class="plot-directive" src="../_images/raster_hydrograph_examples-6.png" />
+</figure>
+<p>We can also use just a subset of the available data if we wish by specifying start and end years using the <cite>begin_year</cite> and <cite>end_year</cite> keyword arguments to <a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;12205000&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1995-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2015-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># format the data to years 2000-2010</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
+    <span class="n">begin_year</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2010</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_raster_hydrograph</span><span class="p">(</span>
+    <span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;2000-2010 &#39;Climate Year&#39; Raster Hydrograph for Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Climate Year&#39;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;YlOrRd&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/1a06c9d00e65c51fd48396f9face2db6/raster_hydrograph_examples-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f7f7c0a77db511f234e4f08f7488e747/raster_hydrograph_examples-7.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/raster_hydrograph_examples-7.png" class="plot-directive" src="../_images/raster_hydrograph_examples-7.png" />
+</figure>
+</section>
+<section id="raster-hydrograph-of-non-streamflow-data">
+<h2>Raster Hydrograph of Non-Streamflow Data<a class="headerlink" href="#raster-hydrograph-of-non-streamflow-data" title="Permalink to this heading">¶</a></h2>
+<p>The functions used above to generate raster hydrographs graphically depicting streamflow over time can also be used to visualize other types of data.
+For example, we can visualize a “raster hydrograph” of the water level at a station over time.
+We will use station 02311500 in Florida as an example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get stage data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;02311500&quot;</span>
+<span class="n">parameterCd</span> <span class="o">=</span> <span class="s2">&quot;00065&quot;</span>  <span class="c1"># code for gage height</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="n">parameterCd</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># format the data</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00065_Mean&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_raster_hydrograph</span><span class="p">(</span>
+    <span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Stage &#39;Raster Hydrograph&#39; for Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cool&#39;</span><span class="p">,</span> <span class="n">cbarlab</span><span class="o">=</span><span class="s1">&#39;Gage height, feet&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/a0729263f2c44151f4b695b7b6b25555/raster_hydrograph_examples-8.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/e1c22f09326e423b98f5982cb16ad0f5/raster_hydrograph_examples-8.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/raster_hydrograph_examples-8.png" class="plot-directive" src="../_images/raster_hydrograph_examples-8.png" />
+</figure>
+<p>We can improve this visualization by turning off the logarithmic color scale by setting the normalization of the colorbar to be <cite>None</cite> which overrides the default normalization of <cite>matplotlib.colors.LogNorm</cite>.
+The default scheme is logarithmic because this is the most common way to visualize streamflow data, but for other types of data, a linear scale may be more appropriate.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get stage data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;02311500&quot;</span>
+<span class="n">parameterCd</span> <span class="o">=</span> <span class="s2">&quot;00065&quot;</span>  <span class="c1"># code for gage height</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="n">parameterCd</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># format the data</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00065_Mean&#39;</span><span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_raster_hydrograph</span><span class="p">(</span>
+    <span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Stage &#39;Raster Hydrograph&#39; for Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cool&#39;</span><span class="p">,</span> <span class="n">cbarlab</span><span class="o">=</span><span class="s1">&#39;Gage height, feet&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/5b961031deab308d96ed8241f84d4a78/raster_hydrograph_examples-9.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/5a5602d313f6fb37f7b7ad091fcabb81/raster_hydrograph_examples-9.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/raster_hydrograph_examples-9.png" class="plot-directive" src="../_images/raster_hydrograph_examples-9.png" />
+</figure>
+</section>
 </section>
 
 
@@ -94,14 +255,28 @@ raster hydrograph.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Raster Hydrographs</a><ul>
+<li><a class="reference internal" href="#daily-data-raster-hydrograph-example-site-03586500">Daily Data Raster Hydrograph Example (Site 03586500)</a></li>
+<li><a class="reference internal" href="#day-average-raster-hydrograph-example-site-03586500">7-Day Average Raster Hydrograph Example (Site 03586500)</a></li>
+<li><a class="reference internal" href="#raster-hydrograph-over-a-water-year">Raster Hydrograph Over a “Water Year”</a></li>
+<li><a class="reference internal" href="#raster-hydrograph-over-a-climate-year-with-alt-colors">Raster Hydrograph Over a “Climate Year” with Alt. Colors</a></li>
+<li><a class="reference internal" href="#raster-hydrograph-of-non-streamflow-data">Raster Hydrograph of Non-Streamflow Data</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="flow_duration_curve_examples.html"
-                          title="previous chapter">Flow Duration Curve Examples</a></p>
+                          title="previous chapter">Flow Duration Curves</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
     <p class="topless"><a href="streamflow_duration_hydrograph_examples.html"
-                          title="next chapter">Streamflow Duration Hydrograph Examples</a></p>
+                          title="next chapter">Streamflow Duration Hydrographs</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -134,14 +309,14 @@ raster hydrograph.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrograph Examples"
+          <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrographs"
              >next</a> |</li>
         <li class="right" >
-          <a href="flow_duration_curve_examples.html" title="Flow Duration Curve Examples"
+          <a href="flow_duration_curve_examples.html" title="Flow Duration Curves"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb6c8069 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g841a96f documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Raster Hydrograph Examples</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Raster Hydrographs</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
