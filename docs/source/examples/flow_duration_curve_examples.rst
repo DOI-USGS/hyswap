@@ -130,6 +130,9 @@ In this example we will generate a synthetic set of exceedance probabilities fro
     # set the y axes to have a linear scale
     ax.set_yscale('linear')
 
+    # set y axes limits based on the data
+    ax.set_ylim(values.min(), values.max())
+
     # visualize the plot
     plt.tight_layout()
     plt.show()
