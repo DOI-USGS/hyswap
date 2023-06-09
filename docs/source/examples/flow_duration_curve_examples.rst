@@ -95,9 +95,8 @@ In this example we will plot multiple flow duration curves on the same axes.
         )
 
     # visualize the plot
-    ax.set_title("Flow Duration Curves for USGS Sites " +
-                 f"{', '.join(str(i) for i in sitenos)}")
-    ax.legend(loc='best', title='EXPLANATION')
+    ax.set_title("Multiple USGS Flow Duration Curves")
+    ax.legend(loc='best')
     plt.tight_layout()
     plt.show()
 
