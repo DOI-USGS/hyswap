@@ -65,7 +65,8 @@ The same data can be plotted as a 7-day average raster hydrograph by passing the
     fig, ax = plt.subplots()
     ax = hyswap.plots.plot_raster_hydrograph(
         df_formatted, ax=ax,
-        title=f"7-Day Average Raster Hydrograph for Site {siteno}")
+        title=f"7-Day Average Raster Hydrograph for Site {siteno}",
+        cbarlab='7-Day Average Streamflow, cubic feet per second')
     plt.show()
 
 
