@@ -2,11 +2,36 @@ Installation
 ============
 
 Installation instructions for the ``hyswap`` package are provided below.
-We provide instructions on recommended "user" installation with minimal dependencies, as well as how to install the package as a "developer" such that it is is "editable" and contains all of the dependencies needed to run the tests and build the package documentation.
+We provide instructions on recommended "user" installations with minimal dependencies, as well as how to install the package as a "developer" such that it is is "editable" and contains all of the dependencies needed to run the tests and build the package documentation.
 
 
 User Installation
 -----------------
+
+Below are two recommended installation methods for users of the ``hyswap`` package.
+
+
+Installation via ``pip``
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+``hyswap`` is hosted on `pypi <pypi>`_ and can therefore be installed using ``pip``.
+This can be done with the following command:
+
+.. _pypi: https://pypi.org/project/hyswap/
+
+.. code-block:: bash
+
+    pip install hyswap
+
+It is possible to specific the specific version of the package you'd like to install with a command like:
+
+.. code-block:: bash
+
+    pip install hyswap==0.0.1
+
+
+Installation from source
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Below are the commands to install the ``hyswap`` package from source as a user.
 This installation will be static, and reflect the version of the package as it was at the time the code was downloaded.
@@ -33,7 +58,7 @@ This installation will also contain all of the dependencies needed to run the te
     pip install -r requirements-dev.txt
     pip install -e .
 
-Once the installation is complete, the suite of tests can be run with a single command in the console:
+Once the installation is complete, the suite of unit tests can be run with a single command in the console:
 
 .. code-block:: bash
 
