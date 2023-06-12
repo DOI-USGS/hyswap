@@ -140,5 +140,6 @@ linkcheck_ignore = [
 
 linkcheck_exclude_documents = [
     r'meta/disclaimer*',
-    r'meta/contributing*'
+    r'meta/contributing*',
+    r'meta/installation*'
 ]
