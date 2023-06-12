@@ -28,6 +28,9 @@ Read more about the differences between the two workflows [here](https://www.atl
   - [Feedback and Feature Requests](#feedback-and-feature-requests)
     - [Submitting Feedback](#submitting-feedback)
     - [Feature Requests](#feature-requests)
+  - [Merge Workflow (USGS Maintainers)](#merge-workflow-usgs-maintainers)
+    - [Contributions on GitLab](#contributions-on-gitlab)
+    - [Contributions on GitHub](#contributions-on-github)
   - [Acknowledgements](#acknowledgements)
 
 ---
@@ -147,6 +150,31 @@ Please be sure to:
 * Explain in detail how it would work, possibly with pseudo-code or an example use-case
 * Keep the scope of the proposed feature as narrow as possible
 * Make clear whether you would like to implement this feature, you need help devising the implementation, or you are unable to implement the feature yourself but would like it as a user
+
+---
+
+## Merge Workflow (USGS Maintainers)
+
+This code repository exists (and is publicly available) on both the USGS GitLab platform (code.usgs.gov) and within the DOI-USGS organization on GitHub (github.com/DOI-USGS).
+The canonical 'source' repository is on GitLab, all commits on all branches are automatically mirrored from the GitLab repository to the GitHub repository.
+To maintain this mirroring and keep the two repositories *exactly* the same (i.e., identical commit histories), there is a specific workflow that must be followed when merging contributions to the project.
+
+Whether contributions are made via GitLab or GitHub, they should follow the code contribution guidelines outlined above.
+Below, the specific steps that should be taken to merge or integrate these contributions into the `hyswap` project are outlined.
+
+### Contributions on GitLab
+When contributions are proposed on GitLab via merge requests, they can be discussed, altered, and ultimately merged on that platform.
+There is no special action that needs to be taken on behalf of the code maintainers and developers in this case.
+
+### Contributions on GitHub
+When contributions are proposed on GitHub via pull requests, the review and discussion of the changes can take place within the pull request as usual.
+However, **the pull request cannot be merged on GitHub**, as this throws off the automatic mirroring which goes from GitLab to GitHub.
+Once a pull request has been reviewed and "approved" on GitHub, a USGS code maintainer or developer (someone with push access to the GitLab repository) has to take action to **push the proposed code to GitLab**.
+This process involves the maintainer having a local clone of the `hyswap` project with remote connections to both the GitLab and GitHub repositories.
+Locally, the maintainer has to checkout the proposed code from the approved pull request on GitHub.
+Then they can push those changes to the *GitLab* repository by specifying the remote repository and "main" branch on GitLab.
+Once the changes are pushed to GitLab, they will be automatically mirrored back to GitHub.
+In this process, the GitHub pull request will get closed, and the code commits will be credited to the appropriate authors on GitHub too, all while maintaining the mirror and keeping the GitHub and GitLab repositories identical.
 
 ---
 
