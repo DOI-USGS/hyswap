@@ -159,8 +159,8 @@ This code repository exists (and is publicly available) on both the USGS GitLab 
 The canonical 'source' repository is on GitLab, all commits on all branches are automatically mirrored from the GitLab repository to the GitHub repository.
 To maintain this mirroring and keep the two repositories *exactly* the same (i.e., identical commit histories), there is a specific workflow that must be followed when merging contributions to the project.
 
-Whether contributions are made via GitLab or GitHub, they should follow the guidelines outlined above.
-Below the specific steps that should be taken to merge or integrate these contributions into the `hyswap` project are outlined.
+Whether contributions are made via GitLab or GitHub, they should follow the code contribution guidelines outlined above.
+Below, the specific steps that should be taken to merge or integrate these contributions into the `hyswap` project are outlined.
 
 ### Contributions on GitLab
 When contributions are proposed on GitLab via merge requests, they can be discussed, altered, and ultimately merged on that platform.
