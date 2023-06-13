@@ -352,12 +352,12 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     return ax
 
 
-def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
+def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
                                year_type='calendar',
                                envelope_pct=[25, 75],
                                max_pct=False, min_pct=False,
                                ax=None,
-                               title="Cumulative Discharge",
+                               title="Cumulative Streamflow Hydrograph",
                                ylab="Cumulative Discharge (cfs)",
                                xlab="Month", **kwargs):
     """Make cumulative hydrograph plot.
@@ -367,8 +367,9 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     cumulative_percentiles : pandas.DataFrame
         Dataframe containing the cumulative percentiles per year, output
         from :obj:`hyswap.cumulative.calculate_daily_cumulative_values`.
-    target_year : int
-        Target year to plot in black as the line.
+    target_years : int, or list
+        Target year(s) to plot in black as the line. Can provide a single year
+        as an integer, or a list of years.
     year_type : str, optional
         The type of year to use. Must be one of 'calendar', 'water', or
         'climate'. Default is 'calendar' which starts the year on January 1
@@ -389,7 +390,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
         created.
     title : str, optional
         Title for the plot. If not provided, the default title will be
-        'Cumulative Discharge'.
+        'Cumulative Streamflow Hydrograph'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
         'Cumulative Discharge (cfs)'.
@@ -451,12 +452,18 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     if max_pct:
         ax.plot(pdf.index.get_level_values(1), pdf[100], color='k',
                 alpha=0.5, linestyle='--', label="Maximum")
-    # get data from target year
-    target_year_data = cumulative_percentiles.loc[
-        cumulative_percentiles['index_year'] == target_year]
-    # plot target year
-    ax.plot(target_year_data['index_doy'], target_year_data['cumulative'],
-            color='k', label=f"{target_year} Cumulative Discharge")
+    # handle target years
+    col_targets = ['k'] + list(matplotlib.colormaps['tab20'].colors)
+    if isinstance(target_years, int):
+        target_years = [target_years]  # make int a list
+    for i, target_year in enumerate(target_years):
+        # get data from target year
+        target_year_data = cumulative_percentiles.loc[
+            cumulative_percentiles['index_year'] == target_year]
+        # plot target year
+        ax.plot(target_year_data['index_doy'], target_year_data['cumulative'],
+                color=col_targets[i],
+                label=f"{target_year} Cumulative Streamflow Hydrograph")
 
     # set labels
     ax.set_xlabel(xlab)

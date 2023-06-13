@@ -119,7 +119,7 @@ def test_plot_cumulative_hydrograph():
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative Discharge (cfs)'
-    assert ax.get_title() == 'Cumulative Discharge'
+    assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 1
     # make one with custom labels
     ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010,
@@ -137,8 +137,22 @@ def test_plot_cumulative_hydrograph():
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative Discharge (cfs)'
-    assert ax.get_title() == 'Cumulative Discharge'
+    assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 3
+    assert len(ax.collections) == 1
+    # make one with multiple years of data plotted
+    _date = pd.date_range('1/1/2010', '12/31/2012')
+    df = pd.DataFrame({'date': _date,
+                       'data': np.random.rand(len(_date))})
+    df_cumulative = cumulative.calculate_daily_cumulative_values(
+        df, 'data', date_column_name='date')
+    ax = plots.plot_cumulative_hydrograph(df_cumulative, [2010, 2011],
+                                          max_pct=True, min_pct=True)
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Month'
+    assert ax.get_ylabel() == 'Cumulative Discharge (cfs)'
+    assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
+    assert len(ax.lines) == 4  # min/max, 2010 and 2011 lines
     assert len(ax.collections) == 1
     # close plot
     plt.close()
