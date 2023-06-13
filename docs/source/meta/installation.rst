@@ -23,7 +23,7 @@ This can be done with the following command:
 
     pip install hyswap
 
-It is possible to specific the specific version of the package you'd like to install with a command like:
+It is possible to specify the specific version of the package you'd like to install with a command like:
 
 .. code-block:: bash
 
