@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; hyswap 0.1.dev1+g2186e3b documentation</title>
+    <title>Installation &#8212; hyswap 0.1.dev1+g4c3751d documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="../index.html" title="Welcome"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g2186e3b documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g4c3751d documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>  
@@ -52,16 +52,27 @@
             
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
-<p>All installation of the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> package must, at this time, be done
-<strong>from source</strong>. Here we provide instructions on how to do this, including
-both a “user” installation with minimal dependencies, as well as a “developer”
-installation that is “editable” and contains all of the dependencies needed
-to run the tests and build the package documentation.</p>
+<p>Installation instructions for the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> package are provided below.
+We provide instructions on recommended “user” installations with minimal dependencies, as well as how to install the package as a “developer” such that it is is “editable” and contains all of the dependencies needed to run the tests and build the package documentation.</p>
 <section id="user-installation">
 <h2>User Installation<a class="headerlink" href="#user-installation" title="Permalink to this heading">¶</a></h2>
-<p>Below are the commands to install the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> package from source
-as a user. This installation will be static, and reflect the version of the
-package as it was at the time the code was downloaded.</p>
+<p>Below are two recommended installation methods for users of the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> package.</p>
+<section id="installation-via-pip">
+<h3>Installation via <code class="docutils literal notranslate"><span class="pre">pip</span></code><a class="headerlink" href="#installation-via-pip" title="Permalink to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">hyswap</span></code> is hosted on <a class="reference external" href="pypi">pypi</a> and can therefore be installed using <code class="docutils literal notranslate"><span class="pre">pip</span></code>.
+This can be done with the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>hyswap
+</pre></div>
+</div>
+<p>It is possible to specify the specific version of the package you’d like to install with a command like:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">hyswap</span><span class="o">==</span><span class="m">0</span>.0.1
+</pre></div>
+</div>
+</section>
+<section id="installation-from-source">
+<h3>Installation from source<a class="headerlink" href="#installation-from-source" title="Permalink to this heading">¶</a></h3>
+<p>Below are the commands to install the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> package from source as a user.
+This installation will be static, and reflect the version of the package as it was at the time the code was downloaded.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap.git
 <span class="nb">cd</span><span class="w"> </span>hyswap
 pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
@@ -69,21 +80,19 @@ pip<span class="w"> </span>install<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
+</section>
 <section id="developer-installation">
 <h2>Developer Installation<a class="headerlink" href="#developer-installation" title="Permalink to this heading">¶</a></h2>
-<p>Below are the commands to install the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> package from source
-as a developer. This installation will be “editable”, meaning that any
-changes made to the source code will be reflected in the installed package
-without the need to reinstall. This installation will also contain all of the
-dependencies needed to run the tests and build the documentation.</p>
+<p>Below are the commands to install the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> package from source as a developer.
+This installation will be “editable”, meaning that any changes made to the source code will be reflected in the installed package without the need to reinstall.
+This installation will also contain all of the dependencies needed to run the tests and build the documentation.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap.git
 <span class="nb">cd</span><span class="w"> </span>hyswap
 pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-dev.txt
 pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
-<p>Once the installation is complete, the suite of tests can be run with a single
-command in the console:</p>
+<p>Once the installation is complete, the suite of unit tests can be run with a single command in the console:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
 </pre></div>
 </div>
@@ -92,10 +101,8 @@ command in the console:</p>
 make<span class="w"> </span>docs
 </pre></div>
 </div>
-<p>For a faster local documentation build you can skip running the documentation
-tests by running <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> instead of <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code>.</p>
-<p>To run the linting and formatting checks locally, run the following commands
-from the root of the repository:</p>
+<p>For a faster local documentation build you can skip running the documentation tests by running <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> instead of <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code>.</p>
+<p>To run the linting and formatting checks locally, run the following commands from the root of the repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>flake8<span class="w"> </span>.
 pydocstringformatter<span class="w"> </span>.
 </pre></div>
@@ -114,7 +121,11 @@ pydocstringformatter<span class="w"> </span>.
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#user-installation">User Installation</a></li>
+<li><a class="reference internal" href="#user-installation">User Installation</a><ul>
+<li><a class="reference internal" href="#installation-via-pip">Installation via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li><a class="reference internal" href="#installation-from-source">Installation from source</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#developer-installation">Developer Installation</a></li>
 </ul>
 </li>
@@ -167,7 +178,7 @@ pydocstringformatter<span class="w"> </span>.
         <li class="right" >
           <a href="../index.html" title="Welcome"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g2186e3b documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g4c3751d documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>
