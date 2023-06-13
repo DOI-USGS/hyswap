@@ -101,6 +101,56 @@ In this example we will plot multiple flow duration curves on the same axes.
     plt.show()
 
 
+Plotting Observations On Top of the Flow Duration Curve
+*******************************************************
+
+In this example we will plot the flow duration curve with the actual flow observations overlaid on top of the line.
+We will do this by utilizing the `observations` and `observation_probability` arguments.
+To make it obvious which points are observations, we will define them as small black circles by using the `scatter_kwargs` argument which allows us to pass keyword arguments through to the underlying :meth:`matplotlib.axes.Axes.scatter` function which is used to plot the observations.
+
+Since this example has many observations, we will zoom into a small section of the plot so that the observations plotted over top of the flow duration curve are visible.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # get data from a single site
+    siteno = '01646500'
+    df, md = dataretrieval.nwis.get_dv(site=siteno, parameterCd='00060',
+                                    startDT='1900-01-01')
+    # filter to only approved data
+    df = hyswap.utils.filter_approved_data(df, '00060_Mean_cd')
+
+    # generate 10,000 evenly spaced values between the min and max
+    values = np.linspace(df['00060_Mean'].min(), df['00060_Mean'].max(), 10000)
+
+    # calculate exceedance probabilities
+    exceedance_probabilities = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
+        values, df['00060_Mean'])
+
+    # calculate exceedance probabilities for the observations
+    obs_probs = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
+        df['00060_Mean'], df['00060_Mean'])
+
+    # plot
+    fig, ax = plt.subplots(figsize=(8, 5))
+    # plot the flow duration curve
+    ax = hyswap.plots.plot_flow_duration_curve(
+        values, exceedance_probabilities, ax=ax,
+        observations=df['00060_Mean'],
+        observation_probabilities=obs_probs,
+        scatter_kwargs={'c': 'k', 's': 10, 'zorder': 10},
+        title=f'Flow Duration Curve for USGS Site {siteno}')
+
+    # zoom into a smaller section of the plot for visibility
+    ax.set_xlim([20, 30])
+    ax.set_ylim([10000, 20000])
+
+    # show the plot
+    plt.tight_layout()
+    plt.show()
+
+
 Customizing Flow Duration Curve Plots
 *************************************
 
