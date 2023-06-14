@@ -122,6 +122,33 @@ We will use the calendar year example to showcase this functionality.
     plt.show()
 
 
+Visualizing Multiple Years of Data
+**********************************
+
+We are not limited to explicitly visualizing the cumulative streamflow from individual years.
+We can supply multiple `target_years` as a list, and each will be plotted as an individual cumulative discharge line with an associated label in the legend.
+Below is an example of this functionality wherein we plot the cumulative discharge for years 2010, 2015, and 2020.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # get some data from the NWIS service
+    df, md = dataretrieval.nwis.get_dv(
+        '06803495', start='2000-01-01', end='2020-12-31')
+
+    # calculate the cumulative streamflow values per year
+    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
+        df, '00060_Mean')
+
+    # plot the cumulative streamflow hydrograph
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax = hyswap.plots.plot_cumulative_hydrograph(
+        cdf, target_years=[2010, 2015, 2020],
+        ax=ax, title='Cumulative Streamflow Hydrograph')
+    plt.show()
+
+
 Customizing the Filled Envelope
 *******************************
 
