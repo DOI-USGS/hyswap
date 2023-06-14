@@ -108,14 +108,12 @@ In this example we will plot the flow duration curve with the actual flow observ
 We will do this by utilizing the `observations` and `observation_probability` arguments.
 To make it obvious which points are observations, we will define them as small black circles by using the `scatter_kwargs` argument which allows us to pass keyword arguments through to the underlying :meth:`matplotlib.axes.Axes.scatter` function which is used to plot the observations.
 
-Since this example has many observations, we will zoom into a small section of the plot so that the observations plotted over top of the flow duration curve are visible.
-
 .. plot::
     :context: reset
     :include-source:
 
     # get data from a single site
-    siteno = '01646500'
+    siteno = '06216900'
     df, md = dataretrieval.nwis.get_dv(site=siteno, parameterCd='00060',
                                     startDT='1900-01-01')
     # filter to only approved data
@@ -141,10 +139,6 @@ Since this example has many observations, we will zoom into a small section of t
         observation_probabilities=obs_probs,
         scatter_kwargs={'c': 'k', 's': 10, 'zorder': 10},
         title=f'Flow Duration Curve for USGS Site {siteno}')
-
-    # zoom into a smaller section of the plot for visibility
-    ax.set_xlim([20, 30])
-    ax.set_ylim([10000, 20000])
 
     # show the plot
     plt.tight_layout()

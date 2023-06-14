@@ -99,8 +99,10 @@ def plot_flow_duration_curve(
         '0.1', '5', '10', '25', '50', '75', '90', '95', '99.9'])
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
+    yticks = [i for i in yticks if i >= 0.1]  # minimum value is 0.1
     yticklabels = [f'{int(y):,}' for y in yticks]
     ax.set_yticks(yticks, labels=yticklabels)
+    ax.set_ylim(np.min(yticks), np.max(yticks))
     # add grid lines
     if grid:
         ax.grid(which='both', axis='both', alpha=0.5)
