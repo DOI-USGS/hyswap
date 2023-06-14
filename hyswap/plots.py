@@ -463,7 +463,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
         # plot target year
         ax.plot(target_year_data['index_doy'], target_year_data['cumulative'],
                 color=col_targets[i],
-                label=f"{target_year} Cumulative Streamflow Hydrograph")
+                label=f"{target_year} Observed")
 
     # set labels
     ax.set_xlabel(xlab)
