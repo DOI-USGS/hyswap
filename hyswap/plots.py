@@ -7,10 +7,13 @@ from hyswap.percentiles import calculate_variable_percentile_thresholds_by_day
 
 
 def plot_flow_duration_curve(
-        values, exceedance_probabilities, ax=None, title='Flow Duration Curve',
+        values, exceedance_probabilities,
+        observations=None, observation_probabilities=None,
+        ax=None, title='Flow Duration Curve',
         xlab='Exceedance Probability\n' +
         '(Percent of Time Indicated Discharge was Equaled or Exceeded)',
-        ylab='Discharge, ft$^3$/s', grid=True, **kwargs):
+        ylab='Discharge, ft$^3$/s', grid=True,
+        scatter_kwargs={}, **kwargs):
     """
     Make flow duration curve plot.
 
@@ -21,6 +24,14 @@ def plot_flow_duration_curve(
     exceedance_probabilities : array-like
         Exceedance probabilities for each value, likely calculated from
         a function like :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.
+    observations : list, numpy.ndarray, optional
+        List, numpy array or list-able set of flow observations. Optional, if
+        not provided the observations are not plotted.
+    observation_probabilities : list, numpy.ndarray, optional
+        Exceedance probabilities corresponding to each observation, likely
+        calculated from a function like
+        :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.
+        Optional, if not provided observations are not plotted.
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
@@ -33,6 +44,9 @@ def plot_flow_duration_curve(
         Label for the y-axis. If not provided, a default label will be used.
     grid : bool, optional
         Whether to show grid lines on the plot. Default is True.
+    scatter_kwargs : dict
+        Dictionary containing keyword arguments to pass to the observations
+        plotting method, :meth:`matplotlib.axes.Axes.scatter`.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.plot`.
 
@@ -68,6 +82,9 @@ def plot_flow_duration_curve(
         _, ax = plt.subplots()
     # do plotting
     ax.plot(exceedance_probabilities*100, values, **kwargs)
+    if (observations is not None) and (observation_probabilities is not None):
+        ax.scatter(np.array(observation_probabilities)*100, observations,
+                   **scatter_kwargs)
     ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)
     ax.set_title(title)
@@ -82,8 +99,10 @@ def plot_flow_duration_curve(
         '0.1', '5', '10', '25', '50', '75', '90', '95', '99.9'])
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
+    yticks = [i for i in yticks if i >= 0.1]  # minimum value is 0.1
     yticklabels = [f'{int(y):,}' for y in yticks]
     ax.set_yticks(yticks, labels=yticklabels)
+    ax.set_ylim(np.min(yticks), np.max(yticks))
     # add grid lines
     if grid:
         ax.grid(which='both', axis='both', alpha=0.5)

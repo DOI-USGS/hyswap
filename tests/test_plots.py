@@ -41,6 +41,20 @@ def test_plot_flow_duration_curve():
     assert ax.get_title() == 'Test Title'
     assert len(ax.lines) == 1
     assert len(ax.collections) == 0
+    # make another plot with observations on it
+    ax = plots.plot_flow_duration_curve(values, exceedance_probabilities,
+                                        observations=[1, 2],
+                                        observation_probabilities=[0.5, 0.25],
+                                        title='Test Title',
+                                        xlab='Test X Label',
+                                        ylab='Test Y Label',
+                                        scatter_kwargs={'c': 'k'})
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Test X Label'
+    assert ax.get_ylabel() == 'Test Y Label'
+    assert ax.get_title() == 'Test Title'
+    assert len(ax.lines) == 1
+    assert len(ax.collections) == 1
     # close plot
     plt.close()
 
