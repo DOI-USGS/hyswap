@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Flow Duration Curves &#8212; hyswap 0.1.dev1+g4c3751d documentation</title>
+    <title>Flow Duration Curves &#8212; hyswap 0.1.dev1+g36ef542 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="index.html" title="Examples"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g4c3751d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g36ef542 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Flow Duration Curves</a></li> 
       </ul>
@@ -136,6 +136,49 @@ Data quality is coded as “A” for “approved” and “P” for “provision
 <img alt="../_images/flow_duration_curve_examples-5.png" class="plot-directive" src="../_images/flow_duration_curve_examples-5.png" />
 </figure>
 </section>
+<section id="plotting-observations-on-top-of-the-flow-duration-curve">
+<h2>Plotting Observations On Top of the Flow Duration Curve<a class="headerlink" href="#plotting-observations-on-top-of-the-flow-duration-curve" title="Permalink to this heading">¶</a></h2>
+<p>In this example we will plot the flow duration curve with the actual flow observations overlaid on top of the line.
+We will do this by utilizing the <cite>observations</cite> and <cite>observation_probability</cite> arguments.
+To make it obvious which points are observations, we will define them as small black circles by using the <cite>scatter_kwargs</cite> argument which allows us to pass keyword arguments through to the underlying <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.scatter()</span></code> function which is used to plot the observations.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s1">&#39;06216900&#39;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+                                <span class="n">startDT</span><span class="o">=</span><span class="s1">&#39;1900-01-01&#39;</span><span class="p">)</span>
+<span class="c1"># filter to only approved data</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">filter_approved_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean_cd&#39;</span><span class="p">)</span>
+
+<span class="c1"># generate 10,000 evenly spaced values between the min and max</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">10000</span><span class="p">)</span>
+
+<span class="c1"># calculate exceedance probabilities</span>
+<span class="n">exceedance_probabilities</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_values_multiple</span><span class="p">(</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">])</span>
+
+<span class="c1"># calculate exceedance probabilities for the observations</span>
+<span class="n">obs_probs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_values_multiple</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">])</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="c1"># plot the flow duration curve</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_flow_duration_curve</span><span class="p">(</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">exceedance_probabilities</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">observations</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">],</span>
+    <span class="n">observation_probabilities</span><span class="o">=</span><span class="n">obs_probs</span><span class="p">,</span>
+    <span class="n">scatter_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;zorder&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Flow Duration Curve for USGS Site </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># show the plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/fa2abee6a40b2587f894299768f4d5c0/flow_duration_curve_examples-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/0013bf4e546f0e63239285a0f723a8df/flow_duration_curve_examples-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/flow_duration_curve_examples-6.png" class="plot-directive" src="../_images/flow_duration_curve_examples-6.png" />
+</figure>
+</section>
 <section id="customizing-flow-duration-curve-plots">
 <h2>Customizing Flow Duration Curve Plots<a class="headerlink" href="#customizing-flow-duration-curve-plots" title="Permalink to this heading">¶</a></h2>
 <p>In this example we will generate a synthetic set of exceedance probabilities from a statistical distribution to demonstrate how one can pass <cite>**kwargs</cite> to the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_flow_duration_curve" title="hyswap.plots.plot_flow_duration_curve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_flow_duration_curve</span></code></a> which are passed through to the underlying <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.plot()</span></code> and can be used to customize the line that is plotted.</p>
@@ -167,9 +210,9 @@ Data quality is coded as “A” for “approved” and “P” for “provision
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/fa2abee6a40b2587f894299768f4d5c0/flow_duration_curve_examples-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/0013bf4e546f0e63239285a0f723a8df/flow_duration_curve_examples-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/986a39fda4a1bd662167849bd0bafcfa/flow_duration_curve_examples-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/93322ca3c59c3e6d43ac86c45f3788cb/flow_duration_curve_examples-7.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/flow_duration_curve_examples-6.png" class="plot-directive" src="../_images/flow_duration_curve_examples-6.png" />
+<img alt="../_images/flow_duration_curve_examples-7.png" class="plot-directive" src="../_images/flow_duration_curve_examples-7.png" />
 </figure>
 </section>
 </section>
@@ -187,6 +230,7 @@ Data quality is coded as “A” for “approved” and “P” for “provision
 <li><a class="reference internal" href="#">Flow Duration Curves</a><ul>
 <li><a class="reference internal" href="#creating-a-flow-duration-curve-for-site-01646500">Creating a Flow Duration Curve for Site 01646500</a></li>
 <li><a class="reference internal" href="#plotting-multiple-flow-duration-curves-on-the-same-axes">Plotting Multiple Flow Duration Curves on the Same Axes</a></li>
+<li><a class="reference internal" href="#plotting-observations-on-top-of-the-flow-duration-curve">Plotting Observations On Top of the Flow Duration Curve</a></li>
 <li><a class="reference internal" href="#customizing-flow-duration-curve-plots">Customizing Flow Duration Curve Plots</a></li>
 </ul>
 </li>
@@ -239,7 +283,7 @@ Data quality is coded as “A” for “approved” and “P” for “provision
         <li class="right" >
           <a href="index.html" title="Examples"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g4c3751d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g36ef542 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Flow Duration Curves</a></li> 
       </ul>

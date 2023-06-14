@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.plots &#8212; hyswap 0.1.dev1+g4c3751d documentation</title>
+    <title>hyswap.plots &#8212; hyswap 0.1.dev1+g36ef542 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g4c3751d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g36ef542 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>
@@ -52,10 +52,13 @@
 
 
 <div class="viewcode-block" id="plot_flow_duration_curve"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_flow_duration_curve">[docs]</a><span class="k">def</span> <span class="nf">plot_flow_duration_curve</span><span class="p">(</span>
-        <span class="n">values</span><span class="p">,</span> <span class="n">exceedance_probabilities</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Flow Duration Curve&#39;</span><span class="p">,</span>
+        <span class="n">values</span><span class="p">,</span> <span class="n">exceedance_probabilities</span><span class="p">,</span>
+        <span class="n">observations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observation_probabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Flow Duration Curve&#39;</span><span class="p">,</span>
         <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Exceedance Probability</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
         <span class="s1">&#39;(Percent of Time Indicated Discharge was Equaled or Exceeded)&#39;</span><span class="p">,</span>
-        <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Discharge, ft$^3$/s&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Discharge, ft$^3$/s&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">scatter_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make flow duration curve plot.</span>
 
@@ -66,6 +69,14 @@
 <span class="sd">    exceedance_probabilities : array-like</span>
 <span class="sd">        Exceedance probabilities for each value, likely calculated from</span>
 <span class="sd">        a function like :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.</span>
+<span class="sd">    observations : list, numpy.ndarray, optional</span>
+<span class="sd">        List, numpy array or list-able set of flow observations. Optional, if</span>
+<span class="sd">        not provided the observations are not plotted.</span>
+<span class="sd">    observation_probabilities : list, numpy.ndarray, optional</span>
+<span class="sd">        Exceedance probabilities corresponding to each observation, likely</span>
+<span class="sd">        calculated from a function like</span>
+<span class="sd">        :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.</span>
+<span class="sd">        Optional, if not provided observations are not plotted.</span>
 <span class="sd">    ax : matplotlib.axes.Axes, optional</span>
 <span class="sd">        Axes to plot on. If not provided, a new figure and axes will be</span>
 <span class="sd">        created.</span>
@@ -78,6 +89,9 @@
 <span class="sd">        Label for the y-axis. If not provided, a default label will be used.</span>
 <span class="sd">    grid : bool, optional</span>
 <span class="sd">        Whether to show grid lines on the plot. Default is True.</span>
+<span class="sd">    scatter_kwargs : dict</span>
+<span class="sd">        Dictionary containing keyword arguments to pass to the observations</span>
+<span class="sd">        plotting method, :meth:`matplotlib.axes.Axes.scatter`.</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Keyword arguments passed to :meth:`matplotlib.axes.Axes.plot`.</span>
 
@@ -113,6 +127,9 @@
         <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
     <span class="c1"># do plotting</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">exceedance_probabilities</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">observations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">observation_probabilities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">observation_probabilities</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span> <span class="n">observations</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">scatter_kwargs</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
@@ -127,8 +144,10 @@
         <span class="s1">&#39;0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;25&#39;</span><span class="p">,</span> <span class="s1">&#39;50&#39;</span><span class="p">,</span> <span class="s1">&#39;75&#39;</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="s1">&#39;95&#39;</span><span class="p">,</span> <span class="s1">&#39;99.9&#39;</span><span class="p">])</span>
     <span class="c1"># get y-axis ticks and convert to comma-separated strings</span>
     <span class="n">yticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
+    <span class="n">yticks</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">yticks</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mf">0.1</span><span class="p">]</span>  <span class="c1"># minimum value is 0.1</span>
     <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">]</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">yticks</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">yticks</span><span class="p">))</span>
     <span class="c1"># add grid lines</span>
     <span class="k">if</span> <span class="n">grid</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
@@ -546,7 +565,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g4c3751d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g36ef542 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>
