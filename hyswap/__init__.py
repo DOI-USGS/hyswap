@@ -6,6 +6,7 @@ from hyswap.rasterhydrograph import *  # noqa
 from hyswap.percentiles import *  # noqa
 from hyswap.cumulative import *  # noqa
 from hyswap.plots import *  # noqa
+from hyswap.similarity import *  # noqa
 
 try:
     __version__ = version('hyswap')

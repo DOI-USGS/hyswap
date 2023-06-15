@@ -55,3 +55,10 @@ Plotting Functions
 .. automodule:: hyswap.plots
     :members:
     :special-members:
+
+Similarity Functions
+--------------------
+
+.. automodule:: hyswap.similarity
+    :members:
+    :special-members:

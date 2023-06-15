@@ -92,6 +92,7 @@ from hyswap import utils
 from hyswap import percentiles
 from hyswap import cumulative
 from hyswap import plots
+from hyswap import similarity
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
