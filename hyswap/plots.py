@@ -99,7 +99,17 @@ def plot_flow_duration_curve(
         '0.1', '5', '10', '25', '50', '75', '90', '95', '99.9'])
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
-    yticks = [i for i in yticks if i >= 0.1]  # minimum value is 0.1
+    # min value is 0.1
+    # yticks = np.array([i for i in yticks if i >= 0.1])
+    # get logs for min/max values rounded to next lowest/highest
+    min_vals = np.log10(yticks[yticks <= np.min(values)])
+    if len(min_vals) > 0:
+        min_tick = min_vals[-1]
+    else:
+        min_tick = -1.0
+    max_tick = np.log10(yticks[yticks >= np.max(values)][0])
+    # set list of values using logs
+    yticks = list(10**np.arange(min_tick, max_tick+1))
     yticklabels = [f'{int(y):,}' for y in yticks]
     ax.set_yticks(yticks, labels=yticklabels)
     ax.set_ylim(np.min(yticks), np.max(yticks))
@@ -490,7 +500,8 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
+    ax.set_yticks(yticks[1:], labels=yticklabels[1:])
+    ax.set_ylim(0, yticks.max())
     # two column legend
     ax.legend(loc="best")
 
