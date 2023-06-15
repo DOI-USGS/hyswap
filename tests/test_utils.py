@@ -248,3 +248,11 @@ def test_munge_nwis_stats():
     assert len(df.columns) > len(df_slim.columns)
     assert 0 in df_slim.columns
     assert df_slim.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+
+
+def test_set_data_type():
+    """Test the function set_data_type."""
+    assert utils.set_data_type('daily') == 'D'
+    assert utils.set_data_type('7-day') == '7D'
+    assert utils.set_data_type('14-day') == '14D'
+    assert utils.set_data_type('28-day') == '28D'

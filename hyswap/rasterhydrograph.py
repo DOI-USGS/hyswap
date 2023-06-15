@@ -3,6 +3,7 @@
 import pandas as pd
 from hyswap.utils import rolling_average
 from hyswap.utils import define_year_doy_columns
+from hyswap.utils import set_data_type
 
 
 def format_data(df, data_column_name, date_column_name=None,
@@ -91,7 +92,7 @@ def format_data(df, data_column_name, date_column_name=None,
     date_range = date_range.strftime('%Y-%m-%d')
 
     # set data type
-    data_type = _set_data_type(data_type)
+    data_type = set_data_type(data_type)
 
     # make output data frame
     # calculation of rolling mean is done on the data column
@@ -273,34 +274,3 @@ def _calculate_date_range(df, year_type, begin_year, end_year):
     date_range = pd.date_range(begin_date, end_date)
 
     return date_range
-
-
-def _set_data_type(data_type):
-    """Private function to set the data type.
-
-    Parameters
-    ----------
-    data_type : str
-        The type of data. Must be one of 'daily', '7-day', '14-day', and
-        '28-day'. If '7-day', '14-day', or '28-day' is
-        specified, the data will be averaged over the specified period. NaN
-        values will be used for any days that do not have data. If present,
-        NaN values will result in NaN values for the entire period.
-
-    Returns
-    -------
-    data_type : str
-        The formatted frequency string to be used with
-        pandas.DataFrame.rolling to calculate the average over the correct
-        temporal period.
-    """
-    if data_type == 'daily':
-        data_type = 'D'
-    elif data_type == '7-day':
-        data_type = '7D'
-    elif data_type == '14-day':
-        data_type = '14D'
-    elif data_type == '28-day':
-        data_type = '28D'
-
-    return data_type
