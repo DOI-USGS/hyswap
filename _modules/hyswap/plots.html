@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.plots &#8212; hyswap 0.1.dev1+gd7a86c7 documentation</title>
+    <title>hyswap.plots &#8212; hyswap 0.1.dev1+g6e03a3e documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gd7a86c7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>
@@ -144,7 +144,17 @@
         <span class="s1">&#39;0.1&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;25&#39;</span><span class="p">,</span> <span class="s1">&#39;50&#39;</span><span class="p">,</span> <span class="s1">&#39;75&#39;</span><span class="p">,</span> <span class="s1">&#39;90&#39;</span><span class="p">,</span> <span class="s1">&#39;95&#39;</span><span class="p">,</span> <span class="s1">&#39;99.9&#39;</span><span class="p">])</span>
     <span class="c1"># get y-axis ticks and convert to comma-separated strings</span>
     <span class="n">yticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
-    <span class="n">yticks</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">yticks</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mf">0.1</span><span class="p">]</span>  <span class="c1"># minimum value is 0.1</span>
+    <span class="c1"># min value is 0.1</span>
+    <span class="c1"># yticks = np.array([i for i in yticks if i &gt;= 0.1])</span>
+    <span class="c1"># get logs for min/max values rounded to next lowest/highest</span>
+    <span class="n">min_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="n">yticks</span> <span class="o">&lt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">values</span><span class="p">)])</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">min_vals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">min_tick</span> <span class="o">=</span> <span class="n">min_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">min_tick</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">max_tick</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="n">yticks</span> <span class="o">&gt;=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">values</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># set list of values using logs</span>
+    <span class="n">yticks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_tick</span><span class="p">,</span> <span class="n">max_tick</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">]</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">yticks</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">yticks</span><span class="p">))</span>
@@ -535,7 +545,8 @@
     <span class="c1"># get y-axis ticks and convert to comma-separated strings</span>
     <span class="n">yticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
     <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">]</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">yticks</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
     <span class="c1"># two column legend</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
 
@@ -572,7 +583,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gd7a86c7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>

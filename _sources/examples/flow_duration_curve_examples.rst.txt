@@ -96,6 +96,7 @@ In this example we will plot multiple flow duration curves on the same axes.
 
     # visualize the plot
     ax.set_title("Multiple USGS Flow Duration Curves")
+    ax.set_ylim(0.1, 1000)
     ax.legend(loc='best')
     plt.tight_layout()
     plt.show()
