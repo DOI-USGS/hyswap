@@ -8,6 +8,7 @@ from hyswap import cumulative
 from hyswap import rasterhydrograph
 from hyswap import percentiles
 from hyswap import plots
+from hyswap import similarity
 
 
 def test_plot_flow_duration_curve():
@@ -154,5 +155,54 @@ def test_plot_cumulative_hydrograph():
     assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 4  # min/max, 2010 and 2011 lines
     assert len(ax.collections) == 1
+    # close plot
+    plt.close()
+
+
+def test_plot_similarity_heatmat():
+    """Testing the plot_similarity_heatmap function."""
+    # make dummy dataframes
+    df_1 = pd.DataFrame({
+        'data': np.arange(10),
+        'date': pd.date_range('2020-01-01', '2020-01-10')})
+    df_1.set_index('date', inplace=True)
+    df_2 = pd.DataFrame({
+        'data': np.arange(10),
+        'date': pd.date_range('2020-01-06', '2020-01-15')})
+    df_2.set_index('date', inplace=True)
+    # calculate similarity matrix (using correlation)
+    df_corr, n_obs = similarity.calculate_correlations(
+        [df_1, df_2], 'data')
+    # plot
+    ax = plots.plot_similarity_heatmap(df_corr, n_obs=n_obs,
+                                       show_values=True,
+                                       title='Test Title')
+    # assertions
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Site'
+    assert ax.get_ylabel() == 'Site'
+    assert ax.get_title() == 'Test Title (n=5)'
+    assert len(ax.lines) == 0
+    # close plot
+    plt.close()
+
+    # make a set with negative values
+    df_2 = pd.DataFrame({
+        'data': np.random.random(10) * 10,
+        'date': pd.date_range('2020-01-06', '2020-01-15')})
+    df_2.set_index('date', inplace=True)
+    # calculate similarity matrix (using correlation)
+    df_corr, n_obs = similarity.calculate_correlations(
+        [df_1, df_2], 'data')
+    # plot
+    ax = plots.plot_similarity_heatmap(df_corr, n_obs=n_obs,
+                                       show_values=True,
+                                       title='Test Title')
+    # assertions
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Site'
+    assert ax.get_ylabel() == 'Site'
+    assert ax.get_title() == 'Test Title (n=5)'
+    assert len(ax.lines) == 0
     # close plot
     plt.close()
