@@ -270,28 +270,31 @@ To show the effect of this, we will plot the historic daily percentile values fo
         ax=ax[0],
         data_label="Water Year 2022",
         title="Percentiles of Streamflow by Day of Year - Site 03586500",
-        xlab=""
+        xlab="",
+        ylab="1-day Streamflow"
     )
     # plot 7-day percentiles
     hyswap.plots.plot_duration_hydrograph(
         percentiles_by_7day,
-        df_year,
+        hyswap.utils.rolling_average(df_year, "00060_Mean", "7D"),
         "00060_Mean",
         "index_doy",
         ax=ax[1],
         data_label="Water Year 2022",
         title="Percentiles of Streamflow by Day of Year (7-day rolling average) - Site 03586500",
-        xlab=""
+        xlab="",
+        ylab="7-day Streamflow"
     )
     # plot 28-day percentiles
     hyswap.plots.plot_duration_hydrograph(
         percentiles_by_28day,
-        df_year,
+        hyswap.utils.rolling_average(df_year, "00060_Mean", "28D"),
         "00060_Mean",
         "index_doy",
         ax=ax[2],
         data_label="Water Year 2022",
-        title="Percentiles of Streamflow by Day of Year (28-day rolling average) - Site 03586500"
+        title="Percentiles of Streamflow by Day of Year (28-day rolling average) - Site 03586500",
+        ylab="28-day Streamflow"
     )
     plt.tight_layout()
     plt.show()
