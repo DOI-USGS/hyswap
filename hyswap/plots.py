@@ -498,7 +498,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     return ax
 
 
-def plot_similarity_heatmap(sim_matrix, cmap='inferno',
+def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='inferno',
                             show_values=False, ax=None,
                             title='Similarity Matrix'):
     """Plot a similarity matrix as a heatmap.
@@ -546,7 +546,7 @@ def plot_similarity_heatmap(sim_matrix, cmap='inferno',
         ...                                    parameterCd='00060',
         ...                                    start='2010-01-01',
         ...                                    end='2021-12-31')
-        >>> corr_matrix = hyswap.similarity.calculate_correlations(
+        >>> corr_matrix, n_obs = hyswap.similarity.calculate_correlations(
         ...     [df, df2], '00060_Mean')
         >>> ax = hyswap.plots.plot_similarity_heatmap(corr_matrix,
         ...                                           show_values=True)
@@ -574,6 +574,8 @@ def plot_similarity_heatmap(sim_matrix, cmap='inferno',
                     ax.text(j, i, f'{sim_matrix.iloc[i, j]:.2f}',
                             ha="center", va="center", color="k")
     # set labels
+    if n_obs is not None:
+        title = f'{title} (n={n_obs})'
     ax.set_title(title)
     ax.set_xlabel('Site')
     ax.set_ylabel('Site')

@@ -349,6 +349,8 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
     be used on Python dataretrieval dataframe returns for the nwis.get_stats()
     function for "daily" data, a single site, and a single parameter code.
 
+    Parameters
+    ----------
     df : pandas.DataFrame
         DataFrame containing NWIS statistics data retrieved from the statistics
         web service. Assumed to come in as a dataframe retrieved with a
@@ -452,6 +454,8 @@ def filter_to_common_time(df_list):
     -------
     df_list : list
         List of pandas.DataFrame objects filtered to common times.
+    n_obs : int
+        Number of observations in the common time period.
 
     Examples
     --------
@@ -474,7 +478,7 @@ def filter_to_common_time(df_list):
 
     .. doctest::
 
-            >>> df_list = utils.filter_to_common_time([df1, df2])
+            >>> df_list, n_obs = utils.filter_to_common_time([df1, df2])
             >>> df_list[0].shape
             (7, 3)
             >>> df_list[1].shape
@@ -487,5 +491,7 @@ def filter_to_common_time(df_list):
     # filter the dataframes to the common index
     for i, df in enumerate(df_list):
         df_list[i] = df.loc[common_index]
+    # get the number of observations
+    n_obs = len(common_index)
     # return the list of dataframes
-    return df_list
+    return df_list, n_obs

@@ -134,13 +134,9 @@ html_static_path = ['_static']
 # -- Options for linkcheck -------------------------------------------
 
 # Links to not "check" because they are problematic for the link checker
-linkcheck_ignore = [
-    r'https://doi.org/10.3133/wsp1542A',
-    r'https://pypi.org/project/hyswap/'
-]
-
 linkcheck_exclude_documents = [
     r'meta/disclaimer*',
     r'meta/contributing*',
-    r'meta/installation*'
+    r'meta/installation*',
+    r'examples/similarity_examples',
 ]

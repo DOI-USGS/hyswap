@@ -37,6 +37,9 @@ def calculate_correlations(df_list, data_column_name, df_names=None):
         labeled with the names of the dataframes in df_list as provided
         by df_names argument.
 
+    n_obs : int
+        Number of observations used to calculate the energy distance.
+
     Examples
     --------
     Calculate correlations between two synthetic dataframes.
@@ -45,7 +48,7 @@ def calculate_correlations(df_list, data_column_name, df_names=None):
 
         >>> df1 = pd.DataFrame({'a': np.arange(10), 'b': np.arange(10)})
         >>> df2 = pd.DataFrame({'a': -1*np.arange(10), 'b': np.arange(10)})
-        >>> results = similarity.calculate_correlations([df1, df2], 'a')
+        >>> results, n_obs = similarity.calculate_correlations([df1, df2], 'a')
         >>> results
              0    1
         0  1.0 -1.0
@@ -54,7 +57,7 @@ def calculate_correlations(df_list, data_column_name, df_names=None):
     # handle the names of the dataframes
     df_names = _name_handling(df_list, df_names)
     # preprocess dataframe list so they have the same index/times
-    df_list = filter_to_common_time(df_list)
+    df_list, n_obs = filter_to_common_time(df_list)
     # calculate correlations between all pairs of dataframes in the list
     correlations = np.empty((len(df_list), len(df_list)))
     for i, df1 in enumerate(df_list):
@@ -64,7 +67,7 @@ def calculate_correlations(df_list, data_column_name, df_names=None):
     # turn the correlations into a dataframe
     correlations = pd.DataFrame(
         correlations, index=df_names, columns=df_names)
-    return correlations
+    return correlations, n_obs
 
 
 def calculate_wasserstein_distance(df_list, data_column_name, df_names=None):
@@ -98,6 +101,9 @@ def calculate_wasserstein_distance(df_list, data_column_name, df_names=None):
         labeled with the names of the dataframes in df_list as provided
         by df_names argument.
 
+    n_obs : int
+        Number of observations used to calculate the energy distance.
+
     Examples
     --------
     Calculate Wasserstein distances between two synthetic dataframes.
@@ -106,15 +112,17 @@ def calculate_wasserstein_distance(df_list, data_column_name, df_names=None):
 
         >>> df1 = pd.DataFrame({'a': np.arange(10), 'b': np.arange(10)})
         >>> df2 = pd.DataFrame({'a': -1*np.arange(10), 'b': np.arange(10)})
-        >>> results = similarity.calculate_wasserstein_distance(
+        >>> results, n_obs = similarity.calculate_wasserstein_distance(
         ...     [df1, df2], 'a')
         >>> results
              0    1
         0  0.0  9.0
         1  9.0  0.0
     """
+    # handle the names of the dataframes
+    df_names = _name_handling(df_list, df_names)
     # preprocess dataframe list so they have the same index/times
-    df_list = filter_to_common_time(df_list)
+    df_list, n_obs = filter_to_common_time(df_list)
     # calculate distances between all pairs of dataframes in the list
     wasserstein_distances = np.empty((len(df_list), len(df_list)))
     for i, df1 in enumerate(df_list):
@@ -126,7 +134,7 @@ def calculate_wasserstein_distance(df_list, data_column_name, df_names=None):
     # turn the distances into a dataframe
     wasserstein_distances = pd.DataFrame(
         wasserstein_distances, index=df_names, columns=df_names)
-    return wasserstein_distances
+    return wasserstein_distances, n_obs
 
 
 def calculate_energy_distance(df_list, data_column_name, df_names=None):
@@ -160,6 +168,9 @@ def calculate_energy_distance(df_list, data_column_name, df_names=None):
         labeled with the names of the dataframes in df_list as provided
         by df_names argument.
 
+    n_obs : int
+        Number of observations used to calculate the energy distance.
+
     Examples
     --------
     Calculate energy distances between two synthetic dataframes.
@@ -168,15 +179,17 @@ def calculate_energy_distance(df_list, data_column_name, df_names=None):
 
         >>> df1 = pd.DataFrame({'a': np.arange(10), 'b': np.arange(10)})
         >>> df2 = pd.DataFrame({'a': -1*np.arange(10), 'b': np.arange(10)})
-        >>> results = similarity.calculate_energy_distance(
+        >>> results, n_obs = similarity.calculate_energy_distance(
         ...     [df1, df2], 'a')
         >>> results
                   0         1
         0  0.000000  3.376389
         1  3.376389  0.000000
     """
+    # handle the names of the dataframes
+    df_names = _name_handling(df_list, df_names)
     # preprocess dataframe list so they have the same index/times
-    df_list = filter_to_common_time(df_list)
+    df_list, n_obs = filter_to_common_time(df_list)
     # calculate distances between all pairs of dataframes in the list
     energy_distances = np.empty((len(df_list), len(df_list)))
     for i, df1 in enumerate(df_list):
@@ -188,7 +201,7 @@ def calculate_energy_distance(df_list, data_column_name, df_names=None):
     # turn the distances into a dataframe
     energy_distances = pd.DataFrame(
         energy_distances, index=df_names, columns=df_names)
-    return energy_distances
+    return energy_distances, n_obs
 
 
 def _name_handling(df_list, df_names):
