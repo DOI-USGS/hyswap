@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+g6e03a3e documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gbc38888 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gbc38888 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -50,6 +50,8 @@
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_time</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">calculate_metadata</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
+<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_data_type</span>
+<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">rolling_average</span>
 
 
 <div class="viewcode-block" id="calculate_fixed_percentile_thresholds"><a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_thresholds">[docs]</a><span class="k">def</span> <span class="nf">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
@@ -109,6 +111,7 @@
         <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
         <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
         <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
         <span class="n">min_years</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -132,6 +135,13 @@
 <span class="sd">    date_column_name : str, optional</span>
 <span class="sd">        Name of column containing date information. If None, the index of</span>
 <span class="sd">        `df` is used.</span>
+
+<span class="sd">    data_type : str, optional</span>
+<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
+<span class="sd">        &#39;28-day&#39;. Default is &#39;daily&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
+<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
+<span class="sd">        values will be used for any days that do not have data. If present,</span>
+<span class="sd">        NaN values will result in NaN values for the entire period.</span>
 
 <span class="sd">    year_type : str, optional</span>
 <span class="sd">        The type of year to use. Must be one of &#39;calendar&#39;, &#39;water&#39;, or</span>
@@ -177,6 +187,9 @@
     <span class="c1"># if necessary</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">,</span>
                                  <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">,</span> <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># do rolling average for time as needed</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
     <span class="c1"># based on date, get min and max day of year available</span>
     <span class="n">min_day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span><span class="o">.</span><span class="n">min</span><span class="p">()))</span>
     <span class="n">max_day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">((</span><span class="mi">366</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
@@ -254,7 +267,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gbc38888 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>

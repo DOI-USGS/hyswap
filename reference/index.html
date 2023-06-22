@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g6e03a3e documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+gbc38888 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gbc38888 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -321,6 +321,29 @@ temporal period.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="hyswap.utils.set_data_type">
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">set_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#set_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.set_data_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to set the data type for rolling averages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_type</strong> (<em>str</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
+‘28-day’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
+specified, the data will be averaged over the specified period. NaN
+values will be used for any days that do not have data. If present,
+NaN values will result in NaN values for the entire period.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data_type</strong> – The formatted frequency string to be used with
+pandas.DataFrame.rolling to calculate the average over the correct
+temporal period.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-hyswap.exceedance">
 <span id="exceedance-probability-functions"></span><h2>Exceedance Probability Functions<a class="headerlink" href="#module-hyswap.exceedance" title="Permalink to this heading">¶</a></h2>
@@ -571,29 +594,6 @@ dataframe if it exists.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="hyswap.rasterhydrograph._set_data_type">
-<span class="sig-prename descclassname"><span class="pre">hyswap.rasterhydrograph.</span></span><span class="sig-name descname"><span class="pre">_set_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/rasterhydrograph.html#_set_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.rasterhydrograph._set_data_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Private function to set the data type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data_type</strong> (<em>str</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
-‘28-day’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
-specified, the data will be averaged over the specified period. NaN
-values will be used for any days that do not have data. If present,
-NaN values will result in NaN values for the entire period.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>data_type</strong> – The formatted frequency string to be used with
-pandas.DataFrame.rolling to calculate the average over the correct
-temporal period.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="hyswap.rasterhydrograph.format_data">
 <span class="sig-prename descclassname"><span class="pre">hyswap.rasterhydrograph.</span></span><span class="sig-name descname"><span class="pre">format_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/rasterhydrograph.html#format_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.rasterhydrograph.format_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format data for raster hydrograph.</p>
@@ -703,7 +703,7 @@ and year type.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.percentiles.calculate_variable_percentile_thresholds_by_day">
-<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">100]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">100]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate variable percentile thresholds of data by day of year.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -715,6 +715,11 @@ and year type.</p>
 <li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method to use to calculate percentiles. Default is ‘weibull’.</p></li>
 <li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column containing date information. If None, the index of
 <cite>df</cite> is used.</p></li>
+<li><p><strong>data_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
+‘28-day’. Default is ‘daily’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
+specified, the data will be averaged over the specified period. NaN
+values will be used for any days that do not have data. If present,
+NaN values will result in NaN values for the entire period.</p></li>
 <li><p><strong>year_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of year to use. Must be one of ‘calendar’, ‘water’, or
 ‘climate’. Default is ‘calendar’ which starts the year on January 1
 and ends on December 31. ‘water’ starts the year on October 1 and
@@ -1085,6 +1090,7 @@ make the raster hydrograph plot.</p>
 <li><a class="reference internal" href="#hyswap.utils.leap_year_adjustment"><code class="docutils literal notranslate"><span class="pre">leap_year_adjustment()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.utils.munge_nwis_stats"><code class="docutils literal notranslate"><span class="pre">munge_nwis_stats()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.utils.rolling_average"><code class="docutils literal notranslate"><span class="pre">rolling_average()</span></code></a></li>
+<li><a class="reference internal" href="#hyswap.utils.set_data_type"><code class="docutils literal notranslate"><span class="pre">set_data_type()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-hyswap.exceedance">Exceedance Probability Functions</a><ul>
@@ -1097,7 +1103,6 @@ make the raster hydrograph plot.</p>
 <li><a class="reference internal" href="#module-hyswap.rasterhydrograph">Raster Hydrograph Functions</a><ul>
 <li><a class="reference internal" href="#hyswap.rasterhydrograph._calculate_date_range"><code class="docutils literal notranslate"><span class="pre">_calculate_date_range()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.rasterhydrograph._check_inputs"><code class="docutils literal notranslate"><span class="pre">_check_inputs()</span></code></a></li>
-<li><a class="reference internal" href="#hyswap.rasterhydrograph._set_data_type"><code class="docutils literal notranslate"><span class="pre">_set_data_type()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.rasterhydrograph.format_data"><code class="docutils literal notranslate"><span class="pre">format_data()</span></code></a></li>
 </ul>
 </li>
@@ -1161,7 +1166,7 @@ make the raster hydrograph plot.</p>
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gbc38888 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>

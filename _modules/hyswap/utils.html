@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g6e03a3e documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gbc38888 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gbc38888 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -475,6 +475,37 @@
     <span class="n">df_slim</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">target_pct_col</span>
     <span class="c1"># return the dataframe</span>
     <span class="k">return</span> <span class="n">df_slim</span></div>
+
+
+<div class="viewcode-block" id="set_data_type"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.set_data_type">[docs]</a><span class="k">def</span> <span class="nf">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to set the data type for rolling averages.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_type : str</span>
+<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
+<span class="sd">        &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
+<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
+<span class="sd">        values will be used for any days that do not have data. If present,</span>
+<span class="sd">        NaN values will result in NaN values for the entire period.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data_type : str</span>
+<span class="sd">        The formatted frequency string to be used with</span>
+<span class="sd">        pandas.DataFrame.rolling to calculate the average over the correct</span>
+<span class="sd">        temporal period.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;daily&#39;</span><span class="p">:</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;D&#39;</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;7-day&#39;</span><span class="p">:</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;7D&#39;</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;14-day&#39;</span><span class="p">:</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;14D&#39;</span>
+    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;28-day&#39;</span><span class="p">:</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;28D&#39;</span>
+
+    <span class="k">return</span> <span class="n">data_type</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -506,7 +537,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g6e03a3e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gbc38888 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
