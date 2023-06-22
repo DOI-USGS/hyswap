@@ -229,6 +229,77 @@ We will also specify the colors to be used for the percentile envelopes.
     plt.show()
 
 
+Rolling Averages for Historic Daily Percentile Calculations
+***********************************************************
+
+In this example, rather than calculating historic daily percentile values based solely on the past values from that day of the year, we will calculate the historic daily percentile values based on rolling averages of the past values around that day.
+Under the hood this uses the :meth:`pandas.DataFrame.rolling` method to calculate the rolling average, with the default parameters.
+To show the effect of this, we will plot the historic daily percentile values for the daily (default) rolling average, 7-day rolling average, and the 28-day rolling average.
+
+.. plot::
+    :context: reset
+    :include-source:
+
+    # fetch historic data from NWIS
+    df, _ = dataretrieval.nwis.get_dv("03586500",
+                                        parameterCd="00060",
+                                        start="1776-01-01",
+                                        end="2022-12-31")
+
+    # calculate specific historic daily percentile thresholds for water years
+    percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, "00060_Mean", data_type='daily', year_type="water"
+    )
+    percentiles_by_7day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, "00060_Mean", data_type='7-day', year_type="water"
+    )
+    percentiles_by_28day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, "00060_Mean", data_type='28-day', year_type="water"
+    )
+
+    # plotting percentiles by day with line shade between
+    fig, ax = plt.subplots(3, 1, figsize=(10, 18), sharex=True)
+    # filter down to data from 2022
+    df_year = df[df['index_year'] == 2022]
+    # plot daily percentiles
+    hyswap.plots.plot_duration_hydrograph(
+        percentiles_by_day,
+        df_year,
+        "00060_Mean",
+        "index_doy",
+        ax=ax[0],
+        data_label="Water Year 2022",
+        title="Percentiles of Streamflow by Day of Year - Site 03586500",
+        xlab="",
+        ylab="1-day Streamflow"
+    )
+    # plot 7-day percentiles
+    hyswap.plots.plot_duration_hydrograph(
+        percentiles_by_7day,
+        hyswap.utils.rolling_average(df_year, "00060_Mean", "7D"),
+        "00060_Mean",
+        "index_doy",
+        ax=ax[1],
+        data_label="Water Year 2022",
+        title="Percentiles of Streamflow by Day of Year (7-day rolling average) - Site 03586500",
+        xlab="",
+        ylab="7-day Streamflow"
+    )
+    # plot 28-day percentiles
+    hyswap.plots.plot_duration_hydrograph(
+        percentiles_by_28day,
+        hyswap.utils.rolling_average(df_year, "00060_Mean", "28D"),
+        "00060_Mean",
+        "index_doy",
+        ax=ax[2],
+        data_label="Water Year 2022",
+        title="Percentiles of Streamflow by Day of Year (28-day rolling average) - Site 03586500",
+        ylab="28-day Streamflow"
+    )
+    plt.tight_layout()
+    plt.show()
+
+
 Customizing Fill Areas
 **********************
 

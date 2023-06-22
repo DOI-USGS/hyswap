@@ -430,3 +430,34 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
     df_slim.columns = target_pct_col
     # return the dataframe
     return df_slim
+
+
+def set_data_type(data_type):
+    """Function to set the data type for rolling averages.
+
+    Parameters
+    ----------
+    data_type : str
+        The type of data. Must be one of 'daily', '7-day', '14-day', and
+        '28-day'. If '7-day', '14-day', or '28-day' is
+        specified, the data will be averaged over the specified period. NaN
+        values will be used for any days that do not have data. If present,
+        NaN values will result in NaN values for the entire period.
+
+    Returns
+    -------
+    data_type : str
+        The formatted frequency string to be used with
+        pandas.DataFrame.rolling to calculate the average over the correct
+        temporal period.
+    """
+    if data_type == 'daily':
+        data_type = 'D'
+    elif data_type == '7-day':
+        data_type = '7D'
+    elif data_type == '14-day':
+        data_type = '14D'
+    elif data_type == '28-day':
+        data_type = '28D'
+
+    return data_type

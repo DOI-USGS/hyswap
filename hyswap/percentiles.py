@@ -5,6 +5,8 @@ import pandas as pd
 from hyswap.utils import filter_data_by_time
 from hyswap.utils import calculate_metadata
 from hyswap.utils import define_year_doy_columns
+from hyswap.utils import set_data_type
+from hyswap.utils import rolling_average
 
 
 def calculate_fixed_percentile_thresholds(
@@ -64,6 +66,7 @@ def calculate_variable_percentile_thresholds_by_day(
         percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
         method='weibull',
         date_column_name=None,
+        data_type='daily',
         year_type='calendar',
         min_years=10,
         **kwargs):
@@ -87,6 +90,13 @@ def calculate_variable_percentile_thresholds_by_day(
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` is used.
+
+    data_type : str, optional
+        The type of data. Must be one of 'daily', '7-day', '14-day', and
+        '28-day'. Default is 'daily'. If '7-day', '14-day', or '28-day' is
+        specified, the data will be averaged over the specified period. NaN
+        values will be used for any days that do not have data. If present,
+        NaN values will result in NaN values for the entire period.
 
     year_type : str, optional
         The type of year to use. Must be one of 'calendar', 'water', or
@@ -132,6 +142,9 @@ def calculate_variable_percentile_thresholds_by_day(
     # if necessary
     df = define_year_doy_columns(df, date_column_name=date_column_name,
                                  year_type=year_type, clip_leap_day=True)
+    # do rolling average for time as needed
+    data_type = set_data_type(data_type)
+    df = rolling_average(df, data_column_name, data_type)
     # based on date, get min and max day of year available
     min_day = np.nanmax((1, df.index.dayofyear.min()))
     max_day = np.nanmin((366, df.index.dayofyear.max() + 1))
