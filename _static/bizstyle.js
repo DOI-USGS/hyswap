@@ -23,7 +23,7 @@ const initialiseBizStyle = () => {
 }
 
 window.addEventListener("resize",
-  () => (document.querySelector("li.nav-item-0 a").innerText = (window.innerWidth <= 776) ? "Top" : "hyswap 0.1.dev1+gbc38888 documentation")
+  () => (document.querySelector("li.nav-item-0 a").innerText = (window.innerWidth <= 776) ? "Top" : "hyswap 0.1.dev1+g89416ad documentation")
 )
 
 if (document.readyState !== "loading") initialiseBizStyle()
