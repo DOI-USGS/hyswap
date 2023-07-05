@@ -266,3 +266,11 @@ def test_filter_to_common_time():
     # check the output
     assert len(df_list) == 2
     assert n_obs == 5
+
+
+def test_set_data_type():
+    """Test the function set_data_type."""
+    assert utils.set_data_type('daily') == 'D'
+    assert utils.set_data_type('7-day') == '7D'
+    assert utils.set_data_type('14-day') == '14D'
+    assert utils.set_data_type('28-day') == '28D'
