@@ -474,7 +474,6 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
         Mean                    207.43
         Median                    82.5
         Maximum                 3710.0
-
     """
     # make dictionary
     summary_dict = {}
