@@ -4,8 +4,17 @@ Glossary
 +-------------------+------------------------------+---------------------------------------+
 | Term              | Definition                   | Reference                             |
 +===================+==============================+=======================================+
-| Climate Year      | Starts April 1 and ends      | `Hammond et al. (2022)`_              |
-|                   | March 31 of the climate year |                                       |
+| Climate Year      | A continuous 12-month period | `Hammond et al. (2022)`_              |
+|                   | selected to present data     |                                       |
+|                   | relative to climatic         |                                       |
+|                   | phenomena during which the   |                                       |
+|                   | annual low-flow period       |                                       |
+|                   | normally occurs. The climate |                                       |
+|                   | year used by the U.S.        |                                       |
+|                   | Geological Survey runs from  |                                       |
+|                   | April 1 to March 31, and is  |                                       |
+|                   | designated by the year in    |                                       |
+|                   | which it ends.               |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Water Year        | A continuous 12-month period | `USGS Water Science Glossary`_        |
 |                   | selected to present data     |                                       |
@@ -22,18 +31,23 @@ Glossary
 +-------------------+------------------------------+---------------------------------------+
 | Calendar Year     | Starts January 1 and ends    | `Pope Gregory XIII (1582)`_           |
 |                   | December 31 of the calendar  |                                       |
-|                   | year                         |                                       |
+|                   | year.                        |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| Hydrograph        | A plot of discharge vs. time | `USDA National Engineering Handbook`_ |
+| Hydrograph        | A plot of streamflow         | `USDA National Engineering Handbook`_ |
+|                   | (discharge) versus time.     |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Streamflow        | The water discharge that     | `USGS Water Science Glossary`_        |
 |                   | occurs in a natural channel. |                                       |
+|                   | Typically, synonymous with   |                                       |
+|                   | discharge or flow.           |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Discharge         | The volume of water that     | `USGS Water Science Glossary`_        |
 |                   | passes a given location      |                                       |
 |                   | within a given period of     |                                       |
 |                   | time. Usually expressed in   |                                       |
 |                   | cubic feet per second.       |                                       |
+|                   | Typically, synonymous with   |                                       |
+|                   | streamflow or flow.          |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Percentile        | The value below which a      | `USGS Water Science Glossary`_        |
 |                   | given percentage of          |                                       |
@@ -65,12 +79,12 @@ Glossary
 |                   | and days on the x-axis.      |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Metadata          | Data that provides           | `Merriam Webster`_                    |
-|                   | information about other data |                                       |
+|                   | information about other data.|                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Leap year         | Years evenly divisible by 4  | `US Naval Observatory`_               |
 |                   | are leap years, except for   |                                       |
 |                   | centurial years that are not |                                       |
-|                   | evenly divisible by 400      |                                       |
+|                   | evenly divisible by 400.     |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Cubic feet per    | A rate of the flow, in       | `USGS Water Science Glossary`_        |
 | second (cfs)      | streams and rivers, for      |                                       |
@@ -148,6 +162,21 @@ Glossary
 +-------------------+------------------------------+---------------------------------------+
 | Brook             | A small stream               | `USGS Water Science Glossary`_        |
 +-------------------+------------------------------+---------------------------------------+
+| Exceedance        | The probability a given flow | `Searcy (1959)`_                      |
+| Probability       | value will be equaled or     |                                       |
+|                   | exceeded during a given time |                                       |
+|                   | period.                      |                                       |
++-------------------+------------------------------+---------------------------------------+
+| Recurrence        | The average number of years  | `USGS Water Science School`_          |
+| Interval          | between floods of a certain  |                                       |
+|                   | size is the recurrence       |                                       |
+|                   | interval or return period.   |                                       |
+|                   | The actual number of years   |                                       |
+|                   | between floods of any given  |                                       |
+|                   | size varies a lot because of |                                       |
+|                   | the naturally changing       |                                       |
+|                   | climate.                     |                                       |
++-------------------+------------------------------+---------------------------------------+
 
 
 .. _Hammond et al. (2022): https://doi.org/10.1029/2022WR031930
@@ -171,3 +200,5 @@ Glossary
 .. _Searcy (1959): https://doi.org/10.3133/wsp1542A
 
 .. _Koehler (2004): https://repository.arizona.edu/handle/10150/280516
+
+.. _USGS Water Science School: https://www.usgs.gov/special-topics/water-science-school/science/100-year-flood
