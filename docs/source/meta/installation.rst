@@ -14,10 +14,8 @@ Below are two recommended installation methods for users of the ``hyswap`` packa
 Installation via ``pip``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-``hyswap`` is hosted on `pypi <pypi>`_ and can therefore be installed using ``pip``.
+``hyswap`` is hosted on `pypi <https://pypi.org/project/hyswap/>`_ and can therefore be installed using ``pip``.
 This can be done with the following command:
-
-.. _pypi: https://pypi.org/project/hyswap/
 
 .. code-block:: bash
 
