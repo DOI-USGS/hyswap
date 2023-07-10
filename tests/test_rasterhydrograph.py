@@ -5,14 +5,6 @@ import pandas as pd
 from hyswap import rasterhydrograph
 
 
-def test_set_data_type():
-    """Test the private function _set_data_type."""
-    assert rasterhydrograph._set_data_type('daily') == 'D'
-    assert rasterhydrograph._set_data_type('7-day') == '7D'
-    assert rasterhydrograph._set_data_type('14-day') == '14D'
-    assert rasterhydrograph._set_data_type('28-day') == '28D'
-
-
 def test_calculate_date_range():
     """Test the private function _calculate_date_range."""
     # define a data frame to use for testing

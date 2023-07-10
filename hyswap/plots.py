@@ -7,10 +7,13 @@ from hyswap.percentiles import calculate_variable_percentile_thresholds_by_day
 
 
 def plot_flow_duration_curve(
-        values, exceedance_probabilities, ax=None, title='Flow Duration Curve',
+        values, exceedance_probabilities,
+        observations=None, observation_probabilities=None,
+        ax=None, title='Flow Duration Curve',
         xlab='Exceedance Probability\n' +
-        '(Percent of Time Indicated Discharge was Equaled or Exceeded)',
-        ylab='Discharge, ft$^3$/s', grid=True, **kwargs):
+        '(Percentage of time indicated value was equaled or exceeded)',
+        ylab='Discharge, in Cubic Feet per Second', grid=True,
+        scatter_kwargs={}, **kwargs):
     """
     Make flow duration curve plot.
 
@@ -21,6 +24,14 @@ def plot_flow_duration_curve(
     exceedance_probabilities : array-like
         Exceedance probabilities for each value, likely calculated from
         a function like :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.
+    observations : list, numpy.ndarray, optional
+        List, numpy array or list-able set of flow observations. Optional, if
+        not provided the observations are not plotted.
+    observation_probabilities : list, numpy.ndarray, optional
+        Exceedance probabilities corresponding to each observation, likely
+        calculated from a function like
+        :obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`.
+        Optional, if not provided observations are not plotted.
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
@@ -33,6 +44,9 @@ def plot_flow_duration_curve(
         Label for the y-axis. If not provided, a default label will be used.
     grid : bool, optional
         Whether to show grid lines on the plot. Default is True.
+    scatter_kwargs : dict
+        Dictionary containing keyword arguments to pass to the observations
+        plotting method, :meth:`matplotlib.axes.Axes.scatter`.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.plot`.
 
@@ -68,6 +82,9 @@ def plot_flow_duration_curve(
         _, ax = plt.subplots()
     # do plotting
     ax.plot(exceedance_probabilities*100, values, **kwargs)
+    if (observations is not None) and (observation_probabilities is not None):
+        ax.scatter(np.array(observation_probabilities)*100, observations,
+                   **scatter_kwargs)
     ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)
     ax.set_title(title)
@@ -82,8 +99,20 @@ def plot_flow_duration_curve(
         '0.1', '5', '10', '25', '50', '75', '90', '95', '99.9'])
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
+    # min value is 0.1
+    # yticks = np.array([i for i in yticks if i >= 0.1])
+    # get logs for min/max values rounded to next lowest/highest
+    min_vals = np.log10(yticks[yticks <= np.min(values)])
+    if len(min_vals) > 0:
+        min_tick = min_vals[-1]
+    else:
+        min_tick = -1.0
+    max_tick = np.log10(yticks[yticks >= np.max(values)][0])
+    # set list of values using logs
+    yticks = list(10**np.arange(min_tick, max_tick+1))
     yticklabels = [f'{int(y):,}' for y in yticks]
     ax.set_yticks(yticks, labels=yticklabels)
+    ax.set_ylim(np.min(yticks), np.max(yticks))
     # add grid lines
     if grid:
         ax.grid(which='both', axis='both', alpha=0.5)
@@ -92,9 +121,9 @@ def plot_flow_duration_curve(
 
 
 def plot_raster_hydrograph(df_formatted, ax=None,
-                           title='Streamflow Raster Hydrograph',
+                           title='Raster Hydrograph',
                            xlab='Month', ylab='Year',
-                           cbarlab='Streamflow, cubic feet per second',
+                           cbarlab='Discharge, in Cubic Feet per Second',
                            **kwargs):
     """Make raster hydrograph plot.
 
@@ -116,7 +145,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
         'Year'.
     cbarlab : str, optional
         Label for the colorbar. If not provided, the default label will be
-        'Streamflow, cubic feet per second'.
+        'Discharge, in Cubic Feet per Second'.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.imshow`.
 
@@ -207,8 +236,8 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
                              pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
                              data_label=None, ax=None,
                              title="Duration Hydrograph",
-                             ylab="Discharge (cfs)", xlab="Month",
-                             colors=None, **kwargs):
+                             ylab="Discharge, in Cubic Feet per Second",
+                             xlab="Month", colors=None, **kwargs):
     """Make duration hydrograph plot.
 
     Parameters
@@ -235,7 +264,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         'Duration Hydrograph'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
-        'Discharge (cfs)'.
+        'Discharge, in Cubic Feet per Second'.
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
         'Month'.
@@ -335,13 +364,13 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     return ax
 
 
-def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
+def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
                                year_type='calendar',
                                envelope_pct=[25, 75],
                                max_pct=False, min_pct=False,
                                ax=None,
-                               title="Cumulative Discharge",
-                               ylab="Cumulative Discharge (cfs)",
+                               title="Cumulative Streamflow Hydrograph",
+                               ylab="Cumulative Streamflow, in Cubic Feet",
                                xlab="Month", **kwargs):
     """Make cumulative hydrograph plot.
 
@@ -350,8 +379,9 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     cumulative_percentiles : pandas.DataFrame
         Dataframe containing the cumulative percentiles per year, output
         from :obj:`hyswap.cumulative.calculate_daily_cumulative_values`.
-    target_year : int
-        Target year to plot in black as the line.
+    target_years : int, or list
+        Target year(s) to plot in black as the line. Can provide a single year
+        as an integer, or a list of years.
     year_type : str, optional
         The type of year to use. Must be one of 'calendar', 'water', or
         'climate'. Default is 'calendar' which starts the year on January 1
@@ -372,10 +402,10 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
         created.
     title : str, optional
         Title for the plot. If not provided, the default title will be
-        'Cumulative Discharge'.
+        'Cumulative Streamflow Hydrograph'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
-        'Cumulative Discharge (cfs)'.
+        'Cumulative Streamflow, in Cubic Feet'.
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
         'Month'.
@@ -434,12 +464,18 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     if max_pct:
         ax.plot(pdf.index.get_level_values(1), pdf[100], color='k',
                 alpha=0.5, linestyle='--', label="Maximum")
-    # get data from target year
-    target_year_data = cumulative_percentiles.loc[
-        cumulative_percentiles['index_year'] == target_year]
-    # plot target year
-    ax.plot(target_year_data['index_doy'], target_year_data['cumulative'],
-            color='k', label=f"{target_year} Cumulative Discharge")
+    # handle target years
+    col_targets = ['k'] + list(matplotlib.colormaps['tab20'].colors)
+    if isinstance(target_years, int):
+        target_years = [target_years]  # make int a list
+    for i, target_year in enumerate(target_years):
+        # get data from target year
+        target_year_data = cumulative_percentiles.loc[
+            cumulative_percentiles['index_year'] == target_year]
+        # plot target year
+        ax.plot(target_year_data['index_doy'], target_year_data['cumulative'],
+                color=col_targets[i],
+                label=f"{target_year} Observed")
 
     # set labels
     ax.set_xlabel(xlab)
@@ -464,7 +500,8 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_year,
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
+    ax.set_yticks(yticks[1:], labels=yticklabels[1:])
+    ax.set_ylim(0, yticks.max())
     # two column legend
     ax.legend(loc="best")
 

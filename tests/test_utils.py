@@ -273,3 +273,11 @@ def test_calculate_summary_statistics():
     assert df_stats.iloc[5, 0] == 5.5
     assert df_stats.iloc[6, 0] == 5.5
     assert df_stats.iloc[7, 0] == 10
+
+
+def test_set_data_type():
+    """Test the function set_data_type."""
+    assert utils.set_data_type('daily') == 'D'
+    assert utils.set_data_type('7-day') == '7D'
+    assert utils.set_data_type('14-day') == '14D'
+    assert utils.set_data_type('28-day') == '28D'

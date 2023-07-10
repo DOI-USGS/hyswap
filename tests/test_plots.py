@@ -18,8 +18,8 @@ def test_plot_flow_duration_curve():
     ax = plots.plot_flow_duration_curve(values, exceedance_probabilities)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Exceedance Probability\n' + \
-        '(Percent of Time Indicated Discharge was Equaled or Exceeded)'
-    assert ax.get_ylabel() == 'Discharge, ft$^3$/s'
+        '(Percentage of time indicated value was equaled or exceeded)'
+    assert ax.get_ylabel() == 'Discharge, in Cubic Feet per Second'
     assert ax.get_title() == 'Flow Duration Curve'
     assert len(ax.lines) == 1
     assert len(ax.collections) == 0
@@ -41,6 +41,20 @@ def test_plot_flow_duration_curve():
     assert ax.get_title() == 'Test Title'
     assert len(ax.lines) == 1
     assert len(ax.collections) == 0
+    # make another plot with observations on it
+    ax = plots.plot_flow_duration_curve(values, exceedance_probabilities,
+                                        observations=[1, 2],
+                                        observation_probabilities=[0.5, 0.25],
+                                        title='Test Title',
+                                        xlab='Test X Label',
+                                        ylab='Test Y Label',
+                                        scatter_kwargs={'c': 'k'})
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Test X Label'
+    assert ax.get_ylabel() == 'Test Y Label'
+    assert ax.get_title() == 'Test Title'
+    assert len(ax.lines) == 1
+    assert len(ax.collections) == 1
     # close plot
     plt.close()
 
@@ -54,7 +68,7 @@ def test_plot_raster_hydrograph():
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Year'
-    assert ax.get_title() == 'Streamflow Raster Hydrograph'
+    assert ax.get_title() == 'Raster Hydrograph'
     # make one with custom labels
     ax = plots.plot_raster_hydrograph(df_formatted, title='Test Title',
                                       xlab='Test X Label',
@@ -78,7 +92,7 @@ def test_plot_duration_hydrograph():
     ax = plots.plot_duration_hydrograph(pct, df, 'data', 'doy')
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
-    assert ax.get_ylabel() == 'Discharge (cfs)'
+    assert ax.get_ylabel() == 'Discharge, in Cubic Feet per Second'
     assert ax.get_title() == 'Duration Hydrograph'
     # make one with custom labels
     ax = plots.plot_duration_hydrograph(pct, df, 'data', 'doy',
@@ -104,8 +118,8 @@ def test_plot_cumulative_hydrograph():
     ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
-    assert ax.get_ylabel() == 'Cumulative Discharge (cfs)'
-    assert ax.get_title() == 'Cumulative Discharge'
+    assert ax.get_ylabel() == 'Cumulative Streamflow, in Cubic Feet'
+    assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 1
     # make one with custom labels
     ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010,
@@ -122,9 +136,23 @@ def test_plot_cumulative_hydrograph():
                                           max_pct=True, min_pct=True)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
-    assert ax.get_ylabel() == 'Cumulative Discharge (cfs)'
-    assert ax.get_title() == 'Cumulative Discharge'
+    assert ax.get_ylabel() == 'Cumulative Streamflow, in Cubic Feet'
+    assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 3
+    assert len(ax.collections) == 1
+    # make one with multiple years of data plotted
+    _date = pd.date_range('1/1/2010', '12/31/2012')
+    df = pd.DataFrame({'date': _date,
+                       'data': np.random.rand(len(_date))})
+    df_cumulative = cumulative.calculate_daily_cumulative_values(
+        df, 'data', date_column_name='date')
+    ax = plots.plot_cumulative_hydrograph(df_cumulative, [2010, 2011],
+                                          max_pct=True, min_pct=True)
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Month'
+    assert ax.get_ylabel() == 'Cumulative Streamflow, in Cubic Feet'
+    assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
+    assert len(ax.lines) == 4  # min/max, 2010 and 2011 lines
     assert len(ax.collections) == 1
     # close plot
     plt.close()
