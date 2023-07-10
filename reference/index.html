@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g9e2a63e documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g0d33964 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g9e2a63e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -77,6 +77,49 @@ as well as the number of low (typically low flow &lt;= 0.01) values.</p>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hyswap.utils.calculate_summary_statistics">
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_summary_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'00060_Mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#calculate_summary_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.calculate_summary_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate summary statistics for a site.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing daily values for the site. Expected to be from
+<cite>dataretrieval.nwis.get_dv()</cite>, or similar.</p></li>
+<li><p><strong>data_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the column in the dv_df DataFrame that contains the data of
+interest. Default is “00060_Mean” which is the mean daily discharge
+column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>summary_df</strong> – DataFrame containing summary statistics for the site.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Get some NWIS data and apply the function to get the summary statistics.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;03586500&quot;</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">startDT</span><span class="o">=</span><span class="s2">&quot;2010-01-01&quot;</span><span class="p">,</span> <span class="n">endDT</span><span class="o">=</span><span class="s2">&quot;2010-12-31&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">summary_df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">summary_df</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(8, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">summary_df</span><span class="p">)</span>
+<span class="go">            Summary Statistics</span>
+<span class="go">Site number           03586500</span>
+<span class="go">Begin date          2010-01-01</span>
+<span class="go">End date            2010-12-31</span>
+<span class="go">Count                      365</span>
+<span class="go">Minimum                   2.48</span>
+<span class="go">Mean                    207.43</span>
+<span class="go">Median                    82.5</span>
+<span class="go">Maximum                 3710.0</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1084,6 +1127,7 @@ make the raster hydrograph plot.</p>
 <li><a class="reference internal" href="#api-reference">API Reference</a><ul>
 <li><a class="reference internal" href="#module-hyswap.utils">Utility Functions</a><ul>
 <li><a class="reference internal" href="#hyswap.utils.calculate_metadata"><code class="docutils literal notranslate"><span class="pre">calculate_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#hyswap.utils.calculate_summary_statistics"><code class="docutils literal notranslate"><span class="pre">calculate_summary_statistics()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.utils.define_year_doy_columns"><code class="docutils literal notranslate"><span class="pre">define_year_doy_columns()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.utils.filter_approved_data"><code class="docutils literal notranslate"><span class="pre">filter_approved_data()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.utils.filter_data_by_time"><code class="docutils literal notranslate"><span class="pre">filter_data_by_time()</span></code></a></li>
@@ -1166,7 +1210,7 @@ make the raster hydrograph plot.</p>
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g9e2a63e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>

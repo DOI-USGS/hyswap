@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g9e2a63e documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g0d33964 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g9e2a63e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -477,6 +477,79 @@
     <span class="k">return</span> <span class="n">df_slim</span></div>
 
 
+<div class="viewcode-block" id="calculate_summary_statistics"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.calculate_summary_statistics">[docs]</a><span class="k">def</span> <span class="nf">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s2">&quot;00060_Mean&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate summary statistics for a site.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing daily values for the site. Expected to be from</span>
+<span class="sd">        `dataretrieval.nwis.get_dv()`, or similar.</span>
+
+<span class="sd">    data_col : str, optional</span>
+<span class="sd">        Name of the column in the dv_df DataFrame that contains the data of</span>
+<span class="sd">        interest. Default is &quot;00060_Mean&quot; which is the mean daily discharge</span>
+<span class="sd">        column.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    summary_df : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing summary statistics for the site.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Get some NWIS data and apply the function to get the summary statistics.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     startDT=&quot;2010-01-01&quot;, endDT=&quot;2010-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; summary_df = utils.calculate_summary_statistics(df)</span>
+<span class="sd">        &gt;&gt;&gt; summary_df.shape</span>
+<span class="sd">        (8, 1)</span>
+<span class="sd">        &gt;&gt;&gt; print(summary_df)</span>
+<span class="sd">                    Summary Statistics</span>
+<span class="sd">        Site number           03586500</span>
+<span class="sd">        Begin date          2010-01-01</span>
+<span class="sd">        End date            2010-12-31</span>
+<span class="sd">        Count                      365</span>
+<span class="sd">        Minimum                   2.48</span>
+<span class="sd">        Mean                    207.43</span>
+<span class="sd">        Median                    82.5</span>
+<span class="sd">        Maximum                 3710.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># make dictionary</span>
+    <span class="n">summary_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># populate it</span>
+    <span class="c1"># site number</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Site number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># dates</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Begin date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;End date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># count</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="c1"># minimum</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Minimum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="c1"># mean</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># median</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Median&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+    <span class="c1"># maximum</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="c1"># make dataframe</span>
+    <span class="n">summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">summary_dict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># transpose and set column name</span>
+    <span class="n">summary_df</span> <span class="o">=</span> <span class="n">summary_df</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">summary_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Summary Statistics&#39;</span><span class="p">]</span>
+
+    <span class="c1"># return dataframe</span>
+    <span class="k">return</span> <span class="n">summary_df</span></div>
+
+
 <div class="viewcode-block" id="set_data_type"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.set_data_type">[docs]</a><span class="k">def</span> <span class="nf">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to set the data type for rolling averages.</span>
 
@@ -537,7 +610,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g9e2a63e documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
