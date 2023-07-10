@@ -250,6 +250,31 @@ def test_munge_nwis_stats():
     assert df_slim.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
 
 
+def test_calculate_summary_statistics():
+    """Test the calculate_summary_statistics function."""
+    # make test dataframe
+    df = pd.DataFrame({
+        'datetime': pd.date_range('2000-01-01', '2000-01-10'),
+        '00060_Mean': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        'site_no': np.ones(10) * 12345678
+    })
+    # set datetime as index
+    df.set_index('datetime', inplace=True)
+    # use function
+    df_stats = utils.calculate_summary_statistics(df, '00060_Mean')
+    # check output
+    assert df_stats.shape == (8, 1)
+    assert df_stats.columns[0] == 'Summary Statistics'
+    assert df_stats.iloc[0, 0] == '12345678'
+    assert df_stats.iloc[1, 0] == '2000-01-01'
+    assert df_stats.iloc[2, 0] == '2000-01-10'
+    assert df_stats.iloc[3, 0] == 10
+    assert df_stats.iloc[4, 0] == 1
+    assert df_stats.iloc[5, 0] == 5.5
+    assert df_stats.iloc[6, 0] == 5.5
+    assert df_stats.iloc[7, 0] == 10
+
+
 def test_set_data_type():
     """Test the function set_data_type."""
     assert utils.set_data_type('daily') == 'D'
