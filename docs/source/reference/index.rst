@@ -55,3 +55,10 @@ Plotting Functions
 .. automodule:: hyswap.plots
     :members:
     :special-members:
+
+Runoff Calculation Functions
+-----------------------------
+
+.. automodule:: hyswap.runoff
+    :members:
+    :special-members:
