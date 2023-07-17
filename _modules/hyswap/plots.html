@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.plots &#8212; hyswap 0.1.dev1+g0d33964 documentation</title>
+    <title>hyswap.plots &#8212; hyswap 0.1.dev1+g53c413e documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g53c413e documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>
@@ -552,6 +552,112 @@
 
     <span class="c1"># return</span>
     <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="plot_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_hydrograph</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span>
+                    <span class="n">date_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Streamflow Hydrograph&#39;</span><span class="p">,</span>
+                    <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Streamflow, in Cubic Feet per Second&#39;</span><span class="p">,</span>
+                    <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span>
+                    <span class="n">yscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a hydrograph.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing the data to plot.</span>
+
+<span class="sd">    data_col : str</span>
+<span class="sd">        Name of the column containing the data to plot.</span>
+
+<span class="sd">    date_col : str, optional</span>
+<span class="sd">        Name of the column containing the dates. If not provided, the index</span>
+<span class="sd">        will be used.</span>
+
+<span class="sd">    start_date : str, optional</span>
+<span class="sd">        Start date for the plot. If not provided, the minimum date in the</span>
+<span class="sd">        DataFrame will be used.</span>
+
+<span class="sd">    end_date : str, optional</span>
+<span class="sd">        End date for the plot. If not provided, the maximum date in the</span>
+<span class="sd">        DataFrame will be used.</span>
+
+<span class="sd">    ax : matplotlib.axes.Axes, optional</span>
+<span class="sd">        Axes object to plot on. If not provided, a new figure and axes will be</span>
+<span class="sd">        created.</span>
+
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title of the plot. Default is &#39;Streamflow Hydrograph&#39;.</span>
+
+<span class="sd">    ylab : str, optional</span>
+<span class="sd">        Y-axis label. Default is &#39;Streamflow, in Cubic Feet per Second&#39;.</span>
+
+<span class="sd">    xlab : str, optional</span>
+<span class="sd">        X-axis label. Default is &#39;Date&#39;.</span>
+
+<span class="sd">    yscale : str, optional</span>
+<span class="sd">        Y-axis scale. Default is &#39;log&#39;. Options are &#39;linear&#39; or &#39;log&#39;.</span>
+
+<span class="sd">    **kwargs</span>
+<span class="sd">        Additional keyword arguments to pass to matplotlib.pyplot.plot().</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        Axes object containing the plot.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Fetch data for a USGS gage and plot the hydrograph.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        &gt;&gt;&gt; siteno = &#39;06892350&#39;</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(site=siteno,</span>
+<span class="sd">        ...                                   parameterCd=&#39;00060&#39;,</span>
+<span class="sd">        ...                                   start=&#39;2019-01-01&#39;,</span>
+<span class="sd">        ...                                   end=&#39;2020-01-01&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax = hyswap.plots.plot_hydrograph(</span>
+<span class="sd">        ...     df, data_col=&#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     title=f&#39;2019 Hydrograph for Station {siteno}&#39;,</span>
+<span class="sd">        ...     ylab=&#39;Streamflow, in Cubic Feet per Second&#39;,</span>
+<span class="sd">        ...     xlab=&#39;Date&#39;, yscale=&#39;log&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; plt.tight_layout()</span>
+<span class="sd">        &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if ax provided</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="c1"># check if date_col provided</span>
+    <span class="k">if</span> <span class="n">date_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_col</span><span class="p">)</span>
+    <span class="c1"># sort by date</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="c1"># check if start_date provided</span>
+    <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">start_date</span><span class="p">:]</span>
+    <span class="c1"># check if end_date provided</span>
+    <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="n">end_date</span><span class="p">]</span>
+    <span class="c1"># plot</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1"># set labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylab</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="c1"># set yscale</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="n">yscale</span><span class="p">)</span>
+    <span class="c1"># get y-axis ticks and convert to comma-separated strings</span>
+    <span class="n">yticks</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yticks</span><span class="p">()</span>
+    <span class="n">yticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s1">,</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">]</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c1"># return</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -583,7 +689,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g53c413e documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>

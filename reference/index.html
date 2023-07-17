@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g0d33964 documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g53c413e documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g53c413e documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -1062,6 +1062,59 @@ make the flow duration curve.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="hyswap.plots.plot_hydrograph">
+<span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_hydrograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Streamflow</span> <span class="pre">Hydrograph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Streamflow,</span> <span class="pre">in</span> <span class="pre">Cubic</span> <span class="pre">Feet</span> <span class="pre">per</span> <span class="pre">Second'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Date'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_hydrograph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_hydrograph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a hydrograph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing the data to plot.</p></li>
+<li><p><strong>data_col</strong> (<em>str</em>) – Name of the column containing the data to plot.</p></li>
+<li><p><strong>date_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the column containing the dates. If not provided, the index
+will be used.</p></li>
+<li><p><strong>start_date</strong> (<em>str</em><em>, </em><em>optional</em>) – Start date for the plot. If not provided, the minimum date in the
+DataFrame will be used.</p></li>
+<li><p><strong>end_date</strong> (<em>str</em><em>, </em><em>optional</em>) – End date for the plot. If not provided, the maximum date in the
+DataFrame will be used.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>optional</em>) – Axes object to plot on. If not provided, a new figure and axes will be
+created.</p></li>
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Title of the plot. Default is ‘Streamflow Hydrograph’.</p></li>
+<li><p><strong>ylab</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label. Default is ‘Streamflow, in Cubic Feet per Second’.</p></li>
+<li><p><strong>xlab</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label. Default is ‘Date’.</p></li>
+<li><p><strong>yscale</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis scale. Default is ‘log’. Options are ‘linear’ or ‘log’.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments to pass to matplotlib.pyplot.plot().</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Axes object containing the plot.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.axes.Axes</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Fetch data for a USGS gage and plot the hydrograph.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">siteno</span> <span class="o">=</span> <span class="s1">&#39;06892350&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span>
+<span class="gp">... </span>                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                  <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2019-01-01&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                  <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2020-01-01&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_hydrograph</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;2019 Hydrograph for Station </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Streamflow, in Cubic Feet per Second&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">yscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/0a3bb3a7936b691f6ca82a73dc59798a/index-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/ce18f60330380b8f27feb9d15e4adc50/index-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/index-4.png" class="plot-directive" src="../_images/index-4.png" />
+</figure>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="hyswap.plots.plot_raster_hydrograph">
 <span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_raster_hydrograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_formatted</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Raster</span> <span class="pre">Hydrograph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Month'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Year'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbarlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Discharge,</span> <span class="pre">in</span> <span class="pre">Cubic</span> <span class="pre">Feet</span> <span class="pre">per</span> <span class="pre">Second'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_raster_hydrograph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_raster_hydrograph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make raster hydrograph plot.</p>
@@ -1104,9 +1157,9 @@ make the raster hydrograph plot.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/0a3bb3a7936b691f6ca82a73dc59798a/index-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/ce18f60330380b8f27feb9d15e4adc50/index-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/e9d5e504d5f81a4473f97487d551c0f9/index-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/fec0b38022b1aa4c603f84937bd75473/index-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/index-4.png" class="plot-directive" src="../_images/index-4.png" />
+<img alt="../_images/index-5.png" class="plot-directive" src="../_images/index-5.png" />
 </figure>
 </dd></dl>
 
@@ -1164,6 +1217,7 @@ make the raster hydrograph plot.</p>
 <li><a class="reference internal" href="#hyswap.plots.plot_cumulative_hydrograph"><code class="docutils literal notranslate"><span class="pre">plot_cumulative_hydrograph()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.plots.plot_duration_hydrograph"><code class="docutils literal notranslate"><span class="pre">plot_duration_hydrograph()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.plots.plot_flow_duration_curve"><code class="docutils literal notranslate"><span class="pre">plot_flow_duration_curve()</span></code></a></li>
+<li><a class="reference internal" href="#hyswap.plots.plot_hydrograph"><code class="docutils literal notranslate"><span class="pre">plot_hydrograph()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.plots.plot_raster_hydrograph"><code class="docutils literal notranslate"><span class="pre">plot_raster_hydrograph()</span></code></a></li>
 </ul>
 </li>
@@ -1210,7 +1264,7 @@ make the raster hydrograph plot.</p>
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g0d33964 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g53c413e documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>
