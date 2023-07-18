@@ -39,3 +39,15 @@ def test_streamflow_to_runoff():
     df = pd.DataFrame({"streamflow": [14, 15, 16]})
     runoff_df = runoff.streamflow_to_runoff(df, "streamflow", 250)
     assert pytest.approx(runoff_df["runoff"].round(1)) == [50.0, 53.6, 57.2]
+
+
+@pytest.fixture
+def weight_matrix():
+    """Load and then return the demo weights dataframe as a test fixture."""
+    return pd.read_json("demo_weights.json")
+
+
+def test_state_runoff(weight_matrix):
+    """Test for the area weighted runoff for a specific state."""
+    state_runoff = runoff.state_runoff(weight_matrix, "AL")
+    assert pytest.approx(state_runoff) == 0.0
