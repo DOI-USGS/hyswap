@@ -10,12 +10,9 @@ np.random.seed(42)
 # rows are fractions of areas
 # sum across rows is 1
 df_frac_da = pd.DataFrame({
-    ''.join(["{}".format(np.random.randint(0, 9)) for num in range(0, 8)]):
-        np.random.random(4).tolist(),
-    ''.join(["{}".format(np.random.randint(0, 9)) for num in range(0, 8)]):
-        np.random.random(4).tolist(),
-    ''.join(["{}".format(np.random.randint(0, 9)) for num in range(0, 8)]):
-        np.random.random(4).tolist(),
+    "07108900": np.random.random(4).tolist(),
+    "07103980": np.random.random(4).tolist(),
+    "01646500": np.random.random(4).tolist(),
 }, index=["AL", "NY", "MN", "WI"]).T
 # set one value to 0
 df_frac_da.iloc[0, 0] = 0
@@ -32,9 +29,7 @@ df_frac_state = pd.DataFrame({
     "NY": np.random.random(3).tolist(),
     "MN": np.random.random(3).tolist(),
     "WI": np.random.random(3).tolist()
-}, index=[
-    "".join(["{}".format(np.random.randint(0, 9)) for num in range(0, 8)])
-    for num in range(0, 3)])
+}, index=["07108900", "07103980", "01646500"])
 # set one value to 0
 df_frac_state.iloc[2, 1] = 0
 # loop across columns and normalize
