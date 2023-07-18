@@ -41,14 +41,14 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     else:
         raise ValueError("Invalid frequency: {}".format(frequency))
     # convert cfs to cubic feet per frequency
-    cpy = cfs * 60 * 60 * 24 * freq
+    cpf = cfs * 60 * 60 * 24 * freq
     # convert cubic feet per freq to cubic meters per freq
-    cpy = cpy * (0.3048 ** 3)
+    cpf = cpf * (0.3048 ** 3)
     # convert drainage area km2 to m2
     drainage_area = drainage_area * 1000 * 1000
     # convert cubic meters per year to mm per freq
-    mmyr = cpy / drainage_area * 1000
-    return mmyr
+    mmf = cpf / drainage_area * 1000
+    return mmf
 
 
 def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
@@ -95,3 +95,26 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
         lambda x: convert_cfs_to_runoff(x, drainage_area, frequency=frequency)
     )
     return df
+
+
+def calculate_area_weighted_runoff(weights, runoff):
+    """Calculate area weighted runoff for an area.
+
+    Parameters
+    ----------
+    weights : pandas.Series
+        pandas.Series containing weights for each gage in the specified area.
+        Generally a specific column selected from a larger weights DataFrame
+        which has areas as the column headers and each row corresponds to a
+        gage.
+
+    runoff : pandas.DataFrame
+        DataFrame containing runoff values for gage. Expect to have each row
+        correspond to a gage,
+
+    Returns
+    -------
+    float
+        Area weighted runoff.
+
+    """
