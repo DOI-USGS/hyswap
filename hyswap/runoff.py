@@ -202,13 +202,19 @@ def _get_date_range(df_list, start_date, end_date):
         for df in df_list:
             if df.index[0] < start_date:
                 start_date = df.index[0]
+    else:
+        # make the string tz-aware
+        start_date = pd.to_datetime(start_date).tz_localize("UTC")
     if end_date is None:
         # if no end date iterate through df_list to find latest date
         end_date = df_list[0].index[-1]
         for df in df_list:
             if df.index[-1] > end_date:
                 end_date = df.index[-1]
+    else:
+        # make the string tz-aware
+        end_date = pd.to_datetime(end_date).tz_localize("UTC")
     # create range of dates from start to end
-    date_range = pd.date_range(start_date, end_date).tz_localize('UTC')
+    date_range = pd.date_range(start_date, end_date)
 
     return date_range
