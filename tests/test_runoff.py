@@ -125,3 +125,26 @@ def test_state_runoff(weight_matrix, df_list):
     # input was 3 sites so expect there to be 3 values, one for each site
     assert len(state_runoff.values) == 3
     assert isinstance(state_runoff.values, np.ndarray)
+
+
+def test_identify_sites_for_location(weight_matrix):
+    """Test the identify_sites_for_location function."""
+    siteids = runoff.identify_sites_for_location(
+        "AL", weight_matrix)
+    assert siteids == ['07103980', '01646500']
+
+
+def test_multiple_runoff(weight_matrix, df_list):
+    """Test for the area weighted runoff for multiple states."""
+    runoff_df = runoff.calculate_multiple_geometric_runoff(
+        ["AL", "NY"], df_list, weight_matrix)
+    # assertions about the runoff
+    # should have 3 datetime values on the index
+    assert len(runoff_df.index) == 3
+    assert isinstance(
+        runoff_df.index, pd.core.indexes.datetimes.DatetimeIndex)
+    # should have both states in the columns
+    assert len(runoff_df.columns) == 2
+    assert runoff_df.columns.tolist() == ["AL", "NY"]
+    # overall shape should be 3 dates x 2 states
+    assert runoff_df.shape == (3, 2)
