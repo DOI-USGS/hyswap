@@ -42,14 +42,14 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     else:
         raise ValueError("Invalid frequency: {}".format(frequency))
     # convert cfs to cubic feet per frequency
-    cpy = cfs * 60 * 60 * 24 * freq
+    cpf = cfs * 60 * 60 * 24 * freq
     # convert cubic feet per freq to cubic meters per freq
-    cpy = cpy * (0.3048 ** 3)
+    cpf = cpf * (0.3048 ** 3)
     # convert drainage area km2 to m2
     drainage_area = drainage_area * 1000 * 1000
     # convert cubic meters per year to mm per freq
-    mmyr = cpy / drainage_area * 1000
-    return mmyr
+    mmf = cpf / drainage_area * 1000
+    return mmf
 
 
 def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
