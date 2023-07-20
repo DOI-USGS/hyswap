@@ -127,9 +127,9 @@ def test_state_runoff(weight_matrix, df_list):
     assert isinstance(state_runoff.values, np.ndarray)
 
 
-def test_identify_sites_for_location(weight_matrix):
-    """Test the identify_sites_for_location function."""
-    siteids = runoff.identify_sites_for_location(
+def test_identify_sites_from_weights(weight_matrix):
+    """Test the identify_sites_from_weights function."""
+    siteids = runoff.identify_sites_from_weights(
         "AL", weight_matrix)
     assert siteids == ['07103980', '01646500']
 

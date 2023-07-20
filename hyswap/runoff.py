@@ -220,8 +220,8 @@ def _get_date_range(df_list, start_date, end_date):
     return date_range
 
 
-def identify_sites_for_location(geoid, weights_matrix):
-    """Identify sites for a given geometry.
+def identify_sites_from_weights(geoid, weights_matrix):
+    """Identify sites for a specified geometry.
 
     Function to identify sites with non-zero weights for a given
     spatial geometry. This function is a helper function that can
