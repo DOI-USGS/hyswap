@@ -303,63 +303,10 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         >>> plt.tight_layout()
         >>> plt.show()
     """
-    # Create axes if not provided
-    if ax is None:
-        _, ax = plt.subplots()
-    # pop some kwargs
-    alpha = kwargs.pop('alpha', 0.5)
-    zorder = kwargs.pop('zorder', -20)
-    if data_label is None:
-        label = df[data_col].name
-    else:
-        label = data_label
-    # get colors
-    if colors is None:
-        colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
-                  "#7bdbd2", "#7587bf", "#ad63ba"]
-    # plot the latest data -1 to 0-index day of year
-    ax.plot(df[doy_col]-1, df[data_col], color='k', zorder=10, label=label)
-    # plot the historic percentiles filling between each pair
-    pct_list.sort()  # sort the list in ascending order
-    for i in range(1, len(pct_list)):
-        ax.fill_between(
-            percentiles_by_day.index.get_level_values(1),
-            list(percentiles_by_day[pct_list[i - 1]].values),
-            list(percentiles_by_day[pct_list[i]].values),
-            color=colors[i - 1],
-            alpha=alpha,
-            linewidth=0,
-            label="{}th - {}th Percentile".format(
-                pct_list[i - 1], pct_list[i]),
-            zorder=zorder, **kwargs
-        )
-    # set labels
-    ax.set_xlabel(xlab)
-    ax.set_xlim(0, 365)
-    # major xticks at first/end of each month
-    months = [int(m.split('-')[0]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
-    month_switch = np.where(np.diff(months) != 0)[0]
-    ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
-    # minor xticks at 15th of each month
-    unique_months = []
-    [unique_months.append(x) for x in months if x not in unique_months]
-    month_names = [calendar.month_abbr[i] for i in unique_months]
-    month_names = [f'{m}' for m in month_names]
-    days = [int(m.split('-')[1]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
-    mid_days = np.where(np.array(days) == 15)[0]
-    ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
-    # make minor ticks invisible
-    ax.tick_params(axis='x', which='minor', length=0)
-    # other labels
-    ax.set_ylabel(ylab)
-    ax.set_yscale("log")
-    ax.set_title(title)
-    # get y-axis ticks and convert to comma-separated strings
-    yticks = ax.get_yticks()
-    yticklabels = [f'{int(y):,}' for y in yticks]
-    ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
-    # two column legend
-    ax.legend(loc="best", ncol=2)
+    # call the base duration hydrograph plotter
+    ax = _base_duration_plotter(percentiles_by_day, df, data_col, doy_col,
+                                pct_list, data_label, ax, title, ylab, xlab,
+                                colors, **kwargs)
     # return axes
     return ax
 
@@ -733,4 +680,167 @@ def _base_cumulative_plotter(cumulative_values, target_years, year_type,
     ax.legend(loc="best")
 
     # return
+    return ax
+
+
+def _base_duration_plotter(percentiles_by_day, df, data_col, doy_col,
+                           pct_list, data_label, ax, title, ylab,
+                           xlab, colors, **kwargs):
+    """Internal function to make duration hydrographs.
+
+    This function gets wrapped by the convenience functions for the streamflow
+    duration and runoff duration hydrographs which supply default labels on
+    the axes.
+
+    Parameters
+    ----------
+    percentiles_by_day : pandas.DataFrame
+        Dataframe containing the percentiles by day.
+    df : pandas.DataFrame
+        Dataframe containing the data to plot.
+    data_col : str
+        Column name of the data to plot.
+    doy_col : str
+        Column name of the day of year.
+    pct_list : list
+        List of integers corresponding to the percentile values to be
+        plotted.
+    data_label : str
+        Label for the data to plot. If None, the column name will be pulled
+        from df[data_col] and used to label the line.
+    ax : matplotlib.axes.Axes
+        Axes to plot on. If None, a new figure and axes will be
+        created.
+    title : str
+        Title for the plot.
+    ylab : str,
+        Label for the y-axis.
+    xlab : str
+        Label for the x-axis.
+    colors : list
+        List of colors to use for the lines. If None, a default
+        list of colors will be used.
+    **kwargs
+        Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object containing the plot.
+    """
+    # Create axes if not provided
+    if ax is None:
+        _, ax = plt.subplots()
+    # pop some kwargs
+    alpha = kwargs.pop('alpha', 0.5)
+    zorder = kwargs.pop('zorder', -20)
+    if data_label is None:
+        label = df[data_col].name
+    else:
+        label = data_label
+    # get colors
+    if colors is None:
+        colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
+                  "#7bdbd2", "#7587bf", "#ad63ba"]
+    # plot the latest data -1 to 0-index day of year
+    ax.plot(df[doy_col]-1, df[data_col], color='k', zorder=10, label=label)
+    # plot the historic percentiles filling between each pair
+    pct_list.sort()  # sort the list in ascending order
+    for i in range(1, len(pct_list)):
+        ax.fill_between(
+            percentiles_by_day.index.get_level_values(1),
+            list(percentiles_by_day[pct_list[i - 1]].values),
+            list(percentiles_by_day[pct_list[i]].values),
+            color=colors[i - 1],
+            alpha=alpha,
+            linewidth=0,
+            label="{}th - {}th Percentile".format(
+                pct_list[i - 1], pct_list[i]),
+            zorder=zorder, **kwargs
+        )
+    # set labels
+    ax.set_xlabel(xlab)
+    ax.set_xlim(0, 365)
+    # major xticks at first/end of each month
+    months = [int(m.split('-')[0]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
+    month_switch = np.where(np.diff(months) != 0)[0]
+    ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
+    # minor xticks at 15th of each month
+    unique_months = []
+    [unique_months.append(x) for x in months if x not in unique_months]
+    month_names = [calendar.month_abbr[i] for i in unique_months]
+    month_names = [f'{m}' for m in month_names]
+    days = [int(m.split('-')[1]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
+    mid_days = np.where(np.array(days) == 15)[0]
+    ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
+    # make minor ticks invisible
+    ax.tick_params(axis='x', which='minor', length=0)
+    # other labels
+    ax.set_ylabel(ylab)
+    ax.set_yscale("log")
+    ax.set_title(title)
+    # get y-axis ticks and convert to comma-separated strings
+    yticks = ax.get_yticks()
+    yticklabels = [f'{int(y):,}' for y in yticks]
+    ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
+    # two column legend
+    ax.legend(loc="best", ncol=2)
+    # return axes
+    return ax
+
+
+def plot_runoff_duration_hydrograph(
+        percentiles_by_day, df, data_col, doy_col,
+        pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
+        data_label=None, ax=None, title="Runoff Duration Hydrograph",
+        ylab="Runoff", xlab="Month", colors=None, **kwargs):
+    """Make a runoff duration hydrograph plot.
+
+    Parameters
+    ----------
+    percentiles_by_day : pandas.DataFrame
+        Dataframe containing the percentiles by day.
+    df : pandas.DataFrame
+        Dataframe containing the data to plot.
+    data_col : str
+        Column name of the data to plot.
+    doy_col : str
+        Column name of the day of year.
+    pct_list : list, optional
+        List of integers corresponding to the percentile values to be
+        plotted. Defaults to 0, 5, 10, 25, 75, 90, 95, 100.
+    data_label : str, optional
+        Label for the data to plot. If not provided, a default label will
+        be used.
+    ax : matplotlib.axes.Axes, optional
+        Axes to plot on. If not provided, a new figure and axes will be
+        created.
+    title : str, optional
+        Title for the plot. If not provided, the default title will be
+        'Runoff Duration Hydrograph'.
+    ylab : str, optional
+        Label for the y-axis. If not provided, the default label will be
+        'Runoff'.
+    xlab : str, optional
+        Label for the x-axis. If not provided, the default label will be
+        'Month'.
+    colors : list, optional
+        List of colors to use for the lines. If not provided, a default
+        list of colors will be used.
+    **kwargs
+        Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object containing the plot.
+
+    Examples
+    --------
+    """
+    # call the base duration hydrograph plotter
+    ax = _base_duration_plotter(percentiles_by_day, df, data_col, doy_col,
+                                pct_list, data_label, ax, title, ylab, xlab,
+                                colors, **kwargs)
+    # return axes
     return ax

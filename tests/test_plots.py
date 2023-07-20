@@ -223,3 +223,28 @@ def test_plot_cumulative_runoff_hydrograph():
     assert len(ax.collections) == 1
     # close plot
     plt.close()
+
+
+def test_plot_runoff_duration_hydrograph():
+    """Test the plot_runoff_duration_hydrograph function."""
+    df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2012'),
+                       'data': np.random.rand(1096)})
+    df.index = df['date']
+    pct = percentiles.calculate_variable_percentile_thresholds_by_day(
+        df, 'data')
+    df['doy'] = df.index.dayofyear
+    ax = plots.plot_runoff_duration_hydrograph(pct, df, 'data', 'doy')
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Month'
+    assert ax.get_ylabel() == 'Runoff'
+    assert ax.get_title() == 'Runoff Duration Hydrograph'
+    # make one with custom labels
+    ax = plots.plot_runoff_duration_hydrograph(
+        pct, df, 'data', 'doy', title='Test Title', xlab='Test X Label',
+        ylab='Test Y Label', data_label='Test Data Label')
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Test X Label'
+    assert ax.get_ylabel() == 'Test Y Label'
+    assert ax.get_title() == 'Test Title'
+    # close plot
+    plt.close()
