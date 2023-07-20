@@ -173,3 +173,53 @@ def test_plot_hydrograph():
     assert len(ax.lines) == 1
     # close plot
     plt.close()
+
+
+def test_plot_cumulative_runoff_hydrograph():
+    """Test the plot_cumulative_runoff_hydrograph function."""
+    df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2010'),
+                       'runoff': np.random.rand(365)})
+    df_cumulative = cumulative.calculate_daily_cumulative_values(
+        df, 'runoff', date_column_name='date')
+    # apply plot function
+    ax = plots.plot_cumulative_runoff_hydrograph(df_cumulative, 2010)
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Month'
+    assert ax.get_ylabel() == 'Cumulative Runoff'
+    assert ax.get_title() == 'Cumulative Runoff Hydrograph'
+    assert len(ax.lines) == 1
+    # make one with custom labels
+    ax = plots.plot_cumulative_runoff_hydrograph(df_cumulative, 2010,
+                                                 title='Test Title',
+                                                 xlab='Test X Label',
+                                                 ylab='Test Y Label')
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Test X Label'
+    assert ax.get_ylabel() == 'Test Y Label'
+    assert ax.get_title() == 'Test Title'
+    assert len(ax.lines) == 1
+    # make one with min/max lines plotted
+    ax = plots.plot_cumulative_runoff_hydrograph(df_cumulative, 2010,
+                                                 max_pct=True, min_pct=True)
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Month'
+    assert ax.get_ylabel() == 'Cumulative Runoff'
+    assert ax.get_title() == 'Cumulative Runoff Hydrograph'
+    assert len(ax.lines) == 3
+    assert len(ax.collections) == 1
+    # make one with multiple years of data plotted
+    _date = pd.date_range('1/1/2010', '12/31/2012')
+    df = pd.DataFrame({'date': _date,
+                       'data': np.random.rand(len(_date))})
+    df_cumulative = cumulative.calculate_daily_cumulative_values(
+        df, 'data', date_column_name='date')
+    ax = plots.plot_cumulative_runoff_hydrograph(df_cumulative, [2010, 2011],
+                                                 max_pct=True, min_pct=True)
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Month'
+    assert ax.get_ylabel() == 'Cumulative Runoff'
+    assert ax.get_title() == 'Cumulative Runoff Hydrograph'
+    assert len(ax.lines) == 4  # min/max, 2010 and 2011 lines
+    assert len(ax.collections) == 1
+    # close plot
+    plt.close()
