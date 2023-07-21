@@ -1,4 +1,5 @@
 """Runoff functions for hyswap."""
+import pandas as pd
 
 
 def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
@@ -97,24 +98,203 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
     return df
 
 
-def calculate_area_weighted_runoff(weights, runoff):
-    """Calculate area weighted runoff for an area.
+def calculate_geometric_runoff(geom_id, df_list, weights_matrix,
+                               start_date=None, end_date=None,
+                               data_col='runoff'):
+    """Function to calculate the runoff for a specified geometry.
 
     Parameters
     ----------
-    weights : pandas.Series
-        pandas.Series containing weights for each gage in the specified area.
-        Generally a specific column selected from a larger weights DataFrame
-        which has areas as the column headers and each row corresponds to a
-        gage.
+    geom_id : str
+        Geometry ID for the geometry of interest.
 
-    runoff : pandas.DataFrame
-        DataFrame containing runoff values for gage. Expect to have each row
-        correspond to a gage,
+    df_list : list
+        List of dataframes containing runoff data for each site in the
+        geometry.
+
+    weights_matrix : pandas.DataFrame
+        DataFrame containing the weights for all sites and all geometries.
+        Columns are geometry IDs, index is site IDs.
+
+    start_date : str, optional
+        Start date for the runoff calculation. If not specified, the earliest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    end_date : str, optional
+        End date for the runoff calculation. If not specified, the latest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    data_col : str, optional
+        Column name containing runoff data in the dataframes in df_list.
+        Default is 'runoff', as it is assumed these dataframes are created
+        using the :obj:`streamflow_to_runoff` function.
 
     Returns
     -------
-    float
-        Area weighted runoff.
-
+    pandas.Series
+        Series containing the area-weighted runoff values for the geometry.
     """
+    # get date range
+    date_range = _get_date_range(df_list, start_date, end_date)
+
+    # get site list from weights matrix index
+    site_list = weights_matrix.index.tolist()
+
+    # create empty dataframe to store results, index is site_list,
+    # columns are date_range
+    runoff_df = pd.DataFrame(index=site_list, columns=date_range)
+
+    # loop through the df_list to populate rows of the runoff_df
+    for df in df_list:
+        # get site id (assumed to be string from NWIS)
+        site_id = df['site_no'][0]
+        # convert site_id to int for indexing weights matrix
+        site_id = int(site_id)
+        # get weight for site
+        weight = weights_matrix[geom_id].loc[site_id]
+        # get runoff for site
+        runoff = df[data_col]
+        # multiply weights by runoff
+        weighted_runoff = weight * runoff
+        # add weighted runoff to runoff_df
+        # pandas seems to use dates to automatically align data :)
+        runoff_df.loc[site_id] = weighted_runoff
+
+    # combine the new runoff_df with the existing weights matrix to calculate
+    # the area-weighted runoff values for the geometry
+    runoff_sum = runoff_df.sum(axis=0, skipna=True)
+    weights_sum = weights_matrix[geom_id].sum(skipna=True)
+    weighted_runoff = runoff_sum / weights_sum
+
+    return weighted_runoff
+
+
+def _get_date_range(df_list, start_date, end_date):
+    """Get date range for runoff calculation.
+
+    This is an internal function used by the :obj:`calculate_geometric_runoff`
+    function to get the date range for the runoff calculation. If no start or
+    end date is specified, the earliest/latest date in the df_list will be
+    used.
+
+    Parameters
+    ----------
+    df_list : list
+        List of dataframes containing runoff data for each site in the
+        geometry.
+
+    start_date : str, optional
+        Start date for the runoff calculation. If not specified, the earliest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    end_date : str, optional
+        End date for the runoff calculation. If not specified, the latest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    Returns
+    -------
+    pandas.DatetimeIndex
+        DatetimeIndex containing the date range for the runoff calculation.
+    """
+    if start_date is None:
+        # if no start date iterate through df_list to find earliest date
+        start_date = df_list[0].index[0]
+        for df in df_list:
+            if df.index[0] < start_date:
+                start_date = df.index[0]
+    else:
+        # make the string tz-aware
+        start_date = pd.to_datetime(start_date).tz_localize("UTC")
+    if end_date is None:
+        # if no end date iterate through df_list to find latest date
+        end_date = df_list[0].index[-1]
+        for df in df_list:
+            if df.index[-1] > end_date:
+                end_date = df.index[-1]
+    else:
+        # make the string tz-aware
+        end_date = pd.to_datetime(end_date).tz_localize("UTC")
+    # create range of dates from start to end
+    date_range = pd.date_range(start_date, end_date)
+
+    return date_range
+
+
+def identify_sites_from_weights(geom_id, weights_matrix):
+    """Identify sites for a specified geometry.
+
+    Function to identify sites with non-zero weights for a given
+    spatial geometry. This function is a helper function that can
+    be used to reduce the number of NWIS queries that are performed
+    to construct the list of dataframes for a given geometry.
+
+    Parameters
+    ----------
+    geom_id : str
+        Geometry ID for the geometry of interest; should be a column
+        in the weights matrix.
+
+    weights_matrix : pandas.DataFrame
+        DataFrame containing the weights for all sites and all geometries.
+        Columns are geometry IDs, index is site IDs.
+
+    Returns
+    -------
+    list
+        List of site IDs with non-zero weights for the geometry.
+    """
+    int_list = weights_matrix.index[weights_matrix[geom_id] > 0].tolist()
+    site_list = [str(i).zfill(8) for i in int_list]
+    return site_list
+
+
+def calculate_multiple_geometric_runoff(
+        geom_id_list, df_list, weights_matrix,
+        start_date=None, end_date=None, data_col='runoff'):
+    """Calculate runoff for multiple geometries at once.
+
+    Parameters
+    ----------
+    geom_id : list
+        List of geometry ID strings for the geometries of interest.
+        These should be columns in the weights matrix.
+
+    df_list : list
+        List of dataframes containing runoff data for each site in the
+        geometry.
+
+    weights_matrix : pandas.DataFrame
+        DataFrame containing the weights for all sites and all geometries.
+        Columns are geometry IDs, index is site IDs.
+
+    start_date : str, optional
+        Start date for the runoff calculation. If not specified, the earliest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    end_date : str, optional
+        End date for the runoff calculation. If not specified, the latest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    data_col : str, optional
+        Column name containing runoff data in the dataframes in df_list.
+        Default is 'runoff', as it is assumed these dataframes are created
+        using the :obj:`streamflow_to_runoff` function.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame containing the area-weighted runoff values for each
+        geometry. Columns are geometry IDs, index is date range.
+    """
+    # create empty dataframe to store results
+    results_df = pd.DataFrame()
+    # loop through geom_id_list to calculate runoff for each geometry
+    for geom_id in geom_id_list:
+        # calculate runoff for geometry
+        runoff = calculate_geometric_runoff(
+            geom_id, df_list, weights_matrix,
+            start_date=start_date, end_date=end_date,
+            data_col=data_col)
+        # add runoff to results_df
+        results_df[geom_id] = runoff.to_frame()
+    return results_df
