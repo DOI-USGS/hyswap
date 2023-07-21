@@ -98,14 +98,14 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
     return df
 
 
-def calculate_geometric_runoff(geoid, df_list, weights_matrix,
+def calculate_geometric_runoff(geom_id, df_list, weights_matrix,
                                start_date=None, end_date=None,
                                data_col='runoff'):
     """Function to calculate the runoff for a specified geometry.
 
     Parameters
     ----------
-    geoid : str
+    geom_id : str
         Geometry ID for the geometry of interest.
 
     df_list : list
@@ -151,7 +151,7 @@ def calculate_geometric_runoff(geoid, df_list, weights_matrix,
         # convert site_id to int for indexing weights matrix
         site_id = int(site_id)
         # get weight for site
-        weight = weights_matrix[geoid].loc[site_id]
+        weight = weights_matrix[geom_id].loc[site_id]
         # get runoff for site
         runoff = df[data_col]
         # multiply weights by runoff
@@ -163,7 +163,7 @@ def calculate_geometric_runoff(geoid, df_list, weights_matrix,
     # combine the new runoff_df with the existing weights matrix to calculate
     # the area-weighted runoff values for the geometry
     runoff_sum = runoff_df.sum(axis=0, skipna=True)
-    weights_sum = weights_matrix[geoid].sum(skipna=True)
+    weights_sum = weights_matrix[geom_id].sum(skipna=True)
     weighted_runoff = runoff_sum / weights_sum
 
     return weighted_runoff
@@ -220,7 +220,7 @@ def _get_date_range(df_list, start_date, end_date):
     return date_range
 
 
-def identify_sites_from_weights(geoid, weights_matrix):
+def identify_sites_from_weights(geom_id, weights_matrix):
     """Identify sites for a specified geometry.
 
     Function to identify sites with non-zero weights for a given
@@ -230,7 +230,7 @@ def identify_sites_from_weights(geoid, weights_matrix):
 
     Parameters
     ----------
-    geoid : str
+    geom_id : str
         Geometry ID for the geometry of interest; should be a column
         in the weights matrix.
 
@@ -243,19 +243,19 @@ def identify_sites_from_weights(geoid, weights_matrix):
     list
         List of site IDs with non-zero weights for the geometry.
     """
-    int_list = weights_matrix.index[weights_matrix[geoid] > 0].tolist()
+    int_list = weights_matrix.index[weights_matrix[geom_id] > 0].tolist()
     site_list = [str(i).zfill(8) for i in int_list]
     return site_list
 
 
 def calculate_multiple_geometric_runoff(
-        geoid_list, df_list, weights_matrix,
+        geom_id_list, df_list, weights_matrix,
         start_date=None, end_date=None, data_col='runoff'):
     """Calculate runoff for multiple geometries at once.
 
     Parameters
     ----------
-    geoid : list
+    geom_id : list
         List of geometry ID strings for the geometries of interest.
         These should be columns in the weights matrix.
 
@@ -288,13 +288,13 @@ def calculate_multiple_geometric_runoff(
     """
     # create empty dataframe to store results
     results_df = pd.DataFrame()
-    # loop through geoid_list to calculate runoff for each geometry
-    for geoid in geoid_list:
+    # loop through geom_id_list to calculate runoff for each geometry
+    for geom_id in geom_id_list:
         # calculate runoff for geometry
         runoff = calculate_geometric_runoff(
-            geoid, df_list, weights_matrix,
+            geom_id, df_list, weights_matrix,
             start_date=start_date, end_date=end_date,
             data_col=data_col)
         # add runoff to results_df
-        results_df[geoid] = runoff.to_frame()
+        results_df[geom_id] = runoff.to_frame()
     return results_df
