@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+g7058ecb documentation</title>
+    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+g05aff40 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g7058ecb documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g05aff40 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
@@ -44,6 +44,7 @@
             
   <h1>Source code for hyswap.runoff</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Runoff functions for hyswap.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
 <div class="viewcode-block" id="convert_cfs_to_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.convert_cfs_to_runoff">[docs]</a><span class="k">def</span> <span class="nf">convert_cfs_to_runoff</span><span class="p">(</span><span class="n">cfs</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">):</span>
@@ -142,27 +143,206 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="calculate_area_weighted_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_area_weighted_runoff">[docs]</a><span class="k">def</span> <span class="nf">calculate_area_weighted_runoff</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">runoff</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate area weighted runoff for an area.</span>
+<div class="viewcode-block" id="calculate_geometric_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_geometric_runoff">[docs]</a><span class="k">def</span> <span class="nf">calculate_geometric_runoff</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">,</span>
+                               <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">data_col</span><span class="o">=</span><span class="s1">&#39;runoff&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to calculate the runoff for a specified geometry.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    weights : pandas.Series</span>
-<span class="sd">        pandas.Series containing weights for each gage in the specified area.</span>
-<span class="sd">        Generally a specific column selected from a larger weights DataFrame</span>
-<span class="sd">        which has areas as the column headers and each row corresponds to a</span>
-<span class="sd">        gage.</span>
+<span class="sd">    geom_id : str</span>
+<span class="sd">        Geometry ID for the geometry of interest.</span>
 
-<span class="sd">    runoff : pandas.DataFrame</span>
-<span class="sd">        DataFrame containing runoff values for gage. Expect to have each row</span>
-<span class="sd">        correspond to a gage,</span>
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of dataframes containing runoff data for each site in the</span>
+<span class="sd">        geometry.</span>
+
+<span class="sd">    weights_matrix : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing the weights for all sites and all geometries.</span>
+<span class="sd">        Columns are geometry IDs, index is site IDs.</span>
+
+<span class="sd">    start_date : str, optional</span>
+<span class="sd">        Start date for the runoff calculation. If not specified, the earliest</span>
+<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
+
+<span class="sd">    end_date : str, optional</span>
+<span class="sd">        End date for the runoff calculation. If not specified, the latest</span>
+<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
+
+<span class="sd">    data_col : str, optional</span>
+<span class="sd">        Column name containing runoff data in the dataframes in df_list.</span>
+<span class="sd">        Default is &#39;runoff&#39;, as it is assumed these dataframes are created</span>
+<span class="sd">        using the :obj:`streamflow_to_runoff` function.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    float</span>
-<span class="sd">        Area weighted runoff.</span>
+<span class="sd">    pandas.Series</span>
+<span class="sd">        Series containing the area-weighted runoff values for the geometry.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get date range</span>
+    <span class="n">date_range</span> <span class="o">=</span> <span class="n">_get_date_range</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span></div>
+    <span class="c1"># get site list from weights matrix index</span>
+    <span class="n">site_list</span> <span class="o">=</span> <span class="n">weights_matrix</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># create empty dataframe to store results, index is site_list,</span>
+    <span class="c1"># columns are date_range</span>
+    <span class="n">runoff_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">site_list</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">date_range</span><span class="p">)</span>
+
+    <span class="c1"># loop through the df_list to populate rows of the runoff_df</span>
+    <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
+        <span class="c1"># get site id (assumed to be string from NWIS)</span>
+        <span class="n">site_id</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># convert site_id to int for indexing weights matrix</span>
+        <span class="n">site_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">site_id</span><span class="p">)</span>
+        <span class="c1"># get weight for site</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">weights_matrix</span><span class="p">[</span><span class="n">geom_id</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">site_id</span><span class="p">]</span>
+        <span class="c1"># get runoff for site</span>
+        <span class="n">runoff</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span>
+        <span class="c1"># multiply weights by runoff</span>
+        <span class="n">weighted_runoff</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">*</span> <span class="n">runoff</span>
+        <span class="c1"># add weighted runoff to runoff_df</span>
+        <span class="c1"># pandas seems to use dates to automatically align data :)</span>
+        <span class="n">runoff_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">site_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">weighted_runoff</span>
+
+    <span class="c1"># combine the new runoff_df with the existing weights matrix to calculate</span>
+    <span class="c1"># the area-weighted runoff values for the geometry</span>
+    <span class="n">runoff_sum</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">skipna</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">weights_sum</span> <span class="o">=</span> <span class="n">weights_matrix</span><span class="p">[</span><span class="n">geom_id</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">skipna</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">weighted_runoff</span> <span class="o">=</span> <span class="n">runoff_sum</span> <span class="o">/</span> <span class="n">weights_sum</span>
+
+    <span class="k">return</span> <span class="n">weighted_runoff</span></div>
+
+
+<div class="viewcode-block" id="_get_date_range"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff._get_date_range">[docs]</a><span class="k">def</span> <span class="nf">_get_date_range</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get date range for runoff calculation.</span>
+
+<span class="sd">    This is an internal function used by the :obj:`calculate_geometric_runoff`</span>
+<span class="sd">    function to get the date range for the runoff calculation. If no start or</span>
+<span class="sd">    end date is specified, the earliest/latest date in the df_list will be</span>
+<span class="sd">    used.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of dataframes containing runoff data for each site in the</span>
+<span class="sd">        geometry.</span>
+
+<span class="sd">    start_date : str, optional</span>
+<span class="sd">        Start date for the runoff calculation. If not specified, the earliest</span>
+<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
+
+<span class="sd">    end_date : str, optional</span>
+<span class="sd">        End date for the runoff calculation. If not specified, the latest</span>
+<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DatetimeIndex</span>
+<span class="sd">        DatetimeIndex containing the date range for the runoff calculation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># if no start date iterate through df_list to find earliest date</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">start_date</span><span class="p">:</span>
+                <span class="n">start_date</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># make the string tz-aware</span>
+        <span class="n">start_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># if no end date iterate through df_list to find latest date</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">end_date</span><span class="p">:</span>
+                <span class="n">end_date</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># make the string tz-aware</span>
+        <span class="n">end_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span>
+    <span class="c1"># create range of dates from start to end</span>
+    <span class="n">date_range</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">date_range</span></div>
+
+
+<div class="viewcode-block" id="identify_sites_from_weights"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.identify_sites_from_weights">[docs]</a><span class="k">def</span> <span class="nf">identify_sites_from_weights</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify sites for a specified geometry.</span>
+
+<span class="sd">    Function to identify sites with non-zero weights for a given</span>
+<span class="sd">    spatial geometry. This function is a helper function that can</span>
+<span class="sd">    be used to reduce the number of NWIS queries that are performed</span>
+<span class="sd">    to construct the list of dataframes for a given geometry.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geom_id : str</span>
+<span class="sd">        Geometry ID for the geometry of interest; should be a column</span>
+<span class="sd">        in the weights matrix.</span>
+
+<span class="sd">    weights_matrix : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing the weights for all sites and all geometries.</span>
+<span class="sd">        Columns are geometry IDs, index is site IDs.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        List of site IDs with non-zero weights for the geometry.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">int_list</span> <span class="o">=</span> <span class="n">weights_matrix</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">weights_matrix</span><span class="p">[</span><span class="n">geom_id</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">int_list</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">site_list</span></div>
+
+
+<div class="viewcode-block" id="calculate_multiple_geometric_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_multiple_geometric_runoff">[docs]</a><span class="k">def</span> <span class="nf">calculate_multiple_geometric_runoff</span><span class="p">(</span>
+        <span class="n">geom_id_list</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">,</span>
+        <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s1">&#39;runoff&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate runoff for multiple geometries at once.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geom_id : list</span>
+<span class="sd">        List of geometry ID strings for the geometries of interest.</span>
+<span class="sd">        These should be columns in the weights matrix.</span>
+
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of dataframes containing runoff data for each site in the</span>
+<span class="sd">        geometry.</span>
+
+<span class="sd">    weights_matrix : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing the weights for all sites and all geometries.</span>
+<span class="sd">        Columns are geometry IDs, index is site IDs.</span>
+
+<span class="sd">    start_date : str, optional</span>
+<span class="sd">        Start date for the runoff calculation. If not specified, the earliest</span>
+<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
+
+<span class="sd">    end_date : str, optional</span>
+<span class="sd">        End date for the runoff calculation. If not specified, the latest</span>
+<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
+
+<span class="sd">    data_col : str, optional</span>
+<span class="sd">        Column name containing runoff data in the dataframes in df_list.</span>
+<span class="sd">        Default is &#39;runoff&#39;, as it is assumed these dataframes are created</span>
+<span class="sd">        using the :obj:`streamflow_to_runoff` function.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        DataFrame containing the area-weighted runoff values for each</span>
+<span class="sd">        geometry. Columns are geometry IDs, index is date range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># create empty dataframe to store results</span>
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="c1"># loop through geom_id_list to calculate runoff for each geometry</span>
+    <span class="k">for</span> <span class="n">geom_id</span> <span class="ow">in</span> <span class="n">geom_id_list</span><span class="p">:</span>
+        <span class="c1"># calculate runoff for geometry</span>
+        <span class="n">runoff</span> <span class="o">=</span> <span class="n">calculate_geometric_runoff</span><span class="p">(</span>
+            <span class="n">geom_id</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">,</span>
+            <span class="n">start_date</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span>
+            <span class="n">data_col</span><span class="o">=</span><span class="n">data_col</span><span class="p">)</span>
+        <span class="c1"># add runoff to results_df</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="n">geom_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">runoff</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">results_df</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -194,7 +374,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g7058ecb documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g05aff40 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
