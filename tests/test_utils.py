@@ -75,7 +75,8 @@ class TestFilterTime:
             'data': [1, 2, 3, 4],
             'date': pd.date_range('2019-01-01', '2019-01-04')})
         # test the function
-        data = utils.filter_data_by_time(df, 1, 'data', date_column_name='date')
+        data = utils.filter_data_by_time(df, 1, 'data',
+                                         date_column_name='date')
         assert data.shape == (1,)
         assert data.values == [1]
 
@@ -95,7 +96,8 @@ class TestFilterTime:
         df = pd.DataFrame({
             'data': [1, 2, 3, 4],
             'date': pd.date_range('2019-01-01', '2019-05-01', freq='M')})
-        data = utils.filter_data_by_time(df, 1, 'data', date_column_name='date',
+        data = utils.filter_data_by_time(df, 1, 'data',
+                                         date_column_name='date',
                                          time_interval='month')
         assert data.shape == (1,)
         assert data.values == [1]
@@ -127,7 +129,8 @@ class TestFilterTime:
         df = pd.DataFrame({
             'data': [1, 2, 3, 4],
             'date': pd.date_range('2019-01-01', '2019-01-04')})
-        data = utils.filter_data_by_time(df, 1, 'data', date_column_name='date',
+        data = utils.filter_data_by_time(df, 1, 'data',
+                                         date_column_name='date',
                                          trailing_values=1)
         assert data.shape == (2,)
         assert np.all(data.values == [1, 2])

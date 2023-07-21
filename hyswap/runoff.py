@@ -116,5 +116,4 @@ def calculate_area_weighted_runoff(weights, runoff):
     -------
     float
         Area weighted runoff.
-
     """
