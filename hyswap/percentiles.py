@@ -197,7 +197,12 @@ def calculate_percentile_from_value(
         value,
         percentile_values,
         percentiles):
-    """Calculate percentile from a value and percentile values.
+    """Calculate percentile from a value and existing percentile values.
+
+    This function enables faster calculation of the percentile associated with
+    a given value if percentile values and corresponding percentiles are known
+    for other data from the same station or site. This calculation is done
+    using linear interpolation.
 
     Parameters
     ----------
@@ -221,6 +226,21 @@ def calculate_percentile_from_value(
     -------
     percentile : float, np.ndarray
         Percentile associated with the input value(s).
+
+    Examples
+    --------
+    Calculate the percentile associated with a value from some synthetic data.
+
+    .. doctest::
+
+        >>> data = np.arange(101)
+        >>> pcts = percentiles.calculate_fixed_percentile_thresholds(
+        ...     data, percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
+        ...     method='linear')
+        >>> new_percentile = percentiles.calculate_percentile_from_value(
+        ...     51, pcts, [0, 5, 10, 25, 75, 90, 95, 100])
+        >>> new_percentile
+        51.0
     """
     # check that percentile_values and percentiles are the same length
     if len(percentile_values) != len(percentiles):
