@@ -191,3 +191,40 @@ def calculate_variable_percentile_thresholds_by_day(
 
     # return percentiles by day of year
     return percentiles_by_day
+
+
+def calculate_percentile_from_value(
+        value,
+        percentile_values,
+        percentiles):
+    """Calculate percentile from a value and percentile values.
+
+    Parameters
+    ----------
+    value : float, np.ndarray
+        Value to calculate percentile for. Can be a single value or an array
+        of values.
+
+    percentile_values : array_like
+        Values associated with the percentiles computed from
+        `calculate_fixed_percentile_thresholds` or fetched from the
+        NWIS service. Must contain the same number of values as `percentiles`.
+
+    percentiles : array_like
+        Percentiles, in the same order as `percentile_values`, computed from
+        `calculate_fixed_percentile_thresholds` or fetched from the NWIS
+        service. These are values between 0 and 100. For example, the 10th
+        percentile is 10. Must contain the same number of values as
+        `percentile_values`.
+
+    Returns
+    -------
+    percentile : float, np.ndarray
+        Percentile associated with the input value(s).
+    """
+    # check that percentile_values and percentiles are the same length
+    if len(percentile_values) != len(percentiles):
+        raise ValueError('percentile_values and percentiles must be the same '
+                         'length')
+    # do and return linear interpolation
+    return np.interp(value, percentile_values, percentiles)
