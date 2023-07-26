@@ -16,8 +16,8 @@ not intended to be used for calculating percentiles for multiple days or
 multiple time periods.
 
 By default this method calculates percentiles using the Weibull distribution
-with an alpha parameter of 0 and a beta parameter of 0 [`numpy.percentile`_].
-This distribution is chosen for percentile calculations after the USGS
+with an alpha parameter of 0 and a beta parameter of 0. The Weibull
+distribution is set as the default for percentile calculations after the USGS
 `Guidelines for determining flood flow frequency — Bulletin 17C`_, Appendix 5.
 
 Below is an example of fetching NWIS streamflow data for a USGS gage and then
@@ -90,7 +90,9 @@ years of data available, however this parameter can be altered by setting the
 Multi-day averaging can also be performed by setting the `data_type` parameter
 to a value like `7-day`, `14-day`, or `28-day`, the default value is `daily`
 which is no temporal averaging.
-See the function documentation for additional details about the parameters
+See the function documentation
+(:obj:`hyswap.percentiles.calculate_variable_percentile_thresholds_by_day`)
+for additional details about the parameters
 and options for this function.
 
 
