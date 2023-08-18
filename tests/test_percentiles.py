@@ -178,6 +178,8 @@ class TestCalculatePercentilesFromValue:
     # define some test values
     data = np.arange(101)
     percentiles_ = np.arange(0, 105, 5)
+    pct_df = pd.DataFrame(data={"values": percentiles_}, index=percentiles_).T
+    pct_df = pct_df.rename_axis("thresholds", axis="columns")
     low_val = -5
     high_val = 105
     mid_val = 51
@@ -187,31 +189,31 @@ class TestCalculatePercentilesFromValue:
         """Test with a low value."""
         # test the function
         pct_out = percentiles.calculate_percentile_from_value(
-            self.low_val, self.percentiles_, self.percentiles_)
+            self.low_val, self.pct_df)
         assert pct_out == 0.0
 
     def test_calculate_percentiles_from_value_mid(self):
         """Test with a mid value."""
         # test the function
         pct_out = percentiles.calculate_percentile_from_value(
-            self.mid_val, self.percentiles_, self.percentiles_)
+            self.mid_val, self.pct_df)
         assert pct_out == 51.0
 
     def test_calculate_percentiles_from_value_high(self):
         """Test with a high value."""
         # test the function
         pct_out = percentiles.calculate_percentile_from_value(
-            self.high_val, self.percentiles_, self.percentiles_)
+            self.high_val, self.pct_df)
         assert pct_out == 100.0
 
     def test_calculate_percentiles_from_value_multiple(self):
         """Test with multiple values."""
         pct_out = percentiles.calculate_percentile_from_value(
-            self.multiple_values, self.percentiles_, self.percentiles_)
+            self.multiple_values, self.pct_df)
         assert pct_out == pytest.approx([0.0, 7.0, 51.0, 98.0, 100.0])
 
     def test_calculate_percentiles_from_value_invalid(self):
         """Test with invalid inputs."""
-        with pytest.raises(ValueError):
+        with pytest.raises(AttributeError):
             percentiles.calculate_percentile_from_value(
-                self.low_val, self.percentiles_, self.percentiles_[:-1])
+                self.low_val, [1, 2, 3])
