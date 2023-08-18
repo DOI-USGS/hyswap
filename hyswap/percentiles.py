@@ -32,8 +32,9 @@ def calculate_fixed_percentile_thresholds(
 
     Returns
     -------
-    percentiles : array_like
-        Percentiles of the data.
+    percentiles : pandas.DataFrame
+        Percentiles of the data in a DataFrame so the thresholds and
+        percentile values are tied together.
 
     Examples
     --------
@@ -45,7 +46,8 @@ def calculate_fixed_percentile_thresholds(
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, method='linear')
         >>> results
-        array([  0.,   5.,  10.,  25.,  75.,  90.,  95., 100.])
+        thresholds  0    5     10    25    75    90    95     100
+        values      0.0  5.0  10.0  25.0  75.0  90.0  95.0  100.0
 
     Calculate a different set of thresholds from some synthetic data.
 
@@ -55,9 +57,13 @@ def calculate_fixed_percentile_thresholds(
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, percentiles=np.array((0, 10, 50, 90, 100)))
         >>> results
-        array([  0. ,   9.2,  50. ,  90.8, 100. ])
+        thresholds  0    10    50    90     100
+        values      0.0  9.2  50.0  90.8  100.0
     """
-    return np.percentile(data, percentiles, method=method, **kwargs)
+    pct = np.percentile(data, percentiles, method=method, **kwargs)
+    df = pd.DataFrame(data={"values": pct}, index=percentiles).T
+    df = df.rename_axis("thresholds", axis="columns")
+    return df
 
 
 def calculate_variable_percentile_thresholds_by_day(
@@ -163,9 +169,9 @@ def calculate_variable_percentile_thresholds_by_day(
         # only calculate data if there are at least min_years of data
         if meta['n_years'] >= min_years:
             # calculate percentiles for the day of year and add to DataFrame
-            percentiles_by_day.loc[t_idx == doy, :] = \
-                calculate_fixed_percentile_thresholds(
+            _pct = calculate_fixed_percentile_thresholds(
                     data, percentiles=percentiles, method=method, **kwargs)
+            percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]
         else:
             # if there are not at least 10 years of data,
             # set percentiles to NaN

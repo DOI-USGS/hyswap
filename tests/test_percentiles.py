@@ -14,22 +14,28 @@ class TestCalculateFixedPercentileThresholds:
         # test the function
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
             self.data, method='linear')
-        assert percentiles_.shape == (8,)
-        assert percentiles_ == pytest.approx((0, 5, 10, 25, 75, 90, 95, 100))
+        assert percentiles_.shape == (1, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.values.tolist()[0] == [
+            0.0, 5.0, 10.0, 25.0, 75.0, 90.0, 95.0, 100.0]
 
     def test_custom_percentiles(self):
         # set some percentile values as opposed to the defaults
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
             self.data, percentiles=np.array((0, 10, 50, 90, 100)))
-        assert percentiles_.shape == (5,)
-        assert percentiles_ == pytest.approx((0, 9.2, 50, 90.8, 100))
+        assert percentiles_.shape == (1, 5)
+        assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
+        assert percentiles_.values.tolist()[0] == [
+            0.0, 9.200000000000001, 50.0, 90.80000000000001, 100.0]
 
     def test_kwargs_to_percentile(self):
         # pass kwarg through to np.percentile
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
             self.data, method='lower')
-        assert percentiles_.shape == (8,)
-        assert percentiles_ == pytest.approx((0, 5, 10, 25, 75, 90, 95, 100))
+        assert percentiles_.shape == (1, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.values.tolist()[0] == [
+            0, 5, 10, 25, 75, 90, 95, 100]
 
 
 class TestCalculateVariablePercentileThresholdsByDay:
