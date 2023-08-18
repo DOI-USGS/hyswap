@@ -60,8 +60,7 @@ class TestDailyCumulativeValues:
             'data': np.ones(len(pd.date_range('2016-01-01', '2019-12-31'))),
             'date': pd.date_range('2016-01-01', '2019-12-31')})
         cdf = cumulative.calculate_daily_cumulative_values(
-            df, 'data', date_column_name='date', year_type='water',
-            allow_incomplete_years=False)
+            df, 'data', date_column_name='date', year_type='water')
         assert cdf.shape == (365*3, 3)
         assert cdf.columns.tolist() == \
             ['index_year', 'index_doy', 'cumulative']
@@ -79,8 +78,7 @@ class TestDailyCumulativeValues:
             'data': np.ones(len(pd.date_range('2016-01-01', '2019-12-31'))),
             'date': pd.date_range('2016-01-01', '2019-12-31')})
         cdf = cumulative.calculate_daily_cumulative_values(
-            df, 'data', date_column_name='date', year_type='climate',
-            allow_incomplete_years=False)
+            df, 'data', date_column_name='date', year_type='climate')
         assert cdf.shape == (365*3, 3)
         assert cdf.columns.tolist() == \
             ['index_year', 'index_doy', 'cumulative']

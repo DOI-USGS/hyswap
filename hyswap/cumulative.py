@@ -7,8 +7,7 @@ from hyswap.utils import define_year_doy_columns
 
 def calculate_daily_cumulative_values(df, data_column_name,
                                       date_column_name=None,
-                                      year_type='calendar',
-                                      allow_incomplete_years=True):
+                                      year_type='calendar'):
     """Calculate daily cumulative values.
 
     Parameters
@@ -29,11 +28,6 @@ def calculate_daily_cumulative_values(df, data_column_name,
         2011". 'climate' years begin on April 1 and end on March 31 of the
         following year, they are numbered by the ending year. For example,
         April 1, 2010 to March 31, 2011 is "climate year 2011".
-    allow_incomplete_years : Boolean, optional
-        Boolean to allow incomplete years to be computed. By default this is
-        True, meaning that incomplete years will be calculated. If False, then
-        no cumulative daily values will be calculated for years which lack
-        365 days of data.
 
     Returns
     -------
@@ -68,11 +62,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
         # get data for the year
         year_data = df.loc[df['index_year'] == year, data_column_name]
         # year must be complete
-        if allow_incomplete_years:
-            # calculate cumulative values and assign to cdf
-            cdf.loc[cdf.index == year, :len(year_data)] = \
-                year_data.cumsum().values
-        elif (allow_incomplete_years is False) and (len(year_data) == 365):
+        if len(year_data) == 365:
             # calculate cumulative values and assign to cdf
             cdf.loc[cdf.index == year, :len(year_data)] = \
                 year_data.cumsum().values
