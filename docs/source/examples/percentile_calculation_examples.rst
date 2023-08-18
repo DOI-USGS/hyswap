@@ -6,8 +6,8 @@ Here we showcase the percentile calculation functionality available in the
 :obj:`hyswap.percentiles` module.
 
 
-Calculating Historic Percentiles for One Day
-********************************************
+Calculating Historic Percentiles for One Site
+*********************************************
 
 The :obj:`hyswap.percentiles.calculate_fixed_percentile_thresholds` function
 is used to calculate a set of percentile thresholds given a set of data.
