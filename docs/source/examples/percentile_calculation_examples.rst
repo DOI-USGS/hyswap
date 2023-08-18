@@ -123,7 +123,7 @@ Then, a new percentile value is interpolated for a measurement of 100.0 cfs.
 
     # calculate the percentile associated with 100.0 cfs
     pct = hyswap.percentiles.calculate_percentile_from_value(
-        100.0, pct_values, [10, 50, 90])
+        100.0, pct_values)
 
     # print that percentile value
     print(np.round(pct, 2))
@@ -146,9 +146,13 @@ calculating a new percentile value for a measurement of 100.0 cfs.
     # pull out statistics for Jan. 1
     day1 = munged_df.iloc[0]
 
+    # convert to a compatible dataframe
+    day1_df = pd.DataFrame(data={"values": day1.values},
+                           index=day1.index.values).T
+
     # calculate the percentile associated with 100.0 cfs
     pct = hyswap.percentiles.calculate_percentile_from_value(
-        100.0, day1.values, day1.index.values)
+        100.0, day1_df)
 
     # print that percentile value
     print(np.round(pct, 2))
