@@ -44,11 +44,11 @@ desired by specifying a keyword parameter `method`. See the `numpy.percentile`_
 documentation for more information on the available methods.
 
 
-Calculating Historic Percentiles for the Full Year
+Calculating Historic Variable Percentiles for the Full Year
 **************************************************
 
 The :obj:`hyswap.percentiles` module also contains functionality to calculate
-percentile thresholds for each day of the year using historical values.
+percentile thresholds for each day of the year (variable threshold) using historical values.
 This is done using the
 :obj:`hyswap.percentiles.calculate_variable_percentile_thresholds_by_day`
 function.
@@ -106,8 +106,8 @@ interpolation of a new percentile value for a measurement given a previously
 calculated set of percentiles and their associated values.
 
 First is an example of fetching NWIS streamflow data for a USGS gage and then
-calculating the 10th, 50th, and 90th percentiles using all of the data.
-Then, a new percentile value is interpolated for a measurement of 100.0 cfs.
+calculating the 10th, 50th, and 90th fixed-threshold percentiles using all of the data.
+Then, a new fixed-threshold percentile value is interpolated for a measurement of 100.0 cfs.
 
 .. code::
 
@@ -129,9 +129,9 @@ Then, a new percentile value is interpolated for a measurement of 100.0 cfs.
     print(np.round(pct, 2))
     51.74
 
-Below is an example of fetching percentiles for January 1st and their
+Below is an example of fetching variable-threshold percentiles for January 1st and their
 associated values from the NWIS statistics service for a USGS gage and then
-calculating a new percentile value for a measurement of 100.0 cfs.
+calculating a new variable-threshold percentile value for a measurement of 100.0 cfs.
 
 .. code::
 
