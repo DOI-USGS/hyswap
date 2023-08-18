@@ -509,6 +509,112 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     return ax
 
 
+def plot_hydrograph(df, data_col,
+                    date_col=None,
+                    start_date=None,
+                    end_date=None,
+                    ax=None,
+                    title='Streamflow Hydrograph',
+                    ylab='Streamflow, in Cubic Feet per Second',
+                    xlab='Date',
+                    yscale='log',
+                    **kwargs):
+    """Plot a hydrograph.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing the data to plot.
+
+    data_col : str
+        Name of the column containing the data to plot.
+
+    date_col : str, optional
+        Name of the column containing the dates. If not provided, the index
+        will be used.
+
+    start_date : str, optional
+        Start date for the plot. If not provided, the minimum date in the
+        DataFrame will be used.
+
+    end_date : str, optional
+        End date for the plot. If not provided, the maximum date in the
+        DataFrame will be used.
+
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If not provided, a new figure and axes will be
+        created.
+
+    title : str, optional
+        Title of the plot. Default is 'Streamflow Hydrograph'.
+
+    ylab : str, optional
+        Y-axis label. Default is 'Streamflow, in Cubic Feet per Second'.
+
+    xlab : str, optional
+        X-axis label. Default is 'Date'.
+
+    yscale : str, optional
+        Y-axis scale. Default is 'log'. Options are 'linear' or 'log'.
+
+    **kwargs
+        Additional keyword arguments to pass to matplotlib.pyplot.plot().
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object containing the plot.
+
+    Examples
+    --------
+    Fetch data for a USGS gage and plot the hydrograph.
+
+    .. plot::
+        :include-source:
+
+        >>> siteno = '06892350'
+        >>> df, _ = dataretrieval.nwis.get_dv(site=siteno,
+        ...                                   parameterCd='00060',
+        ...                                   start='2019-01-01',
+        ...                                   end='2020-01-01')
+        >>> ax = hyswap.plots.plot_hydrograph(
+        ...     df, data_col='00060_Mean',
+        ...     title=f'2019 Hydrograph for Station {siteno}',
+        ...     ylab='Streamflow, in Cubic Feet per Second',
+        ...     xlab='Date', yscale='log')
+        >>> plt.tight_layout()
+        >>> plt.show()
+    """
+    # check if ax provided
+    if ax is None:
+        _, ax = plt.subplots()
+    # check if date_col provided
+    if date_col is not None:
+        df = df.set_index(date_col)
+    # sort by date
+    df = df.sort_index()
+    # check if start_date provided
+    if start_date is not None:
+        df = df.loc[start_date:]
+    # check if end_date provided
+    if end_date is not None:
+        df = df.loc[:end_date]
+    # plot
+    ax.plot(df.index, df[data_col], **kwargs)
+    # set labels
+    ax.set_xlabel(xlab)
+    ax.set_ylabel(ylab)
+    ax.set_title(title)
+    # set yscale
+    ax.set_yscale(yscale)
+    # get y-axis ticks and convert to comma-separated strings
+    yticks = ax.get_yticks()
+    yticklabels = [f'{int(y):,}' for y in yticks]
+    ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
+    # return
+    return ax
+
+
 def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='inferno',
                             show_values=False, ax=None,
                             title='Similarity Matrix'):

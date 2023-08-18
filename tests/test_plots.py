@@ -159,6 +159,23 @@ def test_plot_cumulative_hydrograph():
     plt.close()
 
 
+def test_plot_hydrograph():
+    """Test the plot_hydrograph function."""
+    # make some data
+    df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2010'),
+                       'data': np.random.rand(365)})
+    # apply plot function
+    ax = plots.plot_hydrograph(df, 'data', 'date',
+                               start_date='2/1/2010', end_date='10/30/2010')
+    assert isinstance(ax, plt.Axes)
+    assert ax.get_xlabel() == 'Date'
+    assert ax.get_ylabel() == 'Streamflow, in Cubic Feet per Second'
+    assert ax.get_title() == 'Streamflow Hydrograph'
+    assert len(ax.lines) == 1
+    # close plot
+    plt.close()
+
+
 def test_plot_similarity_heatmat():
     """Testing the plot_similarity_heatmap function."""
     # make dummy dataframes

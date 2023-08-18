@@ -434,6 +434,79 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
     return df_slim
 
 
+def calculate_summary_statistics(df, data_col="00060_Mean"):
+    """
+    Calculate summary statistics for a site.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing daily values for the site. Expected to be from
+        `dataretrieval.nwis.get_dv()`, or similar.
+
+    data_col : str, optional
+        Name of the column in the dv_df DataFrame that contains the data of
+        interest. Default is "00060_Mean" which is the mean daily discharge
+        column.
+
+    Returns
+    -------
+    summary_df : pandas.DataFrame
+        DataFrame containing summary statistics for the site.
+
+    Examples
+    --------
+    Get some NWIS data and apply the function to get the summary statistics.
+
+    .. doctest::
+
+        >>> df, _ = dataretrieval.nwis.get_dv(
+        ...     "03586500", parameterCd="00060",
+        ...     startDT="2010-01-01", endDT="2010-12-31")
+        >>> summary_df = utils.calculate_summary_statistics(df)
+        >>> summary_df.shape
+        (8, 1)
+        >>> print(summary_df)
+                    Summary Statistics
+        Site number           03586500
+        Begin date          2010-01-01
+        End date            2010-12-31
+        Count                      365
+        Minimum                   2.48
+        Mean                    207.43
+        Median                    82.5
+        Maximum                 3710.0
+    """
+    # make dictionary
+    summary_dict = {}
+    # populate it
+    # site number
+    summary_dict['Site number'] = str(int(df['site_no'][0])).zfill(8)
+    # dates
+    summary_dict['Begin date'] = df.index.min().strftime('%Y-%m-%d')
+    summary_dict['End date'] = df.index.max().strftime('%Y-%m-%d')
+    # count
+    summary_dict['Count'] = df[data_col].count()
+    # minimum
+    summary_dict['Minimum'] = df[data_col].min()
+    # mean
+    summary_dict['Mean'] = df[data_col].mean().round(2)
+    # median
+    summary_dict['Median'] = df[data_col].median()
+    # maximum
+    summary_dict['Maximum'] = df[data_col].max()
+
+    # make dataframe
+    summary_df = pd.DataFrame(summary_dict, index=[0])
+
+    # transpose and set column name
+    summary_df = summary_df.T
+    summary_df.columns = ['Summary Statistics']
+
+    # return dataframe
+    return summary_df
+
+
 def filter_to_common_time(df_list):
     """Filter a list of dataframes to common times based on index.
 

@@ -31,6 +31,7 @@ Read more about the differences between the two workflows [here](https://www.atl
   - [Merge Workflow (USGS Maintainers)](#merge-workflow-usgs-maintainers)
     - [Contributions on GitLab](#contributions-on-gitlab)
     - [Contributions on GitHub](#contributions-on-github)
+  - [PyPI Release Process (USGS Maintainers)](#pypi-release-process-usgs-maintainers)
   - [Acknowledgements](#acknowledgements)
 
 ---
@@ -39,7 +40,7 @@ Read more about the differences between the two workflows [here](https://www.atl
 
 ### Reporting Bugs
 
-Report bugs at https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues.
+Report bugs at https://github.com/DOI-USGS/hyswap/issues (Department of Interior users may report issues on GitLab here: https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues).
 
 When reporting a bug, please include:
 
@@ -52,8 +53,8 @@ When reporting a bug, please include:
 
 ### Fixing Bugs
 
-Look through the [issues](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues) for known and unresolved bugs.
-Any unassigned issues, are open for resolution.
+Look through both the [GitLab issues](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues) and the [GitHub issues](https://github.com/DOI-USGS/hyswap/issues) for known and unresolved bugs.
+Any unassigned issues are open for resolution.
 You are welcome to comment in the relevant issue to state your intention to resolve the bug, which will help ensure there is no duplication of the same work by multiple contributors.
 Once you begin work on a given issue, you are welcome to open up a *Draft* pull request to track your progress and to allow for early feedback.
 
@@ -67,7 +68,7 @@ In the "forking" workflow, you clone the repository, create a new feature branch
 
 ### Implementing Features
 
-Look through the [issues](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues) for outstanding feature requests.
+Look through the both the [GitLab issues](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues) and the [GitHub issues](https://github.com/DOI-USGS/hyswap/issues) for outstanding feature requests.
 Please do not combine multiple feature enhancements into a single pull request.
 
 ### Pull Request Guidelines
@@ -76,17 +77,17 @@ Before you submit a pull request, check that it meets these guidelines:
 
 1. If the pull request adds or modifies package functionality, unit tests should be written to test the new functionality
 2. If the pull request adds or modifies functionality, the documentation should be updated. To do so, either add or modify a functions docstring which will automatically become part of the API documentation
-3. The pull request should work for the versions of Python being tested by the continuous integration pipelines, see the [.gitlab-ci.yml file](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/blob/main/.gitlab-ci.yml).
-   This will be checked automatically by the CI pipelines once the pull request is opened.
+3. The pull request should work for the versions of Python being tested by the continuous integration pipelines, on GitLab see the [.gitlab-ci.yml file](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/blob/main/.gitlab-ci.yml), on GitHub see the [build.yml file](https://github.com/DOI-USGS/hyswap/blob/main/.github/workflows/build.yml).
+   The proposed code will be checked automatically by the appropriate CI pipeline once the pull request is opened.
 
 ### Coding Standards and Style
 
 Note that the CI pipelines will automatically check your code for style and formatting issues following the [PEP8 style guidelines](https://peps.python.org/pep-0008/).
-Before merging, your code must pass all of the CI pipelines.
+Before merging, your code must pass all of the CI pipelines which include code and doc-string style checks run by the [`flake8`](https://github.com/pycqa/flake8) and [`pydocstringformatter`](https://github.com/DanielNoord/pydocstringformatter) packages.
 
 #### Style
 
-* Write code following the [PEP8 style guidelines](https://peps.python.org/pep-0008/)
+* Please write code following the [PEP8 style guidelines](https://peps.python.org/pep-0008/)
 
 #### Doc-strings
 * Docstrings should follow the [numpy standard](https://numpydoc.readthedocs.io/en/v1.5.0/format.html):
@@ -115,7 +116,6 @@ Before merging, your code must pass all of the CI pipelines.
 
     >>> foo(1,'bar')
     True
-
     """
     ```
   * For more details see https://github.com/sphinx-doc/sphinx/blob/master/doc/ext/example_numpy.py
@@ -131,6 +131,7 @@ Documentation is written using [reStructuredText](https://www.sphinx-doc.org/en/
 
 Contributions to the documentation should be made in a similar fashion to code contributions - by following a forking workflow.
 When opening a pull request please be sure to have tested your documentation modifications locally, and clearly describe what it is your proposed changes add or fix.
+Documentation changes are also automatically tested and run by the continuous integration pipelines similar to code changes as described above.
 
 ---
 
@@ -138,13 +139,13 @@ When opening a pull request please be sure to have tested your documentation mod
 
 ### Submitting Feedback
 
-The best way to send feedback is to open an issue at https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues.
+The best way to send feedback is to open an issue at https://github.com/DOI-USGS/hyswap/issues (Department of Interior users can report issues at: https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues).
 
 Please be as clear as possible in your feedback, if you are reporting a bug refer to [Reporting Bugs](#reporting-bugs).
 
 ### Feature Requests
 
-To request or propose a new feature, open an issue at https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues.
+To request or propose a new feature, open an issue at https://github.com/DOI-USGS/hyswap/issues (Department of Interior users can report issues at: https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/issues).
 
 Please be sure to:
 * Explain in detail how it would work, possibly with pseudo-code or an example use-case
@@ -175,6 +176,17 @@ Locally, the maintainer has to checkout the proposed code from the approved pull
 Then they can push those changes to the *GitLab* repository by specifying the remote repository and "main" branch on GitLab.
 Once the changes are pushed to GitLab, they will be automatically mirrored back to GitHub.
 In this process, the GitHub pull request will get closed, and the code commits will be credited to the appropriate authors on GitHub too, all while maintaining the mirror and keeping the GitHub and GitLab repositories identical.
+
+---
+
+## PyPI Release Process (USGS Maintainers)
+
+The `hyswap` package is released and available on [PyPI](https://pypi.org/project/hyswap/) which enables the easy installation of the package via `pip install hyswap`.
+Periodically, as changes to the code are made, new releases of the package should be published to PyPI.
+We manage this release process via a GitHub action script, [pypi.yml](https://github.com/DOI-USGS/hyswap/blob/main/.github/workflows/pypi.yml).
+This GitHub action script automatically triggers a new release on PyPI when a new release is published on GitHub ("Create a new release" on the right sidebar of the main repository page).
+The project uses [semantic versioning](https://semver.org/), any new release should have a tag and title on GitHub corresponding to the new version being released.
+Once the release is published on GitHub, the PyPI action will automatically push the change up to PyPI and trigger the release of a new version there (previously released versions of `hyswap` can be seen in the [PyPI release history](https://pypi.org/project/hyswap/#history)).
 
 ---
 

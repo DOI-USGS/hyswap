@@ -56,6 +56,13 @@ Plotting Functions
     :members:
     :special-members:
 
+Runoff Calculation Functions
+-----------------------------
+
+.. automodule:: hyswap.runoff
+    :members:
+    :special-members:
+
 Similarity Functions
 --------------------
 
