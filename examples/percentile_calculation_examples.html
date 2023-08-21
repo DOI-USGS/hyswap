@@ -1,0 +1,270 @@
+
+
+<!doctype html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Percentile Calculation Examples &#8212; hyswap 0.1.dev1+g30ee2c6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <script src="../_static/documentation_options.js?v=ebf70ba1"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Similarity Measures" href="similarity_examples.html" />
+    <link rel="prev" title="Cumulative Streamflow Hydrographs" href="cumulative_hydrograph_examples.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="similarity_examples.html" title="Similarity Measures"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cumulative_hydrograph_examples.html" title="Cumulative Streamflow Hydrographs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g30ee2c6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Percentile Calculation Examples</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="percentile-calculation-examples">
+<h1>Percentile Calculation Examples<a class="headerlink" href="#percentile-calculation-examples" title="Link to this heading">¶</a></h1>
+<p>Here we showcase the percentile calculation functionality available in the
+<a class="reference internal" href="../reference/index.html#module-hyswap.percentiles" title="hyswap.percentiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles</span></code></a> module.</p>
+<section id="calculating-historic-percentiles-for-one-site">
+<h2>Calculating Historic Percentiles for One Site<a class="headerlink" href="#calculating-historic-percentiles-for-one-site" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="hyswap.percentiles.calculate_fixed_percentile_thresholds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_thresholds</span></code></a> function
+is used to calculate a set of percentile thresholds given a set of data.
+This function simply calculates one set of fixed percentile thresholds using all available data,
+and is not intended to be used for calculating percentiles for individual days of the year.</p>
+<p>By default this method calculates percentiles using the Weibull distribution
+with an alpha parameter of 0 and a beta parameter of 0. The Weibull
+distribution is set as the default for percentile calculations after the USGS
+<a class="reference external" href="https://pubs.er.usgs.gov/publication/tm4B5">Guidelines for determining flood flow frequency — Bulletin 17C</a>, Appendix 5.</p>
+<p>Below is an example of fetching NWIS streamflow data for a USGS gage and then
+calculating the 10th, 50th, and 90th percentiles for that data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
+                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
+                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># calculate percentiles</span>
+<span class="n">pct_values</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">],</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+
+<span class="c1"># print percentile values (corresponding to 10th, 50th, 90th percentiles)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pct_values</span><span class="p">)</span>
+<span class="p">[</span>  <span class="mf">4.9</span>  <span class="mf">75.6</span> <span class="mf">637.</span> <span class="p">]</span>
+</pre></div>
+</div>
+<p>The percentile calculation can use a method other than the Weibull method if
+desired by specifying a keyword parameter <cite>method</cite>. See the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.percentile.html">numpy.percentile</a>
+documentation for more information on the available methods.</p>
+</section>
+<section id="calculating-historic-variable-percentiles-for-the-full-year">
+<h2>Calculating Historic Variable Percentiles for the Full Year<a class="headerlink" href="#calculating-historic-variable-percentiles-for-the-full-year" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="../reference/index.html#module-hyswap.percentiles" title="hyswap.percentiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles</span></code></a> module also contains functionality to calculate
+percentile thresholds for each day of the year (variable threshold) using historical values.
+This is done using the
+<a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="hyswap.percentiles.calculate_variable_percentile_thresholds_by_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_variable_percentile_thresholds_by_day</span></code></a>
+function.
+This function also defaults to using the Weibull distribution to calculate
+percentiles, but can use other methods as well just like the
+<a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="hyswap.percentiles.calculate_fixed_percentile_thresholds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_thresholds</span></code></a> function.</p>
+<p>Below is an example of fetching NWIS streamflow data for a USGS gage and then
+calculating the 10th, 50th, and 90th percentiles for each day of the year.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
+                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
+                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># calculate percentiles by day</span>
+<span class="n">pcts</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+
+<span class="c1"># print first 5 rows of the percentile dataframe</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pcts</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+                <span class="mi">10</span>     <span class="mi">50</span>      <span class="mi">90</span>
+<span class="n">doy</span> <span class="n">month</span><span class="o">-</span><span class="n">day</span>
+<span class="mi">1</span>   <span class="mi">01</span><span class="o">-</span><span class="mi">01</span>      <span class="mf">29.6</span>  <span class="mf">226.0</span>  <span class="mf">1514.0</span>
+<span class="mi">2</span>   <span class="mi">01</span><span class="o">-</span><span class="mi">02</span>      <span class="mf">41.0</span>  <span class="mf">199.0</span>  <span class="mf">1694.0</span>
+<span class="mi">3</span>   <span class="mi">01</span><span class="o">-</span><span class="mi">03</span>      <span class="mf">43.4</span>  <span class="mf">260.0</span>  <span class="mf">1724.0</span>
+<span class="mi">4</span>   <span class="mi">01</span><span class="o">-</span><span class="mi">04</span>      <span class="mf">56.4</span>  <span class="mf">239.0</span>  <span class="mf">1800.0</span>
+<span class="mi">5</span>   <span class="mi">01</span><span class="o">-</span><span class="mi">05</span>      <span class="mf">53.8</span>  <span class="mf">257.0</span>  <span class="mf">1368.0</span>
+</pre></div>
+</div>
+<p>This function also supports the calculation of percentiles by different types
+of years including the standard calendar year, as well as water years and
+climate years.
+By default, percentiles are only computed for days which have at least 10
+years of data available, however this parameter can be altered by setting the
+<cite>min_years</cite> parameter to a different value.
+Multi-day averaging can also be performed by setting the <cite>data_type</cite> parameter
+to a value like <cite>7-day</cite>, <cite>14-day</cite>, or <cite>28-day</cite>, the default value is <cite>daily</cite>
+which is no temporal averaging.
+See the function documentation
+(<a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="hyswap.percentiles.calculate_variable_percentile_thresholds_by_day"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_variable_percentile_thresholds_by_day</span></code></a>)
+for additional details about the parameters
+and options for this function.</p>
+</section>
+<section id="interpolating-new-percentiles-using-previously-calculated-percentiles">
+<h2>Interpolating New Percentiles Using Previously Calculated Percentiles<a class="headerlink" href="#interpolating-new-percentiles-using-previously-calculated-percentiles" title="Link to this heading">¶</a></h2>
+<p>To support faster calculations of percentiles without the need to repeatedly
+fetch all historic data from NWIS, the
+<a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_percentile_from_value" title="hyswap.percentiles.calculate_percentile_from_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_percentile_from_value</span></code></a> function supports the
+interpolation of a new percentile value for a measurement given a previously
+calculated set of percentiles and their associated values.</p>
+<p>First is an example of fetching NWIS streamflow data for a USGS gage and then
+calculating the 10th, 50th, and 90th fixed-threshold percentiles using all of the data.
+Then, a new fixed-threshold percentile value is interpolated for a measurement of 100.0 cfs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
+                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
+                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+
+<span class="c1"># calculate percentiles</span>
+<span class="n">pct_values</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">],</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+
+<span class="c1"># calculate the percentile associated with 100.0 cfs</span>
+<span class="n">pct</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_percentile_from_value</span><span class="p">(</span>
+    <span class="mf">100.0</span><span class="p">,</span> <span class="n">pct_values</span><span class="p">)</span>
+
+<span class="c1"># print that percentile value</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="mf">51.74</span>
+</pre></div>
+</div>
+<p>Below is an example of fetching variable-threshold percentiles for January 1st and their
+associated values from the NWIS statistics service for a USGS gage and then
+calculating a new variable-threshold percentile value for a measurement of 100.0 cfs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
+                                     <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                     <span class="n">statReportType</span><span class="o">=</span><span class="s2">&quot;daily&quot;</span><span class="p">)</span>
+
+<span class="c1"># munge the data</span>
+<span class="n">munged_df</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># pull out statistics for Jan. 1</span>
+<span class="n">day1</span> <span class="o">=</span> <span class="n">munged_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># convert to a compatible dataframe</span>
+<span class="n">day1_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">day1</span><span class="o">.</span><span class="n">values</span><span class="p">},</span>
+                       <span class="n">index</span><span class="o">=</span><span class="n">day1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+<span class="c1"># calculate the percentile associated with 100.0 cfs</span>
+<span class="n">pct</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_percentile_from_value</span><span class="p">(</span>
+    <span class="mf">100.0</span><span class="p">,</span> <span class="n">day1_df</span><span class="p">)</span>
+
+<span class="c1"># print that percentile value</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pct</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="mf">22.62</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Percentile Calculation Examples</a><ul>
+<li><a class="reference internal" href="#calculating-historic-percentiles-for-one-site">Calculating Historic Percentiles for One Site</a></li>
+<li><a class="reference internal" href="#calculating-historic-variable-percentiles-for-the-full-year">Calculating Historic Variable Percentiles for the Full Year</a></li>
+<li><a class="reference internal" href="#interpolating-new-percentiles-using-previously-calculated-percentiles">Interpolating New Percentiles Using Previously Calculated Percentiles</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="cumulative_hydrograph_examples.html"
+                          title="previous chapter">Cumulative Streamflow Hydrographs</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="similarity_examples.html"
+                          title="next chapter">Similarity Measures</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/examples/percentile_calculation_examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="similarity_examples.html" title="Similarity Measures"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cumulative_hydrograph_examples.html" title="Cumulative Streamflow Hydrographs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g30ee2c6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Percentile Calculation Examples</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+    </div>
+  </body>
+</html>

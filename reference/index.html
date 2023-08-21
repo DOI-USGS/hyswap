@@ -7,12 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g410dd4a documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g30ee2c6 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=0af7dc6e"></script>
+    <script src="../_static/documentation_options.js?v=ebf70ba1"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g410dd4a documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g30ee2c6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -764,10 +764,11 @@ and year type.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>percentiles</strong> – Percentiles of the data.</p>
+<dd class="field-even"><p><strong>percentiles</strong> – Percentiles of the data in a DataFrame so the thresholds and
+percentile values are tied together.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>array_like</p>
+<dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -776,7 +777,8 @@ and year type.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">data</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span>
-<span class="go">array([  0.,   5.,  10.,  25.,  75.,  90.,  95., 100.])</span>
+<span class="go">thresholds  0    5     10    25    75    90    95     100</span>
+<span class="go">values      0.0  5.0  10.0  25.0  75.0  90.0  95.0  100.0</span>
 </pre></div>
 </div>
 <p>Calculate a different set of thresholds from some synthetic data.</p>
@@ -784,7 +786,48 @@ and year type.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span>
-<span class="go">array([  0. ,   9.2,  50. ,  90.8, 100. ])</span>
+<span class="go">thresholds  0    10    50    90     100</span>
+<span class="go">values      0.0  9.2  50.0  90.8  100.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hyswap.percentiles.calculate_percentile_from_value">
+<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_percentile_from_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile_df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_percentile_from_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_percentile_from_value" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate percentile from a value and existing percentile values.</p>
+<p>This function enables faster calculation of the percentile associated with
+a given value if percentile values and corresponding percentiles are known
+for other data from the same station or site. This calculation is done
+using linear interpolation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<em>float</em><em>, </em><em>np.ndarray</em>) – New value(s) to calculate percentile for. Can be a single value or an
+array of values.</p></li>
+<li><p><strong>percentile_df</strong> (<em>pd.DataFrame</em>) – DataFrame where columns are the percentile thresholds values and the
+values are stored in a row called “values”. Typically generated by the
+<cite>calculate_fixed_percentile_thresholds</cite> functions but could be
+provided manually or from data pulled from the NWIS stats service.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>percentile</strong> – Percentile associated with the input value(s).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float, np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Calculate the percentile associated with a value from some synthetic data.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">101</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcts_df</span> <span class="o">=</span> <span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_percentile</span> <span class="o">=</span> <span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_percentile_from_value</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="mi">51</span><span class="p">,</span> <span class="n">pcts_df</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_percentile</span>
+<span class="go">51.0</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1637,6 +1680,7 @@ by df_names argument.</p></li>
 </li>
 <li><a class="reference internal" href="#percentile-calculation-functions">Percentile Calculation Functions</a><ul>
 <li><a class="reference internal" href="#hyswap.percentiles.calculate_fixed_percentile_thresholds"><code class="docutils literal notranslate"><span class="pre">calculate_fixed_percentile_thresholds()</span></code></a></li>
+<li><a class="reference internal" href="#hyswap.percentiles.calculate_percentile_from_value"><code class="docutils literal notranslate"><span class="pre">calculate_percentile_from_value()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day"><code class="docutils literal notranslate"><span class="pre">calculate_variable_percentile_thresholds_by_day()</span></code></a></li>
 </ul>
 </li>
@@ -1713,7 +1757,7 @@ by df_names argument.</p></li>
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g410dd4a documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g30ee2c6 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>

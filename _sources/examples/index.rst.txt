@@ -36,6 +36,14 @@ Cumulative Hydrograph Examples
 
     cumulative_hydrograph_examples
 
+Percentile Calculation Examples
+-------------------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    percentile_calculation_examples
+
 Similarity Examples
 -------------------
 
