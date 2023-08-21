@@ -75,6 +75,8 @@ def calculate_variable_percentile_thresholds_by_day(
         data_type='daily',
         year_type='calendar',
         min_years=10,
+        leading_values=0,
+        trailing_values=0,
         **kwargs):
     """Calculate variable percentile thresholds of data by day of year.
 
@@ -117,6 +119,16 @@ def calculate_variable_percentile_thresholds_by_day(
     min_years : int, optional
         Minimum number of years of data required to calculate percentile
         thresholds for a given day of year. Default is 10.
+
+    leading_values : int, optional
+        For the temporal filtering, this is an argument setting the
+        number of leading values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
+
+    trailing_values : int, optional
+        For the temporal filtering, this is an argument setting the
+        number of trailing values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -161,7 +173,9 @@ def calculate_variable_percentile_thresholds_by_day(
     # loop through days of year available
     for doy in range(min_day, max_day):
         # get historical data for the day of year
-        data = filter_data_by_time(df, doy, data_column_name)
+        data = filter_data_by_time(df, doy, data_column_name,
+                                   leading_values=leading_values,
+                                   trailing_values=trailing_values)
         # could insert other functions here to check or modify data
         # as needed or based on any other criteria
         meta = calculate_metadata(data)

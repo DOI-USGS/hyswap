@@ -393,6 +393,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
         April 1, 2010 to March 31, 2011 is "climate year 2011".
     envelope_pct : list, optional
         List of percentiles to plot as the envelope. Default is [25, 75].
+        If an empty list, [], then no envelope is plotted.
     max_pct : bool, optional
         If True, plot the maximum value as a dashed line. Default is False.
     min_pct : bool, optional
@@ -449,14 +450,15 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
     color = kwargs.pop('color', 'xkcd:bright green')
-    # plot 25-75 percentile envelope
-    ax.fill_between(pdf.index.get_level_values(1),
-                    list(pdf[envelope_pct[0]].values),
-                    list(pdf[envelope_pct[1]].values),
-                    color=color, alpha=alpha,
-                    label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
-                          "Percentile Envelope",
-                    zorder=zorder, **kwargs)
+    # plot percentile envelope
+    if len(envelope_pct) == 2:
+        ax.fill_between(pdf.index.get_level_values(1),
+                        list(pdf[envelope_pct[0]].values),
+                        list(pdf[envelope_pct[1]].values),
+                        color=color, alpha=alpha,
+                        label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
+                        "Percentile Envelope",
+                        zorder=zorder, **kwargs)
     # plot min/max if desired
     if min_pct:
         ax.plot(pdf.index.get_level_values(1), pdf[0], color='k',
@@ -611,5 +613,98 @@ def plot_hydrograph(df, data_col,
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
     ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
+    # return
+    return ax
+
+
+def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='inferno',
+                            show_values=False, ax=None,
+                            title='Similarity Matrix'):
+    """Plot a similarity matrix as a heatmap.
+
+    Parameters
+    ----------
+    sim_matrix : pandas.DataFrame
+        Similarity matrix to plot. Must be square. Can be the output of
+        :meth:`hyswap.similarity.calculate_correlations`,
+        :meth:`hyswap.similarity.calculate_wasserstein_distance`,
+        :meth:`hyswap.similarity.calculate_energy_distance`, or any other
+        square matrix represented as a pandas DataFrame.
+
+    cmap : str, optional
+        Colormap to use. Default is 'inferno'.
+
+    show_values : bool, optional
+        Whether to show the values of the matrix on the plot. Default is False.
+
+    ax : matplotlib.axes.Axes, optional
+        Axes object to plot on. If not provided, a new figure and axes will be
+        created.
+
+    title : str, optional
+        Title for the plot. Default is 'Similarity Matrix'.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object containing the plot.
+
+    Examples
+    --------
+    Calculate the correlation matrix between two sites and plot it as a
+    heatmap.
+
+    .. plot::
+        :include-source:
+
+        >>> df, _ = dataretrieval.nwis.get_dv(site='06892350',
+        ...                                   parameterCd='00060',
+        ...                                   start='2010-01-01',
+        ...                                   end='2021-12-31')
+        >>> df2, _ = dataretrieval.nwis.get_dv(site='06892000',
+        ...                                    parameterCd='00060',
+        ...                                    start='2010-01-01',
+        ...                                    end='2021-12-31')
+        >>> corr_matrix, n_obs = hyswap.similarity.calculate_correlations(
+        ...     [df, df2], '00060_Mean')
+        >>> ax = hyswap.plots.plot_similarity_heatmap(corr_matrix,
+        ...                                           show_values=True)
+        >>> plt.show()
+    """
+    # Create axes if not provided
+    if ax is None:
+        _, ax = plt.subplots()
+    # plot heatmap using matplotlib
+    vmin = sim_matrix.min().min()
+    vmax = sim_matrix.max().max()
+    im = ax.imshow(sim_matrix, cmap=cmap,
+                   vmin=sim_matrix.min().min(),
+                   vmax=sim_matrix.max().max())
+    # show values if desired
+    if show_values:
+        for i in range(sim_matrix.shape[0]):
+            for j in range(sim_matrix.shape[1]):
+                # if below halfway point, make text white
+                if sim_matrix.iloc[i, j] < (vmax - vmin) / 2 + vmin:
+                    ax.text(j, i, f'{sim_matrix.iloc[i, j]:.2f}',
+                            ha="center", va="center", color="w")
+                # otherwise, make text black
+                else:
+                    ax.text(j, i, f'{sim_matrix.iloc[i, j]:.2f}',
+                            ha="center", va="center", color="k")
+    # set labels
+    if n_obs is not None:
+        title = f'{title} (n={n_obs})'
+    ax.set_title(title)
+    ax.set_xlabel('Site')
+    ax.set_ylabel('Site')
+    # set ticks at center of each cell
+    ax.set_xticks(np.arange(sim_matrix.shape[0]))
+    ax.set_yticks(np.arange(sim_matrix.shape[1]))
+    # set tick labels
+    ax.set_xticklabels(sim_matrix.columns)
+    ax.set_yticklabels(sim_matrix.index)
+    # add colorbar
+    plt.colorbar(im, ax=ax)
     # return
     return ax

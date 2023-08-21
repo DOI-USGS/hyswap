@@ -92,6 +92,7 @@ from hyswap import utils
 from hyswap import percentiles
 from hyswap import cumulative
 from hyswap import plots
+from hyswap import similarity
 from hyswap import runoff
 import numpy as np
 import pandas as pd
@@ -144,5 +145,6 @@ linkcheck_ignore = [
 linkcheck_exclude_documents = [
     r'meta/disclaimer*',
     r'meta/contributing*',
-    r'meta/installation*'
+    r'meta/installation*',
+    r'examples/similarity_examples',
 ]

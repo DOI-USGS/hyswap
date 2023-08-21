@@ -43,3 +43,11 @@ Percentile Calculation Examples
     :maxdepth: 2
 
     percentile_calculation_examples
+
+Similarity Examples
+-------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    similarity_examples
