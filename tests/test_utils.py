@@ -418,6 +418,32 @@ class TestMungingNWISStats:
         assert df_slim.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
 
 
+def test_filter_to_common_time():
+    """Test the filter_to_common_time function."""
+    # make dummy dataframes
+    df_1 = pd.DataFrame({
+        'data': np.arange(10),
+        'date': pd.date_range('2020-01-01', '2020-01-10')})
+    df_1.set_index('date', inplace=True)
+    df_2 = pd.DataFrame({
+        'data': np.arange(10),
+        'date': pd.date_range('2020-01-06', '2020-01-15')})
+    df_2.set_index('date', inplace=True)
+    # apply the function
+    df_list, n_obs = utils.filter_to_common_time([df_1, df_2])
+    # check the output
+    assert len(df_list) == 2
+    assert n_obs == 5
+
+
+def test_set_data_type():
+    """Test the function set_data_type."""
+    assert utils.set_data_type('daily') == 'D'
+    assert utils.set_data_type('7-day') == '7D'
+    assert utils.set_data_type('14-day') == '14D'
+    assert utils.set_data_type('28-day') == '28D'
+
+
 class TestSummaryStatistics:
     def test_calculate_summary_statistics(self):
         """Test the calculate_summary_statistics function."""

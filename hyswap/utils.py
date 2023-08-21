@@ -349,6 +349,8 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
     be used on Python dataretrieval dataframe returns for the nwis.get_stats()
     function for "daily" data, a single site, and a single parameter code.
 
+    Parameters
+    ----------
     df : pandas.DataFrame
         DataFrame containing NWIS statistics data retrieved from the statistics
         web service. Assumed to come in as a dataframe retrieved with a
@@ -503,6 +505,69 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
 
     # return dataframe
     return summary_df
+
+
+def filter_to_common_time(df_list):
+    """Filter a list of dataframes to common times based on index.
+
+    This function takes a list of dataframes and filters them to only include
+    the common times based on the index of the dataframes. This is necessary
+    before comparing the timeseries and calculating statistics between two or
+    more timeseries.
+
+    Parameters
+    ----------
+    df_list : list
+        List of pandas.DataFrame objects to filter to common times.
+        DataFrames assumed to have date-time information in the index.
+        Expect input to be the output from a function like
+        dataretrieval.nwis.get_dv() or similar.
+
+    Returns
+    -------
+    df_list : list
+        List of pandas.DataFrame objects filtered to common times.
+    n_obs : int
+        Number of observations in the common time period.
+
+    Examples
+    --------
+    Get some NWIS data.
+
+    .. doctest::
+
+            >>> df1, md1 = dataretrieval.nwis.get_dv(
+            ...     "03586500", parameterCd="00060",
+            ...     start="2018-12-15", end="2019-01-07")
+            >>> df2, md2 = dataretrieval.nwis.get_dv(
+            ...     "01646500", parameterCd="00060",
+            ...     start="2019-01-01", end="2019-01-14")
+            >>> type(df1)
+            <class 'pandas.core.frame.DataFrame'>
+            >>> type(df2)
+            <class 'pandas.core.frame.DataFrame'>
+
+    Filter the dataframes to common times.
+
+    .. doctest::
+
+            >>> df_list, n_obs = utils.filter_to_common_time([df1, df2])
+            >>> df_list[0].shape
+            (7, 3)
+            >>> df_list[1].shape
+            (7, 3)
+    """
+    # get the common index
+    common_index = df_list[0].index
+    for df in df_list:
+        common_index = common_index.intersection(df.index)
+    # filter the dataframes to the common index
+    for i, df in enumerate(df_list):
+        df_list[i] = df.loc[common_index]
+    # get the number of observations
+    n_obs = len(common_index)
+    # return the list of dataframes
+    return df_list, n_obs
 
 
 def set_data_type(data_type):
