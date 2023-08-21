@@ -96,7 +96,7 @@ def format_data(df, data_column_name, date_column_name=None,
 
     # make output data frame
     # calculation of rolling mean is done on the data column
-    df_out = rolling_average(df, data_column_name, data_type, **kwargs)
+    df_out = rolling_average(df_out, data_column_name, data_type, **kwargs)
 
     # convert date index to YYYY-MM-DD format
     df_out.index = df_out.index.strftime('%Y-%m-%d')
