@@ -14,22 +14,28 @@ class TestCalculateFixedPercentileThresholds:
         # test the function
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
             self.data, method='linear')
-        assert percentiles_.shape == (8,)
-        assert percentiles_ == pytest.approx((0, 5, 10, 25, 75, 90, 95, 100))
+        assert percentiles_.shape == (1, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.values.tolist()[0] == [
+            0.0, 5.0, 10.0, 25.0, 75.0, 90.0, 95.0, 100.0]
 
     def test_custom_percentiles(self):
         # set some percentile values as opposed to the defaults
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
             self.data, percentiles=np.array((0, 10, 50, 90, 100)))
-        assert percentiles_.shape == (5,)
-        assert percentiles_ == pytest.approx((0, 9.2, 50, 90.8, 100))
+        assert percentiles_.shape == (1, 5)
+        assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
+        assert percentiles_.values.tolist()[0] == [
+            0.0, 9.200000000000001, 50.0, 90.80000000000001, 100.0]
 
     def test_kwargs_to_percentile(self):
         # pass kwarg through to np.percentile
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
             self.data, method='lower')
-        assert percentiles_.shape == (8,)
-        assert percentiles_ == pytest.approx((0, 5, 10, 25, 75, 90, 95, 100))
+        assert percentiles_.shape == (1, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.values.tolist()[0] == [
+            0, 5, 10, 25, 75, 90, 95, 100]
 
 
 class TestCalculateVariablePercentileThresholdsByDay:
@@ -166,3 +172,48 @@ class TestCalculateVariablePercentileThresholdsByDay:
         assert not percentiles_7day.isna().all().all()
         # check that the percentiles are not the same
         assert not percentiles_.equals(percentiles_7day)
+
+
+class TestCalculatePercentilesFromValue:
+    # define some test values
+    data = np.arange(101)
+    percentiles_ = np.arange(0, 105, 5)
+    pct_df = pd.DataFrame(data={"values": percentiles_}, index=percentiles_).T
+    pct_df = pct_df.rename_axis("thresholds", axis="columns")
+    low_val = -5
+    high_val = 105
+    mid_val = 51
+    multiple_values = [-5, 7, 51, 98, 105]
+
+    def test_calculate_percentiles_from_value_low(self):
+        """Test with a low value."""
+        # test the function
+        pct_out = percentiles.calculate_percentile_from_value(
+            self.low_val, self.pct_df)
+        assert pct_out == 0.0
+
+    def test_calculate_percentiles_from_value_mid(self):
+        """Test with a mid value."""
+        # test the function
+        pct_out = percentiles.calculate_percentile_from_value(
+            self.mid_val, self.pct_df)
+        assert pct_out == 51.0
+
+    def test_calculate_percentiles_from_value_high(self):
+        """Test with a high value."""
+        # test the function
+        pct_out = percentiles.calculate_percentile_from_value(
+            self.high_val, self.pct_df)
+        assert pct_out == 100.0
+
+    def test_calculate_percentiles_from_value_multiple(self):
+        """Test with multiple values."""
+        pct_out = percentiles.calculate_percentile_from_value(
+            self.multiple_values, self.pct_df)
+        assert pct_out == pytest.approx([0.0, 7.0, 51.0, 98.0, 100.0])
+
+    def test_calculate_percentiles_from_value_invalid(self):
+        """Test with invalid inputs."""
+        with pytest.raises(AttributeError):
+            percentiles.calculate_percentile_from_value(
+                self.low_val, [1, 2, 3])
