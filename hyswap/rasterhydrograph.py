@@ -82,11 +82,11 @@ def format_data(df, data_column_name, date_column_name=None,
         365
     """
     # check inputs, set date to index, define year/doy columns
-    df = _check_inputs(df, data_column_name, date_column_name,
-                       data_type, year_type, begin_year, end_year)
+    df_out = _check_inputs(df, data_column_name, date_column_name,
+                           data_type, year_type, begin_year, end_year)
 
     # calculate the date range
-    date_range = _calculate_date_range(df, year_type, begin_year, end_year)
+    date_range = _calculate_date_range(df_out, year_type, begin_year, end_year)
 
     # format date_range as YYYY-MM-DD
     date_range = date_range.strftime('%Y-%m-%d')

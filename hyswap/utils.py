@@ -218,13 +218,13 @@ def calculate_metadata(data):
     return meta
 
 
-def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
+def define_year_doy_columns(df_in, date_column_name=None, year_type='calendar',
                             clip_leap_day=False):
     """Function to add year, day of year, and month-day columns to a DataFrame.
 
     Parameters
     ----------
-    df : pandas.DataFrame
+    df_in : pandas.DataFrame
         DataFrame containing data to filter. Expects datetime information to be
         available in the index or in a column named `date_column_name`.
 
@@ -251,6 +251,8 @@ def define_year_doy_columns(df, date_column_name=None, year_type='calendar',
         DataFrame with year, day of year, and month-day columns added. Also
         makes the date_column_name the index of the DataFrame.
     """
+    # deep copy of the df before manipulating it
+    df = df_in.copy(deep=True)
     # set the df index
     if date_column_name is not None:
         df = df.set_index(date_column_name)
