@@ -393,6 +393,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
         April 1, 2010 to March 31, 2011 is "climate year 2011".
     envelope_pct : list, optional
         List of percentiles to plot as the envelope. Default is [25, 75].
+        If an empty list, [], then no envelope is plotted.
     max_pct : bool, optional
         If True, plot the maximum value as a dashed line. Default is False.
     min_pct : bool, optional
@@ -449,14 +450,15 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
     color = kwargs.pop('color', 'xkcd:bright green')
-    # plot 25-75 percentile envelope
-    ax.fill_between(pdf.index.get_level_values(1),
-                    list(pdf[envelope_pct[0]].values),
-                    list(pdf[envelope_pct[1]].values),
-                    color=color, alpha=alpha,
-                    label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
-                          "Percentile Envelope",
-                    zorder=zorder, **kwargs)
+    # plot percentile envelope
+    if len(envelope_pct) == 2:
+        ax.fill_between(pdf.index.get_level_values(1),
+                        list(pdf[envelope_pct[0]].values),
+                        list(pdf[envelope_pct[1]].values),
+                        color=color, alpha=alpha,
+                        label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
+                        "Percentile Envelope",
+                        zorder=zorder, **kwargs)
     # plot min/max if desired
     if min_pct:
         ax.plot(pdf.index.get_level_values(1), pdf[0], color='k',
