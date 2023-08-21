@@ -2,18 +2,18 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gc646d0d documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gdcc7916 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=b6f88001" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=73f2e1c3"></script>
+    <script src="../../_static/documentation_options.js?v=79f726e0"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -47,7 +47,9 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="filter_approved_data"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_approved_data">[docs]</a><span class="k">def</span> <span class="nf">filter_approved_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filter_column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="filter_approved_data">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_approved_data">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_approved_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filter_column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a dataframe to only return approved &quot;A&quot; (or &quot;A, e&quot;) data.</span>
 
 <span class="sd">    Parameters</span>
@@ -89,7 +91,10 @@
                      <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">filter_column</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;A, e&quot;</span><span class="p">))]</span></div>
 
 
-<div class="viewcode-block" id="rolling_average"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.rolling_average">[docs]</a><span class="k">def</span> <span class="nf">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="rolling_average">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.rolling_average">[docs]</a>
+<span class="k">def</span> <span class="nf">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate a rolling average for a dataframe.</span>
 
 <span class="sd">    Default behavior right-aligns the window used for the rolling average,</span>
@@ -122,7 +127,10 @@
     <span class="k">return</span> <span class="n">df_out</span></div>
 
 
-<div class="viewcode-block" id="filter_data_by_time"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_data_by_time">[docs]</a><span class="k">def</span> <span class="nf">filter_data_by_time</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="filter_data_by_time">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_data_by_time">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_data_by_time</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">time_interval</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span>
                         <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter data by some time interval.</span>
@@ -224,7 +232,10 @@
     <span class="k">return</span> <span class="n">dff</span></div>
 
 
-<div class="viewcode-block" id="calculate_metadata"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.calculate_metadata">[docs]</a><span class="k">def</span> <span class="nf">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="calculate_metadata">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.calculate_metadata">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate metadata for a series of data.</span>
 
 <span class="sd">    Parameters</span>
@@ -263,7 +274,10 @@
     <span class="k">return</span> <span class="n">meta</span></div>
 
 
-<div class="viewcode-block" id="define_year_doy_columns"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.define_year_doy_columns">[docs]</a><span class="k">def</span> <span class="nf">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
+
+<div class="viewcode-block" id="define_year_doy_columns">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.define_year_doy_columns">[docs]</a>
+<span class="k">def</span> <span class="nf">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
                             <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to add year, day of year, and month-day columns to a DataFrame.</span>
 
@@ -343,7 +357,10 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="leap_year_adjustment"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.leap_year_adjustment">[docs]</a><span class="k">def</span> <span class="nf">leap_year_adjustment</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="leap_year_adjustment">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.leap_year_adjustment">[docs]</a>
+<span class="k">def</span> <span class="nf">leap_year_adjustment</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to adjust leap year days in a DataFrame.</span>
 
 <span class="sd">    Adjust for a leap year by removing February 29 from the DataFrame and</span>
@@ -385,7 +402,10 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="munge_nwis_stats"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.munge_nwis_stats">[docs]</a><span class="k">def</span> <span class="nf">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="munge_nwis_stats">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.munge_nwis_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to munge and reformat NWIS statistics data.</span>
 
@@ -394,6 +414,8 @@
 <span class="sd">    be used on Python dataretrieval dataframe returns for the nwis.get_stats()</span>
 <span class="sd">    function for &quot;daily&quot; data, a single site, and a single parameter code.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
 <span class="sd">    df : pandas.DataFrame</span>
 <span class="sd">        DataFrame containing NWIS statistics data retrieved from the statistics</span>
 <span class="sd">        web service. Assumed to come in as a dataframe retrieved with a</span>
@@ -477,7 +499,10 @@
     <span class="k">return</span> <span class="n">df_slim</span></div>
 
 
-<div class="viewcode-block" id="calculate_summary_statistics"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.calculate_summary_statistics">[docs]</a><span class="k">def</span> <span class="nf">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s2">&quot;00060_Mean&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="calculate_summary_statistics">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.calculate_summary_statistics">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s2">&quot;00060_Mean&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate summary statistics for a site.</span>
 
@@ -550,7 +575,76 @@
     <span class="k">return</span> <span class="n">summary_df</span></div>
 
 
-<div class="viewcode-block" id="set_data_type"><a class="viewcode-back" href="../../reference/index.html#hyswap.utils.set_data_type">[docs]</a><span class="k">def</span> <span class="nf">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
+
+<div class="viewcode-block" id="filter_to_common_time">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_to_common_time">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_to_common_time</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a list of dataframes to common times based on index.</span>
+
+<span class="sd">    This function takes a list of dataframes and filters them to only include</span>
+<span class="sd">    the common times based on the index of the dataframes. This is necessary</span>
+<span class="sd">    before comparing the timeseries and calculating statistics between two or</span>
+<span class="sd">    more timeseries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of pandas.DataFrame objects to filter to common times.</span>
+<span class="sd">        DataFrames assumed to have date-time information in the index.</span>
+<span class="sd">        Expect input to be the output from a function like</span>
+<span class="sd">        dataretrieval.nwis.get_dv() or similar.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of pandas.DataFrame objects filtered to common times.</span>
+<span class="sd">    n_obs : int</span>
+<span class="sd">        Number of observations in the common time period.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Get some NWIS data.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">            &gt;&gt;&gt; df1, md1 = dataretrieval.nwis.get_dv(</span>
+<span class="sd">            ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">            ...     start=&quot;2018-12-15&quot;, end=&quot;2019-01-07&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; df2, md2 = dataretrieval.nwis.get_dv(</span>
+<span class="sd">            ...     &quot;01646500&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">            ...     start=&quot;2019-01-01&quot;, end=&quot;2019-01-14&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; type(df1)</span>
+<span class="sd">            &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; type(df2)</span>
+<span class="sd">            &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;</span>
+
+<span class="sd">    Filter the dataframes to common times.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">            &gt;&gt;&gt; df_list, n_obs = utils.filter_to_common_time([df1, df2])</span>
+<span class="sd">            &gt;&gt;&gt; df_list[0].shape</span>
+<span class="sd">            (7, 3)</span>
+<span class="sd">            &gt;&gt;&gt; df_list[1].shape</span>
+<span class="sd">            (7, 3)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the common index</span>
+    <span class="n">common_index</span> <span class="o">=</span> <span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+    <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
+        <span class="n">common_index</span> <span class="o">=</span> <span class="n">common_index</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="c1"># filter the dataframes to the common index</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+        <span class="n">df_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">common_index</span><span class="p">]</span>
+    <span class="c1"># get the number of observations</span>
+    <span class="n">n_obs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_index</span><span class="p">)</span>
+    <span class="c1"># return the list of dataframes</span>
+    <span class="k">return</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">n_obs</span></div>
+
+
+
+<div class="viewcode-block" id="set_data_type">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.set_data_type">[docs]</a>
+<span class="k">def</span> <span class="nf">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to set the data type for rolling averages.</span>
 
 <span class="sd">    Parameters</span>
@@ -579,6 +673,7 @@
         <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;28D&#39;</span>
 
     <span class="k">return</span> <span class="n">data_type</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
@@ -610,14 +705,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>

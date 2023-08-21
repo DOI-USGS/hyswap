@@ -35,3 +35,11 @@ Cumulative Hydrograph Examples
     :maxdepth: 2
 
     cumulative_hydrograph_examples
+
+Similarity Examples
+-------------------
+
+.. toctree::
+    :maxdepth: 2
+
+    similarity_examples

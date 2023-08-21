@@ -62,3 +62,10 @@ Runoff Calculation Functions
 .. automodule:: hyswap.runoff
     :members:
     :special-members:
+
+Similarity Functions
+--------------------
+
+.. automodule:: hyswap.similarity
+    :members:
+    :special-members:

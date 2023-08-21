@@ -2,18 +2,18 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.rasterhydrograph &#8212; hyswap 0.1.dev1+gc646d0d documentation</title>
+    <title>hyswap.rasterhydrograph &#8212; hyswap 0.1.dev1+gdcc7916 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=b6f88001" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=73f2e1c3"></script>
+    <script src="../../_static/documentation_options.js?v=79f726e0"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.rasterhydrograph</a></li> 
       </ul>
@@ -51,7 +51,9 @@
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_data_type</span>
 
 
-<div class="viewcode-block" id="format_data"><a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph.format_data">[docs]</a><span class="k">def</span> <span class="nf">format_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="format_data">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph.format_data">[docs]</a>
+<span class="k">def</span> <span class="nf">format_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
                 <span class="n">begin_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -181,7 +183,10 @@
     <span class="k">return</span> <span class="n">df_out</span></div>
 
 
-<div class="viewcode-block" id="_check_inputs"><a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph._check_inputs">[docs]</a><span class="k">def</span> <span class="nf">_check_inputs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="p">,</span>
+
+<div class="viewcode-block" id="_check_inputs">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph._check_inputs">[docs]</a>
+<span class="k">def</span> <span class="nf">_check_inputs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="p">,</span>
                   <span class="n">data_type</span><span class="p">,</span> <span class="n">year_type</span><span class="p">,</span> <span class="n">begin_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Private function to check inputs for the format_data function.</span>
 
@@ -274,7 +279,10 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="_calculate_date_range"><a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph._calculate_date_range">[docs]</a><span class="k">def</span> <span class="nf">_calculate_date_range</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">year_type</span><span class="p">,</span> <span class="n">begin_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">):</span>
+
+<div class="viewcode-block" id="_calculate_date_range">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph._calculate_date_range">[docs]</a>
+<span class="k">def</span> <span class="nf">_calculate_date_range</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">year_type</span><span class="p">,</span> <span class="n">begin_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Private function to calculate the date range and set the index.</span>
 
 <span class="sd">    Parameters</span>
@@ -319,6 +327,7 @@
     <span class="n">date_range</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">begin_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">date_range</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
@@ -350,14 +359,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.rasterhydrograph</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>

@@ -2,18 +2,18 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.plots &#8212; hyswap 0.1.dev1+gc646d0d documentation</title>
+    <title>hyswap.plots &#8212; hyswap 0.1.dev1+gdcc7916 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=b6f88001" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=73f2e1c3"></script>
+    <script src="../../_static/documentation_options.js?v=79f726e0"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>
@@ -51,7 +51,9 @@
 <span class="kn">from</span> <span class="nn">hyswap.percentiles</span> <span class="kn">import</span> <span class="n">calculate_variable_percentile_thresholds_by_day</span>
 
 
-<div class="viewcode-block" id="plot_flow_duration_curve"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_flow_duration_curve">[docs]</a><span class="k">def</span> <span class="nf">plot_flow_duration_curve</span><span class="p">(</span>
+<div class="viewcode-block" id="plot_flow_duration_curve">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_flow_duration_curve">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_flow_duration_curve</span><span class="p">(</span>
         <span class="n">values</span><span class="p">,</span> <span class="n">exceedance_probabilities</span><span class="p">,</span>
         <span class="n">observations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observation_probabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Flow Duration Curve&#39;</span><span class="p">,</span>
@@ -165,7 +167,10 @@
     <span class="k">return</span> <span class="n">ax</span></div>
 
 
-<div class="viewcode-block" id="plot_raster_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_raster_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_raster_hydrograph</span><span class="p">(</span><span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+
+<div class="viewcode-block" id="plot_raster_hydrograph">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_raster_hydrograph">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_raster_hydrograph</span><span class="p">(</span><span class="n">df_formatted</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Raster Hydrograph&#39;</span><span class="p">,</span>
                            <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Month&#39;</span><span class="p">,</span> <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Year&#39;</span><span class="p">,</span>
                            <span class="n">cbarlab</span><span class="o">=</span><span class="s1">&#39;Discharge, in Cubic Feet per Second&#39;</span><span class="p">,</span>
@@ -277,7 +282,10 @@
     <span class="k">return</span> <span class="n">ax</span></div>
 
 
-<div class="viewcode-block" id="plot_duration_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_duration_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_duration_hydrograph</span><span class="p">(</span><span class="n">percentiles_by_day</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">doy_col</span><span class="p">,</span>
+
+<div class="viewcode-block" id="plot_duration_hydrograph">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_duration_hydrograph">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_duration_hydrograph</span><span class="p">(</span><span class="n">percentiles_by_day</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">doy_col</span><span class="p">,</span>
                              <span class="n">pct_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
                              <span class="n">data_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Duration Hydrograph&quot;</span><span class="p">,</span>
@@ -409,7 +417,10 @@
     <span class="k">return</span> <span class="n">ax</span></div>
 
 
-<div class="viewcode-block" id="plot_cumulative_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_cumulative_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_cumulative_hydrograph</span><span class="p">(</span><span class="n">cumulative_percentiles</span><span class="p">,</span> <span class="n">target_years</span><span class="p">,</span>
+
+<div class="viewcode-block" id="plot_cumulative_hydrograph">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_cumulative_hydrograph">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_cumulative_hydrograph</span><span class="p">(</span><span class="n">cumulative_percentiles</span><span class="p">,</span> <span class="n">target_years</span><span class="p">,</span>
                                <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
                                <span class="n">envelope_pct</span><span class="o">=</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">],</span>
                                <span class="n">max_pct</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_pct</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -554,7 +565,10 @@
     <span class="k">return</span> <span class="n">ax</span></div>
 
 
-<div class="viewcode-block" id="plot_hydrograph"><a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_hydrograph">[docs]</a><span class="k">def</span> <span class="nf">plot_hydrograph</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span>
+
+<div class="viewcode-block" id="plot_hydrograph">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_hydrograph">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_hydrograph</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span>
                     <span class="n">date_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -658,6 +672,103 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="n">yticklabels</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="c1"># return</span>
     <span class="k">return</span> <span class="n">ax</span></div>
+
+
+
+<div class="viewcode-block" id="plot_similarity_heatmap">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_similarity_heatmap">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_similarity_heatmap</span><span class="p">(</span><span class="n">sim_matrix</span><span class="p">,</span> <span class="n">n_obs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span>
+                            <span class="n">show_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Similarity Matrix&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a similarity matrix as a heatmap.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sim_matrix : pandas.DataFrame</span>
+<span class="sd">        Similarity matrix to plot. Must be square. Can be the output of</span>
+<span class="sd">        :meth:`hyswap.similarity.calculate_correlations`,</span>
+<span class="sd">        :meth:`hyswap.similarity.calculate_wasserstein_distance`,</span>
+<span class="sd">        :meth:`hyswap.similarity.calculate_energy_distance`, or any other</span>
+<span class="sd">        square matrix represented as a pandas DataFrame.</span>
+
+<span class="sd">    cmap : str, optional</span>
+<span class="sd">        Colormap to use. Default is &#39;inferno&#39;.</span>
+
+<span class="sd">    show_values : bool, optional</span>
+<span class="sd">        Whether to show the values of the matrix on the plot. Default is False.</span>
+
+<span class="sd">    ax : matplotlib.axes.Axes, optional</span>
+<span class="sd">        Axes object to plot on. If not provided, a new figure and axes will be</span>
+<span class="sd">        created.</span>
+
+<span class="sd">    title : str, optional</span>
+<span class="sd">        Title for the plot. Default is &#39;Similarity Matrix&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        Axes object containing the plot.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Calculate the correlation matrix between two sites and plot it as a</span>
+<span class="sd">    heatmap.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">        :include-source:</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(site=&#39;06892350&#39;,</span>
+<span class="sd">        ...                                   parameterCd=&#39;00060&#39;,</span>
+<span class="sd">        ...                                   start=&#39;2010-01-01&#39;,</span>
+<span class="sd">        ...                                   end=&#39;2021-12-31&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df2, _ = dataretrieval.nwis.get_dv(site=&#39;06892000&#39;,</span>
+<span class="sd">        ...                                    parameterCd=&#39;00060&#39;,</span>
+<span class="sd">        ...                                    start=&#39;2010-01-01&#39;,</span>
+<span class="sd">        ...                                    end=&#39;2021-12-31&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; corr_matrix, n_obs = hyswap.similarity.calculate_correlations(</span>
+<span class="sd">        ...     [df, df2], &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ax = hyswap.plots.plot_similarity_heatmap(corr_matrix,</span>
+<span class="sd">        ...                                           show_values=True)</span>
+<span class="sd">        &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create axes if not provided</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+    <span class="c1"># plot heatmap using matplotlib</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="n">sim_matrix</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">vmax</span> <span class="o">=</span> <span class="n">sim_matrix</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sim_matrix</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                   <span class="n">vmin</span><span class="o">=</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                   <span class="n">vmax</span><span class="o">=</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+    <span class="c1"># show values if desired</span>
+    <span class="k">if</span> <span class="n">show_values</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="c1"># if below halfway point, make text white</span>
+                <span class="k">if</span> <span class="n">sim_matrix</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">vmin</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                            <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+                <span class="c1"># otherwise, make text black</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                            <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+    <span class="c1"># set labels</span>
+    <span class="k">if</span> <span class="n">n_obs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1"> (n=</span><span class="si">{</span><span class="n">n_obs</span><span class="si">}</span><span class="s1">)&#39;</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Site&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Site&#39;</span><span class="p">)</span>
+    <span class="c1"># set ticks at center of each cell</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="c1"># set tick labels</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">sim_matrix</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="c1"># add colorbar</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="c1"># return</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
@@ -689,14 +800,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>

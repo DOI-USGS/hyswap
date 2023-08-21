@@ -2,23 +2,23 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Cumulative Streamflow Hydrographs &#8212; hyswap 0.1.dev1+gc646d0d documentation</title>
+    <title>Cumulative Streamflow Hydrographs &#8212; hyswap 0.1.dev1+gdcc7916 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=b6f88001" />
+    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=73f2e1c3"></script>
+    <script src="../_static/documentation_options.js?v=79f726e0"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Contributing Guidelines" href="../meta/contributing.html" />
+    <link rel="next" title="Similarity Measures" href="similarity_examples.html" />
     <link rel="prev" title="Streamflow Duration Hydrographs" href="streamflow_duration_hydrograph_examples.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
@@ -35,12 +35,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../meta/contributing.html" title="Contributing Guidelines"
+          <a href="similarity_examples.html" title="Similarity Measures"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrographs"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Cumulative Streamflow Hydrographs</a></li> 
       </ul>
@@ -52,11 +52,11 @@
           <div class="body" role="main">
             
   <section id="cumulative-streamflow-hydrographs">
-<h1>Cumulative Streamflow Hydrographs<a class="headerlink" href="#cumulative-streamflow-hydrographs" title="Permalink to this heading">¶</a></h1>
+<h1>Cumulative Streamflow Hydrographs<a class="headerlink" href="#cumulative-streamflow-hydrographs" title="Link to this heading">¶</a></h1>
 <p>The following examples show how to fetch some data, and then calculate values for a cumulative streamflow hydrograph.
 Then an example plotting routine to plot the cumulative hydrograph is shown.</p>
 <section id="cumulative-streamflow-over-the-2020-water-year">
-<h2>Cumulative Streamflow Over The 2020 Water Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-water-year" title="Permalink to this heading">¶</a></h2>
+<h2>Cumulative Streamflow Over The 2020 Water Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-water-year" title="Link to this heading">¶</a></h2>
 <p>First we will fetch some streamflow data from the NWIS service using the <cite>dataretrieval</cite> package.
 In this example we will fetch 20 years of data from a single site and then calculate the cumulative streamflow percentiles from that data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
@@ -86,7 +86,7 @@ In this example we will fetch 20 years of data from a single site and then calcu
 </figure>
 </section>
 <section id="cumulative-streamflow-over-the-2020-calendar-year">
-<h2>Cumulative Streamflow Over The 2020 Calendar Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-calendar-year" title="Permalink to this heading">¶</a></h2>
+<h2>Cumulative Streamflow Over The 2020 Calendar Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-calendar-year" title="Link to this heading">¶</a></h2>
 <p>We can also calculate and visualize the cumulative streamflow hydrograph for the 2020 calendar year, rather than the water year.
 The code is very similar, we simply do not specify the <cite>year_type</cite> argument in the <a class="reference internal" href="../reference/index.html#hyswap.cumulative.calculate_daily_cumulative_values" title="hyswap.cumulative.calculate_daily_cumulative_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.cumulative.calculate_daily_cumulative_values</span></code></a> function, as the default is to use the calendar year.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
@@ -110,7 +110,7 @@ The code is very similar, we simply do not specify the <cite>year_type</cite> ar
 </figure>
 </section>
 <section id="cumulative-streamflow-over-the-2020-climate-year">
-<h2>Cumulative Streamflow Over The 2020 Climate Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-climate-year" title="Permalink to this heading">¶</a></h2>
+<h2>Cumulative Streamflow Over The 2020 Climate Year<a class="headerlink" href="#cumulative-streamflow-over-the-2020-climate-year" title="Link to this heading">¶</a></h2>
 <p>We can also calculate and visualize the cumulative streamflow hydrograph for the 2020 climate year, rather than the water year or the calendar year.
 The code is very similar, we simply specify the <cite>year_type</cite> argument in the <a class="reference internal" href="../reference/index.html#hyswap.cumulative.calculate_daily_cumulative_values" title="hyswap.cumulative.calculate_daily_cumulative_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.cumulative.calculate_daily_cumulative_values</span></code></a> function to be ‘climate’.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
@@ -135,7 +135,7 @@ The code is very similar, we simply specify the <cite>year_type</cite> argument 
 </figure>
 </section>
 <section id="visualizing-the-minimum-and-maximum-cumulative-percentile-values">
-<h2>Visualizing the Minimum and Maximum Cumulative Percentile Values<a class="headerlink" href="#visualizing-the-minimum-and-maximum-cumulative-percentile-values" title="Permalink to this heading">¶</a></h2>
+<h2>Visualizing the Minimum and Maximum Cumulative Percentile Values<a class="headerlink" href="#visualizing-the-minimum-and-maximum-cumulative-percentile-values" title="Link to this heading">¶</a></h2>
 <p>We can also visualize the minimum and maximum cumulative percentile values for a given year as dotted and dashed lines respectively.
 We will use the calendar year example to showcase this functionality.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
@@ -160,7 +160,7 @@ We will use the calendar year example to showcase this functionality.</p>
 </figure>
 </section>
 <section id="visualizing-multiple-years-of-data">
-<h2>Visualizing Multiple Years of Data<a class="headerlink" href="#visualizing-multiple-years-of-data" title="Permalink to this heading">¶</a></h2>
+<h2>Visualizing Multiple Years of Data<a class="headerlink" href="#visualizing-multiple-years-of-data" title="Link to this heading">¶</a></h2>
 <p>We are not limited to explicitly visualizing the cumulative streamflow from individual years.
 We can supply multiple <cite>target_years</cite> as a list, and each will be plotted as an individual cumulative discharge line with an associated label in the legend.
 Below is an example of this functionality wherein we plot the cumulative discharge for years 2010, 2015, and 2020.</p>
@@ -186,7 +186,7 @@ Below is an example of this functionality wherein we plot the cumulative dischar
 </figure>
 </section>
 <section id="customizing-the-filled-envelope">
-<h2>Customizing the Filled Envelope<a class="headerlink" href="#customizing-the-filled-envelope" title="Permalink to this heading">¶</a></h2>
+<h2>Customizing the Filled Envelope<a class="headerlink" href="#customizing-the-filled-envelope" title="Link to this heading">¶</a></h2>
 <p>We can customize both the percentile thresholds between which a shaded area is plotted, as well as the color and transparency of the shaded area.
 The percentile thresholds used as the upper and lower-bound of the shaded area can be specified using the <cite>envelope_pct</cite> argument.
 The color and transparency, as well as other properties, of the filled region can be customized by passing keyword arguments to the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_cumulative_hydrograph" title="hyswap.plots.plot_cumulative_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_cumulative_hydrograph</span></code></a> function, as those arguments are passed to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.fill_between()</span></code> function.
@@ -243,8 +243,8 @@ We provide an example of doing this by filling between the 10th and 90th percent
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="../meta/contributing.html"
-                          title="next chapter">Contributing Guidelines</a></p>
+    <p class="topless"><a href="similarity_examples.html"
+                          title="next chapter">Similarity Measures</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -277,19 +277,19 @@ We provide an example of doing this by filling between the 10th and 90th percent
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../meta/contributing.html" title="Contributing Guidelines"
+          <a href="similarity_examples.html" title="Similarity Measures"
              >next</a> |</li>
         <li class="right" >
           <a href="streamflow_duration_hydrograph_examples.html" title="Streamflow Duration Hydrographs"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Cumulative Streamflow Hydrographs</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>

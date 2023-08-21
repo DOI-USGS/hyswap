@@ -1,0 +1,315 @@
+
+
+<!doctype html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hyswap.similarity &#8212; hyswap 0.1.dev1+gdcc7916 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    
+    <script src="../../_static/documentation_options.js?v=79f726e0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hyswap.similarity</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for hyswap.similarity</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Similarity measures for hyswap.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_to_common_time</span>
+
+
+<div class="viewcode-block" id="calculate_correlations">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.similarity.calculate_correlations">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_correlations</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">df_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Pearson correlations between dataframes in df_list.</span>
+
+<span class="sd">    This function is designed to calculate the Pearson correlation</span>
+<span class="sd">    coefficients between dataframes in df_list. The dataframes in df_list are</span>
+<span class="sd">    expected to have the same columns. The correlation coefficients are</span>
+<span class="sd">    calculated using the `numpy.corrcoeff` function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of dataframes. The dataframes are expected to have the same</span>
+<span class="sd">        columns. Likely inputs are the output of a function like</span>
+<span class="sd">        dataretrieval.nwis.get_dv() or similar</span>
+
+<span class="sd">    data_column_name : str</span>
+<span class="sd">        Name of the column to use for the correlation calculation.</span>
+
+<span class="sd">    df_names : list, optional</span>
+<span class="sd">        List of names for the dataframes in df_list. If provided, the names</span>
+<span class="sd">        will be used to label the rows and columns of the output array. If</span>
+<span class="sd">        not provided, the column &quot;site_no&quot; will be used if available, if it is</span>
+<span class="sd">        not available, the index of the dataframe in the list will be used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    correlations : pandas.DataFrame</span>
+<span class="sd">        Dataframe of correlation coefficients. The rows and columns are</span>
+<span class="sd">        labeled with the names of the dataframes in df_list as provided</span>
+<span class="sd">        by df_names argument.</span>
+
+<span class="sd">    n_obs : int</span>
+<span class="sd">        Number of observations used to calculate the energy distance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Calculate correlations between two synthetic dataframes.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">        &gt;&gt;&gt; df1 = pd.DataFrame({&#39;a&#39;: np.arange(10), &#39;b&#39;: np.arange(10)})</span>
+<span class="sd">        &gt;&gt;&gt; df2 = pd.DataFrame({&#39;a&#39;: -1*np.arange(10), &#39;b&#39;: np.arange(10)})</span>
+<span class="sd">        &gt;&gt;&gt; results, n_obs = similarity.calculate_correlations([df1, df2], &#39;a&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; results</span>
+<span class="sd">             0    1</span>
+<span class="sd">        0  1.0 -1.0</span>
+<span class="sd">        1 -1.0  1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># handle the names of the dataframes</span>
+    <span class="n">df_names</span> <span class="o">=</span> <span class="n">_name_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">df_names</span><span class="p">)</span>
+    <span class="c1"># preprocess dataframe list so they have the same index/times</span>
+    <span class="n">df_list</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">filter_to_common_time</span><span class="p">(</span><span class="n">df_list</span><span class="p">)</span>
+    <span class="c1"># calculate correlations between all pairs of dataframes in the list</span>
+    <span class="n">correlations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">df_list</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_list</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">df2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+            <span class="n">correlations</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span>
+                <span class="n">df1</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">],</span> <span class="n">df2</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">])[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># turn the correlations into a dataframe</span>
+    <span class="n">correlations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">correlations</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df_names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">correlations</span><span class="p">,</span> <span class="n">n_obs</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_wasserstein_distance">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.similarity.calculate_wasserstein_distance">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_wasserstein_distance</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">df_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Wasserstein distance between dataframes in df_list.</span>
+
+<span class="sd">    This function is designed to calculate the Wasserstein distance between</span>
+<span class="sd">    dataframes in df_list. The dataframes in df_list are expected to have the</span>
+<span class="sd">    same columns. The Wasserstein distance is calculated using the</span>
+<span class="sd">    `scipy.stats.wasserstein_distance` function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of dataframes. The dataframes are expected to have the same</span>
+<span class="sd">        columns. Likely inputs are the output of a function like</span>
+<span class="sd">        dataretrieval.nwis.get_dv() or similar</span>
+
+<span class="sd">    data_column_name : str</span>
+<span class="sd">        Name of the column to use for the Wasserstein distance calculation.</span>
+
+<span class="sd">    df_names : list, optional</span>
+<span class="sd">        List of names for the dataframes in df_list. If provided, the names</span>
+<span class="sd">        will be used to label the rows and columns of the output array. If</span>
+<span class="sd">        not provided, the column &quot;site_no&quot; will be used if available, if it is</span>
+<span class="sd">        not available, the index of the dataframe in the list will be used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wasserstein_distances : pandas.DataFrame</span>
+<span class="sd">        Dataframe of Wasserstein distances. The rows and columns are</span>
+<span class="sd">        labeled with the names of the dataframes in df_list as provided</span>
+<span class="sd">        by df_names argument.</span>
+
+<span class="sd">    n_obs : int</span>
+<span class="sd">        Number of observations used to calculate the energy distance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Calculate Wasserstein distances between two synthetic dataframes.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">        &gt;&gt;&gt; df1 = pd.DataFrame({&#39;a&#39;: np.arange(10), &#39;b&#39;: np.arange(10)})</span>
+<span class="sd">        &gt;&gt;&gt; df2 = pd.DataFrame({&#39;a&#39;: -1*np.arange(10), &#39;b&#39;: np.arange(10)})</span>
+<span class="sd">        &gt;&gt;&gt; results, n_obs = similarity.calculate_wasserstein_distance(</span>
+<span class="sd">        ...     [df1, df2], &#39;a&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; results</span>
+<span class="sd">             0    1</span>
+<span class="sd">        0  0.0  9.0</span>
+<span class="sd">        1  9.0  0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># handle the names of the dataframes</span>
+    <span class="n">df_names</span> <span class="o">=</span> <span class="n">_name_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">df_names</span><span class="p">)</span>
+    <span class="c1"># preprocess dataframe list so they have the same index/times</span>
+    <span class="n">df_list</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">filter_to_common_time</span><span class="p">(</span><span class="n">df_list</span><span class="p">)</span>
+    <span class="c1"># calculate distances between all pairs of dataframes in the list</span>
+    <span class="n">wasserstein_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">df_list</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_list</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">df2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+            <span class="n">wasserstein_distances</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">wasserstein_distance</span><span class="p">(</span>
+                <span class="n">df1</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">],</span> <span class="n">df2</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">])</span>
+    <span class="c1"># handle the names of the dataframes</span>
+    <span class="n">df_names</span> <span class="o">=</span> <span class="n">_name_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">df_names</span><span class="p">)</span>
+    <span class="c1"># turn the distances into a dataframe</span>
+    <span class="n">wasserstein_distances</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">wasserstein_distances</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df_names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wasserstein_distances</span><span class="p">,</span> <span class="n">n_obs</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_energy_distance">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.similarity.calculate_energy_distance">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_energy_distance</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">df_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate energy distance between dataframes in df_list.</span>
+
+<span class="sd">    This function is designed to calculate the energy distance between</span>
+<span class="sd">    dataframes in df_list. The dataframes in df_list are expected to have the</span>
+<span class="sd">    same columns. The energy distance is calculated using the</span>
+<span class="sd">    `scipy.stats.energy_distance` function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df_list : list</span>
+<span class="sd">        List of dataframes. The dataframes are expected to have the same</span>
+<span class="sd">        columns. Likely inputs are the output of a function like</span>
+<span class="sd">        dataretrieval.nwis.get_dv() or similar</span>
+
+<span class="sd">    data_column_name : str</span>
+<span class="sd">        Name of the column to use for the energy distance calculation.</span>
+
+<span class="sd">    df_names : list, optional</span>
+<span class="sd">        List of names for the dataframes in df_list. If provided, the names</span>
+<span class="sd">        will be used to label the rows and columns of the output array. If</span>
+<span class="sd">        not provided, the column &quot;site_no&quot; will be used if available, if it is</span>
+<span class="sd">        not available, the index of the dataframe in the list will be used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    energy_distances : pandas.DataFrame</span>
+<span class="sd">        Dataframe of energy distances. The rows and columns are</span>
+<span class="sd">        labeled with the names of the dataframes in df_list as provided</span>
+<span class="sd">        by df_names argument.</span>
+
+<span class="sd">    n_obs : int</span>
+<span class="sd">        Number of observations used to calculate the energy distance.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Calculate energy distances between two synthetic dataframes.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">        &gt;&gt;&gt; df1 = pd.DataFrame({&#39;a&#39;: np.arange(10), &#39;b&#39;: np.arange(10)})</span>
+<span class="sd">        &gt;&gt;&gt; df2 = pd.DataFrame({&#39;a&#39;: -1*np.arange(10), &#39;b&#39;: np.arange(10)})</span>
+<span class="sd">        &gt;&gt;&gt; results, n_obs = similarity.calculate_energy_distance(</span>
+<span class="sd">        ...     [df1, df2], &#39;a&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; results</span>
+<span class="sd">                  0         1</span>
+<span class="sd">        0  0.000000  3.376389</span>
+<span class="sd">        1  3.376389  0.000000</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># handle the names of the dataframes</span>
+    <span class="n">df_names</span> <span class="o">=</span> <span class="n">_name_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">df_names</span><span class="p">)</span>
+    <span class="c1"># preprocess dataframe list so they have the same index/times</span>
+    <span class="n">df_list</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">filter_to_common_time</span><span class="p">(</span><span class="n">df_list</span><span class="p">)</span>
+    <span class="c1"># calculate distances between all pairs of dataframes in the list</span>
+    <span class="n">energy_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">df_list</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_list</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">df2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+            <span class="n">energy_distances</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">energy_distance</span><span class="p">(</span>
+                <span class="n">df1</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">],</span> <span class="n">df2</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">])</span>
+    <span class="c1"># handle the names of the dataframes</span>
+    <span class="n">df_names</span> <span class="o">=</span> <span class="n">_name_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">df_names</span><span class="p">)</span>
+    <span class="c1"># turn the distances into a dataframe</span>
+    <span class="n">energy_distances</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">energy_distances</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df_names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df_names</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">energy_distances</span><span class="p">,</span> <span class="n">n_obs</span></div>
+
+
+
+<div class="viewcode-block" id="_name_handling">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.similarity._name_handling">[docs]</a>
+<span class="k">def</span> <span class="nf">_name_handling</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">df_names</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Private function to handle the names of the dataframes.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">df_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;site_no&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">df_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">df_names</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hyswap.similarity</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright .
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+    </div>
+  </body>
+</html>

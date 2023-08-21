@@ -2,18 +2,18 @@
 
 <!doctype html>
 
-<html lang="en">
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+gc646d0d documentation</title>
+    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+gdcc7916 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=b6f88001" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=73f2e1c3"></script>
+    <script src="../../_static/documentation_options.js?v=79f726e0"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
@@ -47,7 +47,9 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="convert_cfs_to_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.convert_cfs_to_runoff">[docs]</a><span class="k">def</span> <span class="nf">convert_cfs_to_runoff</span><span class="p">(</span><span class="n">cfs</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_cfs_to_runoff">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.convert_cfs_to_runoff">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_cfs_to_runoff</span><span class="p">(</span><span class="n">cfs</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert cfs to runoff values for some drainage area.</span>
 
 <span class="sd">    Parameters</span>
@@ -97,7 +99,10 @@
     <span class="k">return</span> <span class="n">mmf</span></div>
 
 
-<div class="viewcode-block" id="streamflow_to_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.streamflow_to_runoff">[docs]</a><span class="k">def</span> <span class="nf">streamflow_to_runoff</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="streamflow_to_runoff">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.streamflow_to_runoff">[docs]</a>
+<span class="k">def</span> <span class="nf">streamflow_to_runoff</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert streamflow to runoff for a given drainage area.</span>
 
 <span class="sd">    For a given gage/dataframe, convert streamflow to runoff using the</span>
@@ -143,7 +148,10 @@
     <span class="k">return</span> <span class="n">df</span></div>
 
 
-<div class="viewcode-block" id="calculate_geometric_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_geometric_runoff">[docs]</a><span class="k">def</span> <span class="nf">calculate_geometric_runoff</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">,</span>
+
+<div class="viewcode-block" id="calculate_geometric_runoff">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_geometric_runoff">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_geometric_runoff</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">,</span>
                                <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">data_col</span><span class="o">=</span><span class="s1">&#39;runoff&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to calculate the runoff for a specified geometry.</span>
@@ -214,7 +222,10 @@
     <span class="k">return</span> <span class="n">weighted_runoff</span></div>
 
 
-<div class="viewcode-block" id="_get_date_range"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff._get_date_range">[docs]</a><span class="k">def</span> <span class="nf">_get_date_range</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
+
+<div class="viewcode-block" id="_get_date_range">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.runoff._get_date_range">[docs]</a>
+<span class="k">def</span> <span class="nf">_get_date_range</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get date range for runoff calculation.</span>
 
 <span class="sd">    This is an internal function used by the :obj:`calculate_geometric_runoff`</span>
@@ -265,7 +276,10 @@
     <span class="k">return</span> <span class="n">date_range</span></div>
 
 
-<div class="viewcode-block" id="identify_sites_from_weights"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.identify_sites_from_weights">[docs]</a><span class="k">def</span> <span class="nf">identify_sites_from_weights</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">):</span>
+
+<div class="viewcode-block" id="identify_sites_from_weights">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.identify_sites_from_weights">[docs]</a>
+<span class="k">def</span> <span class="nf">identify_sites_from_weights</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify sites for a specified geometry.</span>
 
 <span class="sd">    Function to identify sites with non-zero weights for a given</span>
@@ -293,7 +307,10 @@
     <span class="k">return</span> <span class="n">site_list</span></div>
 
 
-<div class="viewcode-block" id="calculate_multiple_geometric_runoff"><a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_multiple_geometric_runoff">[docs]</a><span class="k">def</span> <span class="nf">calculate_multiple_geometric_runoff</span><span class="p">(</span>
+
+<div class="viewcode-block" id="calculate_multiple_geometric_runoff">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_multiple_geometric_runoff">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_multiple_geometric_runoff</span><span class="p">(</span>
         <span class="n">geom_id_list</span><span class="p">,</span> <span class="n">df_list</span><span class="p">,</span> <span class="n">weights_matrix</span><span class="p">,</span>
         <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s1">&#39;runoff&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate runoff for multiple geometries at once.</span>
@@ -343,6 +360,7 @@
         <span class="c1"># add runoff to results_df</span>
         <span class="n">results_df</span><span class="p">[</span><span class="n">geom_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">runoff</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">results_df</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
@@ -374,14 +392,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc646d0d documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gdcc7916 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     </div>
   </body>
 </html>
