@@ -36,14 +36,16 @@ Finally, we will plot the streamflow data for 2022 on top of the historical perc
     :context:
     :include-source:
 
+    # get year/doy information for the data
+    df_year = hyswap.utils.define_year_doy_columns(df, clip_leap_day=True)
     # plotting percentiles by day with line shade between
     fig, ax = plt.subplots(figsize=(10, 6))
     # filter down to data from 2022
-    df_year = df[df.index.year == 2022]
+    df_2022 = df_year[df_year.index.year == 2022]
     # plot data
     ax = hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
-        df_year,
+        df_2022,
         "00060_Mean",
         "index_doy",
         ax=ax,
@@ -130,14 +132,19 @@ The only change this requires from above is specifying the type of year we are p
         df, "00060_Mean", year_type="water"
     )
 
+    # get year/doy information
+    df_year = hyswap.utils.define_year_doy_columns(df,
+                                                   year_type='water'
+                                                   clip_leap_day=True)
+
     # plotting percentiles by day with line shade between
     fig, ax = plt.subplots(figsize=(10, 6))
     # filter down to data from 2022
-    df_year = df[df['index_year'] == 2022]
+    df_2022 = df_year[df_year['index_year'] == 2022]
     # plot data
     ax = hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
-        df_year,
+        df_2022,
         "00060_Mean",
         "index_doy",
         ax=ax,
@@ -170,14 +177,19 @@ The only change this requires from above is specifying the type of year we are p
         df, "00060_Mean", year_type="climate"
     )
 
+    # get year/doy information
+    df_year = hyswap.utils.define_year_doy_columns(df,
+                                                   year_type='climate'
+                                                   clip_leap_day=True)
+
     # plotting percentiles by day with line shade between
     fig, ax = plt.subplots(figsize=(10, 6))
     # filter down to data from 2022
-    df_year = df[df['index_year'] == 2022]
+    df_2022 = df_year[df_year['index_year'] == 2022]
     # plot data
     ax = hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
-        df_year,
+        df_2022,
         "00060_Mean",
         "index_doy",
         ax=ax,
@@ -209,10 +221,15 @@ We will also specify the colors to be used for the percentile envelopes.
         df, "00060_Mean", percentiles=[0, 25, 50, 75, 100], year_type="water"
     )
 
+    # get year/doy information
+    df_year = hyswap.utils.define_year_doy_columns(df,
+                                                   year_type='water'
+                                                   clip_leap_day=True)
+
     # plotting percentiles by day with line shade between
     fig, ax = plt.subplots(figsize=(10, 6))
     # filter down to data from 2022
-    df_year = df[df['index_year'] == 2022]
+    df_2022 = df_year[df_year['index_year'] == 2022]
     # plot data
     ax = hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
@@ -257,14 +274,19 @@ To show the effect of this, we will plot the historic daily percentile values fo
         df, "00060_Mean", data_type='28-day', year_type="water"
     )
 
+    # get year/doy information
+    df_year = hyswap.utils.define_year_doy_columns(df,
+                                                   year_type='water'
+                                                   clip_leap_day=True)
+
     # plotting percentiles by day with line shade between
     fig, ax = plt.subplots(3, 1, figsize=(10, 18), sharex=True)
     # filter down to data from 2022
-    df_year = df[df['index_year'] == 2022]
+    df_2022 = df_year[df_year['index_year'] == 2022]
     # plot daily percentiles
     hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
-        df_year,
+        df_2022,
         "00060_Mean",
         "index_doy",
         ax=ax[0],
@@ -276,7 +298,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
     # plot 7-day percentiles
     hyswap.plots.plot_duration_hydrograph(
         percentiles_by_7day,
-        hyswap.utils.rolling_average(df_year, "00060_Mean", "7D"),
+        hyswap.utils.rolling_average(df_2022, "00060_Mean", "7D"),
         "00060_Mean",
         "index_doy",
         ax=ax[1],
@@ -288,7 +310,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
     # plot 28-day percentiles
     hyswap.plots.plot_duration_hydrograph(
         percentiles_by_28day,
-        hyswap.utils.rolling_average(df_year, "00060_Mean", "28D"),
+        hyswap.utils.rolling_average(df_2022, "00060_Mean", "28D"),
         "00060_Mean",
         "index_doy",
         ax=ax[2],
@@ -321,14 +343,19 @@ Specifically we will set the `alpha` argument to 1.0 to make the fill areas opaq
         df, "00060_Mean", year_type="water"
     )
 
+    # get year/doy information
+    df_year = hyswap.utils.define_year_doy_columns(df,
+                                                   year_type='water'
+                                                   clip_leap_day=True)
+
     # plotting percentiles by day with line shade between
     fig, ax = plt.subplots(figsize=(10, 6))
     # filter down to data from 2022
-    df_year = df[df['index_year'] == 2022]
+    df_2022 = df_year[df_year['index_year'] == 2022]
     # plot data
     ax = hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
-        df_year,
+        df_2022,
         "00060_Mean",
         "index_doy",
         ax=ax,
