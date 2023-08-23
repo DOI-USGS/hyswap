@@ -73,7 +73,7 @@ def calculate_exceedance_probability_from_distribution(x, dist,
                          "'weibull', or 'exponential'.")
 
 
-def calculate_exceedance_probability_from_values(x, values_to_compare, 
+def calculate_exceedance_probability_from_values(x, values_to_compare,
                                                  method="weibull"):
     """
     Calculate the exceedance probability of a value compared to several values.
@@ -82,9 +82,9 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
     position formulas, with the default being the "Weibull" method (also known
     as Type 6 in R). The value (x) is ranked among the values to compare by
     determining the number that are *greater than or equal to* the
-    input value (x), which provides the minimum rank in the case of tied values.
-    Additional methods other than the "Weibull" method can be specified and are
-    described in more detail in [1]_.
+    input value (x), which provides the minimum rank in the case of tied
+    values. Additional methods other than the "Weibull" method can be specified
+    and are described in more detail in [1]_.
 
     .. [1] Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and
     Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological
@@ -100,8 +100,8 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         The values to use to calculate the exceedance probability.
 
     method : str, optional
-        Method (formulation) of plotting position formula. 
-        Default is "weibull" (Type 6) 
+        Method (formulation) of plotting position formula.
+        Default is "weibull" (Type 6)
 
     Returns
     -------
@@ -129,22 +129,22 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         0.0
     """
 
-    if method == 'weibull': # R Type 6
+    if method == 'weibull':     # R Type 6
         alpha = 0
         beta = 0
-    elif method == 'linear': # R Type 4
+    elif method == 'linear':    # R Type 4
         alpha = 0
         beta = 1
-    elif method == 'hazen': # R Type 5
+    elif method == 'hazen':     # R Type 5
         alpha = 0.5
         beta = 0.5
-    elif method == 'gumbel': # R Type 7
+    elif method == 'gumbel':    # R Type 7
         alpha = 1
         beta = 1
-    elif method == "reiss": # R Type 8
+    elif method == "reiss":     # R Type 8
         alpha = 1/3
         beta = 1/3
-    elif method == "blom": # R Type 9
+    elif method == "blom":      # R Type 9
         alpha = 3/8
         beta = 3/8
     else:
@@ -226,8 +226,8 @@ def calculate_exceedance_probability_from_values_multiple(values,
                                                           method="weibull"):
     """
     Calculate the exceedance probability of multiple values vs a set of values.
-    All methods supported in *calculate_exceedance_probability_from_values()* are
-    supported and by default uses the "Weibull" method.
+    All methods supported in *calculate_exceedance_probability_from_values()*
+    are supported and by default uses the "Weibull" method.
 
     Parameters
     ----------
@@ -236,8 +236,8 @@ def calculate_exceedance_probability_from_values_multiple(values,
     values_to_compare : array-like
         The values to use to calculate the exceedance probability.
     method : str, optional
-        Method (formulation) of plotting position formulat. 
-        Default is "weibull" (Type 6) 
+        Method (formulation) of plotting position formula.
+        Default is "weibull" (Type 6)
 
     Returns
     -------

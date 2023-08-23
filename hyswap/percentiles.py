@@ -196,7 +196,7 @@ def calculate_variable_percentile_thresholds_by_day(
         if meta['n_years'] >= min_years:
             # calculate percentiles for the day of year and add to DataFrame
             _pct = calculate_fixed_percentile_thresholds(
-                    data, percentiles=percentiles, method=method, 
+                    data, percentiles=percentiles, method=method,
                     ignore_na=ignore_na, **kwargs)
             percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]
         else:
