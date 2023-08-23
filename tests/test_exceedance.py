@@ -95,21 +95,21 @@ class TestExceedanceFromValues:
         x = 1
         values_to_compare = np.array([1, 2, 3, 4])
         prob = exceedance.calculate_exceedance_probability_from_values(
-            x, values_to_compare)
+            x, values_to_compare, method='linear')
         assert prob == 1.0
 
     def test_calculate_exceedance_probability_from_values_list(self):
         values_to_compare = [1, 1, 1, 1]  # use a list
         x = 1
         prob = exceedance.calculate_exceedance_probability_from_values(
-            x, values_to_compare)
+            x, values_to_compare, method='linear')
         assert prob == 1.0
 
     def test_calculate_exceedance_probability_from_values_pandas(self):
         values_to_compare = pd.Series([2, 2, 2, 2])  # use a pandas series
         x = 1
         prob = exceedance.calculate_exceedance_probability_from_values(
-            x, values_to_compare)
+            x, values_to_compare, method='linear')
         assert prob == 1.0
 
     def test_calculate_exceedance_probability_from_values_five(self):
@@ -133,7 +133,7 @@ class TestExceedanceFromValues:
         values_to_compare = np.array([1, 2, 3, 4])
         prob = exceedance.calculate_exceedance_probability_from_values(
             x, values_to_compare)
-        assert prob == 0.5
+        assert prob == 0.4
 
     def test_calculate_exceedance_probability_from_values_mid_arr(self):
         values_to_compare = np.array([1, 1, 1, 1])
@@ -261,33 +261,33 @@ class TestExceedanceFromValuesMultiple:
         values = np.array([1, 2, 3, 4])
         values_to_compare = np.array([1, 2, 3, 4])
         prob = exceedance.calculate_exceedance_probability_from_values_multiple(  # noqa: E501
-            values, values_to_compare)
+            values, values_to_compare, method='linear')
         assert np.allclose(prob, np.array([1.0, 0.75, 0.5, 0.25]))
 
     def test_calculate_exceedance_probability_from_values_multiple_02(self):
         values = np.array([1, 2, 3, 4])
         values_to_compare = np.array([1, 1, 1, 1])
         prob = exceedance.calculate_exceedance_probability_from_values_multiple(  # noqa: E501
-            values, values_to_compare)
+            values, values_to_compare, method='linear')
         assert np.allclose(prob, np.array([1.0, 0.0, 0.0, 0.0]))
 
     def test_calculate_exceedance_probability_from_values_multiple_03(self):
         values = np.array([1, 2, 3, 4])
         values_to_compare = np.array([2, 2, 2, 2])
         prob = exceedance.calculate_exceedance_probability_from_values_multiple(  # noqa: E501
-            values, values_to_compare)
+            values, values_to_compare, method='linear')
         assert np.allclose(prob, np.array([1.0, 1.0, 0.0, 0.0]))
 
     def test_calculate_exceedance_probability_from_values_multiple_04(self):
         values = np.array([1, 2, 3, 4])
         values_to_compare = np.array([1, 2, 3, 4, 1, 2, 3, 4])
         prob = exceedance.calculate_exceedance_probability_from_values_multiple(  # noqa: E501
-            values, values_to_compare)
+            values, values_to_compare, method='linear')
         assert np.allclose(prob, np.array([1.0, 0.75, 0.5, 0.25]))
 
     def test_calculate_exceedance_probability_from_values_multiple_05(self):
         values = np.array([1, 2, 3, 4])
         values_to_compare = np.array([1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4])
         prob = exceedance.calculate_exceedance_probability_from_values_multiple(  # noqa: E501
-            values, values_to_compare)
+            values, values_to_compare, method='linear')
         assert np.allclose(prob, np.array([1.0, 0.75, 0.5, 0.25]))
