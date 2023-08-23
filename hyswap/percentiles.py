@@ -187,7 +187,7 @@ def calculate_variable_percentile_thresholds_by_day(
         data = filter_data_by_time(df, doy, data_column_name,
                                    leading_values=leading_values,
                                    trailing_values=trailing_values,
-                                   drop_na = ignore_na)
+                                   drop_na=ignore_na)
         # could insert other functions here to check or modify data
         # as needed or based on any other criteria
         meta = calculate_metadata(data)
@@ -196,7 +196,8 @@ def calculate_variable_percentile_thresholds_by_day(
         if meta['n_years'] >= min_years:
             # calculate percentiles for the day of year and add to DataFrame
             _pct = calculate_fixed_percentile_thresholds(
-                    data, percentiles=percentiles, method=method, ignore_na = ignore_na, **kwargs)
+                    data, percentiles=percentiles, method=method, 
+                    ignore_na=ignore_na, **kwargs)
             percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]
         else:
             # if there are not at least 10 years of data,

@@ -73,21 +73,24 @@ def calculate_exceedance_probability_from_distribution(x, dist,
                          "'weibull', or 'exponential'.")
 
 
-def calculate_exceedance_probability_from_values(x, values_to_compare, method = "weibull"):
+def calculate_exceedance_probability_from_values(x, values_to_compare, 
+                                                 method="weibull"):
     """
     Calculate the exceedance probability of a value compared to several values.
 
-    This function computes an exceedance probability using common plotting position 
-    formulas, with the default being the "Weibull" method (also known as Type 6 in R).
-    The value (x) is ranked among the values to compare by determining the number that
-    are *greater than or equal to* the input value (x), which provides the minimum rank
-    in the case of tied values.  Additional methods other than the "Weibull" method can
-    be specified and are described in more detail in [1]_.
+    This function computes an exceedance probability using common plotting
+    position formulas, with the default being the "Weibull" method (also known
+    as Type 6 in R). The value (x) is ranked among the values to compare by
+    determining the number that are *greater than or equal to* the
+    input value (x), which provides the minimum rank in the case of tied values.
+    Additional methods other than the "Weibull" method can be specified and are
+    described in more detail in [1]_.
 
-    .. [1] Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020, 
-    Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, 
-    book 4, chap. A3, 458 p., https://doi.org/10.3133/tm4a3. 
-    [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
+    .. [1] Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and
+    Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological
+    Survey Techniques and Methods, book 4, chap. A3, 458 p.,
+    https://doi.org/10.3133/tm4a3. [Supersedes USGS Techniques of
+    Water-Resources Investigations, book 4, chap. A3, version 1.1.]
 
     Parameters
     ----------
@@ -97,7 +100,8 @@ def calculate_exceedance_probability_from_values(x, values_to_compare, method = 
         The values to use to calculate the exceedance probability.
 
     method : str, optional
-        Method (formulation) of plotting position formulat. Default is "weibull" (Type 6) 
+        Method (formulation) of plotting position formula. 
+        Default is "weibull" (Type 6) 
 
     Returns
     -------
@@ -157,7 +161,7 @@ def calculate_exceedance_probability_from_values(x, values_to_compare, method = 
         raise TypeError("values_to_compare must be a numpy array, list, " +
                         "or pandas Series.")
     # calculate the exceedance probability
-    exceed_prob = (np.sum(values_to_compare >= x) - alpha) / ( len(values_to_compare) + 1 - alpha - beta)
+    exceed_prob = (np.sum(values_to_compare >= x) - alpha) / (len(values_to_compare) + 1 - alpha - beta) # noqa: E501
 
     return exceed_prob
 
@@ -219,7 +223,7 @@ def calculate_exceedance_probability_from_distribution_multiple(values, dist,
 
 def calculate_exceedance_probability_from_values_multiple(values,
                                                           values_to_compare,
-                                                          method = "weibull"):
+                                                          method="weibull"):
     """
     Calculate the exceedance probability of multiple values vs a set of values.
     All methods supported in *calculate_exceedance_probability_from_values()* are
@@ -232,7 +236,8 @@ def calculate_exceedance_probability_from_values_multiple(values,
     values_to_compare : array-like
         The values to use to calculate the exceedance probability.
     method : str, optional
-        Method (formulation) of plotting position formulat. Default is "weibull" (Type 6) 
+        Method (formulation) of plotting position formulat. 
+        Default is "weibull" (Type 6) 
 
     Returns
     -------

@@ -80,7 +80,7 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
 def filter_data_by_time(df, value, data_column_name, date_column_name=None,
                         time_interval='day',
                         leading_values=0, trailing_values=0,
-                        drop_na = False):
+                        drop_na=False):
     """Filter data by some time interval.
 
     DataFrame containing data to filter. Expects datetime information to be
