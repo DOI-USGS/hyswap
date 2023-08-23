@@ -77,13 +77,17 @@ def calculate_exceedance_probability_from_values(x, values_to_compare, method = 
     """
     Calculate the exceedance probability of a value compared to several values.
 
-    This function specifically counts the number of values from the input
-    `values_to_compare` that are *greater than or equal to* the input value
-    `x`. The choice of greater than or equal, as opposed to solely greater than
-    is intentional and follows established USGS practices [1]_.
+    This function computes an exceedance probability using common plotting position 
+    formulas, with the default being the "Weibull" method (also known as Type 6 in R).
+    The value (x) is ranked among the values to compare by determining the number that
+    are *greater than or equal to* the input value (x), which provides the minimum rank
+    in the case of tied values.  Additional methods other than the "Weibull" method can
+    be specified and are described in more detail in [1]_.
 
-    .. [1] Searcy, J. K. "Flow-duration curves: Water Supply Paper 1542-A."
-           US Geological Survey, Reston, VA (1959).
+    .. [1] Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020, 
+    Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, 
+    book 4, chap. A3, 458 p., https://doi.org/10.3133/tm4a3. 
+    [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
 
     Parameters
     ----------
@@ -218,6 +222,8 @@ def calculate_exceedance_probability_from_values_multiple(values,
                                                           method = "weibull"):
     """
     Calculate the exceedance probability of multiple values vs a set of values.
+    All methods supported in *calculate_exceedance_probability_from_values()* are
+    supported and by default uses the "Weibull" method.
 
     Parameters
     ----------
