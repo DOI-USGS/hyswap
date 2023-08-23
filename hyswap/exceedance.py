@@ -73,7 +73,7 @@ def calculate_exceedance_probability_from_distribution(x, dist,
                          "'weibull', or 'exponential'.")
 
 
-def calculate_exceedance_probability_from_values(x, values_to_compare):
+def calculate_exceedance_probability_from_values(x, values_to_compare, method = "weibull"):
     """
     Calculate the exceedance probability of a value compared to several values.
 
@@ -91,6 +91,9 @@ def calculate_exceedance_probability_from_values(x, values_to_compare):
         The value for which to calculate the exceedance probability.
     values_to_compare : array-like
         The values to use to calculate the exceedance probability.
+
+    method : str, optional
+        Method (formulation) of plotting position formulat. Default is "weibull" (Type 6) 
 
     Returns
     -------
@@ -117,6 +120,29 @@ def calculate_exceedance_probability_from_values(x, values_to_compare):
         ...     5, [1, 2, 3, 4])
         0.0
     """
+
+    if method == 'weibull': # R Type 6
+        alpha = 0
+        beta = 0
+    elif method == 'linear': # R Type 4
+        alpha = 0
+        beta = 1
+    elif method == 'hazen': # R Type 5
+        alpha = 0.5
+        beta = 0.5
+    elif method == 'gumbel': # R Type 7
+        alpha = 1
+        beta = 1
+    elif method == "reiss": # R Type 8
+        alpha = 1/3
+        beta = 1/3
+    elif method == "blom": # R Type 9
+        alpha = 3/8
+        beta = 3/8
+    else:
+        raise ValueError("dist must be one of 'weibull', 'linear'," +
+                         "'hazen', 'gumbel', 'reiss', or 'blom'.")
+
     # some type conversions to get to a numpy array
     if isinstance(values_to_compare, list):
         values_to_compare = np.array(values_to_compare)
@@ -127,7 +153,9 @@ def calculate_exceedance_probability_from_values(x, values_to_compare):
         raise TypeError("values_to_compare must be a numpy array, list, " +
                         "or pandas Series.")
     # calculate the exceedance probability
-    return np.sum(values_to_compare >= x) / len(values_to_compare)
+    exceed_prob = (np.sum(values_to_compare >= x) - alpha) / ( len(values_to_compare) + 1 - alpha - beta)
+
+    return exceed_prob
 
 
 def calculate_exceedance_probability_from_distribution_multiple(values, dist,
@@ -186,7 +214,8 @@ def calculate_exceedance_probability_from_distribution_multiple(values, dist,
 
 
 def calculate_exceedance_probability_from_values_multiple(values,
-                                                          values_to_compare):
+                                                          values_to_compare,
+                                                          method = "weibull"):
     """
     Calculate the exceedance probability of multiple values vs a set of values.
 
@@ -196,6 +225,8 @@ def calculate_exceedance_probability_from_values_multiple(values,
         The values for which to calculate the exceedance probability.
     values_to_compare : array-like
         The values to use to calculate the exceedance probability.
+    method : str, optional
+        Method (formulation) of plotting position formulat. Default is "weibull" (Type 6) 
 
     Returns
     -------
@@ -229,4 +260,4 @@ def calculate_exceedance_probability_from_values_multiple(values,
         array([1.        , 0.96363636, 0.83636364, 0.47272727, 0.01818182])
     """
     return np.array([calculate_exceedance_probability_from_values(
-        x, values_to_compare) for x in values])
+        x, values_to_compare, method=method) for x in values])
