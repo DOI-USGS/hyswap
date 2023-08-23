@@ -13,7 +13,7 @@ class TestCalculateFixedPercentileThresholds:
         """Test the calculate_fixed_percentile_thresholds function defaults."""
         # test the function
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
-            self.data, method='linear')
+            self.data, method='linear', ignore_na=False)
         assert percentiles_.shape == (1, 8)
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
         assert percentiles_.values.tolist()[0] == [
@@ -36,6 +36,16 @@ class TestCalculateFixedPercentileThresholds:
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
         assert percentiles_.values.tolist()[0] == [
             0, 5, 10, 25, 75, 90, 95, 100]
+
+    def test_with_nans(self):
+        # test with some nan values
+        percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
+            [np.nan] + list(self.data) + [np.nan, np.nan],
+            method='linear', ignore_na=True)
+        assert percentiles_.shape == (1, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.values.tolist()[0] == [
+            0.0, 5.0, 10.0, 25.0, 75.0, 90.0, 95.0, 100.0]
 
 
 class TestCalculateVariablePercentileThresholdsByDay:
