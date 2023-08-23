@@ -161,7 +161,7 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         raise TypeError("values_to_compare must be a numpy array, list, " +
                         "or pandas Series.")
     # calculate the exceedance probability
-    exceed_prob = (np.sum(values_to_compare >= x) - alpha) / (len(values_to_compare) + 1 - alpha - beta) # noqa: E501
+    exceed_prob = (np.sum(values_to_compare >= x) - alpha) / (len(values_to_compare) + 1 - alpha - beta)  # noqa: E501
 
     return exceed_prob
 
