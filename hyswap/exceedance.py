@@ -79,11 +79,11 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
     Calculate the exceedance probability of a value compared to several values.
 
     This function computes an exceedance probability using common plotting
-    position formulas, with the default being the "Weibull" method (also known
+    position formulas, with the default being the 'Weibull' method (also known
     as Type 6 in R). The value (x) is ranked among the values to compare by
     determining the number that are *greater than or equal to* the
     input value (x), which provides the minimum rank in the case of tied
-    values. Additional methods other than the "Weibull" method can be specified
+    values. Additional methods other than the 'Weibull' method can be specified
     and are described in more detail in [1]_.
 
     .. [1] Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and
@@ -101,7 +101,7 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
 
     method : str, optional
         Method (formulation) of plotting position formula.
-        Default is "weibull" (Type 6)
+        Default is 'weibull' (Type 6).
 
     Returns
     -------
@@ -116,7 +116,7 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
     .. doctest::
 
         >>> exceedance.calculate_exceedance_probability_from_values(
-        ...     1, [1, 2, 3, 4])
+        ...     1, [1, 2, 3, 4], method='linear')
         1.0
 
     Calculating the exceedance probability of a value of 5 from a set of values
@@ -226,8 +226,8 @@ def calculate_exceedance_probability_from_values_multiple(values,
                                                           method="weibull"):
     """
     Calculate the exceedance probability of multiple values vs a set of values.
-    All methods supported in *calculate_exceedance_probability_from_values()*
-    are supported and by default uses the "Weibull" method.
+    All methods supported in *calculate_exceedance_probability_from_values*
+    are supported and by default uses the 'Weibull' method.
 
     Parameters
     ----------
@@ -237,7 +237,7 @@ def calculate_exceedance_probability_from_values_multiple(values,
         The values to use to calculate the exceedance probability.
     method : str, optional
         Method (formulation) of plotting position formula.
-        Default is "weibull" (Type 6)
+        Default is 'weibull' (Type 6).
 
     Returns
     -------
@@ -252,7 +252,7 @@ def calculate_exceedance_probability_from_values_multiple(values,
     .. doctest::
 
         >>> exceedance.calculate_exceedance_probability_from_values_multiple(
-        ...     [1, 1.25, 2.5], [1, 2, 3, 4])
+        ...     [1, 1.25, 2.5], [1, 2, 3, 4], method='linear')
         array([1.  , 0.75, 0.5 ])
 
     Fetch some data from NWIS and calculate the exceedance probability for a
