@@ -79,7 +79,8 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
 
 def filter_data_by_time(df, value, data_column_name, date_column_name=None,
                         time_interval='day',
-                        leading_values=0, trailing_values=0):
+                        leading_values=0, trailing_values=0,
+                        drop_na = False):
     """Filter data by some time interval.
 
     DataFrame containing data to filter. Expects datetime information to be
@@ -112,6 +113,9 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
     trailing_values : int, optional
         Number of trailing values to include in the output, inclusive.
         Default is 0, and parameter only applies to 'day' time_interval.
+
+    drop_na : bool, optional
+        Drop NA values within filtered data
 
     Returns
     -------
@@ -175,6 +179,8 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
     elif time_interval == 'year':
         # grab data from the specified year
         dff = df.loc[df.index.year == value, data_column_name]
+    if drop_na:
+        dff = dff.dropna()
     # return data as a pandas Series where the index is the date
     return dff
 
