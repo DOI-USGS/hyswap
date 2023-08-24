@@ -7,12 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g934b6c5 documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+gb559c93 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=a7efe5e2"></script>
+    <script src="../_static/documentation_options.js?v=a3b49272"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -192,7 +192,7 @@ synthetic data.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.utils.filter_data_by_time">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">filter_data_by_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'day'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#filter_data_by_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.filter_data_by_time" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">filter_data_by_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'day'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#filter_data_by_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.filter_data_by_time" title="Link to this definition">¶</a></dt>
 <dd><p>Filter data by some time interval.</p>
 <p>DataFrame containing data to filter. Expects datetime information to be
 available in the index or in a column named <cite>date_column_name</cite>. The
@@ -213,6 +213,7 @@ Default is ‘day’.</p></li>
 Default is 0, and parameter only applies to ‘day’ time_interval.</p></li>
 <li><p><strong>trailing_values</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of trailing values to include in the output, inclusive.
 Default is 0, and parameter only applies to ‘day’ time_interval.</p></li>
+<li><p><strong>drop_na</strong> (<em>bool</em><em>, </em><em>optional</em>) – Drop NA values within filtered data</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -528,24 +529,32 @@ from a normal distribution with a mean of 1 and a standard deviation of
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.exceedance.calculate_exceedance_probability_from_values">
-<span class="sig-prename descclassname"><span class="pre">hyswap.exceedance.</span></span><span class="sig-name descname"><span class="pre">calculate_exceedance_probability_from_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_to_compare</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/exceedance.html#calculate_exceedance_probability_from_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.exceedance.calculate_exceedance_probability_from_values" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.exceedance.</span></span><span class="sig-name descname"><span class="pre">calculate_exceedance_probability_from_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_to_compare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/exceedance.html#calculate_exceedance_probability_from_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.exceedance.calculate_exceedance_probability_from_values" title="Link to this definition">¶</a></dt>
 <dd><p>Calculate the exceedance probability of a value compared to several values.</p>
-<p>This function specifically counts the number of values from the input
-<cite>values_to_compare</cite> that are <em>greater than or equal to</em> the input value
-<cite>x</cite>. The choice of greater than or equal, as opposed to solely greater than
-is intentional and follows established USGS practices <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<p>This function computes an exceedance probability using common plotting
+position formulas, with the default being the ‘Weibull’ method (also known
+as Type 6 in R). The value (x) is ranked among the values to compare by
+determining the number that are <em>greater than or equal to</em> the
+input value (x), which provides the minimum rank in the case of tied
+values. Additional methods other than the ‘Weibull’ method can be specified
+and are described in more detail in <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id2" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
-<p>Searcy, J. K. “Flow-duration curves: Water Supply Paper 1542-A.”
-US Geological Survey, Reston, VA (1959).</p>
+<p>Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and</p>
 </aside>
 </aside>
+<p>Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological
+Survey Techniques and Methods, book 4, chap. A3, 458 p.,
+<a class="reference external" href="https://doi.org/10.3133/tm4a3">https://doi.org/10.3133/tm4a3</a>. [Supersedes USGS Techniques of
+Water-Resources Investigations, book 4, chap. A3, version 1.1.]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>float</em>) – The value for which to calculate the exceedance probability.</p></li>
 <li><p><strong>values_to_compare</strong> (<em>array-like</em>) – The values to use to calculate the exceedance probability.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method (formulation) of plotting position formula.
+Default is ‘weibull’ (Type 6).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -559,7 +568,7 @@ US Geological Survey, Reston, VA (1959).</p>
 <p>Calculating the exceedance probability of a value of 1 from a set of values
 of 1, 2, 3, and 4.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_values</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
 <span class="go">1.0</span>
 </pre></div>
 </div>
@@ -574,13 +583,17 @@ of 1, 2, 3, and 4.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.exceedance.calculate_exceedance_probability_from_values_multiple">
-<span class="sig-prename descclassname"><span class="pre">hyswap.exceedance.</span></span><span class="sig-name descname"><span class="pre">calculate_exceedance_probability_from_values_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_to_compare</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/exceedance.html#calculate_exceedance_probability_from_values_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.exceedance.calculate_exceedance_probability_from_values_multiple" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate the exceedance probability of multiple values vs a set of values.</p>
+<span class="sig-prename descclassname"><span class="pre">hyswap.exceedance.</span></span><span class="sig-name descname"><span class="pre">calculate_exceedance_probability_from_values_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_to_compare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/exceedance.html#calculate_exceedance_probability_from_values_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.exceedance.calculate_exceedance_probability_from_values_multiple" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate the exceedance probability of multiple values vs a set of values.
+All methods supported in <em>calculate_exceedance_probability_from_values</em>
+are supported and by default uses the ‘Weibull’ method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>values</strong> (<em>array-like</em>) – The values for which to calculate the exceedance probability.</p></li>
 <li><p><strong>values_to_compare</strong> (<em>array-like</em>) – The values to use to calculate the exceedance probability.</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method (formulation) of plotting position formula.
+Default is ‘weibull’ (Type 6).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -594,7 +607,7 @@ of 1, 2, 3, and 4.</p>
 <p>Calculating the exceedance probability of a set of values of 1, 1.25 and
 1.5 from a set of values of 1, 2, 3, and 4.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_values_multiple</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
 <span class="go">array([1.  , 0.75, 0.5 ])</span>
 </pre></div>
 </div>
@@ -752,7 +765,7 @@ and year type.</p>
 <p id="module-hyswap.percentiles">Percentile calculation functions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.percentiles.calculate_fixed_percentile_thresholds">
-<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_fixed_percentile_thresholds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">100])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_fixed_percentile_thresholds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_fixed_percentile_thresholds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">100])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_fixed_percentile_thresholds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="Link to this definition">¶</a></dt>
 <dd><p>Calculate fixed percentile thresholds using historic data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -760,6 +773,7 @@ and year type.</p>
 <li><p><strong>data</strong> (<em>array_like</em>) – 1D array of data from which to calculate percentile thresholds.</p></li>
 <li><p><strong>percentiles</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Percentiles to calculate. Default is (0, 5, 10, 25, 75, 90, 95, 100).</p></li>
 <li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method to use to calculate percentiles. Default is ‘weibull’.</p></li>
+<li><p><strong>ignore_na</strong> (<em>bool</em><em>, </em><em>optional</em>) – Ignore NA values in percentile calculations</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional keyword arguments to pass to <cite>numpy.percentile</cite>.</p></li>
 </ul>
 </dd>
@@ -834,7 +848,7 @@ provided manually or from data pulled from the NWIS stats service.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.percentiles.calculate_variable_percentile_thresholds_by_day">
-<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">100]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95,</span> <span class="pre">100]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="Link to this definition">¶</a></dt>
 <dd><p>Calculate variable percentile thresholds of data by day of year.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -867,6 +881,7 @@ Default is 0, and parameter only applies to ‘day’ time_interval.</p></li>
 <li><p><strong>trailing_values</strong> (<em>int</em><em>, </em><em>optional</em>) – For the temporal filtering, this is an argument setting the
 number of trailing values to include in the output, inclusive.
 Default is 0, and parameter only applies to ‘day’ time_interval.</p></li>
+<li><p><strong>ignore_na</strong> (<em>bool</em><em>, </em><em>optional</em>) – Ignore NA values in percentile calculations</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional keyword arguments to pass to <cite>numpy.percentile</cite>.</p></li>
 </ul>
 </dd>
@@ -1757,13 +1772,13 @@ by df_names argument.</p></li>
         <li class="right" >
           <a href="../meta/glossary.html" title="Glossary"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

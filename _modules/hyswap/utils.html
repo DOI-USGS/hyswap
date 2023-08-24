@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g934b6c5 documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gb559c93 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=a7efe5e2"></script>
+    <script src="../../_static/documentation_options.js?v=a3b49272"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -132,7 +132,8 @@
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_data_by_time">[docs]</a>
 <span class="k">def</span> <span class="nf">filter_data_by_time</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">time_interval</span><span class="o">=</span><span class="s1">&#39;day&#39;</span><span class="p">,</span>
-                        <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                        <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">drop_na</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter data by some time interval.</span>
 
 <span class="sd">    DataFrame containing data to filter. Expects datetime information to be</span>
@@ -165,6 +166,9 @@
 <span class="sd">    trailing_values : int, optional</span>
 <span class="sd">        Number of trailing values to include in the output, inclusive.</span>
 <span class="sd">        Default is 0, and parameter only applies to &#39;day&#39; time_interval.</span>
+
+<span class="sd">    drop_na : bool, optional</span>
+<span class="sd">        Drop NA values within filtered data</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -228,6 +232,8 @@
     <span class="k">elif</span> <span class="n">time_interval</span> <span class="o">==</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span>
         <span class="c1"># grab data from the specified year</span>
         <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span> <span class="o">==</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">drop_na</span><span class="p">:</span>
+        <span class="n">dff</span> <span class="o">=</span> <span class="n">dff</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="c1"># return data as a pandas Series where the index is the date</span>
     <span class="k">return</span> <span class="n">dff</span></div>
 
@@ -707,14 +713,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

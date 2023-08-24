@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+g934b6c5 documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gb559c93 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=a7efe5e2"></script>
+    <script src="../../_static/documentation_options.js?v=a3b49272"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -60,6 +60,7 @@
         <span class="n">data</span><span class="p">,</span>
         <span class="n">percentiles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">)),</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
+        <span class="n">ignore_na</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate fixed percentile thresholds using historic data.</span>
 
@@ -73,6 +74,9 @@
 
 <span class="sd">    method : str, optional</span>
 <span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39;.</span>
+
+<span class="sd">    ignore_na : bool, optional</span>
+<span class="sd">        Ignore NA values in percentile calculations</span>
 
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
@@ -107,7 +111,10 @@
 <span class="sd">        thresholds  0    10    50    90     100</span>
 <span class="sd">        values      0.0  9.2  50.0  90.8  100.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ignore_na</span><span class="p">:</span>
+        <span class="n">pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">pct</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s2">&quot;thresholds&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df</span></div>
@@ -127,6 +134,7 @@
         <span class="n">min_years</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">ignore_na</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate variable percentile thresholds of data by day of year.</span>
 
@@ -180,6 +188,9 @@
 <span class="sd">        number of trailing values to include in the output, inclusive.</span>
 <span class="sd">        Default is 0, and parameter only applies to &#39;day&#39; time_interval.</span>
 
+<span class="sd">    ignore_na : bool, optional</span>
+<span class="sd">        Ignore NA values in percentile calculations</span>
+
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
 
@@ -225,7 +236,8 @@
         <span class="c1"># get historical data for the day of year</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">filter_data_by_time</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">doy</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span>
                                    <span class="n">leading_values</span><span class="o">=</span><span class="n">leading_values</span><span class="p">,</span>
-                                   <span class="n">trailing_values</span><span class="o">=</span><span class="n">trailing_values</span><span class="p">)</span>
+                                   <span class="n">trailing_values</span><span class="o">=</span><span class="n">trailing_values</span><span class="p">,</span>
+                                   <span class="n">drop_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">)</span>
         <span class="c1"># could insert other functions here to check or modify data</span>
         <span class="c1"># as needed or based on any other criteria</span>
         <span class="n">meta</span> <span class="o">=</span> <span class="n">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -234,7 +246,8 @@
         <span class="k">if</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_years&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_years</span><span class="p">:</span>
             <span class="c1"># calculate percentiles for the day of year and add to DataFrame</span>
             <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-                    <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                    <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t_idx</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if there are not at least 10 years of data,</span>
@@ -343,14 +356,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

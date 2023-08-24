@@ -7,12 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Streamflow Duration Hydrographs &#8212; hyswap 0.1.dev1+g934b6c5 documentation</title>
+    <title>Streamflow Duration Hydrographs &#8212; hyswap 0.1.dev1+gb559c93 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=a7efe5e2"></script>
+    <script src="../_static/documentation_options.js?v=a3b49272"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="raster_hydrograph_examples.html" title="Raster Hydrographs"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Streamflow Duration Hydrographs</a></li> 
       </ul>
@@ -162,7 +162,7 @@ The only change this requires from above is specifying the type of year we are p
 
 <span class="c1"># get year/doy information</span>
 <span class="n">df_year</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
-                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span>
+                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">,</span>
                                                <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># plotting percentiles by day with line shade between</span>
@@ -183,6 +183,10 @@ The only change this requires from above is specifying the type of year we are p
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>(<a class="reference download internal" download="" href="../_downloads/b3e79790d257a541582c8eca76578272/streamflow_duration_hydrograph_examples-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/9562f0a426028e1b118cfd2f18a762a0/streamflow_duration_hydrograph_examples-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/streamflow_duration_hydrograph_examples-6.png" class="plot-directive" src="../_images/streamflow_duration_hydrograph_examples-6.png" />
+</figure>
 </section>
 <section id="plotting-by-climate-year">
 <h2>Plotting by Climate Year<a class="headerlink" href="#plotting-by-climate-year" title="Link to this heading">¶</a></h2>
@@ -202,7 +206,7 @@ The only change this requires from above is specifying the type of year we are p
 
 <span class="c1"># get year/doy information</span>
 <span class="n">df_year</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
-                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span>
+                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
                                                <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># plotting percentiles by day with line shade between</span>
@@ -223,6 +227,10 @@ The only change this requires from above is specifying the type of year we are p
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>(<a class="reference download internal" download="" href="../_downloads/318285d6e07f1e37cadebd8011bbdb16/streamflow_duration_hydrograph_examples-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/9edc0134355e5e354b880955a22dbff8/streamflow_duration_hydrograph_examples-7.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/streamflow_duration_hydrograph_examples-7.png" class="plot-directive" src="../_images/streamflow_duration_hydrograph_examples-7.png" />
+</figure>
 </section>
 <section id="plotting-custom-set-of-percentile-thresholds">
 <h2>Plotting Custom Set of Percentile Thresholds<a class="headerlink" href="#plotting-custom-set-of-percentile-thresholds" title="Link to this heading">¶</a></h2>
@@ -241,7 +249,7 @@ We will also specify the colors to be used for the percentile envelopes.</p>
 
 <span class="c1"># get year/doy information</span>
 <span class="n">df_year</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
-                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span>
+                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">,</span>
                                                <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># plotting percentiles by day with line shade between</span>
@@ -264,6 +272,10 @@ We will also specify the colors to be used for the percentile envelopes.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>(<a class="reference download internal" download="" href="../_downloads/dd25a94f4bbf0d94a9ed00f98f187da8/streamflow_duration_hydrograph_examples-8.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/969deebdaf71556680bd0917ca024b75/streamflow_duration_hydrograph_examples-8.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/streamflow_duration_hydrograph_examples-8.png" class="plot-directive" src="../_images/streamflow_duration_hydrograph_examples-8.png" />
+</figure>
 </section>
 <section id="rolling-averages-for-historic-daily-percentile-calculations">
 <h2>Rolling Averages for Historic Daily Percentile Calculations<a class="headerlink" href="#rolling-averages-for-historic-daily-percentile-calculations" title="Link to this heading">¶</a></h2>
@@ -289,7 +301,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
 
 <span class="c1"># get year/doy information</span>
 <span class="n">df_year</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
-                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span>
+                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">,</span>
                                                <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># plotting percentiles by day with line shade between</span>
@@ -335,6 +347,10 @@ To show the effect of this, we will plot the historic daily percentile values fo
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>(<a class="reference download internal" download="" href="../_downloads/1677645752848bc9008fe6b1519c90ad/streamflow_duration_hydrograph_examples-9.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/35bafb71c6b6ec9cd6259fa6dfbc4ac4/streamflow_duration_hydrograph_examples-9.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/streamflow_duration_hydrograph_examples-9.png" class="plot-directive" src="../_images/streamflow_duration_hydrograph_examples-9.png" />
+</figure>
 </section>
 <section id="customizing-fill-areas">
 <h2>Customizing Fill Areas<a class="headerlink" href="#customizing-fill-areas" title="Link to this heading">¶</a></h2>
@@ -353,7 +369,7 @@ Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill
 
 <span class="c1"># get year/doy information</span>
 <span class="n">df_year</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
-                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span>
+                                               <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">,</span>
                                                <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># plotting percentiles by day with line shade between</span>
@@ -375,6 +391,10 @@ Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>(<a class="reference download internal" download="" href="../_downloads/a5fd06ef4a7392082f9a523bff9adab5/streamflow_duration_hydrograph_examples-10.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/87bf34da13c1bd589795b5b6efbfc848/streamflow_duration_hydrograph_examples-10.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/streamflow_duration_hydrograph_examples-10.png" class="plot-directive" src="../_images/streamflow_duration_hydrograph_examples-10.png" />
+</figure>
 </section>
 </section>
 
@@ -447,14 +467,14 @@ Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill
         <li class="right" >
           <a href="raster_hydrograph_examples.html" title="Raster Hydrographs"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Streamflow Duration Hydrographs</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>

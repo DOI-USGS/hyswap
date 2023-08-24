@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.exceedance &#8212; hyswap 0.1.dev1+g934b6c5 documentation</title>
+    <title>hyswap.exceedance &#8212; hyswap 0.1.dev1+gb559c93 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=a7efe5e2"></script>
+    <script src="../../_static/documentation_options.js?v=a3b49272"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.exceedance</a></li> 
       </ul>
@@ -123,17 +123,24 @@
 
 <div class="viewcode-block" id="calculate_exceedance_probability_from_values">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.exceedance.calculate_exceedance_probability_from_values">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_exceedance_probability_from_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">values_to_compare</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">calculate_exceedance_probability_from_values</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">values_to_compare</span><span class="p">,</span>
+                                                 <span class="n">method</span><span class="o">=</span><span class="s2">&quot;weibull&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the exceedance probability of a value compared to several values.</span>
 
-<span class="sd">    This function specifically counts the number of values from the input</span>
-<span class="sd">    `values_to_compare` that are *greater than or equal to* the input value</span>
-<span class="sd">    `x`. The choice of greater than or equal, as opposed to solely greater than</span>
-<span class="sd">    is intentional and follows established USGS practices [1]_.</span>
+<span class="sd">    This function computes an exceedance probability using common plotting</span>
+<span class="sd">    position formulas, with the default being the &#39;Weibull&#39; method (also known</span>
+<span class="sd">    as Type 6 in R). The value (x) is ranked among the values to compare by</span>
+<span class="sd">    determining the number that are *greater than or equal to* the</span>
+<span class="sd">    input value (x), which provides the minimum rank in the case of tied</span>
+<span class="sd">    values. Additional methods other than the &#39;Weibull&#39; method can be specified</span>
+<span class="sd">    and are described in more detail in [1]_.</span>
 
-<span class="sd">    .. [1] Searcy, J. K. &quot;Flow-duration curves: Water Supply Paper 1542-A.&quot;</span>
-<span class="sd">           US Geological Survey, Reston, VA (1959).</span>
+<span class="sd">    .. [1] Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and</span>
+<span class="sd">    Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological</span>
+<span class="sd">    Survey Techniques and Methods, book 4, chap. A3, 458 p.,</span>
+<span class="sd">    https://doi.org/10.3133/tm4a3. [Supersedes USGS Techniques of</span>
+<span class="sd">    Water-Resources Investigations, book 4, chap. A3, version 1.1.]</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -141,6 +148,10 @@
 <span class="sd">        The value for which to calculate the exceedance probability.</span>
 <span class="sd">    values_to_compare : array-like</span>
 <span class="sd">        The values to use to calculate the exceedance probability.</span>
+
+<span class="sd">    method : str, optional</span>
+<span class="sd">        Method (formulation) of plotting position formula.</span>
+<span class="sd">        Default is &#39;weibull&#39; (Type 6).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -155,7 +166,7 @@
 <span class="sd">    .. doctest::</span>
 
 <span class="sd">        &gt;&gt;&gt; exceedance.calculate_exceedance_probability_from_values(</span>
-<span class="sd">        ...     1, [1, 2, 3, 4])</span>
+<span class="sd">        ...     1, [1, 2, 3, 4], method=&#39;linear&#39;)</span>
 <span class="sd">        1.0</span>
 
 <span class="sd">    Calculating the exceedance probability of a value of 5 from a set of values</span>
@@ -167,6 +178,29 @@
 <span class="sd">        ...     5, [1, 2, 3, 4])</span>
 <span class="sd">        0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;weibull&#39;</span><span class="p">:</span>     <span class="c1"># R Type 6</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span><span class="p">:</span>    <span class="c1"># R Type 4</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;hazen&#39;</span><span class="p">:</span>     <span class="c1"># R Type 5</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;gumbel&#39;</span><span class="p">:</span>    <span class="c1"># R Type 7</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;reiss&quot;</span><span class="p">:</span>     <span class="c1"># R Type 8</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;blom&quot;</span><span class="p">:</span>      <span class="c1"># R Type 9</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">3</span><span class="o">/</span><span class="mi">8</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="mi">3</span><span class="o">/</span><span class="mi">8</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dist must be one of &#39;weibull&#39;, &#39;linear&#39;,&quot;</span> <span class="o">+</span>
+                         <span class="s2">&quot;&#39;hazen&#39;, &#39;gumbel&#39;, &#39;reiss&#39;, or &#39;blom&#39;.&quot;</span><span class="p">)</span>
+
     <span class="c1"># some type conversions to get to a numpy array</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values_to_compare</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">values_to_compare</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values_to_compare</span><span class="p">)</span>
@@ -177,7 +211,9 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;values_to_compare must be a numpy array, list, &quot;</span> <span class="o">+</span>
                         <span class="s2">&quot;or pandas Series.&quot;</span><span class="p">)</span>
     <span class="c1"># calculate the exceedance probability</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">values_to_compare</span> <span class="o">&gt;=</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_to_compare</span><span class="p">)</span></div>
+    <span class="n">exceed_prob</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">values_to_compare</span> <span class="o">&gt;=</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values_to_compare</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="k">return</span> <span class="n">exceed_prob</span></div>
 
 
 
@@ -242,9 +278,12 @@
 <div class="viewcode-block" id="calculate_exceedance_probability_from_values_multiple">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.exceedance.calculate_exceedance_probability_from_values_multiple">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_exceedance_probability_from_values_multiple</span><span class="p">(</span><span class="n">values</span><span class="p">,</span>
-                                                          <span class="n">values_to_compare</span><span class="p">):</span>
+                                                          <span class="n">values_to_compare</span><span class="p">,</span>
+                                                          <span class="n">method</span><span class="o">=</span><span class="s2">&quot;weibull&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the exceedance probability of multiple values vs a set of values.</span>
+<span class="sd">    All methods supported in *calculate_exceedance_probability_from_values*</span>
+<span class="sd">    are supported and by default uses the &#39;Weibull&#39; method.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -252,6 +291,9 @@
 <span class="sd">        The values for which to calculate the exceedance probability.</span>
 <span class="sd">    values_to_compare : array-like</span>
 <span class="sd">        The values to use to calculate the exceedance probability.</span>
+<span class="sd">    method : str, optional</span>
+<span class="sd">        Method (formulation) of plotting position formula.</span>
+<span class="sd">        Default is &#39;weibull&#39; (Type 6).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -266,7 +308,7 @@
 <span class="sd">    .. doctest::</span>
 
 <span class="sd">        &gt;&gt;&gt; exceedance.calculate_exceedance_probability_from_values_multiple(</span>
-<span class="sd">        ...     [1, 1.25, 2.5], [1, 2, 3, 4])</span>
+<span class="sd">        ...     [1, 1.25, 2.5], [1, 2, 3, 4], method=&#39;linear&#39;)</span>
 <span class="sd">        array([1.  , 0.75, 0.5 ])</span>
 
 <span class="sd">    Fetch some data from NWIS and calculate the exceedance probability for a</span>
@@ -285,7 +327,7 @@
 <span class="sd">        array([1.        , 0.96363636, 0.83636364, 0.47272727, 0.01818182])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">calculate_exceedance_probability_from_values</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">values_to_compare</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span></div>
+        <span class="n">x</span><span class="p">,</span> <span class="n">values_to_compare</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span></div>
 
 </pre></div>
 
@@ -318,14 +360,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g934b6c5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.exceedance</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     </div>
   </body>
 </html>
