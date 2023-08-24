@@ -144,6 +144,25 @@ class TestFilterTime:
             utils.filter_data_by_time(df, 1, 'data', date_column_name='date',
                                       time_interval='invalid')
 
+    def test_filter_drop_na(self):
+        # test ability to drop nans
+        df = pd.DataFrame({
+            'data': [1, 2, np.nan, 4],
+            'date': pd.date_range('2019-01-01', '2019-01-04')})
+        # test the function
+        data = utils.filter_data_by_time(df, 1, 'data',
+                                         date_column_name='date',
+                                         time_interval='month',
+                                         drop_na=False)
+        data_no_nan = utils.filter_data_by_time(
+            df, 1, 'data', date_column_name='date',
+            time_interval='month', drop_na=True)
+        # assertions
+        assert np.isnan(data.values).sum() == 1
+        assert np.isnan(data_no_nan.values).sum() == 0
+        assert data.shape == (4,)
+        assert data_no_nan.shape == (3,)
+
 
 class TestMetadata:
     def test_calculate_metadata_01(self):

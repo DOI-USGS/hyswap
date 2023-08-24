@@ -44,7 +44,7 @@ documentation for more information on the available methods.
 
 
 Calculating Historic Variable Percentiles for the Full Year
-**************************************************
+***********************************************************
 
 The :obj:`hyswap.percentiles` module also contains functionality to calculate
 percentile thresholds for each day of the year (variable threshold) using historical values.

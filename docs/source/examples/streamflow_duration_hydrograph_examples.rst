@@ -134,7 +134,7 @@ The only change this requires from above is specifying the type of year we are p
 
     # get year/doy information
     df_year = hyswap.utils.define_year_doy_columns(df,
-                                                   year_type='water'
+                                                   year_type='water',
                                                    clip_leap_day=True)
 
     # plotting percentiles by day with line shade between
@@ -179,7 +179,7 @@ The only change this requires from above is specifying the type of year we are p
 
     # get year/doy information
     df_year = hyswap.utils.define_year_doy_columns(df,
-                                                   year_type='climate'
+                                                   year_type='climate',
                                                    clip_leap_day=True)
 
     # plotting percentiles by day with line shade between
@@ -223,7 +223,7 @@ We will also specify the colors to be used for the percentile envelopes.
 
     # get year/doy information
     df_year = hyswap.utils.define_year_doy_columns(df,
-                                                   year_type='water'
+                                                   year_type='water',
                                                    clip_leap_day=True)
 
     # plotting percentiles by day with line shade between
@@ -276,7 +276,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
 
     # get year/doy information
     df_year = hyswap.utils.define_year_doy_columns(df,
-                                                   year_type='water'
+                                                   year_type='water',
                                                    clip_leap_day=True)
 
     # plotting percentiles by day with line shade between
@@ -345,7 +345,7 @@ Specifically we will set the `alpha` argument to 1.0 to make the fill areas opaq
 
     # get year/doy information
     df_year = hyswap.utils.define_year_doy_columns(df,
-                                                   year_type='water'
+                                                   year_type='water',
                                                    clip_leap_day=True)
 
     # plotting percentiles by day with line shade between

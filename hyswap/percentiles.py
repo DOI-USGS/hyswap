@@ -13,6 +13,7 @@ def calculate_fixed_percentile_thresholds(
         data,
         percentiles=np.array((0, 5, 10, 25, 75, 90, 95, 100)),
         method='weibull',
+        ignore_na=True,
         **kwargs):
     """Calculate fixed percentile thresholds using historic data.
 
@@ -26,6 +27,9 @@ def calculate_fixed_percentile_thresholds(
 
     method : str, optional
         Method to use to calculate percentiles. Default is 'weibull'.
+
+    ignore_na : bool, optional
+        Ignore NA values in percentile calculations
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -60,7 +64,10 @@ def calculate_fixed_percentile_thresholds(
         thresholds  0    10    50    90     100
         values      0.0  9.2  50.0  90.8  100.0
     """
-    pct = np.percentile(data, percentiles, method=method, **kwargs)
+    if ignore_na:
+        pct = np.nanpercentile(data, percentiles, method=method, **kwargs)
+    else:
+        pct = np.percentile(data, percentiles, method=method, **kwargs)
     df = pd.DataFrame(data={"values": pct}, index=percentiles).T
     df = df.rename_axis("thresholds", axis="columns")
     return df
@@ -77,6 +84,7 @@ def calculate_variable_percentile_thresholds_by_day(
         min_years=10,
         leading_values=0,
         trailing_values=0,
+        ignore_na=True,
         **kwargs):
     """Calculate variable percentile thresholds of data by day of year.
 
@@ -130,6 +138,9 @@ def calculate_variable_percentile_thresholds_by_day(
         number of trailing values to include in the output, inclusive.
         Default is 0, and parameter only applies to 'day' time_interval.
 
+    ignore_na : bool, optional
+        Ignore NA values in percentile calculations
+
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
 
@@ -175,7 +186,8 @@ def calculate_variable_percentile_thresholds_by_day(
         # get historical data for the day of year
         data = filter_data_by_time(df, doy, data_column_name,
                                    leading_values=leading_values,
-                                   trailing_values=trailing_values)
+                                   trailing_values=trailing_values,
+                                   drop_na=ignore_na)
         # could insert other functions here to check or modify data
         # as needed or based on any other criteria
         meta = calculate_metadata(data)
@@ -184,7 +196,8 @@ def calculate_variable_percentile_thresholds_by_day(
         if meta['n_years'] >= min_years:
             # calculate percentiles for the day of year and add to DataFrame
             _pct = calculate_fixed_percentile_thresholds(
-                    data, percentiles=percentiles, method=method, **kwargs)
+                    data, percentiles=percentiles, method=method,
+                    ignore_na=ignore_na, **kwargs)
             percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]
         else:
             # if there are not at least 10 years of data,
