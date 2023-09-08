@@ -95,7 +95,7 @@ Figure 1. Example computation for computation of runoff for a selected HUC unit.
 References
 ----------
 
-Brakebill, J.W., D.M. Wolock, and S.E. Terziotti, 2011. Digital Hydrologic Networks Supporting Applications Related to Spatially Referenced Regression Modeling. Journal of the American Water Resources Association(JAWRA) 47(5):916-932. `doi.org/10.1111/j.1752-1688.2011.00578.x <https://doi.org/10.1111/j.1752-1688.2011.00578.x>`_`
+Brakebill, J.W., D.M. Wolock, and S.E. Terziotti, 2011. Digital Hydrologic Networks Supporting Applications Related to Spatially Referenced Regression Modeling. Journal of the American Water Resources Association(JAWRA) 47(5):916-932. 
 
 Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, book 4, chap. A3, 458 p., `doi.org/10.3133/tm4a3 <https://doi.org/10.3133/tm4a3>`_. [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
 
@@ -108,7 +108,6 @@ U.S. Geological Survey, 2023. USGS water data for the Nation: U.S. Geological Su
 Weibull, W., 1939. A statistical theory of strength of materials: Ingeniors Vetenskaps Akademien Handlinga, no. 153, 9. 17
 
 
-.. _(Brakebill and others, 2011): https://doi.org/10.1111/j.1752-1688.2011.00578.x
 .. _(Helsel and others, 2020): https://doi.org/10.3133/tm4A3
 .. _(Jones and others, 2022): https://doi.org/10.3133/tm11A3
 .. _(U.S. Geological Survey, 2011): https://water.usgs.gov/lookup/getspatial?streamgagebasins
