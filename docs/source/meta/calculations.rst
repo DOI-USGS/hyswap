@@ -53,6 +53,9 @@ By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibul
 ``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles. 
 
 Other default settings for percentile calculations are that NA values are dropped, a minimum of 10 years of record length is available for a given day of year, and percentile levels of 0, 5, 10, 20, 25, 50, 75, 80, 90, 95, 100.
+By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibull plotting position formula (Weibull, 1939). The Weibull formula has been the standard approach used by hydrologists for generating flow-duration and flood-frequency curves (Helsel and others, 2020). Weibull plotting positions does not set values onto either 0 or 100, recognizing the existence of a non-zero probablity of exceeding the maximum or minimum observed value. For further discussion of plotting positions refer to Helsel and others (2020).
+
+``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles
 
 Exceedance Probabilities
 ^^^^^^^^^^^^^^^^^^^^^^^^
