@@ -5,13 +5,13 @@ A quick-reference guide to the common types of calculations performed within the
 
 Assumptions and Caveats
 -----------------------
-The ``hyswap`` package functions assume that provided streamflow data has been quality conrolled. No checks on incorrect, missing, or negative values are performed. Users should perform any necessary QA/QC checks on the data prior to using ``hyswap`` functions. Similarly, ``hyswap`` functions on the entire length of streamflow data provided to a given function or plot and therefore may represent a mix of regulated and unregulated flow, or span periods of major watershed changes that potentially violate statistical methods.  
+The ``hyswap`` package functions assume that provided streamflow data has been quality controlled. No checks on incorrect, missing, or negative values are performed. Users should perform any necessary QA/QC checks on the data prior to using ``hyswap`` functions. Additionally, ``hyswap`` does not detect artifacts or shifts in streamflow data that potentially violate statistical methods, such as transitions from regulated to unregulated flow, or major watershed changes.  
 
 
 Streamflow Percentiles
 ----------------------
 
-Streamflow percentiles are a core calculation of ``hyswap`` that are used to determine streamflow conditions (e.g., normal, high-flow, low-flow, drought, flood). Percentiles can be computed for streamflow (discharge), runoff, or *n*-day avearge streamflow. Multiple types of percentiles are used in hydrologic analysis and vary in what subset of observations are used in calculating a given set of percentiles. Percentiles are closely related to exceedance probabilities used to construct flow duration curves (see below). The ``hyswap`` package provides support for the following types of streamflow percentiles:
+Streamflow percentiles are a core calculation of ``hyswap`` that are used to determine streamflow conditions (e.g., normal, high-flow, low-flow, drought, flood). Percentiles can be computed from daily streamflow (discharge), *n*-day average streamflow, or runoff. Multiple types of percentiles are used in hydrologic analysis and vary in what subset of observations are used in calculating a given set of percentiles. Percentiles are closely related to exceedance probabilities used to construct flow duration curves (see below). The ``hyswap`` package provides support for the following types of streamflow percentiles:
 
 +---------------------------+-------------------------------------------+
 | Percentile Type           | Description                               |
@@ -22,11 +22,11 @@ Streamflow percentiles are a core calculation of ``hyswap`` that are used to det
 |                           | change seasonally and correspond to a     |
 |                           | specific day of year. Variable percentiles|
 |                           | are useful for characterizing flow        |
-|                           | conditions relative to the typrical flow  |
+|                           | conditions relative to the typical flow   |
 |                           | on a given day of the year. The variable  |
 |                           | (day of year) percentile is the standard  |
-|                           | percentile that is displayed on the USGS  |
-|                           | National Water Dashboard and WaterWatch.  |
+|                           | percentile that is displayed in USGS      |
+|                           | water data services.                      |
 +---------------------------+-------------------------------------------+
 | Fixed (All days)          | Computed using all flow observations in   | 
 |                           | the period of record. Records from all    |
@@ -34,8 +34,9 @@ Streamflow percentiles are a core calculation of ``hyswap`` that are used to det
 |                           | in percentile classes/thresholds that do  |
 |                           | not change seasonally. Fixed percentiles  |
 |                           | are useful for characterizing flow        |
-|                           | conditions relative non-moving phenomena  |
-|                           | such as flood stages or dam intakes.      |
+|                           | conditions relative to non-moving         |
+|                           | phenomena such as flood stages or dam     |
+|                           | intakes.                                  |
 +---------------------------+-------------------------------------------+
 | Variable Moving Window    | Computed using flow observations for that |
 | (Day of Year)             | day plus or minus *n* number of days      |
@@ -47,50 +48,51 @@ Streamflow percentiles are a core calculation of ``hyswap`` that are used to det
 |                           | the fluctuation in percentile classes from|
 |                           | day-to-day, especially for sites with     |
 |                           | short observation records. Variable       |
-|                           | moving window are useful for              |
+|                           | moving window is useful for               |
 |                           | characterizing flow conditions relative to|
 |                           | typical flow expected on a given day of   |
 |                           | the year.                                 |
 +---------------------------+-------------------------------------------+
 
-By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibull plotting position formula (Weibull, 1939). The Weibull formula has been the standard approach used by hydrologists for generating flow-duration and flood-frequency curves `(Helsel and others, 2020)`_. Weibull plotting position does not set values to either 0 or 100, recognizing the existence of a non-zero probablity of exceeding the maximum or minimum observed value. For further discussion of plotting positions refer to `(Helsel and others, 2020)`_.
+By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibull plotting position formula, :math:`i/(n+1)`, where *i* is the rank of an observation and *n* is the sample size (Weibull, 1939). The Weibull formula has been the standard approach used by hydrologists for generating flow-duration and flood-frequency curves `(Helsel and others, 2020)`_. Weibull plotting position does not set values to either 0 or 100, recognizing the existence of a non-zero probablity of exceeding the maximum or minimum observed value. For further discussion of plotting positions refer to `(Helsel and others, 2020)`_.
 
-``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles. Additional methods of computing percentiles that exist in the ``numpy.percentile()`` function can be used in ``hyswap``.
+``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles. Additional methods of computing percentiles that exist in the ``numpy.percentile()`` function can be used in ``hyswap``. Users can refer to the `numpy function documentation <https://numpy.org/doc/stable/reference/generated/numpy.percentile.html>`_ for additional details.
 
-Other default settings for percentile calculations are that NA values are dropped, a minimum of 10 years of record length is available for a given day of year, and percentile levels of 0, 5, 10, 25, 50, 75, 90, 95, 100.
-
-By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibull plotting position formula (Weibull, 1939). The Weibull formula has been the standard approach used by hydrologists for generating flow-duration and flood-frequency curves `(Helsel and others, 2020)`_. Weibull plotting positions does not set values onto either 0 or 100, recognizing the existence of a non-zero probablity of exceeding the maximum or minimum observed value. For further discussion of plotting positions refer to `(Helsel and others, 2020)`_.
+Other default settings for percentile calculations are that NA values are dropped, a minimum of 10 years of record length is available for a given day of year, and percentile levels of 0, 5, 10, 25, 50, 75, 90, 95, 100 are calculated.
 
 ``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles
 
 Exceedance Probabilities and Flow-Duration Curves
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In some hydrological studies, particularly those related to floods, a variation of the percentile known as the "percent exceedance" is used. It can be obtained by subtracting the percentile scale value from 100 percent.  For example, a discharge at the 75th percentile is the same as a discharge at the 25th percent exceedance (100-75=25). By default, ``hyswap`` computes streamflow exceedance probabilities using the unbiased Weibull plotting position formula (Weibull, 1939). Additional methods of computing exceedance probabilities can be used in ``hyswap`` including linear (R Type 4), Hazen (R Type 5), Gumbel (R Type 7), Reiss (R Type 8), and Blom (R Type 9). Flow-duration curves computed within ``hyswap`` are a cumulative frequency curve that shows the percent of values that specified discharges were equaled or less than (percentile), or the percent of values that specified discharges were equaled or exceeded (percent exceedance). The Weibull method of computing exceedance probabilities is used by default for computing flow-duration curves.
+In some hydrological studies, particularly those related to floods, a variation of the percentile known as the "percent exceedance" is used. It can be obtained by subtracting the percentile scale value from 100 percent.  For example, a discharge at the 75th percentile is the same as a discharge at the 25th percent exceedance (100-75=25). By default, ``hyswap`` computes streamflow exceedance probabilities using the unbiased Weibull plotting position formula (Weibull, 1939). Additional methods of computing exceedance probabilities can be used in ``hyswap`` including linear (R Type 4), Hazen (R Type 5), Gumbel (R Type 7), Reiss (R Type 8), and Blom (R Type 9). Flow-duration curves computed within ``hyswap`` are cumulative frequency curves where values indicate either (1) the percent of values equal to or less than each discharge value (percentile) OR (2) the percent of values equal to or greater than each discharge value (percent exceedance). The Weibull method of computing exceedance probabilities is used by default for computing flow-duration curves.
 
 
 Area-Based Runoff
 -----------------
 
-In addition to information on a per-streamgage basis, ``hyswap`` can generate water information at the regional scale through computation of area-based runoff calculations.
+In addition to information on a per-streamgage basis, ``hyswap`` can generate water information at the regional scale through computation of area-based runoff calculations. Estimates of runoff for a given area (e.g., state or HUC2 region) are generated by combining streamflow data collected at USGS streamgages at the sub-basin HUC8 (8-digit hydrologic unit code or hydrologic cataloging unit) using a weighted average approach. Hydrologic cataloging units and associated 8-digit accounting numbers (HUC8s) are a widely used geographic framework for the conterminous United States (CONUS). Each unit defines a geographic area representing part or all of a surface drainage basin or a combination of drainage basins. Cataloging units subdivide larger accounting units (HUC6s), subregions (HUC4s) and regions (HUC2s) into smaller areas designated by the U.S. Water Resources Council and the USGS's National Water Data Network. Cataloging units range in size from 24 to 22,808 km\ :sup:`2` with a median value of 3,133 km\ :sup:`2` `(Jones and others, 2022)`.
 
-Estimates of hydrologic unit runoff are generated by combining flow data collected at USGS streamgages, the respective drainage basin boundaries of the streamgages, and the boundaries of hydrologic cataloging units. Streamgages are selected for each year based on the availability of a complete daily flow dataset for the year. Geospatial boundaries of streamgages are based on delineated gage drainage areas calcualted using NHDPlus Version 1 data `(U.S. Geological Survey, 2011)`_.
+The calculation of area-based runoff in ``hyswap`` involves the steps described below and illustrated in an example in Figure 1:
 
-Hydrologic cataloging units and associated 8-digit accounting numbers (HUC8s) are a widely used geographic framework for the conterminous United States (CONUS). Each unit defines a geographic area representing part or all of a surface drainage basin or a combination of drainage basins. Cataloging units subdivide larger accounting units (HUC6s), subregions (HUC4s) and regions (HUC2s) into smaller areas designated by the U.S. Water Resources Council and the USGS's National Water Data Network. Cataloging units range in size from 24 to 22,808 km\ :sup:`2` with a median value of 3,133 km\ :sup:`2` `(Jones and others, 2022)`.
-
-Figure 1 below illustrates the method used to compute runoff estimates for HUC8s. The first step is to compute runoff values (flow per unit area) for each streamgage basin by dividing the average daily flow by the delineated basin area. In the hypothetical example, runoff is estimated at two streamgages (labeled A and B in the figure) by dividing the average daily flow measured at each of two streamgages by their respective drainage basin areas. (The drainage area of basin A is shaded light gray and the drainage area of basin B is shaded dark gray. Note that drainage basin B is nested within drainage basin A).
-
-Each geospatial basin boundary is then overlain on a geospatial dataset of HUC8s (the polygons outlined in bold black lines) to determine the area of intersection within the two datasets. For each overlapping area of HUC8s and drainage basin boundaries, the fraction of the basin in the HUC8 and the fraction of the HUC8 in the basin are calculated. These fractions are then multiplied by each other to compute a weighting factor for each basin. The runoff values and associated weighting factors for all basins with any overlapping area with a HUC8 are combined, and a single weighted-average runoff value is computed for the HUC8.
-
-The weighted-average runoff computations illustrated in the figure can be repeated for all combinations of USGS streamgage basins and hydrologic cataloging units (HUC8s). Runoff values for HUC8s which had no overlapping areas with streamgage basins were computed as the mean of the HUC8 runoff values within the same HUC4 (subregional unit).
+1. Computation of runoff values (flow per unit area) for each streamgage basin by dividing the average daily flow by the delineated drainage area. Drainage areas are an input to the ``streamflow_to_runoff`` function in ``hyswap``.
+2. Calculation of runoff for each HUC8 unit that is in the area of interest (e.g., state or HUC2 region) using the runoff from multiple streamgages along with associated weighting factors. Weight matrices that contain weighting factors for all HUC8s and streamgages are an input to the ``calculate_geometric_runoff`` functions in ``hyswap`` functions and must be created from spatial data layers describing HUC and streamgage drainage area boundaries. An example workflow for creating the weight matrix used in the area-based runoff calculations is described below.
+3. Aggregation runoff from the individual HUC8s that are within the area of interest (e.g., state or HUC2 region)
 
 .. image:: ../reference/huc8_runoff_example.gif
   :width: 600
   :alt: Map and table that provide an example of the computation of area-based runoff for a given HUC. 
 
-Figure 1. Example computation for computation of runoff for a selected HUC unit. Figure from `(Brakebill and others, 2011)`_
+Figure 1. Example computation for computation of runoff for a selected HUC unit. (The drainage area of basin A is shaded light gray and the drainage area of basin B is shaded pink. Note that drainage basin B is nested within drainage basin A). Figure from `(Brakebill and others, 2011)`_
 
-*Description of methods for area-based runoff computation is adapted from USGS WaterWatch*
+Workflow for Determing Weighting of Streamgages for Area-Based Runoff Calculations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Spatial datasets describing the respective drainage basin boundaries of the streamgages and the boundaries of hydrologic cataloging units must be obtained that cover the all areas of interest (e.g. CONUS). Geospatial boundaries of streamgages can be based on delineated gage drainage areas calculated using NHDPlus Version 1 data `(U.S. Geological Survey, 2011)`_ or determined via other watershed delineation approaches. HUC8 boundaries are contained within the `USGS Watershed Boundary Dataset (WBD)<https://www.usgs.gov/national-hydrography/watershed-boundary-dataset>`_. 
+
+Each geospatial streamgage drainage basin boundary is overlain on a geospatial dataset of HUC8s (the polygons outlined in bold black lines in Figure 1 example) to determine the area of intersection within the two datasets. For each overlapping area of HUC8s and streamgage drainage basin boundaries, the fraction of the basin in the HUC8 and the fraction of the HUC8 in the basin are calculated. These fractions are then multiplied by each other to compute a weighting factor for each basin. Weighting factors for each streamgage drainage basin for each HUC8 can then be stored in a single weight matrix.
+
+*Description of methods for area-based runoff computation is adapted from `USGS WaterWatch <https://pubs.usgs.gov/publication/fs20083031>`*
 
 References
 ----------
