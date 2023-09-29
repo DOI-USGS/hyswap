@@ -2,8 +2,7 @@
 Streamflow Duration Hydrographs
 -------------------------------
 
-These examples show how a streamflow hydrograph can be constructed by fetching historical streamflow data from NWIS using `dataretrieval`, and then calculating daily percentiles of streamflow for each day of the year.
-The resulting hydrographs show the streamflow values for all of 2022 plotted on top of the historical percentiles which are shown as shaded regions.
+These examples show how a streamflow hydrograph can be constructed by fetching historical streamflow data from a single NWIS gage using `dataretrieval`, calculating daily percentiles of streamflow for each day of the year for the year 2022, and plotting these data using the `hyswap` function :obj:`hyswap.plots.plot_duration_hydrograph`. 
 
 
 Calculating Percentiles Using `hyswap`

@@ -29,7 +29,7 @@ raster hydrograph.
     # format the data
     df_formatted = hyswap.rasterhydrograph.format_data(df, '00060_Mean')
 
-Now the data is arranged with years on the index (rows) and days of the year as columns, this makes it easy to plot as a raster hydrograph.
+Now the data is arranged with years on the index (rows) and days of the year as columns, this makes it easy to plot as a raster hydrograph with :obj:`hyswap.plots.plot_raster_hydrograph`.
 
 .. plot::
     :context:
