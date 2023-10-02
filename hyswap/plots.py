@@ -321,7 +321,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         label = data_label
     # Add disclaimer if True
     if disclaimer is True:
-        txt = 'For some streams, flow statistics may have been computed from mixed \nregulated and unregulated flows; this can affect depictions of flow conditions.' # noqa: E501
+        txt = 'For some streams, flow statistics may have been computed from mixed \nregulated and unregulated flows; this can affect depictions of flow conditions.'  # noqa: E501
     else:
         txt = ''
     # get colors
@@ -366,7 +366,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     ax.set_yscale("log")
     ax.set_title(title)
     # disclaimer
-    ax.text(0, -0.18, txt, color='red',transform=ax.transAxes)
+    ax.text(0, -0.18, txt, color='red', transform=ax.transAxes)
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
@@ -471,7 +471,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     color = kwargs.pop('color', 'xkcd:bright green')
     # Add disclaimer if True
     if disclaimer is True:
-        txt = 'For some streams, flow statistics may have been computed from mixed \nregulated and unregulated flows; this can affect depictions of flow conditions.' # noqa: E501
+        txt = 'For some streams, flow statistics may have been computed from mixed \nregulated and unregulated flows; this can affect depictions of flow conditions.'  # noqa: E501
     else:
         txt = ''
     # plot percentile envelope
@@ -529,7 +529,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     ax.set_yticks(yticks[1:], labels=yticklabels[1:])
     ax.set_ylim(0, yticks.max())
     # disclaimer
-    ax.text(0, -0.18, txt, color='red',transform=ax.transAxes)
+    ax.text(0, -0.18, txt, color='red', transform=ax.transAxes)
     # two column legend
     ax.legend(loc="best")
 
