@@ -279,6 +279,10 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     minimum discharge recorded for each day. This function, however, allows
     the user to plot a custom list of percentiles.
 
+    Note: For some streams, flow statistics may have been computed from
+    mixed regulated and unregulated flows; this can affect depictions
+    of flow conditions.
+
     Parameters
     ----------
     percentiles_by_day : pandas.DataFrame
@@ -421,6 +425,10 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     the maximum annual cumulative discharge recorded during the period
     of record; the mean-daily cumulative flow for each day; the minimum
     cumulative discharge during recorded for each day.
+
+    Note: For some streams, flow statistics may have been computed from
+    mixed regulated and unregulated flows; this can affect depictions
+    of flow conditions.
 
     Parameters
     ----------
