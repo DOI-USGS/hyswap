@@ -2,8 +2,7 @@
 Cumulative Streamflow Hydrographs
 ---------------------------------
 
-The following examples show how to fetch some data, and then calculate values for a cumulative streamflow hydrograph.
-Then an example plotting routine to plot the cumulative hydrograph is shown.
+The following examples show how to fetch data and calculate values for a cumulative streamflow hydrograph before plotting the cumulative hydrograph using the `hyswap` :obj:`hyswap.plots.plot_cumulative_hydrograph` function.
 
 
 Cumulative Streamflow Over The 2020 Water Year
@@ -30,8 +29,7 @@ Now we can calculate the cumulative streamflow values per year using the :obj:`h
     cdf = hyswap.cumulative.calculate_daily_cumulative_values(
         df, '00060_Mean', year_type='water')
 
-Then we can plot the cumulative streamflow hydrograph using the
-:obj:`hyswap.plots.plot_cumulative_hydrograph` function.
+Then we can plot the cumulative streamflow hydrograph. 
 
 .. plot::
     :context:

@@ -84,13 +84,13 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
     determining the number that are *greater than or equal to* the
     input value (x), which provides the minimum rank in the case of tied
     values. Additional methods other than the 'Weibull' method can be specified
-    and are described in more detail in [1]_.
+    and are described in more detail in Helsel et al 2020.
 
-    .. [1] Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and
-    Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological
-    Survey Techniques and Methods, book 4, chap. A3, 458 p.,
-    https://doi.org/10.3133/tm4a3. [Supersedes USGS Techniques of
-    Water-Resources Investigations, book 4, chap. A3, version 1.1.]
+    Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A.,
+      and Gilroy, E.J., 2020, Statistical methods in water resources:
+      U.S. Geological Survey Techniques and Methods, book 4, chap. A3,
+      458 p., https://doi.org/10.3133/tm4a3. [Supersedes USGS Techniques
+      of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
 
     Parameters
     ----------

@@ -1,4 +1,4 @@
-"""Functions to make plots."""
+"""Functions for plotting."""
 import calendar
 import numpy as np
 import matplotlib
@@ -14,8 +14,11 @@ def plot_flow_duration_curve(
         '(Percentage of time indicated value was equaled or exceeded)',
         ylab='Discharge, in Cubic Feet per Second', grid=True,
         scatter_kwargs={}, **kwargs):
-    """
-    Make flow duration curve plot.
+    """ Plot a flow duration curve.
+
+    Flow duration curves are cumulative frequency curves that show the
+    percentage of time measured discharge values are equaled or exceeded
+    by all other discharge values in the dataset.
 
     Parameters
     ----------
@@ -125,7 +128,32 @@ def plot_raster_hydrograph(df_formatted, ax=None,
                            xlab='Month', ylab='Year',
                            cbarlab='Discharge, in Cubic Feet per Second',
                            **kwargs):
-    """Make raster hydrograph plot.
+    """Plot a raster hydrograph.
+
+    Raster hydrographs are pixel-based plots for visualizing and identifying
+    variations and changes in large multidimensional data sets. Originally
+    developed by Keim (2000), they were first applied in hydrology by
+    Koehler (2004) as a means of highlighting inter-annual and intra-annual
+    changes in streamflow. The raster hydrographs in hyswap, like those
+    developed by Koehler, depict years on the y-axis and days along the
+    x-axis. Users can choose to plot streamflow (actual values or log values),
+    streamflow percentile, or streamflow class (from 1, for low flow, to 7
+    for high flow), for Daily, 7-Day, 14-Day, and 28-Day streamflow. For a
+    more comprehensive description of raster hydrographs, see Strandhagen
+    et al. (2006).
+
+    References:
+    Keim, D.A. 2000. Designing pixel-oriented visualization techniques:
+    theory and applications. IEEE Transactions on Visualization and
+    Computer Graphics, 6(1), 59-78.
+
+    Koehler, R. 2004. Raster Based Analysis and Visualization of Hydrologic
+    Time Series. Ph.D  dissertation, University of Arizona. Tucson, AZ, 189 p.
+
+    `Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the
+    rivers: representing streamflow of the greater Yellowstone ecosystem.
+    Cartographic Perspectives, no. 55, 54-29.
+    <https://cartographicperspectives.org/index.php/journal/article/view/cp55-strandhagen-et-al/pdf>`__  # noqa: E501
 
     Parameters
     ----------
@@ -238,7 +266,22 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
                              title="Duration Hydrograph",
                              ylab="Discharge, in Cubic Feet per Second",
                              xlab="Month", colors=None, **kwargs):
-    """Make duration hydrograph plot.
+    """Plot a duration hydrograph.
+
+    The duration hydrograph is a graphical presentation of recent daily
+    streamflow (discharge) observed at an individual USGS streamgage,
+    plotted over the long-term statistics of streamflow for each day of
+    the year at that station. Typically, the statistics (based on quality
+    assured and approved data) include the maximum discharge recorded during
+    the period of record for each day of the year; the 90th percentile flow
+    for each day; the interquartile range (75th percentile on top and 25th
+    percentile on the bottom); the 10th percentile flow for each day; and the
+    minimum discharge recorded for each day. This function, however, allows
+    the user to plot a custom list of percentiles.
+
+    Note: For some streams, flow statistics may have been computed from
+    mixed regulated and unregulated flows; this can affect depictions
+    of flow conditions.
 
     Parameters
     ----------
@@ -372,7 +415,20 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
                                title="Cumulative Streamflow Hydrograph",
                                ylab="Cumulative Streamflow, in Cubic Feet",
                                xlab="Month", **kwargs):
-    """Make cumulative hydrograph plot.
+    """Plot a cumulative hydrograph.
+
+    The cumulative-streamflow hydrograph is a graphical presentation of
+    recent cumulative daily streamflow (discharge) observed at an
+    individual USGS streamgage, plotted over the long-term statistics
+    of streamflow for each day of the year at that station. Typically,
+    the statistics, based on quality assured and approved data, include
+    the maximum annual cumulative discharge recorded during the period
+    of record; the mean-daily cumulative flow for each day; the minimum
+    cumulative discharge during recorded for each day.
+
+    Note: For some streams, flow statistics may have been computed from
+    mixed regulated and unregulated flows; this can affect depictions
+    of flow conditions.
 
     Parameters
     ----------
@@ -521,7 +577,9 @@ def plot_hydrograph(df, data_col,
                     xlab='Date',
                     yscale='log',
                     **kwargs):
-    """Plot a hydrograph.
+    """Plot a simple hydrograph.
+
+    Hydrographs show the streamflow discharge over time at a single station.
 
     Parameters
     ----------
@@ -620,7 +678,12 @@ def plot_hydrograph(df, data_col,
 def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='inferno',
                             show_values=False, ax=None,
                             title='Similarity Matrix'):
-    """Plot a similarity matrix as a heatmap.
+    """Plot a similarity matrix heatmap.
+
+    The heatmap shows the results of a correlation matrix between
+    measurements at two or more sites. Lighter, warmer colors denote
+    higher similarity (correlation), while darker colors denote less
+    similarity between two sites.
 
     Parameters
     ----------

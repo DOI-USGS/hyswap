@@ -44,7 +44,7 @@ Now we can calculate the exceedance probabilities for 10,000 evenly spaced value
     exceedance_probabilities = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
         values, df['00060_Mean'])
 
-Finally, we can plot the flow duration curve using these exceedance probability values and `matplotlib`.
+Finally, we can plot the flow duration curve using these exceedance probability values and :obj:`hyswap.plots.plot_flow_duration_curve`, which leverages `matplotlib`.
 
 .. plot::
     :context:
