@@ -208,10 +208,16 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     # set yticks
     ax.set_yticks(np.arange(-0.5, len(df_formatted.index)), [], minor=True)
     ax.set_yticks(np.arange(len(df_formatted.index)), df_formatted.index)
-    # convert yticklabels to 4 digit years
-    yticklabels = ax.get_yticklabels()
-    yticklabels = [f'{y.get_text()[:4]}' for y in yticklabels]
-    ax.set_yticklabels(yticklabels)
+    # figure out how many labels to show - for example; every 4th label
+    # dividing the number of y values by 20 seems to give a good multiple
+    # for this plot size
+    show_label_multiple = len(ax.get_yaxis().get_ticklabels()) // 20
+        # if there were less than 20 labels, you don't need to hide any
+    # if there are more, hide all the extra labels so they don't overlap
+    if show_label_multiple > 0:
+        for i, label in enumerate(ax.get_yaxis().get_ticklabels()):
+            if i % show_label_multiple != 0:
+                label.set_visible(False)
     # set xticks at start/end of each month
     xvals = df_formatted.columns.values
     months = [int(i.split('-')[1]) for i in xvals]
