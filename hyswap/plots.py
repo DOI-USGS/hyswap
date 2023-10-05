@@ -212,7 +212,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     # dividing the number of y values by 20 seems to give a good multiple
     # for this plot size
     show_label_multiple = len(ax.get_yaxis().get_ticklabels()) // 20
-        # if there were less than 20 labels, you don't need to hide any
+    # if there were less than 20 labels, you don't need to hide any
     # if there are more, hide all the extra labels so they don't overlap
     if show_label_multiple > 0:
         for i, label in enumerate(ax.get_yaxis().get_ticklabels()):
