@@ -232,9 +232,9 @@ We will also specify the colors to be used for the percentile envelopes.
     # plot data
     ax = hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
-        df_year,
+        df_2022,
         "00060_Mean",
-        "index_doy",
+        'index_doy',
         pct_list=[0, 25, 50, 75, 100],
         ax=ax,
         data_label="Water Year 2022",
