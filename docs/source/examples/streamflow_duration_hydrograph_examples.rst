@@ -229,15 +229,12 @@ We will also specify the colors to be used for the percentile envelopes.
     fig, ax = plt.subplots(figsize=(10, 6))
     # filter down to data from 2022
     df_2022 = df_year[df_year['index_year'] == 2022]
-    # sort by day of the year
-    df_2022['doy'] = df_2022.index.dayofyear
-    df_2022 = df_2022.sort_values(by='doy')
     # plot data
     ax = hyswap.plots.plot_duration_hydrograph(
         percentiles_by_day,
         df_2022,
         "00060_Mean",
-        "index_doy",
+        'index_doy',
         pct_list=[0, 25, 50, 75, 100],
         ax=ax,
         data_label="Water Year 2022",
