@@ -419,7 +419,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
                                max_pct=False, min_pct=False,
                                ax=None,
                                title="Cumulative Streamflow Hydrograph",
-                               ylab="Cumulative Streamflow, in Cubic Feet",
+                               ylab="Cumulative discharge, cubic feet",
                                xlab="Month", **kwargs):
     """Plot a cumulative hydrograph.
 
