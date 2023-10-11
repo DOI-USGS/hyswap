@@ -291,8 +291,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
         ax=ax[0],
         data_label="Water Year 2022",
         title="Percentiles of Streamflow by Day of Year - Site 03586500",
-        xlab="",
-        ylab="1-day Streamflow"
+        xlab=""
     )
     # plot 7-day percentiles
     hyswap.plots.plot_duration_hydrograph(
@@ -304,7 +303,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
         data_label="Water Year 2022",
         title="Percentiles of Streamflow by Day of Year (7-day rolling average) - Site 03586500",
         xlab="",
-        ylab="7-day Streamflow"
+        ylab="7-day average discharge, cubic feet per second"
     )
     # plot 28-day percentiles
     hyswap.plots.plot_duration_hydrograph(
@@ -315,7 +314,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
         ax=ax[2],
         data_label="Water Year 2022",
         title="Percentiles of Streamflow by Day of Year (28-day rolling average) - Site 03586500",
-        ylab="28-day Streamflow"
+        ylab="28-day average discharge, cubic feet per second"
     )
     plt.tight_layout()
     plt.show()

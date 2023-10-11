@@ -12,7 +12,7 @@ def plot_flow_duration_curve(
         ax=None, title='Flow Duration Curve',
         xlab='Exceedance Probability\n' +
         '(Percentage of time indicated value was equaled or exceeded)',
-        ylab='Discharge, in Cubic Feet per Second', grid=True,
+        ylab='Discharge, cubic feet per second', grid=True,
         scatter_kwargs={}, **kwargs):
     """ Plot a flow duration curve.
 
@@ -126,7 +126,7 @@ def plot_flow_duration_curve(
 def plot_raster_hydrograph(df_formatted, ax=None,
                            title='Raster Hydrograph',
                            xlab='Month', ylab='Year',
-                           cbarlab='Discharge, in Cubic Feet per Second',
+                           cbarlab='Discharge, cubic feet per second',
                            **kwargs):
     """Plot a raster hydrograph.
 
@@ -270,7 +270,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
                              pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
                              data_label=None, ax=None,
                              title="Duration Hydrograph",
-                             ylab="Discharge, in Cubic Feet per Second",
+                             ylab="Discharge, cubic feet per second",
                              xlab="Month", colors=None, **kwargs):
     """Plot a duration hydrograph.
 
@@ -579,7 +579,7 @@ def plot_hydrograph(df, data_col,
                     end_date=None,
                     ax=None,
                     title='Streamflow Hydrograph',
-                    ylab='Streamflow, in Cubic Feet per Second',
+                    ylab='Discharge, cubic feet per second',
                     xlab='Date',
                     yscale='log',
                     **kwargs):
