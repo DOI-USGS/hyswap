@@ -244,11 +244,60 @@ We will also specify the colors to be used for the percentile envelopes.
     plt.tight_layout()
     plt.show()
 
+N-day Moving Windows for Historical Daily Percentile Calculations
+*****************************************************************
 
-Rolling Averages for Historic Daily Percentile Calculations
-***********************************************************
+In this example, we will calculate historical daily percentiles using n-day moving windows that can be compared to daily streamflow in the focal year of interest.
+N-day moving windows are specified using the `leading_values` and `trailing_values` arguments in :obj:`calculate_variable_percentile_thresholds_by_day`.
+We will use a leading value of 15 days and a trailing value of 15 days to show how to use a 30-day moving window to calculate percentiles for each day.
+What this means is that the set of historical percentiles calculated for each day are actually calculated using a 30-day window from each year in the dataset.
 
-In this example, rather than calculating historic daily percentile values based solely on the past values from that day of the year, we will calculate the historic daily percentile values based on rolling averages of the past values around that day.
+.. plot::
+    :context: reset
+    :include-source:
+
+    # fetch historic data from NWIS
+    df, _ = dataretrieval.nwis.get_dv("03586500",
+                                        parameterCd="00060",
+                                        start="1776-01-01",
+                                        end="2022-12-31")
+
+    # calculate 30-day moving window historic percentile thresholds for each day in the water year
+    percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
+        df,
+        "00060_Mean",
+        data_type='daily',
+        year_type="water",
+        leading_values=15,
+        trailing_values=15
+    )
+
+    # get year/doy information
+    df_year = hyswap.utils.define_year_doy_columns(df,
+                                                   year_type='water',
+                                                   clip_leap_day=True)
+
+    # plotting percentiles by day with line shade between
+    fig, ax = plt.subplots(figsize=(10, 6))
+    # filter down to data from 2022
+    df_2022 = df_year[df_year['index_year'] == 2022]
+    # plot data
+    ax = hyswap.plots.plot_duration_hydrograph(
+        percentiles_by_day,
+        df_2022,
+        "00060_Mean",
+        "index_doy",
+        ax=ax,
+        data_label="Water Year 2022",
+        title="Percentiles of Streamflow by Day of Year Using a 30-Day Moving Window - Site 03586500"
+    )
+    plt.tight_layout()
+    plt.show()
+
+Rolling Averages for Historical Daily Percentile Calculations
+*************************************************************
+
+In this example, rather than calculating historic daily percentile values based solely on the past values from that day of the year (or moving n-day windows around that day of the year), we will calculate the historic daily percentile values based on rolling averages of the past values around that day.
 Under the hood this uses the :meth:`pandas.DataFrame.rolling` method to calculate the rolling average, with the default parameters.
 To show the effect of this, we will plot the historic daily percentile values for the daily (default) rolling average, 7-day rolling average, and the 28-day rolling average.
 
