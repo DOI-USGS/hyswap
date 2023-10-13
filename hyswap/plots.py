@@ -269,6 +269,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
                              pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
                              data_label=None, ax=None,
+                             disclaimer=False,
                              title="Duration Hydrograph",
                              ylab="Discharge, in Cubic Feet per Second",
                              xlab="Month", colors=None, **kwargs):
@@ -308,6 +309,11 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
+    disclaimer : bool, optional
+        If True, displays the disclaimer 'For some streams, flow
+        statistics may have been computed from mixed regulated
+        and unregulated flows; this can affect depictions of flow
+        conditions.' below the x-axis.
     title : str, optional
         Title for the plot. If not provided, the default title will be
         'Duration Hydrograph'.
@@ -362,6 +368,11 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         label = df[data_col].name
     else:
         label = data_label
+    # Add disclaimer if True
+    if disclaimer is True:
+        txt = 'For some streams, flow statistics may have been computed from mixed \nregulated and unregulated flows; this can affect depictions of flow conditions.'  # noqa: E501
+    else:
+        txt = ''
     # get colors
     if colors is None:
         colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
@@ -403,6 +414,8 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     ax.set_ylabel(ylab)
     ax.set_yscale("log")
     ax.set_title(title)
+    # disclaimer
+    ax.text(0, -0.18, txt, color='red', transform=ax.transAxes)
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
@@ -418,6 +431,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
                                envelope_pct=[25, 75],
                                max_pct=False, min_pct=False,
                                ax=None,
+                               disclaimer=False,
                                title="Cumulative Streamflow Hydrograph",
                                ylab="Cumulative Streamflow, in Cubic Feet",
                                xlab="Month", **kwargs):
@@ -463,6 +477,11 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
+    disclaimer : bool, optional
+        If True, displays the disclaimer 'For some streams, flow
+        statistics may have been computed from mixed regulated
+        and unregulated flows; this can affect depictions of flow
+        conditions.' below the x-axis.
     title : str, optional
         Title for the plot. If not provided, the default title will be
         'Cumulative Streamflow Hydrograph'.
@@ -512,6 +531,11 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
     color = kwargs.pop('color', 'xkcd:bright green')
+    # Add disclaimer if True
+    if disclaimer is True:
+        txt = 'For some streams, flow statistics may have been computed from mixed \nregulated and unregulated flows; this can affect depictions of flow conditions.'  # noqa: E501
+    else:
+        txt = ''
     # plot percentile envelope
     if len(envelope_pct) == 2:
         ax.fill_between(pdf.index.get_level_values(1),
@@ -566,6 +590,8 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     yticklabels = [f'{int(y):,}' for y in yticks]
     ax.set_yticks(yticks[1:], labels=yticklabels[1:])
     ax.set_ylim(0, yticks.max())
+    # disclaimer
+    ax.text(0, -0.18, txt, color='red', transform=ax.transAxes)
     # two column legend
     ax.legend(loc="best")
 
