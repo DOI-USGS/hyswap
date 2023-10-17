@@ -419,7 +419,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
                                max_pct=False, min_pct=False,
                                ax=None,
                                title="Cumulative Streamflow Hydrograph",
-                               ylab="Cumulative discharge, ft3",
+                               ylab="Cumulative discharge, acre-feet",
                                xlab="Month", **kwargs):
     """Plot a cumulative hydrograph.
 
@@ -430,7 +430,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     the statistics, based on quality assured and approved data, include
     the maximum annual cumulative discharge recorded during the period
     of record; the mean-daily cumulative flow for each day; the minimum
-    cumulative discharge during recorded for each day.
+    cumulative discharge recorded for each day.
 
     Note: For some streams, flow statistics may have been computed from
     mixed regulated and unregulated flows; this can affect depictions

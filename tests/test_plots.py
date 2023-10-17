@@ -119,7 +119,7 @@ def test_plot_cumulative_hydrograph():
     ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
-    assert ax.get_ylabel() == 'Cumulative discharge, ft3'
+    assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'
     assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 1
     # make one with custom labels
@@ -137,7 +137,7 @@ def test_plot_cumulative_hydrograph():
                                           max_pct=True, min_pct=True)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
-    assert ax.get_ylabel() == 'Cumulative discharge, ft3'
+    assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'
     assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 3
     assert len(ax.collections) == 1
@@ -151,7 +151,7 @@ def test_plot_cumulative_hydrograph():
                                           max_pct=True, min_pct=True)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
-    assert ax.get_ylabel() == 'Cumulative discharge, ft3'
+    assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'
     assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 4  # min/max, 2010 and 2011 lines
     assert len(ax.collections) == 1
