@@ -37,7 +37,8 @@ class TestDailyCumulativeValues:
             ['index_year', 'index_doy', 'cumulative']
         assert cdf.index.year.unique().tolist() == [2019]
         assert cdf['index_doy'].tolist() == list(range(1, 366))
-        assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))
+        assert cdf['cumulative'].tolist() == \
+            list(np.cumsum(range(1, 366)) * 0.0000229568 * 86400)
 
     def test_calculate_daily_cumulative_values_no_date_col(self):
         # make a dataframe
@@ -52,7 +53,8 @@ class TestDailyCumulativeValues:
             ['index_year', 'index_doy', 'cumulative']
         assert cdf.index.year.unique().tolist() == [2019]
         assert cdf['index_doy'].tolist() == list(range(1, 366))
-        assert cdf['cumulative'].tolist() == list(np.cumsum(range(1, 366)))
+        assert cdf['cumulative'].tolist() == \
+            list(np.cumsum(range(1, 366)) * 0.0000229568 * 86400)
 
     def test_calculate_daily_cumulative_values_water_year(self):
         # try for a water year
@@ -70,7 +72,7 @@ class TestDailyCumulativeValues:
         d_list.sort()
         assert d_list == list(range(1, 366))
         assert cdf['cumulative'].tolist()[:365] == \
-            list(np.cumsum(np.ones(365)))
+            list(np.cumsum(np.ones(365)) * 0.0000229568 * 86400)
 
     def test_calculate_daily_cumulative_values_climate_year(self):
         # try for a climate year
@@ -88,4 +90,4 @@ class TestDailyCumulativeValues:
         d_list.sort()
         assert d_list == list(range(1, 366))
         assert cdf['cumulative'].tolist()[:365] == \
-            list(np.cumsum(np.ones(365)))
+            list(np.cumsum(np.ones(365)) * 0.0000229568 * 86400)

@@ -16,6 +16,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
         DataFrame containing data to calculate cumulative values.
     data_column_name : str
         Name of column containing data to calculate cumulative values for.
+        Discharge data assumed to be in unit of ft3/s.
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` will be used.
@@ -34,7 +35,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
     cumulative_values : pandas.DataFrame
         DataFrame containing daily cumulative values for each year in the
         input DataFrame, rows are dates and columns include years, days, and
-        cumulative values.
+        cumulative values in acre-feet.
 
     Examples
     --------
@@ -64,8 +65,10 @@ def calculate_daily_cumulative_values(df, data_column_name,
         # year must be complete
         if len(year_data) == 365:
             # calculate cumulative values and assign to cdf
+            # converted to acre-feet
+            # multiplied by seconds per day
             cdf.loc[cdf.index == year, :len(year_data)] = \
-                year_data.cumsum().values
+                year_data.cumsum().values * 0.0000229568 * 86400
     # reformat the dataframe
     cdf = _tidy_cumulative_dataframe(cdf, year_type)
     return cdf

@@ -12,7 +12,7 @@ def plot_flow_duration_curve(
         ax=None, title='Flow Duration Curve',
         xlab='Exceedance Probability\n' +
         '(Percentage of time indicated value was equaled or exceeded)',
-        ylab='Discharge, in Cubic Feet per Second', grid=True,
+        ylab='Discharge, ft3/s', grid=True,
         scatter_kwargs={}, **kwargs):
     """ Plot a flow duration curve.
 
@@ -126,7 +126,7 @@ def plot_flow_duration_curve(
 def plot_raster_hydrograph(df_formatted, ax=None,
                            title='Raster Hydrograph',
                            xlab='Month', ylab='Year',
-                           cbarlab='Discharge, in Cubic Feet per Second',
+                           cbarlab='Discharge, ft3/s',
                            **kwargs):
     """Plot a raster hydrograph.
 
@@ -173,7 +173,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
         'Year'.
     cbarlab : str, optional
         Label for the colorbar. If not provided, the default label will be
-        'Discharge, in Cubic Feet per Second'.
+        'Discharge, ft3/s'.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.imshow`.
 
@@ -271,7 +271,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
                              data_label=None, ax=None,
                              disclaimer=False,
                              title="Duration Hydrograph",
-                             ylab="Discharge, in Cubic Feet per Second",
+                             ylab="Discharge, ft3/s",
                              xlab="Month", colors=None, **kwargs):
     """Plot a duration hydrograph.
 
@@ -319,7 +319,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         'Duration Hydrograph'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
-        'Discharge, in Cubic Feet per Second'.
+        'Discharge, ft3/s'.
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
         'Month'.
@@ -433,7 +433,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
                                ax=None,
                                disclaimer=False,
                                title="Cumulative Streamflow Hydrograph",
-                               ylab="Cumulative Streamflow, in Cubic Feet",
+                               ylab="Cumulative discharge, acre-feet",
                                xlab="Month", **kwargs):
     """Plot a cumulative hydrograph.
 
@@ -444,7 +444,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     the statistics, based on quality assured and approved data, include
     the maximum annual cumulative discharge recorded during the period
     of record; the mean-daily cumulative flow for each day; the minimum
-    cumulative discharge during recorded for each day.
+    cumulative discharge recorded for each day.
 
     Note: For some streams, flow statistics may have been computed from
     mixed regulated and unregulated flows; this can affect depictions
@@ -487,7 +487,7 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
         'Cumulative Streamflow Hydrograph'.
     ylab : str, optional
         Label for the y-axis. If not provided, the default label will be
-        'Cumulative Streamflow, in Cubic Feet'.
+        'Cumulative Streamflow, ft3/s'.
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
         'Month'.
@@ -605,7 +605,7 @@ def plot_hydrograph(df, data_col,
                     end_date=None,
                     ax=None,
                     title='Streamflow Hydrograph',
-                    ylab='Streamflow, in Cubic Feet per Second',
+                    ylab='Discharge, ft3/s',
                     xlab='Date',
                     yscale='log',
                     **kwargs):
@@ -641,7 +641,7 @@ def plot_hydrograph(df, data_col,
         Title of the plot. Default is 'Streamflow Hydrograph'.
 
     ylab : str, optional
-        Y-axis label. Default is 'Streamflow, in Cubic Feet per Second'.
+        Y-axis label. Default is 'Streamflow, ft3/s'.
 
     xlab : str, optional
         X-axis label. Default is 'Date'.
@@ -672,7 +672,7 @@ def plot_hydrograph(df, data_col,
         >>> ax = hyswap.plots.plot_hydrograph(
         ...     df, data_col='00060_Mean',
         ...     title=f'2019 Hydrograph for Station {siteno}',
-        ...     ylab='Streamflow, in Cubic Feet per Second',
+        ...     ylab='Discharge, ft3/s',
         ...     xlab='Date', yscale='log')
         >>> plt.tight_layout()
         >>> plt.show()
