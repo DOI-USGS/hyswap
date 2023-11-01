@@ -623,3 +623,116 @@ def set_data_type(data_type):
         data_type = '28D'
 
     return data_type
+
+def categorize_flows(df, data_col, schema_name = 'NWD'):
+    """Function to categorize streamflows based on percentile ranges 
+    
+    This function assigns a category to each streamflow observation for a
+    single site by comparing the estimated percentile to a schema of percentile 
+    ranges and associated category labels
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing values for the site.
+
+    data_col : str
+        Name of the column in the DataFrame that contains the data of
+        interest, in this case estimated streamflow percentile.
+    
+    schema_name : str, optional
+        Name of the categorization schema that should be used to categorize
+        streamflow. Default is NWD schema like
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        DataFrame with flow_cat column added.
+    """
+
+    schema = retreive_schema(schema_name)
+
+    df['flow_cat'] = pd.cut(df[data_col], schema['ranges'], 
+                             labels=schema['labels'], 
+                             include_lowest=False,
+                             right=False)
+    if "low_label" in schema:
+        df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['low_label'])
+        df.loc[df[data_col] == schema['ranges'][0], 'flow_cat'] = schema['low_label']  # noqa: E501
+    if "high_label" in schema:
+        df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['high_label'])
+        df.loc[df[data_col] == schema['ranges'][-1], 'flow_cat'] = schema['high_label']  # noqa: E501
+        
+    df['flow_cat'] = df['flow_cat'].cat.add_categories('Not ranked')
+    df.loc[pd.isna(df[data_col]), 'flow_cat'] = 'Not ranked'
+
+    return df
+
+def retreive_schema(schema_name):
+    """Function to retreive the flow range categories for a given schema
+
+    Parameters
+    ----------
+    schema_name : str
+        Name of the categorization schema that should be used to categorize
+        streamflow.
+
+    Returns
+    -------
+    schema : dict
+        dictionary of flow ranges, category labels, and color palette
+    """
+    if schema_name == 'NWD':
+        schema = {'ranges': [0, 10, 25, 75, 90, 100],
+                  'labels': ['Much below normal', 'Below normal', 'Normal', 
+                             'Above normal', 'Much above normal'],
+                  'color': ['#b24249','#e8ac49','#44f24e','#5fd7d9','#2641f1'],
+                  'low_label': 'All-time low',
+                  'low_color': '#e82f3e',
+                  'high_label': 'All-time high',
+                  'high_color': "1f296b"}
+    elif schema_name == 'WaterWatch':
+        schema = {'ranges': [0, 10, 25, 75, 90, 100],
+                  'labels': ['Low', 'Much below normal', 'Below normal', 
+                             'Normal', 'Above normal',
+                             'Much above normal', 'High'],
+                  'color': ['#af2327','#fda328','#29fd2f','#4aded0','#0b24fb'],
+                  'low_label': 'Low',
+                  'low_color': '#fc0d1b',
+                  'high_label': 'High',
+                  'high_color': "#000000"}
+    elif schema_name == 'WaterWatch_Drought':
+        schema = {'ranges': [0, 5, 10, 25],
+                  'labels': ['Severe hydrologic drought', 
+                             'Moderate hydrologic drought', 
+                             'Below normal'],
+                  'color': ['#af2327', '#fd9941','#fecb6e'],
+                  'low_label': 'Extreme hydrologic drought',
+                  'low_color': '#fc0d1b',}
+    elif schema_name == 'WaterWatch_Flood':
+        schema = {'ranges': [0, 95, 99, 100],
+                  'labels': ['<95%',
+                             '95-98%', 
+                             '>= 99%'],
+                  'color': ['#4aded0', '#0b24fb', '#0b24fb']}
+    elif schema_name == 'WaterWatch_BrownBlue':
+        schema = {'ranges': [0, 10, 25, 75, 90, 100],
+                  'labels': ['Much below normal', 'Below normal',
+                              'Normal', 'Above normal', 'Much above normal'],
+                  'color': ['#dcb668','#ebd6ab','#e9e9e9','#aacee0','#5699c0'],
+                  'low_label': 'Low',
+                  'low_color': '#8f4f1f',
+                  'high_label': 'High',
+                  'high_color': "#292f6b"}
+    elif schema_name == 'NIDIS_Drought':
+        schema = {'ranges': [0, 2, 5, 10, 20, 30],
+                  'labels': ['Exceptional drought', 
+                             'Extreme drought', 
+                             'Severe drought', 
+                             'Moderate drought',
+                             'Abnormally dry'],
+                  'color': ['#720206', '#e30b17', '#fda929','#fbd285',
+                            '#fffd38']}
+        
+    return schema
+
