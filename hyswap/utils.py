@@ -701,7 +701,7 @@ def retreive_schema(schema_name):
                   'labels': ['Much below normal', 'Below normal', 'Normal',
                              'Above normal', 'Much above normal'],
                   'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9',
-                            '#2641f1'],
+                             '#2641f1'],
                   'low_label': 'All-time low',
                   'low_color': '#e82f3e',
                   'high_label': 'All-time high',
@@ -712,7 +712,7 @@ def retreive_schema(schema_name):
                              'Normal', 'Above normal',
                              'Much above normal', 'High'],
                   'colors': ['#af2327', '#fda328', '#29fd2f', '#4aded0',
-                            '#0b24fb'],
+                             '#0b24fb'],
                   'low_label': 'Low',
                   'low_color': '#fc0d1b',
                   'high_label': 'High',
@@ -736,7 +736,7 @@ def retreive_schema(schema_name):
                   'labels': ['Much below normal', 'Below normal',
                              'Normal', 'Above normal', 'Much above normal'],
                   'colors': ['#dcb668', '#ebd6ab', '#e9e9e9', '#aacee0',
-                            '#5699c0'],
+                             '#5699c0'],
                   'low_label': 'Low',
                   'low_color': '#8f4f1f',
                   'high_label': 'High',
@@ -749,6 +749,6 @@ def retreive_schema(schema_name):
                              'Moderate drought',
                              'Abnormally dry'],
                   'colors': ['#720206', '#e30b17', '#fda929', '#fbd285',
-                            '#fffd38']}
+                             '#fffd38']}
 
     return schema
