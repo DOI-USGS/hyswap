@@ -168,11 +168,27 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
             dff = df.loc[df.index.dayofyear == value, data_column_name]
         else:
             # grab data from the specified day of year and include leading
-            # and trailing values
-            dff = df.loc[
-                (df.index.dayofyear >= value - leading_values) &
-                (df.index.dayofyear <= value + trailing_values),
-                data_column_name]
+            # and trailing values.
+            # note that at the beginning and end of the year, this section
+            # wraps backward and forward, respectively, to ensure it is
+            # calculating percentiles from a full window.
+            if value < (1 + leading_values):
+                dff = df.loc[
+                    (df.index.dayofyear >= value - leading_values) &
+                    (df.index.dayofyear <= value + trailing_values) |
+                    (df.index.dayofyear >= 366 - (leading_values - value)),
+                    data_column_name]
+            elif value > (366 - trailing_values):
+                dff = df.loc[
+                    (df.index.dayofyear >= value - leading_values) &
+                    (df.index.dayofyear <= value + trailing_values) |
+                    (df.index.dayofyear <= trailing_values - (366 - value)),
+                    data_column_name]
+            else:
+                dff = df.loc[
+                    (df.index.dayofyear >= value - leading_values) &
+                    (df.index.dayofyear <= value + trailing_values),
+                    data_column_name]
     elif time_interval == 'month':
         # grab data from the specified month
         dff = df.loc[df.index.month == value, data_column_name]
