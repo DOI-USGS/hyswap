@@ -609,13 +609,13 @@ def set_data_type(data_type):
     return data_type
 
 
-def categorize_flows(df, data_col, schema_name='NWD'):
+def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
     """Function to categorize streamflows based on percentile ranges
-    
+
     This function assigns a category to each streamflow observation for a
     single site by comparing the estimated percentile to a schema of percentile
     ranges and associated category labels
-    
+
     Parameters
     ----------
     df : pandas.DataFrame
@@ -624,10 +624,21 @@ def categorize_flows(df, data_col, schema_name='NWD'):
     data_col : str
         Name of the column in the DataFrame that contains the data of
         interest, in this case estimated streamflow percentile.
-    
+
     schema_name : str, optional
         Name of the categorization schema that should be used to categorize
-        streamflow. Default is NWD schema.
+        streamflow. Default is "NWD" schema.
+
+    custom_schema : dict, optional
+        Python dictionary describing custom schema to use for categorizing
+        streamflow based on percentiles. Required in dict is 'ranges', an array
+        of percentile cut points and 'labels', a list of category labels that
+        matches the number of bins represented by ranges. Optionally can
+        include 'low_label' and 'high_label' which are category labels
+        associated with the lowest and highest values in 'ranges',
+        respectively. Additional optional keys include 'colors', 'low_color',
+        and 'high_color' which specify a color palette that can be accessed in
+        user created plots and maps. Default is None.
 
     Returns
     -------
@@ -635,7 +646,8 @@ def categorize_flows(df, data_col, schema_name='NWD'):
         DataFrame with flow_cat column added.
     """
 
-    schema = retreive_schema(schema_name)
+    if custom_schema is not None:
+        schema = retreive_schema(schema_name)
 
     df['flow_cat'] = pd.cut(df[data_col], schema['ranges'],
                             labels=schema['labels'],
@@ -645,7 +657,7 @@ def categorize_flows(df, data_col, schema_name='NWD'):
         df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['low_label'])
         df.loc[df[data_col] == schema['ranges'][0], 'flow_cat'] = schema['low_label']  # noqa: E501
     if "high_label" in schema:
-        df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['high_label']) # noqa: E501
+        df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['high_label'])  # noqa: E501
         df.loc[df[data_col] == schema['ranges'][-1], 'flow_cat'] = schema['high_label']  # noqa: E501
 
     df['flow_cat'] = df['flow_cat'].cat.add_categories('Not ranked')
@@ -655,7 +667,7 @@ def categorize_flows(df, data_col, schema_name='NWD'):
 
 
 def retreive_schema(schema_name):
-    """Function to retreive the flow range categories for a given schema
+    """Function used to retreive the flow range categories given a schema name
 
     Parameters
     ----------
@@ -669,10 +681,10 @@ def retreive_schema(schema_name):
         dictionary of flow ranges, category labels, and color palette
     """
     if schema_name == 'NWD':
-        schema = {'ranges': [0, 10, 25, 75, 90, 100],
+        schema = {'ranges': [0, 10, 25, 76, 90, 100],
                   'labels': ['Much below normal', 'Below normal', 'Normal',
                              'Above normal', 'Much above normal'],
-                  'color': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9',
+                  'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9',
                             '#2641f1'],
                   'low_label': 'All-time low',
                   'low_color': '#e82f3e',
@@ -683,7 +695,7 @@ def retreive_schema(schema_name):
                   'labels': ['Low', 'Much below normal', 'Below normal',
                              'Normal', 'Above normal',
                              'Much above normal', 'High'],
-                  'color': ['#af2327', '#fda328', '#29fd2f', '#4aded0',
+                  'colors': ['#af2327', '#fda328', '#29fd2f', '#4aded0',
                             '#0b24fb'],
                   'low_label': 'Low',
                   'low_color': '#fc0d1b',
@@ -694,20 +706,20 @@ def retreive_schema(schema_name):
                   'labels': ['Severe hydrologic drought',
                              'Moderate hydrologic drought',
                              'Below normal'],
-                  'color': ['#af2327', '#fd9941', '#fecb6e'],
+                  'colors': ['#af2327', '#fd9941', '#fecb6e'],
                   'low_label': 'Extreme hydrologic drought',
-                  'low_color': '#fc0d1b',}
+                  'low_color': '#fc0d1b'}
     elif schema_name == 'WaterWatch_Flood':
         schema = {'ranges': [0, 95, 99, 100],
                   'labels': ['<95%',
                              '95-98%',
                              '>= 99%'],
-                  'color': ['#4aded0', '#0b24fb', '#0b24fb']}
+                  'colors': ['#4aded0', '#0b24fb', '#0b24fb']}
     elif schema_name == 'WaterWatch_BrownBlue':
         schema = {'ranges': [0, 10, 25, 75, 90, 100],
                   'labels': ['Much below normal', 'Below normal',
                              'Normal', 'Above normal', 'Much above normal'],
-                  'color': ['#dcb668', '#ebd6ab', '#e9e9e9', '#aacee0',
+                  'colors': ['#dcb668', '#ebd6ab', '#e9e9e9', '#aacee0',
                             '#5699c0'],
                   'low_label': 'Low',
                   'low_color': '#8f4f1f',
@@ -720,7 +732,7 @@ def retreive_schema(schema_name):
                              'Severe drought',
                              'Moderate drought',
                              'Abnormally dry'],
-                  'color': ['#720206', '#e30b17', '#fda929', '#fbd285',
+                  'colors': ['#720206', '#e30b17', '#fda929', '#fbd285',
                             '#fffd38']}
-        
+
     return schema
