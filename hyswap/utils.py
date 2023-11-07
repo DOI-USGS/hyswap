@@ -660,10 +660,38 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
     -------
     df : pandas.DataFrame
         DataFrame with flow_cat column added.
+
+    Examples
+    --------
+    Categorize streamflow based on calculated percentiles for streamflow
+    records downloaded from NWIS.
+
+    .. doctest::
+        :skipif: True  # dataretrieval functions break CI pipeline
+
+        >>> data, _ = dataretrieval.nwis.get_dv(
+        ...     "04288000", parameterCd="00060",
+        ...     start="1900-01-01", end="2021-12-31")
+        >>> pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
+        ...     data, '00060_Mean',
+        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
+        ...     method='linear')
+        >>> new_data, _ = dataretrieval.nwis.get_dv(
+        ...     "04288000", parameterCd="00060",
+        ...     start="2022-05-01", end="2022-05-07")
+        >>> new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501
+        ...     new_data, '00060_Mean', pcts_df)
+        >>> new_data = utils.categorize_flows(new_data, 'est_pct', 
+        ...     schema_name='NWD')
+        ... new_data['flow_cat'].to_list()
+        ['Normal', 'Normal', 'Normal', 'Above normal', 'Above normal',
+        'Normal', 'Normal']
     """
 
-    if custom_schema is not None:
+    if custom_schema is None:
         schema = retreive_schema(schema_name)
+    else:
+        schema = custom_schema
 
     df['flow_cat'] = pd.cut(df[data_col], schema['ranges'],
                             labels=schema['labels'],
