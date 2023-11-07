@@ -184,7 +184,7 @@ class TestCalculateVariablePercentileThresholdsByDay:
         assert not percentiles_.equals(percentiles_7day)
 
 
-class TestCalculatePercentilesFromValue:
+class TestCalculateFixedPercentilesFromValue:
     # define some test values
     data = np.arange(101)
     percentiles_ = np.arange(0, 105, 5)
@@ -195,35 +195,35 @@ class TestCalculatePercentilesFromValue:
     mid_val = 51
     multiple_values = [-5, 7, 51, 98, 105]
 
-    def test_calculate_percentiles_from_value_low(self):
+    def test_calculate_fixed_percentiles_from_value_low(self):
         """Test with a low value."""
         # test the function
-        pct_out = percentiles.calculate_percentile_from_value(
+        pct_out = percentiles.calculate_fixed_percentile_from_value(
             self.low_val, self.pct_df)
         assert pct_out == 0.0
 
-    def test_calculate_percentiles_from_value_mid(self):
+    def test_calculate_fixed_percentiles_from_value_mid(self):
         """Test with a mid value."""
         # test the function
-        pct_out = percentiles.calculate_percentile_from_value(
+        pct_out = percentiles.calculate_fixed_percentile_from_value(
             self.mid_val, self.pct_df)
         assert pct_out == 51.0
 
-    def test_calculate_percentiles_from_value_high(self):
+    def test_calculate_fixed_percentiles_from_value_high(self):
         """Test with a high value."""
         # test the function
-        pct_out = percentiles.calculate_percentile_from_value(
+        pct_out = percentiles.calculate_fixed_percentile_from_value(
             self.high_val, self.pct_df)
         assert pct_out == 100.0
 
-    def test_calculate_percentiles_from_value_multiple(self):
+    def test_calculate_fixed_percentiles_from_value_multiple(self):
         """Test with multiple values."""
-        pct_out = percentiles.calculate_percentile_from_value(
+        pct_out = percentiles.calculate_fixed_percentile_from_value(
             self.multiple_values, self.pct_df)
         assert pct_out == pytest.approx([0.0, 7.0, 51.0, 98.0, 100.0])
 
-    def test_calculate_percentiles_from_value_invalid(self):
+    def test_calculate_fixed_percentiles_from_value_invalid(self):
         """Test with invalid inputs."""
         with pytest.raises(AttributeError):
-            percentiles.calculate_percentile_from_value(
+            percentiles.calculate_fixed_percentile_from_value(
                 self.low_val, [1, 2, 3])
