@@ -100,7 +100,7 @@ Interpolating New Percentiles Using Previously Calculated Percentiles
 
 To support faster calculations of percentiles without the need to repeatedly
 fetch all historic data from NWIS, the
-:obj:`hyswap.percentiles.calculate_percentile_from_value` function supports the
+:obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` function supports the
 interpolation of a new percentile value for a measurement given a previously
 calculated set of percentiles and their associated values.
 
@@ -121,7 +121,7 @@ Then, a new fixed-threshold percentile value is interpolated for a measurement o
         df['00060_Mean'], percentiles=[10, 50, 90])
 
     # calculate the percentile associated with 100.0 cfs
-    pct = hyswap.percentiles.calculate_percentile_from_value(
+    pct = hyswap.percentiles.calculate_fixed_percentile_from_value(
         100.0, pct_values)
 
     # print that percentile value
@@ -150,7 +150,7 @@ calculating a new variable-threshold percentile value for a measurement of 100.0
                            index=day1.index.values).T
 
     # calculate the percentile associated with 100.0 cfs
-    pct = hyswap.percentiles.calculate_percentile_from_value(
+    pct = hyswap.percentiles.calculate_fixed_percentile_from_value(
         100.0, day1_df)
 
     # print that percentile value
