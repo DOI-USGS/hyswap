@@ -681,7 +681,7 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
         ...     start="2022-05-01", end="2022-05-07")
         >>> new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501
         ...     new_data, '00060_Mean', pcts_df)
-        >>> new_data = utils.categorize_flows(new_data, 'est_pct', 
+        >>> new_data = utils.categorize_flows(new_data, 'est_pct',
         ...     schema_name='NWD')
         ... new_data['flow_cat'].to_list()
         ['Normal', 'Normal', 'Normal', 'Above normal', 'Above normal',
