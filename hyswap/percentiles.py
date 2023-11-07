@@ -258,14 +258,14 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
 
     .. doctest::
 
-        >>> data = np.arange(101)
+        >>> data = np.arange(1001) 
         >>> pcts_df = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
         ...     method='linear')
-        >>> new_percentile = percentiles.calculate_percentile_from_value(
-        ...     51, pcts_df)
+        >>> new_percentile = percentiles.calculate_fixed_percentile_from_value(
+        ...     500, pcts_df)
         >>> new_percentile
-        51.0
+        50.00
     """
     # define values
     thresholds = percentile_df.columns.tolist()
@@ -299,11 +299,34 @@ def calculate_multiple_fixed_percentiles_from_values(df, data_column_name,
     -------
     df : pd.DataFrame
         Pandas dataframe of values with estimated percentile column added
+
+    Examples
+    --------
+    Calculate the percentiles associated with multiple values using flow
+    records downloaded from NWIS.
+
+    .. doctest::
+        :skipif: True  # dataretrieval functions break CI pipeline
+
+        >>> data, _ = dataretrieval.nwis.get_dv(
+        ...     "04288000", parameterCd="00060",
+        ...     start="1900-01-01", end="2021-12-31")
+        >>> pcts_df = percentiles.calculate_fixed_percentile_thresholds(
+        ...     data['00060_Mean'],
+        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
+        ...     method='linear')
+        >>> new_data, _ = dataretrieval.nwis.get_dv(
+        ...     "04288000", parameterCd="00060",
+        ...     start="2022-01-01", end="2022-01-07")
+        >>> new_percentiles = percentiles.calculate_multiple_fixed_percentiles_from_values(  # noqa: E501
+        ...     new_data, '00060_Mean', pcts_df)
+        >>> new_percentiles['est_pct'].to_list()
+        [58.41, 75.0, 48.45, 39.16, 45.58, 48.01, 42.04]
     """
     # define percentile threshold values
     thresholds = percentile_df.columns.tolist()
     percentile_values = percentile_df.values.tolist()[0]
-    
+
     # do linear interpolation
     df['est_pct'] = np.interp(df[data_column_name].values,
                            percentile_values,
@@ -333,13 +356,33 @@ def calculate_variable_percentile_from_value(value, percentile_df, mo_day):
         function but could be provided manually or from data pulled from the
         NWIS stats service.
 
-    mo_day : 
+    mo_day : str
+        string of month-day of year to lookup percentile thresholds for value
 
     Returns
     -------
     percentile : float, np.ndarray
         Percentile associated with the input value(s).
 
+    Examples
+    --------
+    Calculate the percentile associated with a value using flow records
+    downloaded from NWIS.
+
+    .. doctest::
+        :skipif: True  # dataretrieval functions break CI pipeline
+
+        >>> data, _ = dataretrieval.nwis.get_dv(
+        ...     "03586500", parameterCd="00060",
+        ...     start="1776-01-01", end="2022-12-31")
+        >>> pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
+        ...     data, '00060_Mean',
+        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
+        ...     method='linear')
+        >>> new_percentile = percentiles.calculate_variable_percentile_from_value(  # noqa: E501
+        ...     500, pcts_df, '06-30')
+        >>> new_percentile
+        59.97
     """
     # retrieve percentile thresholds for the day of year of interest
     pct_values = percentile_df.loc[percentile_df.index.get_level_values('month-day') == mo_day]  # noqa: E501
@@ -384,18 +427,37 @@ def calculate_multiple_variable_percentiles_from_values(df, data_column_name,
     df : pd.DataFrame
         Pandas dataframe of values with estimated percentile column added
 
-    """
+    Examples
+    --------
+    Calculate the percentiles associated with multiple values using flow
+    records downloaded from NWIS.
 
-    df = df.reset_index()
+    .. doctest::
+        :skipif: True  # dataretrieval functions break CI pipeline
+
+        >>> data, _ = dataretrieval.nwis.get_dv(
+        ...     "04288000", parameterCd="00060",
+        ...     start="1900-01-01", end="2021-12-31")
+        >>> pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
+        ...     data, '00060_Mean',
+        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
+        ...     method='linear')
+        >>> new_data, _ = dataretrieval.nwis.get_dv(
+        ...     "04288000", parameterCd="00060",
+        ...     start="2022-01-01", end="2022-01-07")
+        >>> new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501
+        ...     new_data, '00060_Mean', pcts_df)
+        >>> new_percentiles['est_pct'].to_list()
+        [58.41, 75.0, 48.45, 39.16, 45.58, 48.01, 42.04]
+    """
     if date_column_name is None:
         date_column_name = 'datetime'
 
+    df = df.reset_index()
     df['est_pct'] = df.apply(lambda row: calculate_variable_percentile_from_value(  # noqa: E501
-        row[data_column_name], percentile_df, 
+        row[data_column_name], percentile_df,
         datetime.strftime(row[date_column_name], '%m-%d')), axis=1)
     df['est_pct'] = df['est_pct'].round(2)
-    
     df = df.set_index(date_column_name)
-
 
     return df
