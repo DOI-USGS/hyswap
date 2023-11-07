@@ -265,7 +265,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
         >>> new_percentile = percentiles.calculate_fixed_percentile_from_value(
         ...     500, pcts_df)
         >>> new_percentile
-        50.00
+        50.0
     """
     # define values
     thresholds = percentile_df.columns.tolist()
