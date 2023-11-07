@@ -258,7 +258,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
 
     .. doctest::
 
-        >>> data = np.arange(1001) 
+        >>> data = np.arange(1001)
         >>> pcts_df = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
         ...     method='linear')
@@ -329,8 +329,8 @@ def calculate_multiple_fixed_percentiles_from_values(df, data_column_name,
 
     # do linear interpolation
     df['est_pct'] = np.interp(df[data_column_name].values,
-                           percentile_values,
-                           thresholds)
+                              percentile_values,
+                              thresholds)
     df['est_pct'] = df['est_pct'].round(2)
 
     return df
