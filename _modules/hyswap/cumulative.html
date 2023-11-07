@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.cumulative &#8212; hyswap 0.1.dev1+gb559c93 documentation</title>
+    <title>hyswap.cumulative &#8212; hyswap 0.1.dev1+g3f77fca documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=a3b49272"></script>
+    <script src="../../_static/documentation_options.js?v=178e8579"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.cumulative</a></li> 
       </ul>
@@ -63,6 +63,7 @@
 <span class="sd">        DataFrame containing data to calculate cumulative values.</span>
 <span class="sd">    data_column_name : str</span>
 <span class="sd">        Name of column containing data to calculate cumulative values for.</span>
+<span class="sd">        Discharge data assumed to be in unit of ft3/s.</span>
 <span class="sd">    date_column_name : str, optional</span>
 <span class="sd">        Name of column containing date information. If None, the index of</span>
 <span class="sd">        `df` will be used.</span>
@@ -81,7 +82,7 @@
 <span class="sd">    cumulative_values : pandas.DataFrame</span>
 <span class="sd">        DataFrame containing daily cumulative values for each year in the</span>
 <span class="sd">        input DataFrame, rows are dates and columns include years, days, and</span>
-<span class="sd">        cumulative values.</span>
+<span class="sd">        cumulative values in acre-feet.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -111,8 +112,10 @@
         <span class="c1"># year must be complete</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">year_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">365</span><span class="p">:</span>
             <span class="c1"># calculate cumulative values and assign to cdf</span>
+            <span class="c1"># converted to acre-feet</span>
+            <span class="c1"># multiplied by seconds per day</span>
             <span class="n">cdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cdf</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">year</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">year_data</span><span class="p">)]</span> <span class="o">=</span> \
-                <span class="n">year_data</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">year_data</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mf">0.0000229568</span> <span class="o">*</span> <span class="mi">86400</span>
     <span class="c1"># reformat the dataframe</span>
     <span class="n">cdf</span> <span class="o">=</span> <span class="n">_tidy_cumulative_dataframe</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">year_type</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cdf</span></div>
@@ -199,14 +202,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.cumulative</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gb559c93 documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g3f77fca documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=a3b49272"></script>
+    <script src="../../_static/documentation_options.js?v=178e8579"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -221,11 +221,27 @@
             <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">==</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># grab data from the specified day of year and include leading</span>
-            <span class="c1"># and trailing values</span>
-            <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-                <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&gt;=</span> <span class="n">value</span> <span class="o">-</span> <span class="n">leading_values</span><span class="p">)</span> <span class="o">&amp;</span>
-                <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">+</span> <span class="n">trailing_values</span><span class="p">),</span>
-                <span class="n">data_column_name</span><span class="p">]</span>
+            <span class="c1"># and trailing values.</span>
+            <span class="c1"># note that at the beginning and end of the year, this section</span>
+            <span class="c1"># wraps backward and forward, respectively, to ensure it is</span>
+            <span class="c1"># calculating percentiles from a full window.</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">leading_values</span><span class="p">):</span>
+                <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&gt;=</span> <span class="n">value</span> <span class="o">-</span> <span class="n">leading_values</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">+</span> <span class="n">trailing_values</span><span class="p">)</span> <span class="o">|</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&gt;=</span> <span class="mi">366</span> <span class="o">-</span> <span class="p">(</span><span class="n">leading_values</span> <span class="o">-</span> <span class="n">value</span><span class="p">)),</span>
+                    <span class="n">data_column_name</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mi">366</span> <span class="o">-</span> <span class="n">trailing_values</span><span class="p">):</span>
+                <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&gt;=</span> <span class="n">value</span> <span class="o">-</span> <span class="n">leading_values</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">+</span> <span class="n">trailing_values</span><span class="p">)</span> <span class="o">|</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&lt;=</span> <span class="n">trailing_values</span> <span class="o">-</span> <span class="p">(</span><span class="mi">366</span> <span class="o">-</span> <span class="n">value</span><span class="p">)),</span>
+                    <span class="n">data_column_name</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&gt;=</span> <span class="n">value</span> <span class="o">-</span> <span class="n">leading_values</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">+</span> <span class="n">trailing_values</span><span class="p">),</span>
+                    <span class="n">data_column_name</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">time_interval</span> <span class="o">==</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span>
         <span class="c1"># grab data from the specified month</span>
         <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">]</span>
@@ -713,14 +729,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb559c93 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

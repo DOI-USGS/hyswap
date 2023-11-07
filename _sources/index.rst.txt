@@ -18,7 +18,8 @@ Table of Contents
 
    meta/installation
    examples/index
+   meta/glossary
+   meta/calculations
    meta/contributing
    meta/disclaimer
-   meta/glossary
    reference/index
