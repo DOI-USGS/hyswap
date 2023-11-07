@@ -100,7 +100,8 @@ Interpolating New Percentiles Using Previously Calculated Percentiles
 
 To support faster calculations of percentiles without the need to repeatedly
 fetch all historic data from NWIS, the
-:obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` function supports the
+:obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` and 
+:obj:`hyswap.percentiles.calculate_variable_percentile_from_value`functions support the
 interpolation of a new percentile value for a measurement given a previously
 calculated set of percentiles and their associated values.
 
@@ -125,8 +126,71 @@ Then, a new fixed-threshold percentile value is interpolated for a measurement o
         100.0, pct_values)
 
     # print that percentile value
-    print(np.round(pct, 2))
+    print(pct)
     51.74
+
+Next is an example of fetching NWIS streamflow data for a USGS gage and then
+calculating the variable-threshold percentiles using all of the data.
+Then, a new variable-threshold percentile value is interpolated for a measurement
+of 100.0 cfs on September 1st.
+
+.. code::
+
+    # fetch data from NWIS using dataretrieval
+    df, _ = dataretrieval.nwis.get_dv("03586500",
+                                      parameterCd="00060",
+                                      start="1776-01-01",
+                                      end="2022-12-31")
+
+    # calculate percentiles
+    pct_values = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
+        df,'00060_Mean')
+
+    # calculate the percentile associated with 100.0 cfs for September 1st
+    pct = hyswap.percentiles.calculate_variable_percentile_from_value(
+        100.0, pct_values, '09-01')
+
+    # print that percentile value
+    print(pct)
+    22.22
+
+Percentiles can also be calculate for multiple streamflow values at once. Below
+is an example of fetching NWIS streamflow data for a USGS gage and then
+calculating variable-threshold percentiles using all of the data.
+Then, new variable-threshold percentile values are interpolated for measurements
+from a recent month.
+
+.. code::
+
+    # fetch data from NWIS using dataretrieval
+    df, _ = dataretrieval.nwis.get_dv("03586500",
+                                      parameterCd="00060",
+                                      start="1776-01-01",
+                                      end="2022-12-31")
+
+    # calculate percentiles
+    pct_values = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
+        df,'00060_Mean')
+
+    # fetch data from NWIS using dataretrieval
+    new_df, _ = dataretrieval.nwis.get_dv("03586500",
+                                      parameterCd="00060",
+                                      start="2023-01-01",
+                                      end="2023-01-31")
+
+    # calculate the percentile associated streamflow for January, 2023
+    pcts = hyswap.percentiles.calculate_multiple_variable_percentiles_from_values(
+        new_df, '00060_Mean', pct_values)
+
+    # print that percentile value
+    print(pcts['est_pct'].head())
+    
+    2023-01-01      24.31
+    2023-01-02      22.74
+    2023-01-03      29.87
+    2023-01-04      77.72
+    2023-01-05      64.98
+
 
 Below is an example of fetching variable-threshold percentiles for January 1st and their
 associated values from the NWIS statistics service for a USGS gage and then
@@ -156,6 +220,55 @@ calculating a new variable-threshold percentile value for a measurement of 100.0
     # print that percentile value
     print(np.round(pct, 2))
     22.62
+
+
+Categorizing Streamflow Conditions Based on Estimated Percentiles
+*****************************************************************
+To support generation of tables, figures and maps of current and past streamflow
+conditions, the category of a given streamflow can be determined using
+:obj:`hyswap.utils.categorize_flows`. The function assigns a category to a given
+streamflow observation based on interpolated percentiles and a given categorization
+schema.
+
+Below is an example of fetching NWIS streamflow data for a USGS gage and then
+calculating the variable-threshold percentiles using all of the data.
+Then, new variable-threshold percentile values are interpolated for measurements
+from a recent month and flow categories assigned.
+
+.. code::
+
+    # fetch data from NWIS using dataretrieval
+    df, _ = dataretrieval.nwis.get_dv("04288000",
+                                      parameterCd="00060",
+                                      start="1900-01-01",
+                                      end="2022-12-31")
+
+    # calculate percentiles
+    pct_values = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
+        df,'00060_Mean')
+
+    # fetch data from NWIS using dataretrieval
+    new_df, _ = dataretrieval.nwis.get_dv("03586500",
+                                      parameterCd="00060",
+                                      start="2023-01-01",
+                                      end="2023-01-31")
+
+    # calculate the percentile associated with streamflow for January, 2023
+    new_df = hyswap.percentiles.calculate_multiple_variable_percentiles_from_values(
+        new_df, '00060_Mean', pct_values)
+
+    # categorize streamflow using the default categorization schema
+    flow_cat = hyswap.utils.categorize_flows(new_df, 'est_pct', schema_name='NWD')
+
+    # print that flow categorizations
+    print(flow_cat[['00060_Mean', 'est_pct', 'flow_cat']].head())
+                                00060_Mean  est_pct           flow_cat
+    datetime                                                         
+    2023-01-01 00:00:00+00:00       112.0    26.70             Normal
+    2023-01-02 00:00:00+00:00       103.0    23.75       Below normal
+    2023-01-03 00:00:00+00:00       170.0    43.13             Normal
+    2023-01-04 00:00:00+00:00       823.0    96.00  Much above normal
+    2023-01-05 00:00:00+00:00       559.0    93.34  Much above normal
 
 .. _`numpy.percentile`: https://numpy.org/doc/stable/reference/generated/numpy.percentile.html
 
