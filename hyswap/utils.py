@@ -74,9 +74,10 @@ def rolling_average(df, data_column_name, data_type,
         argument is 7. When False, the `min_periods` argument is set
         using the `custom_min_periods` input.
     custom_min_periods : int, optional
-        Defaults to None. If an integer is provided, that integer
-        will be used to define the `min_periods` argument in
-        `pandas.DataFrame.rolling`.
+        Defaults to None. Only used if `auto_min_periods` is False.
+        If `auto_min_periods` is False and an integer is provided,
+        that integer will be used to define the `min_periods` argument
+        in `pandas.DataFrame.rolling`.
     **kwargs
         Additional keyword arguments to be passed to
         `pandas.DataFrame.rolling`.
