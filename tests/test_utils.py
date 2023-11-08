@@ -32,9 +32,13 @@ class TestRollingAverage:
         df.set_index("date", inplace=True)
         # calculate the rolling average
         df_out = utils.rolling_average(df, "data", "2D")
-        # check the output
-        assert df_out["data"].tolist() == [1.0, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5,
-                                           7.5, 8.5, 9.5]
+        # check the output that is not na
+        assert df_out["data"].dropna().tolist() == [1.5, 2.5, 3.5,
+                                                    4.5, 5.5, 6.5,
+                                                    7.5, 8.5, 9.5]
+        # check that first element is NaN since day 1 does not have a 2-day
+        # trailing window.
+        assert np.isnan(df_out["data"][0])
         # check that the data column is in both dataframes
         assert "data" in df.columns
         assert "data" in df_out.columns
@@ -50,8 +54,13 @@ class TestRollingAverage:
         df.set_index("date", inplace=True)
         # try passing a kwarg to the rolling_average function
         df_out = utils.rolling_average(df, "data", "2D", center=True)
-        assert df_out["data"].tolist() == [1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5,
-                                           8.5, 9.5, 10.0]
+        assert df_out["data"].dropna().tolist() == [1.5, 2.5, 3.5,
+                                                    4.5, 5.5, 6.5,
+                                                    7.5, 8.5, 9.5]
+        # check that last element is NaN since day 10 does not have a 2-day
+        # leading window (since center=True, which changes the window
+        # orientation).
+        assert np.isnan(df_out["data"][9])
 
     def test_rolling_average_kwarg_02(self):
         # make a data frame with some dates and data
@@ -61,7 +70,7 @@ class TestRollingAverage:
         # set date as index
         df.set_index("date", inplace=True)
         # try passing a different kwarg
-        df_out = utils.rolling_average(df, "data", "2D", min_periods=2)
+        df_out = utils.rolling_average(df, "data", "2D")
         assert np.isnan(df_out["data"].tolist()[0])
         assert df_out['data'].tolist()[1:] == [1.5, 2.5, 3.5, 4.5, 5.5, 6.5,
                                                7.5, 8.5, 9.5]
@@ -457,7 +466,7 @@ def test_filter_to_common_time():
 
 def test_set_data_type():
     """Test the function set_data_type."""
-    assert utils.set_data_type('daily') == 'D'
+    assert utils.set_data_type('daily') == '1D'
     assert utils.set_data_type('7-day') == '7D'
     assert utils.set_data_type('14-day') == '14D'
     assert utils.set_data_type('28-day') == '28D'
@@ -492,7 +501,7 @@ class TestSummaryStatistics:
 class TestSetDataType:
     def test_set_data_type_daily(self):
         """Test the function set_data_type."""
-        assert utils.set_data_type('daily') == 'D'
+        assert utils.set_data_type('daily') == '1D'
 
     def test_set_data_type_week(self):
         """Test the function set_data_type."""

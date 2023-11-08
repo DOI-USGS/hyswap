@@ -44,13 +44,18 @@ def filter_approved_data(data, filter_column=None):
                      (data[filter_column] == "A, e"))]
 
 
-def rolling_average(df, data_column_name, data_type, **kwargs):
+def rolling_average(df, data_column_name, data_type,
+                    auto_min_periods=True, custom_min_periods=None,
+                    **kwargs):
     """Calculate a rolling average for a dataframe.
 
-    Default behavior right-aligns the window used for the rolling average,
-    and returns NaN values if any of the values in the window are NaN.
-    Properties of the windowing can be changed by passing additional keyword
-    arguments which are fed to `pandas.DataFrame.rolling`.
+    Default behavior right-aligns the window used for the rolling average
+    and uses the data_type argument ('1D', '7D', '14D', '28D') to set the
+    `min_periods` argument in `pandas.DataFrame.rolling`. The function
+    returns NaN values if any of the values in the window are NaN or if the
+    `mind_periods` argument is not satisifed. Properties of the windowing
+    can be changed by passing additional keyword arguments which are fed
+    to `pandas.DataFrame.rolling`.
 
     Parameters
     ----------
@@ -62,6 +67,16 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
         The formatted frequency string to be used with
         pandas.DataFrame.rolling to calculate the average over the correct
         temporal period.
+    auto_min_periods : bool
+        Defaults to True. When True, the `min_periods` argument in
+        `pandas.DataFrame.rolling` is set using the `data_type` argument.
+        For example, if the `data_type` = '7D', the `min_periods`
+        argument is 7. When False, the `min_periods` argument is set
+        using the `custom_min_periods` input.
+    custom_min_periods : int, optional
+        Defaults to None. If an integer is provided, that integer
+        will be used to define the `min_periods` argument in
+        `pandas.DataFrame.rolling`.
     **kwargs
         Additional keyword arguments to be passed to
         `pandas.DataFrame.rolling`.
@@ -71,9 +86,14 @@ def rolling_average(df, data_column_name, data_type, **kwargs):
     pandas.DataFrame
         The output dataframe with the rolling average values.
     """
+    if auto_min_periods is True:
+        min_periods = pd.to_timedelta(data_type).days
+    else:
+        min_periods = custom_min_periods
     df_out = df.copy(deep=True)
     df_out[data_column_name] = df_out[data_column_name].rolling(
-        data_type, **kwargs).mean()
+        data_type,
+        min_periods, **kwargs).mean()
     return df_out
 
 
@@ -614,7 +634,7 @@ def set_data_type(data_type):
         temporal period.
     """
     if data_type == 'daily':
-        data_type = 'D'
+        data_type = '1D'
     elif data_type == '7-day':
         data_type = '7D'
     elif data_type == '14-day':
