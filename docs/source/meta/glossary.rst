@@ -4,9 +4,9 @@ Glossary
 +-------------------+------------------------------+---------------------------------------+
 | Term              | Definition                   | Reference                             |
 +===================+==============================+=======================================+
-| Climate Year      | A continuous 12-month period | `Hammond et al. (2022)`_              |
+| .. _cllabel:      | A continuous 12-month period | `Hammond et al. (2022)`_              |
 |                   | selected to present data     |                                       |
-|                   | relative to climatic         |                                       |
+| Climate Year      | relative to climatic         |                                       |
 |                   | phenomena during which the   |                                       |
 |                   | annual low-flow period       |                                       |
 |                   | normally occurs. The climate |                                       |
@@ -16,9 +16,9 @@ Glossary
 |                   | designated by the year in    |                                       |
 |                   | which it ends.               |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| Water Year        | A continuous 12-month period | `USGS Water Science Glossary`_        |
+| .. _wylabel:      | A continuous 12-month period | `USGS Water Science Glossary`_        |
 |                   | selected to present data     |                                       |
-|                   | relative to hydrologic or    |                                       |
+| Water Year        | relative to hydrologic or    |                                       |
 |                   | meteorological phenomena     |                                       |
 |                   | during which a complete      |                                       |
 |                   | annual hydrologic cycle      |                                       |
@@ -29,9 +29,9 @@ Glossary
 |                   | 30, and is designated by the |                                       |
 |                   | year in which it ends.       |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| Calendar Year     | Starts January 1 and ends    | `Pope Gregory XIII (1582)`_           |
+| .. _calabel:      | Starts January 1 and ends    | `Pope Gregory XIII (1582)`_           |
 |                   | December 31 of the calendar  |                                       |
-|                   | year.                        |                                       |
+| Calendar Year     | year.                        |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Hydrograph        | A plot of streamflow         | `USDA National Engineering Handbook`_ |
 |                   | (discharge) versus time.     |                                       |

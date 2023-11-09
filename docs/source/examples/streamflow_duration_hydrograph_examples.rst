@@ -112,8 +112,8 @@ Now that we've retrieved our web data, we will apply some `hyswap` functions to 
 Plotting by Water Year
 **********************
 
-The examples above show how to plot the percentiles by day of year using the calendar year.
-In this example, we will plot the percentiles by day of water year, as water years are commonly by hydrologists.
+The examples above show how to plot the percentiles by day of year using the :ref:`calendar year <CaLabel>`.
+In this example, we will plot the percentiles by day of :ref:`water year <WYLabel>`, as water years are commonly used by hydrologists.
 The only change this requires from above is specifying the type of year we are planning to use when calculating the daily percentile thresholds.
 
 .. plot::
@@ -158,7 +158,7 @@ Plotting by Climate Year
 ************************
 
 The examples above show how to plot the percentiles by day of year using the calendar year.
-In this example, we will plot the percentiles by day of climate year.
+In this example, we will plot the percentiles by day of :ref:`climate year <ClLabel>`.
 The only change this requires from above is specifying the type of year we are planning to use when calculating the daily percentile thresholds.
 
 .. plot::
