@@ -7,12 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g3f77fca documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+gf39d874 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=178e8579"></script>
+    <script src="../_static/documentation_options.js?v=99aedded"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -383,12 +383,15 @@ the plot.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.utils.rolling_average">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">rolling_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#rolling_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.rolling_average" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">rolling_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#rolling_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.rolling_average" title="Link to this definition">¶</a></dt>
 <dd><p>Calculate a rolling average for a dataframe.</p>
-<p>Default behavior right-aligns the window used for the rolling average,
-and returns NaN values if any of the values in the window are NaN.
-Properties of the windowing can be changed by passing additional keyword
-arguments which are fed to <cite>pandas.DataFrame.rolling</cite>.</p>
+<p>Default behavior right-aligns the window used for the rolling average
+and uses the data_type argument (‘1D’, ‘7D’, ‘14D’, ‘28D’) to set the
+<cite>min_periods</cite> argument in <cite>pandas.DataFrame.rolling</cite>. The function
+returns NaN values if any of the values in the window are NaN or if the
+<cite>mind_periods</cite> argument is not satisifed. Properties of the windowing
+can be changed by passing additional keyword arguments which are fed
+to <cite>pandas.DataFrame.rolling</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -397,6 +400,15 @@ arguments which are fed to <cite>pandas.DataFrame.rolling</cite>.</p>
 <li><p><strong>data_type</strong> (<em>string</em>) – The formatted frequency string to be used with
 pandas.DataFrame.rolling to calculate the average over the correct
 temporal period.</p></li>
+<li><p><strong>auto_min_periods</strong> (<em>bool</em>) – Defaults to True. When True, the <cite>min_periods</cite> argument in
+<cite>pandas.DataFrame.rolling</cite> is set using the <cite>data_type</cite> argument.
+For example, if the <cite>data_type</cite> = ‘7D’, the <cite>min_periods</cite>
+argument is 7. When False, the <cite>min_periods</cite> argument is set
+using the <cite>custom_min_periods</cite> input.</p></li>
+<li><p><strong>custom_min_periods</strong> (<em>int</em><em>, </em><em>optional</em>) – Defaults to None. Only used if <cite>auto_min_periods</cite> is False.
+If <cite>auto_min_periods</cite> is False and an integer is provided,
+that integer will be used to define the <cite>min_periods</cite> argument
+in <cite>pandas.DataFrame.rolling</cite>.</p></li>
 <li><p><strong>**kwargs</strong> – Additional keyword arguments to be passed to
 <cite>pandas.DataFrame.rolling</cite>.</p></li>
 </ul>
@@ -1830,7 +1842,7 @@ by df_names argument.</p></li>
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>

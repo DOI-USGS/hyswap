@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g3f77fca documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gf39d874 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=178e8579"></script>
+    <script src="../../_static/documentation_options.js?v=99aedded"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -94,13 +94,18 @@
 
 <div class="viewcode-block" id="rolling_average">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.rolling_average">[docs]</a>
-<span class="k">def</span> <span class="nf">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span>
+                    <span class="n">auto_min_periods</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">custom_min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate a rolling average for a dataframe.</span>
 
-<span class="sd">    Default behavior right-aligns the window used for the rolling average,</span>
-<span class="sd">    and returns NaN values if any of the values in the window are NaN.</span>
-<span class="sd">    Properties of the windowing can be changed by passing additional keyword</span>
-<span class="sd">    arguments which are fed to `pandas.DataFrame.rolling`.</span>
+<span class="sd">    Default behavior right-aligns the window used for the rolling average</span>
+<span class="sd">    and uses the data_type argument (&#39;1D&#39;, &#39;7D&#39;, &#39;14D&#39;, &#39;28D&#39;) to set the</span>
+<span class="sd">    `min_periods` argument in `pandas.DataFrame.rolling`. The function</span>
+<span class="sd">    returns NaN values if any of the values in the window are NaN or if the</span>
+<span class="sd">    `mind_periods` argument is not satisifed. Properties of the windowing</span>
+<span class="sd">    can be changed by passing additional keyword arguments which are fed</span>
+<span class="sd">    to `pandas.DataFrame.rolling`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -112,6 +117,17 @@
 <span class="sd">        The formatted frequency string to be used with</span>
 <span class="sd">        pandas.DataFrame.rolling to calculate the average over the correct</span>
 <span class="sd">        temporal period.</span>
+<span class="sd">    auto_min_periods : bool</span>
+<span class="sd">        Defaults to True. When True, the `min_periods` argument in</span>
+<span class="sd">        `pandas.DataFrame.rolling` is set using the `data_type` argument.</span>
+<span class="sd">        For example, if the `data_type` = &#39;7D&#39;, the `min_periods`</span>
+<span class="sd">        argument is 7. When False, the `min_periods` argument is set</span>
+<span class="sd">        using the `custom_min_periods` input.</span>
+<span class="sd">    custom_min_periods : int, optional</span>
+<span class="sd">        Defaults to None. Only used if `auto_min_periods` is False.</span>
+<span class="sd">        If `auto_min_periods` is False and an integer is provided,</span>
+<span class="sd">        that integer will be used to define the `min_periods` argument</span>
+<span class="sd">        in `pandas.DataFrame.rolling`.</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">        Additional keyword arguments to be passed to</span>
 <span class="sd">        `pandas.DataFrame.rolling`.</span>
@@ -121,9 +137,14 @@
 <span class="sd">    pandas.DataFrame</span>
 <span class="sd">        The output dataframe with the rolling average values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">auto_min_periods</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">min_periods</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">min_periods</span> <span class="o">=</span> <span class="n">custom_min_periods</span>
     <span class="n">df_out</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">df_out</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_out</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span>
-        <span class="n">data_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">data_type</span><span class="p">,</span>
+        <span class="n">min_periods</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">df_out</span></div>
 
 
@@ -688,7 +709,7 @@
 <span class="sd">        temporal period.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;daily&#39;</span><span class="p">:</span>
-        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;D&#39;</span>
+        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;1D&#39;</span>
     <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;7-day&#39;</span><span class="p">:</span>
         <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;7D&#39;</span>
     <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;14-day&#39;</span><span class="p">:</span>
@@ -729,7 +750,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g3f77fca documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
