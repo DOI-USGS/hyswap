@@ -681,15 +681,20 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
         ...     start="2022-05-01", end="2022-05-07")
         >>> new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501
         ...     new_data, '00060_Mean', pcts_df)
-        >>> new_data = utils.categorize_flows(new_data, 'est_pct',
-        ...     schema_name='NWD')
-        ... new_data['flow_cat'].to_list()
-        ['Normal', 'Normal', 'Normal', 'Above normal', 'Above normal',
-        'Normal', 'Normal']
+        >>> new_percentiles = utils.categorize_flows(new_percentiles,
+        ...     'est_pct', schema_name='NWD')
+        ... new_percentiles[['est_pct', 'flow_cat']].values
+        [[73.55, 'Normal'],
+        [70.64, 'Normal'],
+        [70.35, 'Normal'],
+        [77.62, 'Above normal'],
+        [77.02, 'Above normal'],
+        [65.12, 'Normal'],
+        [57.56, 'Normal']]
     """
 
     if custom_schema is None:
-        schema = retreive_schema(schema_name)
+        schema = retrieve_schema(schema_name)
     else:
         schema = custom_schema
 
@@ -710,19 +715,41 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
     return df
 
 
-def retreive_schema(schema_name):
-    """Function used to retreive the flow range categories given a schema name
+def retrieve_schema(schema_name):
+    """Function used to retrieve the flow range categories given a schema name
 
     Parameters
     ----------
     schema_name : str
         Name of the categorization schema that should be used to categorize
-        streamflow.
+        streamflow. Available options are 'NWD', 'WaterWatch,
+        'WaterWatch_Drought', 'WaterWatch_Flood', 'WaterWatch_BrownBlue', and
+        'NIDIS_Drought'.
 
     Returns
     -------
     schema : dict
         dictionary of flow ranges, category labels, and color palette
+
+    Examples
+    --------
+    Retrieve the categorization schema 'NWD' to categorization flow similar to
+    the USGS National Water Dashboard
+
+    .. doctest::
+
+        >>> utils.retrieve_schema('NWD')
+    {'ranges': [0, 10, 25, 76, 90, 100],
+    'labels': ['Much below normal',
+    'Below normal',
+    'Normal',
+    'Above normal',
+    'Much above normal'],
+    'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9', '#2641f1'],
+    'low_label': 'All-time low',
+    'low_color': '#e82f3e',
+    'high_label': 'All-time high',
+    'high_color': '1f296b'}
     """
     if schema_name == 'NWD':
         schema = {'ranges': [0, 10, 25, 76, 90, 100],
@@ -733,7 +760,7 @@ def retreive_schema(schema_name):
                   'low_label': 'All-time low',
                   'low_color': '#e82f3e',
                   'high_label': 'All-time high',
-                  'high_color': "1f296b"}
+                  'high_color': "#1f296b"}
     elif schema_name == 'WaterWatch':
         schema = {'ranges': [0, 10, 25, 75, 90, 100],
                   'labels': ['Low', 'Much below normal', 'Below normal',

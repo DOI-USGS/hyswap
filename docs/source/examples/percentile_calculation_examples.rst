@@ -154,7 +154,7 @@ of 100.0 cfs on September 1st.
     print(pct)
     22.22
 
-Percentiles can also be calculate for multiple streamflow values at once. Below
+Percentiles can also be calculated for multiple streamflow values at once. Below
 is an example of fetching NWIS streamflow data for a USGS gage and then
 calculating variable-threshold percentiles using all of the data.
 Then, new variable-threshold percentile values are interpolated for measurements
