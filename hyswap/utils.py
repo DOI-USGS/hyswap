@@ -667,7 +667,7 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
         ...     new_data, '00060_Mean', pcts_df)
         >>> new_percentiles = utils.categorize_flows(new_percentiles,
         ...     'est_pct', schema_name='NWD')
-        ... new_percentiles[['est_pct', 'flow_cat']].values
+        >>> new_percentiles[['est_pct', 'flow_cat']].values
         [[73.55, 'Normal'],
         [70.64, 'Normal'],
         [70.35, 'Normal'],
@@ -723,7 +723,7 @@ def retrieve_schema(schema_name):
     .. doctest::
 
         >>> schema = utils.retrieve_schema('NWD')
-        ... print(schema)
+        >>> print(schema)
         {'ranges': [0, 10, 25, 76, 90, 100],
         'labels': ['Much below normal',
         'Below normal',
