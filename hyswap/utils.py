@@ -738,18 +738,19 @@ def retrieve_schema(schema_name):
 
     .. doctest::
 
-        >>> utils.retrieve_schema('NWD')
-    {'ranges': [0, 10, 25, 76, 90, 100],
-    'labels': ['Much below normal',
-    'Below normal',
-    'Normal',
-    'Above normal',
-    'Much above normal'],
-    'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9', '#2641f1'],
-    'low_label': 'All-time low',
-    'low_color': '#e82f3e',
-    'high_label': 'All-time high',
-    'high_color': '1f296b'}
+        >>> schema = utils.retrieve_schema('NWD')
+        ... print(schema)
+        {'ranges': [0, 10, 25, 76, 90, 100],
+        'labels': ['Much below normal',
+        'Below normal',
+        'Normal',
+        'Above normal',
+        'Much above normal'],
+        'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9', '#2641f1'],
+        'low_label': 'All-time low',
+        'low_color': '#e82f3e',
+        'high_label': 'All-time high',
+        'high_color': '1f296b'}
     """
     if schema_name == 'NWD':
         schema = {'ranges': [0, 10, 25, 76, 90, 100],
