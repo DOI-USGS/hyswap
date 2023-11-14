@@ -684,7 +684,7 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
 
     df['flow_cat'] = pd.cut(df[data_col], schema['ranges'],
                             labels=schema['labels'],
-                            include_lowest=False,
+                            include_lowest=True,
                             right=False)
     if "low_label" in schema:
         df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['low_label'])
@@ -765,7 +765,9 @@ def retrieve_schema(schema_name):
                   'labels': ['<95%',
                              '95-98%',
                              '>= 99%'],
-                  'colors': ['#4aded0', '#0b24fb', '#0b24fb']}
+                  'colors': ['#4aded0', '#0b24fb', '#0b24fb'],
+                  'high_label': '>= 99%',
+                  'high_color': '#0b24fb'}
     elif schema_name.lower() == 'waterwatch_brownblue':
         schema = {'ranges': [0, 10, 25, 75, 90, 100],
                   'labels': ['Much below normal', 'Below normal',
