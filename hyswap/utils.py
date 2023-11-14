@@ -718,7 +718,7 @@ def retrieve_schema(schema_name):
     the USGS National Water Dashboard
 
     .. doctest::
-        :skipif: True  
+        :skipif: True
 
         >>> schema = utils.retrieve_schema('NWD')
         >>> print(schema)
