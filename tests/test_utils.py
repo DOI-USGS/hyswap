@@ -520,6 +520,11 @@ class TestCategorizationSchema:
         with pytest.raises(ValueError):
             utils.retrieve_schema('abcdef')
 
+    def test_retrieve_schema_casesensitive(self):
+        """Test the function retrieve_schema."""
+        schema = utils.retrieve_schema('Nwd')
+        assert isinstance(schema, dict)
+
 class TestFlowCategorization:
     # define a basic categorization schema
     schema = {'ranges' : [0, 25, 75, 100],
