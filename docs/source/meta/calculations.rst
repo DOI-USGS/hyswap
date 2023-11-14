@@ -76,6 +76,46 @@ Streamflow observations at a streamgage can be assigned a flow condition categor
 
 * "NWD" -- Categorization schema similar to the USGS National Water Dashboard, *default*
   Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
+  .. image:: ../reference/nwd.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to the National Water Dashboard. 
+
+* "WaterWatch" -- Categorization schema similar to the USGS WaterWatch website
+  Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
+  .. image:: ../reference/waterwatch.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch.
+
+* "NIDIS_Drought" -- Categorization schema similar to the NIDIS U.S. Drought Monitor
+  Categorizes streamflow across only low-flow conditions.
+  .. image:: ../reference/nidis_drought.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to NIDIS U.S. Drought Monitor.
+
+* "WaterWatch_Drought" -- Categorization schema similar to the USGS WaterWatch Drought Conditions
+  Categorizes streamflow across only low-flow conditions. Typically used with variable percentiles
+  .. image:: ../reference/waterwatch_drought.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Drought Conditions.
+
+* "WaterWatch_Flood" -- Categorization schema similar to the USGS WaterWatch Flood Conditions
+  Categorizes streamflow across only high-flow conditions. Typically used with fixed percentiles
+  .. image:: ../reference/waterwatch_flood.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Flood Conditions.
+
+* "WaterWatch_BrownBlue" -- Categorization schema similar to the USGS WaterWatch categories but with an alternative color palette
+  Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
+  .. image:: ../reference/waterwatch_brownblue.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges and labels similar to USGS WaterWatch but with a brown-blue color palette.
+
+Flow Categorization
+^^^^^^^^^^^^^^^^^^^
+Streamflow observations at a streamgage can be assigned a flow condition category using ``hyswap`` by use of the `hyswap` :obj:`hyswap.utils.categorize_flows` function. Streamflow percentiles or interpolated estimated streamflow percentiles are compared to a categorization schema. Multiple categorization schema are available in ``hyswap`` with the default being flow categories similar to those displayed on the USGS National Water Dashboard. Categorization schema are applicable to both variable and fixed percentile types. Available schema are described below:
+
+* "NWD" -- Categorization schema similar to the USGS National Water Dashboard, *default*
+  Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
 
   .. image:: ../reference/nwd.png
     :width: 800
