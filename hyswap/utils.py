@@ -693,9 +693,6 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
         df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['high_label'])  # noqa: E501
         df.loc[df[data_col] == schema['ranges'][-1], 'flow_cat'] = schema['high_label']  # noqa: E501
 
-    df['flow_cat'] = df['flow_cat'].cat.add_categories('Not ranked')
-    df.loc[pd.isna(df[data_col]), 'flow_cat'] = 'Not ranked'
-
     return df
 
 
@@ -785,5 +782,7 @@ def retrieve_schema(schema_name):
                              'Abnormally dry'],
                   'colors': ['#720206', '#e30b17', '#fda929', '#fbd285',
                              '#fffd38']}
+    else:
+        raise ValueError('no matching schema found for ' + schema_name)
 
     return schema
