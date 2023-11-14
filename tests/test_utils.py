@@ -569,5 +569,5 @@ class TestFlowCategorization:
             'datetime': pd.date_range('2000-01-01', '2000-01-03'),
             'est_pct': [-1, np.nan, 101]})
         df.set_index('datetime', inplace=True)
-        df = utils.categorize_flows(df, 'est_pct', custom_schema = self.schema)
+        df = utils.categorize_flows(df, 'est_pct', custom_schema=self.schema)
         assert df['flow_cat'].isnull().all()

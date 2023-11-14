@@ -67,6 +67,46 @@ Exceedance Probabilities and Flow-Duration Curves
 
 In some hydrological studies, particularly those related to floods, a variation of the percentile known as the "percent exceedance" is used. It can be obtained by subtracting the percentile scale value from 100 percent.  For example, a discharge at the 75th percentile is the same as a discharge at the 25th percent exceedance (100-75=25). By default, ``hyswap`` computes streamflow exceedance probabilities using the unbiased Weibull plotting position formula (Weibull, 1939). Additional methods of computing exceedance probabilities can be used in ``hyswap`` including linear (R Type 4), Hazen (R Type 5), Gumbel (R Type 7), Reiss (R Type 8), and Blom (R Type 9). Flow-duration curves computed within ``hyswap`` are cumulative frequency curves where values indicate either (1) the percent of values equal to or less than each discharge value (percentile) OR (2) the percent of values equal to or greater than each discharge value (percent exceedance). The Weibull method of computing exceedance probabilities is used by default for computing flow-duration curves.
 
+Flow Categorization
+^^^^^^^^^^^^^^^^^^^
+Streamflow observations at a streamgage can be assigned a flow condition category using ``hyswap`` by use of the `hyswap` :obj:`hyswap.utils.categorize_flows` function. Streamflow percentiles or interpolated estimated streamflow percentiles are compared to a categorization schema. Multiple categorization schema are available in ``hyswap`` with the default being flow categories similar to those displayed on the USGS National Water Dashboard. Categorization schema are applicable to both variable and fixed percentile types. Available schema are described below:
+
+* "NWD" -- Categorization schema similar to the USGS National Water Dashboard, *default*
+  Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
+  .. image:: ../reference/nwd.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to the National Water Dashboard. 
+
+* "WaterWatch" -- Categorization schema similar to the USGS WaterWatch website
+  Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
+  .. image:: ../reference/waterwatch.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch.
+
+* "NIDIS_Drought" -- Categorization schema similar to the NIDIS U.S. Drought Monitor
+  Categorizes streamflow across only low-flow conditions.
+  .. image:: ../reference/nidis_drought.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to NIDIS U.S. Drought Monitor.
+
+* "WaterWatch_Drought" -- Categorization schema similar to the USGS WaterWatch Drought Conditions
+  Categorizes streamflow across only low-flow conditions. Typically used with variable percentiles
+  .. image:: ../reference/waterwatch_drought.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Drought Conditions.
+
+* "WaterWatch_Flood" -- Categorization schema similar to the USGS WaterWatch Flood Conditions
+  Categorizes streamflow across only high-flow conditions. Typically used with fixed percentiles
+  .. image:: ../reference/waterwatch_flood.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Flood Conditions.
+
+* "WaterWatch_BrownBlue" -- Categorization schema similar to the USGS WaterWatch categories but with an alternative color palette
+  Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
+  .. image:: ../reference/waterwatch_brownblue.png
+    :width: 800
+    :alt: Categorization schema of percentile ranges and labels similar to USGS WaterWatch but with a brown-blue color palette.
+
 
 Area-Based Runoff
 -----------------
