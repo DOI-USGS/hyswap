@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gf39d874 documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g280f51b documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=99aedded"></script>
+    <script src="../../_static/documentation_options.js?v=f39a0c91"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g280f51b documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -719,6 +719,196 @@
 
     <span class="k">return</span> <span class="n">data_type</span></div>
 
+
+
+<div class="viewcode-block" id="categorize_flows">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.categorize_flows">[docs]</a>
+<span class="k">def</span> <span class="nf">categorize_flows</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;NWD&#39;</span><span class="p">,</span> <span class="n">custom_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to categorize streamflows based on percentile ranges</span>
+
+<span class="sd">    This function assigns a category to each streamflow observation for a</span>
+<span class="sd">    single site by comparing the estimated percentile to a schema of percentile</span>
+<span class="sd">    ranges and associated category labels</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing values for the site.</span>
+
+<span class="sd">    data_col : str</span>
+<span class="sd">        Name of the column in the DataFrame that contains the data of</span>
+<span class="sd">        interest, in this case estimated streamflow percentile.</span>
+
+<span class="sd">    schema_name : str, optional</span>
+<span class="sd">        Name of the categorization schema that should be used to categorize</span>
+<span class="sd">        streamflow. Default is &quot;NWD&quot; schema.</span>
+
+<span class="sd">    custom_schema : dict, optional</span>
+<span class="sd">        Python dictionary describing custom schema to use for categorizing</span>
+<span class="sd">        streamflow based on percentiles. Required in dict is &#39;ranges&#39;, an array</span>
+<span class="sd">        of percentile cut points and &#39;labels&#39;, a list of category labels that</span>
+<span class="sd">        matches the number of bins represented by ranges. Optionally can</span>
+<span class="sd">        include &#39;low_label&#39; and &#39;high_label&#39; which are category labels</span>
+<span class="sd">        associated with the lowest and highest values in &#39;ranges&#39;,</span>
+<span class="sd">        respectively. Additional optional keys include &#39;colors&#39;, &#39;low_color&#39;,</span>
+<span class="sd">        and &#39;high_color&#39; which specify a color palette that can be accessed in</span>
+<span class="sd">        user created plots and maps. Default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        DataFrame with flow_cat column added.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Categorize streamflow based on calculated percentiles for streamflow</span>
+<span class="sd">    records downloaded from NWIS.</span>
+
+<span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
+
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
+<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
+<span class="sd">        ...     method=&#39;linear&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;2022-05-01&quot;, end=&quot;2022-05-07&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501</span>
+<span class="sd">        ...     new_data, &#39;00060_Mean&#39;, pcts_df)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentiles = utils.categorize_flows(new_percentiles,</span>
+<span class="sd">        ...     &#39;est_pct&#39;, schema_name=&#39;NWD&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentiles[[&#39;est_pct&#39;, &#39;flow_cat&#39;]].values</span>
+<span class="sd">        [[13.62, &#39;Below normal&#39;],</span>
+<span class="sd">        [14.15, &#39;Below normal&#39;],</span>
+<span class="sd">        [14.29, &#39;Below normal&#39;],</span>
+<span class="sd">        [23.41, &#39;Below normal&#39;],</span>
+<span class="sd">        [27.44, &#39;Normal&#39;],</span>
+<span class="sd">        [16.2, &#39;Below normal&#39;],</span>
+<span class="sd">        [12.81, &#39;Below normal&#39;]]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">custom_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="n">retrieve_schema</span><span class="p">(</span><span class="n">schema_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="n">custom_schema</span>
+
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">],</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">],</span>
+                            <span class="n">labels</span><span class="o">=</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">],</span>
+                            <span class="n">include_lowest</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;low_label&quot;</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">add_categories</span><span class="p">(</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">])</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="s2">&quot;high_label&quot;</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">add_categories</span><span class="p">(</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;high_label&#39;</span><span class="p">])</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;high_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+
+<div class="viewcode-block" id="retrieve_schema">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.retrieve_schema">[docs]</a>
+<span class="k">def</span> <span class="nf">retrieve_schema</span><span class="p">(</span><span class="n">schema_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function used to retrieve the flow range categories given a schema name</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    schema_name : str</span>
+<span class="sd">        Name of the categorization schema that should be used to categorize</span>
+<span class="sd">        streamflow. Available options are &#39;NWD&#39;, &#39;WaterWatch,</span>
+<span class="sd">        &#39;WaterWatch_Drought&#39;, &#39;WaterWatch_Flood&#39;, &#39;WaterWatch_BrownBlue&#39;, and</span>
+<span class="sd">        &#39;NIDIS_Drought&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    schema : dict</span>
+<span class="sd">        dictionary of flow ranges, category labels, and color palette</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Retrieve the categorization schema &#39;NWD&#39; to categorization flow similar to</span>
+<span class="sd">    the USGS National Water Dashboard</span>
+
+<span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True</span>
+
+<span class="sd">        &gt;&gt;&gt; schema = utils.retrieve_schema(&#39;NWD&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(schema)</span>
+<span class="sd">        {&#39;ranges&#39;: [0, 10, 25, 76, 90, 100],</span>
+<span class="sd">        &#39;labels&#39;: [&#39;Much below normal&#39;, &#39;Below normal&#39;, &#39;Normal&#39;,</span>
+<span class="sd">            &#39;Above normal&#39;, &#39;Much above normal&#39;],</span>
+<span class="sd">        &#39;colors&#39;: [&#39;#b24249&#39;, &#39;#e8ac49&#39;, &#39;#44f24e&#39;, &#39;#5fd7d9&#39;, &#39;#2641f1&#39;],</span>
+<span class="sd">        &#39;low_label&#39;: &#39;All-time low&#39;,</span>
+<span class="sd">        &#39;low_color&#39;: &#39;#e82f3e&#39;,</span>
+<span class="sd">        &#39;high_label&#39;: &#39;All-time high&#39;,</span>
+<span class="sd">        &#39;high_color&#39;: &#39;#1f296b&#39;}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;nwd&#39;</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Much below normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Below normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Normal&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Above normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Much above normal&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;#b24249&#39;</span><span class="p">,</span> <span class="s1">&#39;#e8ac49&#39;</span><span class="p">,</span> <span class="s1">&#39;#44f24e&#39;</span><span class="p">,</span> <span class="s1">&#39;#5fd7d9&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;#2641f1&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;low_label&#39;</span><span class="p">:</span> <span class="s1">&#39;All-time low&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;low_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#e82f3e&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;high_label&#39;</span><span class="p">:</span> <span class="s1">&#39;All-time high&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;high_color&#39;</span><span class="p">:</span> <span class="s2">&quot;#1f296b&quot;</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;waterwatch&#39;</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="s1">&#39;Much below normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Below normal&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Above normal&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Much above normal&#39;</span><span class="p">,</span> <span class="s1">&#39;High&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;#af2327&#39;</span><span class="p">,</span> <span class="s1">&#39;#fda328&#39;</span><span class="p">,</span> <span class="s1">&#39;#29fd2f&#39;</span><span class="p">,</span> <span class="s1">&#39;#4aded0&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;#0b24fb&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;low_label&#39;</span><span class="p">:</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;low_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#fc0d1b&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;high_label&#39;</span><span class="p">:</span> <span class="s1">&#39;High&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;high_color&#39;</span><span class="p">:</span> <span class="s2">&quot;#000000&quot;</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;waterwatch_drought&#39;</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">],</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Severe hydrologic drought&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Moderate hydrologic drought&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Below normal&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;#af2327&#39;</span><span class="p">,</span> <span class="s1">&#39;#fd9941&#39;</span><span class="p">,</span> <span class="s1">&#39;#fecb6e&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;low_label&#39;</span><span class="p">:</span> <span class="s1">&#39;Extreme hydrologic drought&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;low_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#fc0d1b&#39;</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;waterwatch_flood&#39;</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">99</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&lt;95%&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;95-98%&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;&gt;= 99%&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;#4aded0&#39;</span><span class="p">,</span> <span class="s1">&#39;#0b24fb&#39;</span><span class="p">,</span> <span class="s1">&#39;#0b24fb&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;high_label&#39;</span><span class="p">:</span> <span class="s1">&#39;&gt;= 99%&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;high_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#0b24fb&#39;</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;waterwatch_brownblue&#39;</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Much below normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Below normal&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Above normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Much above normal&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;#dcb668&#39;</span><span class="p">,</span> <span class="s1">&#39;#ebd6ab&#39;</span><span class="p">,</span> <span class="s1">&#39;#e9e9e9&#39;</span><span class="p">,</span> <span class="s1">&#39;#aacee0&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;#5699c0&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;low_label&#39;</span><span class="p">:</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;low_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#8f4f1f&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;high_label&#39;</span><span class="p">:</span> <span class="s1">&#39;High&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;high_color&#39;</span><span class="p">:</span> <span class="s2">&quot;#292f6b&quot;</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;nidis_drought&#39;</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Exceptional drought&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Extreme drought&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Severe drought&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Moderate drought&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;Abnormally dry&#39;</span><span class="p">],</span>
+                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;#720206&#39;</span><span class="p">,</span> <span class="s1">&#39;#e30b17&#39;</span><span class="p">,</span> <span class="s1">&#39;#fda929&#39;</span><span class="p">,</span> <span class="s1">&#39;#fbd285&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;#fffd38&#39;</span><span class="p">]}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;no matching schema found for &#39;</span> <span class="o">+</span> <span class="n">schema_name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">schema</span></div>
+
 </pre></div>
 
             <div class="clearer"></div>
@@ -750,7 +940,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g280f51b documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>

@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gf39d874 documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+g280f51b documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=99aedded"></script>
+    <script src="../../_static/documentation_options.js?v=f39a0c91"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g280f51b documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -47,6 +47,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_time</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">calculate_metadata</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
@@ -277,15 +278,15 @@
 
 
 
-<div class="viewcode-block" id="calculate_percentile_from_value">
-<a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_percentile_from_value">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_percentile_from_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_df</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate percentile from a value and existing percentile values.</span>
+<div class="viewcode-block" id="calculate_fixed_percentile_from_value">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_from_value">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_fixed_percentile_from_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate percentile from a value and fixed percentile thresholds.</span>
 
 <span class="sd">    This function enables faster calculation of the percentile associated with</span>
-<span class="sd">    a given value if percentile values and corresponding percentiles are known</span>
-<span class="sd">    for other data from the same station or site. This calculation is done</span>
-<span class="sd">    using linear interpolation.</span>
+<span class="sd">    a given value if percentile values and corresponding fixed percentile</span>
+<span class="sd">    thresholds are known from other data from the same station or site.</span>
+<span class="sd">    This calculation is done using linear interpolation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -310,20 +311,177 @@
 
 <span class="sd">    .. doctest::</span>
 
-<span class="sd">        &gt;&gt;&gt; data = np.arange(101)</span>
+<span class="sd">        &gt;&gt;&gt; data = np.arange(1001)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_fixed_percentile_thresholds(</span>
 <span class="sd">        ...     data, percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; new_percentile = percentiles.calculate_percentile_from_value(</span>
-<span class="sd">        ...     51, pcts_df)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentile = percentiles.calculate_fixed_percentile_from_value(</span>
+<span class="sd">        ...     500, pcts_df)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile</span>
-<span class="sd">        51.0</span>
+<span class="sd">        50.0</span>
+
+<span class="sd">    Calculate the percentiles associated with multiple values for some data</span>
+<span class="sd">    downloaded from NWIS.</span>
+
+<span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
+
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_fixed_percentile_thresholds(</span>
+<span class="sd">        ...     data[&#39;00060_Mean&#39;],</span>
+<span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
+<span class="sd">        ...     method=&#39;linear&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;2022-01-01&quot;, end=&quot;2022-01-07&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; new_data[&#39;est_pct&#39;] = percentiles.calculate_fixed_percentile_from_value(  # noqa: E501</span>
+<span class="sd">        ...     new_data[&#39;00060_Mean&#39;], pcts_df)</span>
+<span class="sd">        &gt;&gt;&gt; new_data[&#39;est_pct&#39;].to_list()</span>
+<span class="sd">        [58.41, 75.0, 48.45, 39.16, 45.58, 48.01, 42.04]</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># define values</span>
     <span class="n">thresholds</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># do and return linear interpolation</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_variable_percentile_from_value">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_variable_percentile_from_value">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_variable_percentile_from_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_df</span><span class="p">,</span> <span class="n">mo_day</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate percentile from a value and variable percentile thresholds.</span>
+
+<span class="sd">    This function enables faster calculation of the percentile associated with</span>
+<span class="sd">    a given value for a single day of the year if percentile values and</span>
+<span class="sd">    corresponding variable percentile thresholds are known from other data from</span>
+<span class="sd">    the same station or site. This calculation is done using linear</span>
+<span class="sd">    interpolation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    value : float, np.ndarray</span>
+<span class="sd">        New value(s) to calculate percentile for. Can be a single value or an</span>
+<span class="sd">        array of values.</span>
+
+<span class="sd">    percentile_df : pd.DataFrame</span>
+<span class="sd">        DataFrame containing threshold percentiles of data by day of year.</span>
+<span class="sd">        Typically generated by the `calculate_variable_percentile_thresholds`</span>
+<span class="sd">        function but could be provided manually or from data pulled from the</span>
+<span class="sd">        NWIS stats service.</span>
+
+<span class="sd">    mo_day : str</span>
+<span class="sd">        string of month-day of year to lookup percentile thresholds for value</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    percentile : float, np.ndarray</span>
+<span class="sd">        Percentile associated with the input value(s).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Calculate the percentile associated with a value using flow records</span>
+<span class="sd">    downloaded from NWIS.</span>
+
+<span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
+
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;1776-01-01&quot;, end=&quot;2022-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
+<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
+<span class="sd">        ...     method=&#39;linear&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentile = percentiles.calculate_variable_percentile_from_value(  # noqa: E501</span>
+<span class="sd">        ...     500, pcts_df, &#39;06-30&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentile</span>
+<span class="sd">        96.21</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># retrieve percentile thresholds for the day of year of interest</span>
+    <span class="n">pct_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;month-day&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">mo_day</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;values&quot;</span><span class="p">})</span>
+
+    <span class="c1"># define values</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># do and return linear interpolation</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_multiple_variable_percentiles_from_values">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_multiple_variable_percentiles_from_values">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_multiple_variable_percentiles_from_values</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span>
+                                                        <span class="n">percentile_df</span><span class="p">,</span>
+                                                        <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate variable percentiles for multiple values</span>
+
+<span class="sd">    This function enables calculation of estimated percentiles for multiple</span>
+<span class="sd">    values across multiple days of the year using existing variable percentile</span>
+<span class="sd">    thresholds.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        Pandas dataframe containing new values to calculate percentiles for.</span>
+
+<span class="sd">    data_column_name : str</span>
+<span class="sd">        Name of column containing data to analyze.</span>
+
+<span class="sd">    percentile_df : pd.DataFrame</span>
+<span class="sd">        DataFrame containing threshold percentiles of data by day of year.</span>
+<span class="sd">        Typically generated by the `calculate_variable_percentile_thresholds`</span>
+<span class="sd">        functions but could be provided manually or from data pulled from the</span>
+<span class="sd">        NWIS stats service.</span>
+
+<span class="sd">    date_column_name : str, optional</span>
+<span class="sd">        Name of column containing date information. If None, the index of</span>
+<span class="sd">        `df` is used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">        Pandas dataframe of values with estimated percentile column added</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Calculate the percentiles associated with multiple values using flow</span>
+<span class="sd">    records downloaded from NWIS.</span>
+
+<span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
+
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
+<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
+<span class="sd">        ...     method=&#39;linear&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;2022-01-01&quot;, end=&quot;2022-01-07&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501</span>
+<span class="sd">        ...     new_data, &#39;00060_Mean&#39;, pcts_df)</span>
+<span class="sd">        &gt;&gt;&gt; new_percentiles[&#39;est_pct&#39;].to_list()</span>
+<span class="sd">        [59.59, 77.7, 47.5, 37.5, 50.0, 55.77, 48.71]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">date_column_name</span> <span class="o">=</span> <span class="s1">&#39;datetime&#39;</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;est_pct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">calculate_variable_percentile_from_value</span><span class="p">(</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">row</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">],</span> <span class="n">percentile_df</span><span class="p">,</span>
+        <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">],</span> <span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;est_pct&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;est_pct&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
 
 </pre></div>
 
@@ -356,7 +514,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf39d874 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g280f51b documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
