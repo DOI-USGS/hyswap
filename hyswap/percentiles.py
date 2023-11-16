@@ -343,7 +343,7 @@ def calculate_variable_percentile_from_value(value, percentile_df, mo_day):
         >>> new_percentile = percentiles.calculate_variable_percentile_from_value(  # noqa: E501
         ...     500, pcts_df, '06-30')
         >>> new_percentile
-        59.97
+        96.21
     """
     # retrieve percentile thresholds for the day of year of interest
     pct_values = percentile_df.loc[percentile_df.index.get_level_values('month-day') == mo_day]  # noqa: E501
@@ -410,7 +410,7 @@ def calculate_multiple_variable_percentiles_from_values(df, data_column_name,
         >>> new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501
         ...     new_data, '00060_Mean', pcts_df)
         >>> new_percentiles['est_pct'].to_list()
-        [58.41, 75.0, 48.45, 39.16, 45.58, 48.01, 42.04]
+        [59.59, 77.7, 47.5, 37.5, 50.0, 55.77, 48.71]
     """
     if date_column_name is None:
         date_column_name = 'datetime'

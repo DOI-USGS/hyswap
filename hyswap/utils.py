@@ -684,13 +684,13 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
         >>> new_percentiles = utils.categorize_flows(new_percentiles,
         ...     'est_pct', schema_name='NWD')
         >>> new_percentiles[['est_pct', 'flow_cat']].values
-        [[73.55, 'Normal'],
-        [70.64, 'Normal'],
-        [70.35, 'Normal'],
-        [77.62, 'Above normal'],
-        [77.02, 'Above normal'],
-        [65.12, 'Normal'],
-        [57.56, 'Normal']]
+        [[13.62, 'Below normal'],
+        [14.15, 'Below normal'],
+        [14.29, 'Below normal'],
+        [23.41, 'Below normal'],
+        [27.44, 'Normal'],
+        [16.2, 'Below normal'],
+        [12.81, 'Below normal']]
     """
 
     if custom_schema is None:

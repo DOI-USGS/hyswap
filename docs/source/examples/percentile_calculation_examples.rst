@@ -152,7 +152,7 @@ of 100.0 cfs on September 1st.
 
     # print that percentile value
     print(pct)
-    22.22
+    90.02
 
 Percentiles can also be calculated for multiple streamflow values at once. Below
 is an example of fetching NWIS streamflow data for a USGS gage and then
@@ -186,10 +186,10 @@ from a recent month.
     print(pcts['est_pct'].head())
     
     2023-01-01      24.31
-    2023-01-02      22.74
-    2023-01-03      29.87
-    2023-01-04      77.72
-    2023-01-05      64.98
+    2023-01-02      21.20
+    2023-01-03      29.80
+    2023-01-04      77.94
+    2023-01-05      73.77
 
 
 Below is an example of fetching variable-threshold percentiles for January 1st and their
