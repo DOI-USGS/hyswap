@@ -514,3 +514,69 @@ class TestSetDataType:
     def test_set_data_type_twenty_eight_day(self):
         """Test the function set_data_type."""
         assert utils.set_data_type('28-day') == '28D'
+
+
+class TestCategorizationSchema:
+
+    def test_retrieve_schema_exists(self):
+        """Test the function retrieve_schema."""
+        schema = utils.retrieve_schema('NWD')
+        assert isinstance(schema, dict)
+        assert 'ranges' in schema.keys()
+        assert 'labels' in schema.keys()
+
+    def test_retrieve_schema_missing(self):
+        """Test the function retrieve_schema."""
+        with pytest.raises(ValueError):
+            utils.retrieve_schema('abcdef')
+
+    def test_retrieve_schema_casesensitive(self):
+        """Test the function retrieve_schema."""
+        schema = utils.retrieve_schema('Nwd')
+        assert isinstance(schema, dict)
+
+
+class TestFlowCategorization:
+    # define a basic categorization schema
+    schema = {'ranges': [0, 25, 75, 100],
+              'labels': ['Low', 'Med', 'High'],
+              'low_label': 'Lowest',
+              'high_label': 'Highest'}
+
+    def test_flow_categorization(self):
+        """Test the function flow_categorization."""
+        # define a simple dataframe of flow percentiles
+        df = pd.DataFrame({
+            'datetime': pd.date_range('2000-01-01', '2000-01-06'),
+            'est_pct': [10, 50, 74.999, 75, 75.0001, 90]})
+        df.set_index('datetime', inplace=True)
+        df = utils.categorize_flows(df, 'est_pct', custom_schema=self.schema)
+        assert 'flow_cat' in df.columns
+        assert df.iloc[0, -1] == 'Low'
+        assert df.iloc[1, -1] == 'Med'
+        assert df.iloc[2, -1] == 'Med'
+        assert df.iloc[3, -1] == 'High'
+        assert df.iloc[4, -1] == 'High'
+        assert df.iloc[5, -1] == 'High'
+
+    def test_flow_categorization_lowest_highest(self):
+        """Test the function flow_categorization."""
+        # define a simple dataframe of flow percentiles
+        df = pd.DataFrame({
+            'datetime': pd.date_range('2000-01-01', '2000-01-02'),
+            'est_pct': [0, 100]})
+        df.set_index('datetime', inplace=True)
+        df = utils.categorize_flows(df, 'est_pct', custom_schema=self.schema)
+        assert 'flow_cat' in df.columns
+        assert df.iloc[0, -1] == 'Lowest'
+        assert df.iloc[1, -1] == 'Highest'
+
+    def test_flow_categorization_nan(self):
+        """Test the function flow_categorization."""
+        # define a simple dataframe of flow percentiles that are not valid
+        df = pd.DataFrame({
+            'datetime': pd.date_range('2000-01-01', '2000-01-03'),
+            'est_pct': [-1, np.nan, 101]})
+        df.set_index('datetime', inplace=True)
+        df = utils.categorize_flows(df, 'est_pct', custom_schema=self.schema)
+        assert df['flow_cat'].isnull().all()
