@@ -259,18 +259,36 @@ def identify_sites_from_weights(weights_df,
     -------
     list
         List of site IDs with non-zero weights for the geometry.
+        
+    Examples
+    --------
+    Convert 14 cfs to mm/yr for a 250 km2 drainage area.
+
+    .. doctest::
+
+        >>> data = [
+            ['01014000', '01010002', '0.01','0.6'],
+            ['01014001', '01010002', '0.2','0.8'],
+            ['01014002', '01010003', '0.9','0.05']
+            ]
+        >>>  df = pd.DataFrame(data, columns = ['site_no','geom_id','wght_basin','wght_huc'])
+        >>> sites_lst = identify_sites_from_weights(weights_df = df, geom_id = '01010002', geom_id_col = 'geom_id', site_col = 'site_no',
+            wght_in_basin_col = 'wght_basin', wght_in_geom_col = 'wght_huc')
+        >>> print(sites_lst)
+        ['01014000', '01014001']
+
     """
 
-    # filter df to designated geometry (e.g. huc8)
+    # Filter df to designated geometry (e.g. huc8)
     filtered_df = weights_df[weights_df[geom_id_col] == geom_id]
 
-    # check whether sites is the df index or not 
+    # Check whether sites is the df index or not 
     if site_col == 'index':
         site_col = filtered_df.index
     else:
         site_col = filtered_df[site_col]
 
-    # retrieve all non-0 sites within the designated geometry (e.g. huc8)
+    # Retrieve all non-0 sites within the designated geometry (e.g. huc8)
     site_list = site_col[(filtered_df[wght_in_basin_col] != 0) | (filtered_df[wght_in_geom_col] != 0)].to_list()
 
     return site_list
