@@ -246,7 +246,8 @@ def identify_sites_from_weights(weights_df,
         Column in weights_df with geom_ids
 
     site_col: str 
-        Column in weights_df with drainage area site numbers. If the site numbers are the weights_df index col, site_col = 'index' 
+        Column in weights_df with drainage area site numbers. Please make sure id have the correct number of digits and have not lost leading 0s when read in. 
+        If the site numbers are the weights_df index col, site_col = 'index' 
 
     wght_in_basin_col: str
         Column with proportions values in drain area basins (default: pct_in_basin)
