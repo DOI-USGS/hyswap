@@ -220,7 +220,12 @@ def _get_date_range(df_list, start_date, end_date):
     return date_range
 
 
-def identify_sites_from_weights(geom_id, weights_matrix):
+def identify_sites_from_weights(weights_df,
+                                geom_id,
+                                geom_id_col,
+                                site_col,
+                                pct_in_basin_col = 'pct_in_basin',
+                                pct_in_huc_col = 'pct_in_huc'):
     """Identify sites for a specified geometry.
 
     Function to identify sites with non-zero weights for a given
@@ -243,8 +248,19 @@ def identify_sites_from_weights(geom_id, weights_matrix):
     list
         List of site IDs with non-zero weights for the geometry.
     """
-    int_list = weights_matrix.index[weights_matrix[geom_id] > 0].tolist()
-    site_list = [str(i).zfill(8) for i in int_list]
+
+    # filter df to designated geometry (e.g. huc8)
+    filtered_df = weights_df[weights_df[geom_id_col] == geom_id]
+
+    # check whether sites is the df index or not 
+    if site_col == 'index':
+        site_col = filtered_df.index
+    else:
+        site_col = filtered_df[site_col]
+
+    # retrieve all non-0 sites within the designated geometry (e.g. huc8)
+    site_list = site_col[(filtered_df[pct_in_basin_col] != 0) | (filtered_df[pct_in_huc_col] != 0)].to_list()
+
     return site_list
 
 
