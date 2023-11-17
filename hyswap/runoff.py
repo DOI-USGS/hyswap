@@ -221,11 +221,12 @@ def _get_date_range(df_list, start_date, end_date):
 
 
 def identify_sites_from_weights(weights_df,
-                                geom_id,
                                 geom_id_col,
                                 site_col,
-                                pct_in_basin_col = 'pct_in_basin',
-                                pct_in_huc_col = 'pct_in_huc'):
+                                geom_id,
+                                wght_in_basin_col = 'pct_in_basin',
+                                wght_in_geom_col = 'pct_in_huc'):
+    
     """Identify sites for a specified geometry.
 
     Function to identify sites with non-zero weights for a given
@@ -235,14 +236,25 @@ def identify_sites_from_weights(weights_df,
 
     Parameters
     ----------
+    weights_df : pandas.DataFrame
+        Tabular dataFrame containing columns the site numbers, geometry ids, and two columns wghts in huc and the drainage area basin.
+
     geom_id : str
-        Geometry ID for the geometry of interest; should be a column
-        in the weights matrix.
+        Geometry id to filter to (e.g. geom_id = '03030006')
 
-    weights_matrix : pandas.DataFrame
-        DataFrame containing the weights for all sites and all geometries.
-        Columns are geometry IDs, index is site IDs.
+    geom_id_col : str 
+        Column in weights_df with geom_ids
 
+    site_col: str 
+        Column in weights_df with drainage area site numbers. If the site numbers are the weights_df index col, site_col = 'index' 
+
+    wght_in_basin_col: str
+        Column with proportions values in drain area basins (default: pct_in_basin)
+
+    wght_in_geom_col: str
+        Column with proportions values in designated geometry (e.g. huc basin) (default: pct_in_huc)
+
+                      
     Returns
     -------
     list
@@ -259,7 +271,7 @@ def identify_sites_from_weights(weights_df,
         site_col = filtered_df[site_col]
 
     # retrieve all non-0 sites within the designated geometry (e.g. huc8)
-    site_list = site_col[(filtered_df[pct_in_basin_col] != 0) | (filtered_df[pct_in_huc_col] != 0)].to_list()
+    site_list = site_col[(filtered_df[wght_in_basin_col] != 0) | (filtered_df[wght_in_geom_col] != 0)].to_list()
 
     return site_list
 
