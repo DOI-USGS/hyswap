@@ -798,13 +798,11 @@ def retrieve_schema(schema_name):
                   'low_label': 'Extreme hydrologic drought',
                   'low_color': '#fc0d1b'}
     elif schema_name.lower() == 'waterwatch_flood':
-        schema = {'ranges': [0, 95, 99, 100],
+        schema = {'ranges': [0, 95, 99, 101],
                   'labels': ['<95%',
                              '95-98%',
                              '>= 99%'],
-                  'colors': ['#4aded0', '#0b24fb', '#0b24fb'],
-                  'high_label': '>= 99%',
-                  'high_color': '#0b24fb'}
+                  'colors': ['#ffffff', '#4aded0', '#0b24fb']}
     elif schema_name.lower() == 'waterwatch_brownblue':
         schema = {'ranges': [0, 10, 25, 75, 90, 100],
                   'labels': ['Much below normal', 'Below normal',
