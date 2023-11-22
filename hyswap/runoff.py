@@ -263,7 +263,7 @@ def identify_sites_from_weights(geom_id,
         
     Examples
     --------
-    Convert 14 cfs to mm/yr for a 250 km2 drainage area.
+    Find all drainage area site numbers that intersect with geometry id 0101002
 
     .. doctest::
 
