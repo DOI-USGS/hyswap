@@ -220,10 +220,10 @@ def _get_date_range(df_list, start_date, end_date):
     return date_range
 
 
-def identify_sites_from_weights(weights_df,
+def identify_sites_from_weights(geom_id,
+                                weights_df,
                                 geom_id_col,
-                                site_col,
-                                geom_id,
+                                site_col,                           
                                 wght_in_basin_col = 'pct_in_basin',
                                 wght_in_geom_col = 'pct_in_huc'):
     
@@ -236,17 +236,17 @@ def identify_sites_from_weights(weights_df,
 
     Parameters
     ----------
-    weights_df : pandas.DataFrame
-        Tabular dataframe containing columns the site numbers, geometry ids, and two columns wghts in huc and the drainage area basin.
-
     geom_id : str
         Geometry id to filter to (e.g. geom_id = '03030006')
+    
+    weights_df : pandas.DataFrame
+        Tabular dataFrame containing columns the site numbers, geometry ids, and two columns wghts in huc and the drainage area basin.
 
     geom_id_col : str 
         Column in weights_df with geom_ids
 
     site_col: str 
-        Column in weights_df with drainage area site numbers. Please make sure id have the correct number of digits and have not lost leading 0s when read in. 
+        Column in weights_df with drainage area site numbers. Please make sure ids have the correct number of digits and have not lost leading 0s when read in. 
         If the site numbers are the weights_df index col, site_col = 'index' 
 
     wght_in_basin_col: str
