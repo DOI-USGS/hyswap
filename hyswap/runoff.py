@@ -249,11 +249,11 @@ def identify_sites_from_weights(geom_id,
         Column in weights_df with drainage area site numbers. Please make sure ids have the correct number of digits and have not lost leading 0s when read in. 
         If the site numbers are the weights_df index col, site_col = 'index' 
 
-    wght_in_basin_col: str
-        Column with proportions values in drain area basins (default: pct_in_basin)
+    wght_in_basin_col: float, optional
+        Name of column with values representing the proportion of the spatial geometry occurring in the corresponding drainage area (default name: pct_in_basin)
 
-    wght_in_geom_col: str
-        Column with proportions values in designated geometry (e.g. huc basin) (default: pct_in_huc)
+    wght_in_geom_col: float, optional
+        Name of column with values representing the proportion of the drainage area occurring in the corresponding spatial geometry (default name: pct_in_huc)
 
                       
     Returns
