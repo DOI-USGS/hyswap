@@ -237,7 +237,7 @@ def identify_sites_from_weights(weights_df,
     Parameters
     ----------
     weights_df : pandas.DataFrame
-        Tabular dataFrame containing columns the site numbers, geometry ids, and two columns wghts in huc and the drainage area basin.
+        Tabular dataframe containing columns the site numbers, geometry ids, and two columns wghts in huc and the drainage area basin.
 
     geom_id : str
         Geometry id to filter to (e.g. geom_id = '03030006')
