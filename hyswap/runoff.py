@@ -237,13 +237,13 @@ def identify_sites_from_weights(geom_id,
     Parameters
     ----------
     geom_id : str
-        Geometry id to filter to (e.g. geom_id = '03030006')
+        Geometry ids to filter to (e.g. geom_id = '03030006'). Ids range from 8 to 10 digits and sometime involve a leading 0. 
     
     weights_df : pandas.DataFrame
         Tabular dataFrame containing columns the site numbers, geometry ids, and two columns wghts in huc and the drainage area basin.
 
     geom_id_col : str 
-        Column in weights_df with geom_ids
+        Column in weights_df with geometry ids. 
 
     site_col: str 
         Column in weights_df with drainage area site numbers. Please make sure ids have the correct number of digits and have not lost leading 0s when read in. 
