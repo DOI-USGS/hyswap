@@ -284,7 +284,7 @@ def identify_sites_from_weights(geom_id,
     filtered_df = weights_df[weights_df[geom_id_col] == geom_id]
 
     # Check that all sites ids have a character count of at least 8
-    assert all(filtered_df[site_col].str.len() >= 8), 'site numbers character length 8+ characters'
+    assert all(filtered_df[site_col].str.len() >= 8), 'site numbers character length must be greater or equal to 8 characters'
 
     # Check whether sites is the df index or not 
     if site_col == 'index':
