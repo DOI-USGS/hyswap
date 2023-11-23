@@ -283,6 +283,8 @@ def identify_sites_from_weights(geom_id,
     # Filter df to designated geometry (e.g. huc8)
     filtered_df = weights_df[weights_df[geom_id_col] == geom_id]
 
+    assert all(filtered_df[site_col].str.len() >= 8) == True, 'site numbers character length 8+ characters'
+
     # Check whether sites is the df index or not 
     if site_col == 'index':
         site_col = filtered_df.index
