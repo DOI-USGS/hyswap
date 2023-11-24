@@ -50,7 +50,8 @@ def weight_matrix():
 @pytest.fixture
 def weight_table():
     """Load and then return the demo weights tabular dataframe as a test fixture."""
-    return pd.read_csv("tests/demo_weights_table.csv", converters = {0:str, 1:str})
+    return pd.read_csv("tests/demo_weights_table.csv",
+                        converters = {0:str, 1:str})
 
 
 @pytest.fixture
