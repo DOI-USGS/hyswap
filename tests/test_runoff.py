@@ -47,6 +47,11 @@ def weight_matrix():
     """Load and then return the demo weights dataframe as a test fixture."""
     return pd.read_json("tests/demo_weights.json")
 
+@pytest.fixture
+def weight_table():
+    """Load and then return the demo weights tabular dataframe as a test fixture."""
+    return pd.read_csv("tests/demo_weights_table.csv")
+
 
 @pytest.fixture
 def df_list(weight_matrix):
@@ -130,8 +135,14 @@ def test_state_runoff(weight_matrix, df_list):
 def test_identify_sites_from_weights(weight_matrix):
     """Test the identify_sites_from_weights function."""
     siteids = runoff.identify_sites_from_weights(
-        "AL", weight_matrix)
-    assert siteids == ['07103980', '01646500']
+        geom_id = "05090201",
+        weights_df = weight_table,
+        geom_id_col = 'huc_cd',
+        site_col = 'site_no',
+        wght_in_basin_col = 'pct_in_basin',
+        wght_in_geom_col = 'pct_in_huc')
+
+    assert siteids == ['03234300']
 
 
 def test_multiple_runoff(weight_matrix, df_list):
