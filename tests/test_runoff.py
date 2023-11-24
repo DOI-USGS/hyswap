@@ -132,7 +132,7 @@ def test_state_runoff(weight_matrix, df_list):
     assert isinstance(state_runoff.values, np.ndarray)
 
 
-def test_identify_sites_from_weights(weight_matrix):
+def test_identify_sites_from_weights(weight_table):
     """Test the identify_sites_from_weights function."""
     siteids = runoff.identify_sites_from_weights(
         geom_id = "05090201",
