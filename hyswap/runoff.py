@@ -98,77 +98,6 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
     return df
 
 
-def calculate_geometric_runoff(geom_id, df_list, weights_matrix,
-                               start_date=None, end_date=None,
-                               data_col='runoff'):
-    """Function to calculate the runoff for a specified geometry.
-
-    Parameters
-    ----------
-    geom_id : str
-        Geometry ID for the geometry of interest.
-
-    df_list : list
-        List of dataframes containing runoff data for each site in the
-        geometry.
-
-    weights_matrix : pandas.DataFrame
-        DataFrame containing the weights for all sites and all geometries.
-        Columns are geometry IDs, index is site IDs.
-
-    start_date : str, optional
-        Start date for the runoff calculation. If not specified, the earliest
-        date in the df_list will be used. Format is 'YYYY-MM-DD'.
-
-    end_date : str, optional
-        End date for the runoff calculation. If not specified, the latest
-        date in the df_list will be used. Format is 'YYYY-MM-DD'.
-
-    data_col : str, optional
-        Column name containing runoff data in the dataframes in df_list.
-        Default is 'runoff', as it is assumed these dataframes are created
-        using the :obj:`streamflow_to_runoff` function.
-
-    Returns
-    -------
-    pandas.Series
-        Series containing the area-weighted runoff values for the geometry.
-    """
-    # get date range
-    date_range = _get_date_range(df_list, start_date, end_date)
-
-    # get site list from weights matrix index
-    site_list = weights_matrix.index.tolist()
-
-    # create empty dataframe to store results, index is site_list,
-    # columns are date_range
-    runoff_df = pd.DataFrame(index=site_list, columns=date_range)
-
-    # loop through the df_list to populate rows of the runoff_df
-    for df in df_list:
-        # get site id (assumed to be string from NWIS)
-        site_id = df['site_no'][0]
-        # convert site_id to int for indexing weights matrix
-        site_id = int(site_id)
-        # get weight for site
-        weight = weights_matrix[geom_id].loc[site_id]
-        # get runoff for site
-        runoff = df[data_col]
-        # multiply weights by runoff
-        weighted_runoff = weight * runoff
-        # add weighted runoff to runoff_df
-        # pandas seems to use dates to automatically align data :)
-        runoff_df.loc[site_id] = weighted_runoff
-
-    # combine the new runoff_df with the existing weights matrix to calculate
-    # the area-weighted runoff values for the geometry
-    runoff_sum = runoff_df.sum(axis=0, skipna=True)
-    weights_sum = weights_matrix[geom_id].sum(skipna=True)
-    weighted_runoff = runoff_sum / weights_sum
-
-    return weighted_runoff
-
-
 def _get_date_range(df_list, start_date, end_date):
     """Get date range for runoff calculation.
 
@@ -246,6 +175,119 @@ def identify_sites_from_weights(geom_id, weights_matrix):
     int_list = weights_matrix.index[weights_matrix[geom_id] > 0].tolist()
     site_list = [str(i).zfill(8) for i in int_list]
     return site_list
+
+def _convert_df_to_matrix(weights_df,
+                         site_col = 'site_no',
+                         geom_id_col = 'huc_cd',
+                         wght_in_basin_col = 'pct_in_basin',
+                         wght_in_huc_col = 'pct_in_huc',
+                         percentage = False):
+    
+    """Convert df to matrix
+
+
+    Parameters
+    ----------
+    weights_df :
+    wght_in_basin_col :
+    wght_in_huc_col : 
+    percentage : 
+
+    """
+
+    if percentage == True:
+        multiplier = 0.01
+    else: 
+        multiplier = 1 
+
+    # df = df.reset_index()
+
+    weights_df['value'] = (weights_df[wght_in_basin_col] * multiplier) * (weights_df[wght_in_huc_col] * multiplier)
+    
+    df_pivoted = df.pivot(index = site_col ,columns = geom_id_col , values = 'value')
+
+    return df_pivoted
+
+
+
+
+def calculate_geometric_runoff(geom_id, df_list, weights_df,
+                               start_date=None, end_date=None,
+                               data_col='runoff'):
+    """Function to calculate the runoff for a specified geometry.
+
+    Parameters
+    ----------
+    geom_id : str
+        Geometry ID for the geometry of interest.
+
+    df_list : list
+        List of dataframes containing runoff data for each site in the
+        geometry.
+
+    weights_matrix : pandas.DataFrame
+        DataFrame containing the weights for all sites and all geometries.
+        Columns are geometry IDs, index is site IDs.
+
+    start_date : str, optional
+        Start date for the runoff calculation. If not specified, the earliest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    end_date : str, optional
+        End date for the runoff calculation. If not specified, the latest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    data_col : str, optional
+        Column name containing runoff data in the dataframes in df_list.
+        Default is 'runoff', as it is assumed these dataframes are created
+        using the :obj:`streamflow_to_runoff` function.
+
+    Returns
+    -------
+    pandas.Series
+        Series containing the area-weighted runoff values for the geometry.
+    """
+    # get date range
+    date_range = _get_date_range(df_list, start_date, end_date)
+
+     # convert df to matrix 
+     mtx = _convert_df_to_matrix(weights_df,
+                                  site_col = 'site_no',
+                                  geom_id_col = 'huc_cd',
+                                  wght_in_basin_col = 'pct_in_basin',
+                                  wght_in_huc_col = 'pct_in_huc',
+                                  percentage = True)
+
+    # get site list from weights matrix index
+    site_list = mtx.index.tolist()
+
+    # create empty dataframe to store results, index is site_list,
+    # columns are date_range
+    runoff_df = pd.DataFrame(index=site_list, columns=date_range)
+
+    # loop through the df_list to populate rows of the runoff_df
+    for df in df_list:
+        # get site id (assumed to be string from NWIS)
+        site_id = df['site_no'][0]
+        # convert site_id to int for indexing weights matrix
+        site_id = int(site_id)
+        # get weight for site
+        weight = mtx[geom_id].loc[site_id]
+        # get runoff for site
+        runoff = df[data_col]
+        # multiply weights by runoff
+        weighted_runoff = weight * runoff
+        # add weighted runoff to runoff_df
+        # pandas seems to use dates to automatically align data :)
+        runoff_df.loc[site_id] = weighted_runoff
+
+    # combine the new runoff_df with the existing weights matrix to calculate
+    # the area-weighted runoff values for the geometry
+    runoff_sum = runoff_df.sum(axis=0, skipna=True)
+    weights_sum = mtx[geom_id].sum(skipna=True)
+    weighted_runoff = runoff_sum / weights_sum
+
+    return weighted_runoff
 
 
 def calculate_multiple_geometric_runoff(
