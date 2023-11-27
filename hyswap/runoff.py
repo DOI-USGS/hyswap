@@ -276,13 +276,13 @@ def identify_sites_from_weights(geom_id,
     .. doctest::
 
         >>> data = [['01014000', '01010002', 0.01, 0.6],
-        ['01014001', '01010002', 0.2, 0.8],
-        ['01014002', '01010003', 0.9, 0.05]]
+        ... ['01014001', '01010002', 0.2, 0.8],
+        ... ['01014002', '01010003', 0.9, 0.05]]
         >>> df = pd.DataFrame(data,
-        columns = ['site_no', 'geom_id', 'wght_basin', 'wght_huc'])
+        ... columns = ['site_no', 'geom_id', 'wght_basin', 'wght_huc'])
         >>> sites_lst = identify_sites_from_weights(weights_df=df,
-        geom_id='01010002', geom_id_col='geom_id', site_col='site_no',
-        wght_in_basin_col='wght_basin', wght_in_geom_col='wght_huc')
+        ... geom_id='01010002', geom_id_col='geom_id', site_col='site_no',
+        ... wght_in_basin_col='wght_basin', wght_in_geom_col='wght_huc')
         >>> print(sites_lst)
         ['01014000', '01014001']
 
