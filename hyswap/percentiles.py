@@ -197,20 +197,28 @@ def calculate_variable_percentile_thresholds_by_day(
                                    leading_values=leading_values,
                                    trailing_values=trailing_values,
                                    drop_na=ignore_na)
-        if not np.isnan(data).all():
-            meta = calculate_metadata(data)
-            # only calculate data if there are at least min_years of data
-            if meta['n_years'] >= min_years:
-                # calculate percentiles for the day of year and add
-                # to DataFrame
-                _pct = calculate_fixed_percentile_thresholds(
-                    data, percentiles=percentiles, method=method,
-                    ignore_na=ignore_na, **kwargs)
-                percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]  # noqa: E501
+        if not data.empty:
+            if not np.isnan(data).all():
+                meta = calculate_metadata(data)
+                # only calculate data if there are at least min_years of data
+                if meta and meta['n_years'] >= min_years:
+                    # calculate percentiles for the day of year and add to DataFrame
+                    _pct = calculate_fixed_percentile_thresholds(
+                        data, percentiles=percentiles, method=method,
+                        ignore_na=ignore_na, **kwargs)
+                    percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]  # noqa: E501
+                else:
+                    # if there are not at least 10 years of data,
+                    # set percentiles to NaN
+                    percentiles_by_day.loc[t_idx == doy, :] = np.nan
             else:
-                # if there are not at least 10 years of data,
+                # if all values are NA
                 # set percentiles to NaN
                 percentiles_by_day.loc[t_idx == doy, :] = np.nan
+        else:
+            # if the df is empty
+            # set percentiles to NaN
+            percentiles_by_day.loc[t_idx == doy, :] = np.nan
     # replace index with multi-index of doy_index and month-day values
     # month_day values
     month_day = pd.to_datetime(
@@ -353,14 +361,20 @@ def calculate_variable_percentile_from_value(value, percentile_df, mo_day):
     """
     # retrieve percentile thresholds for the day of year of interest
     pct_values = percentile_df.loc[percentile_df.index.get_level_values('month-day') == mo_day]  # noqa: E501
-    pct_values = pct_values.reset_index(drop=True)
-    pct_values = pct_values.rename(index={0: "values"})
 
-    # define values
-    thresholds = pct_values.columns.tolist()
-    percentile_values = pct_values.values.tolist()[0]
-    # do and return linear interpolation
-    return np.interp(value, percentile_values, thresholds).round(2)
+    if not pct_values.empty:
+        pct_values = pct_values.reset_index(drop=True)
+        pct_values = pct_values.rename(index={0: "values"})
+        # define values
+        thresholds = pct_values.columns.tolist()
+        percentile_values = pct_values.values.tolist()[0]
+        # do and return linear interpolation
+        est_pct = np.interp(value, percentile_values, thresholds).round(2)
+    else:
+        # return NaN if no threshold values are provided
+        est_pct = np.nan
+
+    return est_pct
 
 
 def calculate_multiple_variable_percentiles_from_values(df, data_column_name,
