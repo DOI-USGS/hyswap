@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gc81a2a2 documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gfb8e840 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=dca86182"></script>
+    <script src="../../_static/documentation_options.js?v=28face1d"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc81a2a2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gfb8e840 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -239,12 +239,11 @@
                                    <span class="n">leading_values</span><span class="o">=</span><span class="n">leading_values</span><span class="p">,</span>
                                    <span class="n">trailing_values</span><span class="o">=</span><span class="n">trailing_values</span><span class="p">,</span>
                                    <span class="n">drop_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">)</span>
-        <span class="c1"># could insert other functions here to check or modify data</span>
-        <span class="c1"># as needed or based on any other criteria</span>
-        <span class="n">meta</span> <span class="o">=</span> <span class="n">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="n">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># only calculate data if there are at least min_years of data</span>
-        <span class="k">if</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_years&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_years</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">meta</span> <span class="ow">and</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_years&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_years</span><span class="p">:</span>
             <span class="c1"># calculate percentiles for the day of year and add to DataFrame</span>
             <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
                     <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
@@ -403,14 +402,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># retrieve percentile thresholds for the day of year of interest</span>
     <span class="n">pct_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;month-day&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">mo_day</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
-    <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;values&quot;</span><span class="p">})</span>
 
-    <span class="c1"># define values</span>
-    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># do and return linear interpolation</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;values&quot;</span><span class="p">})</span>
+        <span class="c1"># define values</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># do and return linear interpolation</span>
+        <span class="n">est_pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># return NaN if no threshold values are provided</span>
+        <span class="n">est_pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="k">return</span> <span class="n">est_pct</span></div>
 
 
 
@@ -514,7 +519,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc81a2a2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gfb8e840 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
