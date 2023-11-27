@@ -176,15 +176,15 @@ def identify_sites_from_weights(geom_id, weights_matrix):
     site_list = [str(i).zfill(8) for i in int_list]
     return site_list
 
+
 def _convert_df_to_matrix(weights_df,
-                         site_col = 'site_no',
-                         geom_id_col = 'huc_cd',
-                         wght_in_basin_col = 'pct_in_basin',
-                         wght_in_huc_col = 'pct_in_huc',
-                         percentage = False):
+                          site_col='site_no',
+                          geom_id_col='huc_cd',
+                          wght_in_basin_col='pct_in_basin',
+                          wght_in_huc_col='pct_in_huc',
+                          percentage=False):
     
     """Convert df to matrix
-
 
     Parameters
     ----------
@@ -202,17 +202,23 @@ def _convert_df_to_matrix(weights_df,
 
     # df = df.reset_index()
 
-    weights_df['value'] = (weights_df[wght_in_basin_col] * multiplier) * (weights_df[wght_in_huc_col] * multiplier)
+    weights_df['value']=(weights_df[wght_in_basin_col] * multiplier) * (weights_df[wght_in_huc_col] * multiplier)
     
-    df_pivoted = df.pivot(index = site_col ,columns = geom_id_col , values = 'value')
+    df_pivoted=weights_df.pivot(index=site_col,
+                                columns=geom_id_col,
+                                values='value'
+                                )
 
     return df_pivoted
 
 
 
 
-def calculate_geometric_runoff(geom_id, df_list, weights_df,
-                               start_date=None, end_date=None,
+def calculate_geometric_runoff(geom_id,
+                               df_list,
+                               weights_df,
+                               start_date=None,
+                               end_date=None,
                                data_col='runoff'):
     """Function to calculate the runoff for a specified geometry.
 
@@ -250,13 +256,13 @@ def calculate_geometric_runoff(geom_id, df_list, weights_df,
     # get date range
     date_range = _get_date_range(df_list, start_date, end_date)
 
-     # convert df to matrix 
-     mtx = _convert_df_to_matrix(weights_df,
-                                  site_col = 'site_no',
-                                  geom_id_col = 'huc_cd',
-                                  wght_in_basin_col = 'pct_in_basin',
-                                  wght_in_huc_col = 'pct_in_huc',
-                                  percentage = True)
+    # convert df to matrix
+    mtx = _convert_df_to_matrix(weights_df,
+                                site_col='site_no',
+                                geom_id_col='huc_cd',
+                                wght_in_basin_col='pct_in_basin',
+                                wght_in_huc_col='pct_in_huc',
+                                percentage=True)
 
     # get site list from weights matrix index
     site_list = mtx.index.tolist()
