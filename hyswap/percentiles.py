@@ -149,6 +149,8 @@ def calculate_variable_percentile_thresholds_by_day(
     -------
     percentiles : pandas.DataFrame
         DataFrame containing threshold percentiles of data by day of year.
+        Will return a DataFrame of NaNs for each percentile/day if
+        provided an empty DataFrame or DataFrame with insufficient data
 
     Examples
     --------
@@ -168,6 +170,12 @@ def calculate_variable_percentile_thresholds_by_day(
         >>> len(results.columns)  # 8 default percentiles
         8
     """
+    # If the dataframe is empty, create a dummy dataframe to
+    # run through function
+    if df.empty:
+        date_rng = pd.date_range(start='2023-01-01', end='2023-12-31')
+        df = pd.DataFrame(index=date_rng)
+        df[data_column_name] = np.nan
     # define year and day of year columns and convert date column to datetime
     # if necessary
     df = define_year_doy_columns(df, date_column_name=date_column_name,
@@ -189,22 +197,20 @@ def calculate_variable_percentile_thresholds_by_day(
                                    leading_values=leading_values,
                                    trailing_values=trailing_values,
                                    drop_na=ignore_na)
-        # could insert other functions here to check or modify data
-        # as needed or based on any other criteria
-        meta = calculate_metadata(data)
-
-        # only calculate data if there are at least min_years of data
-        if meta['n_years'] >= min_years:
-            # calculate percentiles for the day of year and add to DataFrame
-            _pct = calculate_fixed_percentile_thresholds(
+        if not np.isnan(data).all():
+            meta = calculate_metadata(data)
+            # only calculate data if there are at least min_years of data
+            if meta['n_years'] >= min_years:
+                # calculate percentiles for the day of year and add
+                # to DataFrame
+                _pct = calculate_fixed_percentile_thresholds(
                     data, percentiles=percentiles, method=method,
                     ignore_na=ignore_na, **kwargs)
-            percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]
-        else:
-            # if there are not at least 10 years of data,
-            # set percentiles to NaN
-            percentiles_by_day.loc[t_idx == doy, :] = np.nan
-
+                percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]  # noqa: E501
+            else:
+                # if there are not at least 10 years of data,
+                # set percentiles to NaN
+                percentiles_by_day.loc[t_idx == doy, :] = np.nan
     # replace index with multi-index of doy_index and month-day values
     # month_day values
     month_day = pd.to_datetime(
