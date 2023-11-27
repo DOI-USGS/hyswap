@@ -7,12 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+gfb8e840 documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+ga92fccc documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=28face1d"></script>
+    <script src="../_static/documentation_options.js?v=368ca923"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gfb8e840 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga92fccc documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -1727,7 +1727,7 @@ geometry. Columns are geometry IDs, index is date range.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.identify_sites_from_weights">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">identify_sites_from_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#identify_sites_from_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.identify_sites_from_weights" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">identify_sites_from_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wght_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pct_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wght_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pct_in_huc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#identify_sites_from_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.identify_sites_from_weights" title="Link to this definition">¶</a></dt>
 <dd><p>Identify sites for a specified geometry.</p>
 <p>Function to identify sites with non-zero weights for a given
 spatial geometry. This function is a helper function that can
@@ -1736,19 +1736,47 @@ to construct the list of dataframes for a given geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geom_id</strong> (<em>str</em>) – Geometry ID for the geometry of interest; should be a column
-in the weights matrix.</p></li>
-<li><p><strong>weights_matrix</strong> (<em>pandas.DataFrame</em>) – DataFrame containing the weights for all sites and all geometries.
-Columns are geometry IDs, index is site IDs.</p></li>
+<li><p><strong>geom_id</strong> (<em>str</em>) – Geometry ids to filter to (e.g. geom_id = ‘03030006’).
+Ids range from 8 to 10 digits and sometime involve a leading 0.</p></li>
+<li><p><strong>weights_df</strong> (<em>pandas.DataFrame</em>) – Tabular dataFrame containing columns the site numbers,
+geometry ids, and two columns wghts in huc and the drainage area basin.</p></li>
+<li><p><strong>geom_id_col</strong> (<em>str</em>) – Column in weights_df with geometry ids.</p></li>
+<li><p><strong>site_col</strong> (<em>str</em>) – <p>Column in weights_df with drainage area site numbers.
+Please make sure ids have the correct number of digits and have</p>
+<blockquote>
+<div><p>not lost leading 0s when read in.</p>
+</div></blockquote>
+<p>If the site numbers are the weights_df index col, site_col = ‘index’.</p>
+</p></li>
+<li><p><strong>wght_in_basin_col</strong> (<em>float</em><em>, </em><em>optional</em>) – Name of column with values representing the proportion (0 to 1)
+of the spatial geometry occurring in the corresponding drainage area.
+Default name: pct_in_basin)</p></li>
+<li><p><strong>wght_in_geom_col</strong> (<em>float</em><em>, </em><em>optional</em>) – Name of column with values representing the proportion (0 to 1)
+of the drainage area occurring in the corresponding spatial geometry.
+Default name: pct_in_huc</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of site IDs with non-zero weights for the geometry.</p>
+<dd class="field-even"><p>List of site IDs with non-zero weights for the geometry</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Find all drainage area site numbers that intersect with geometry id 0101002</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;01014000&#39;</span><span class="p">,</span> <span class="s1">&#39;01010002&#39;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="s1">&#39;01014001&#39;</span><span class="p">,</span> <span class="s1">&#39;01010002&#39;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">[</span><span class="s1">&#39;01014002&#39;</span><span class="p">,</span> <span class="s1">&#39;01010003&#39;</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">,</span> <span class="s1">&#39;geom_id&#39;</span><span class="p">,</span> <span class="s1">&#39;wght_basin&#39;</span><span class="p">,</span> <span class="s1">&#39;wght_huc&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sites_lst</span> <span class="o">=</span> <span class="n">runoff</span><span class="o">.</span><span class="n">identify_sites_from_weights</span><span class="p">(</span><span class="n">weights_df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">geom_id</span><span class="o">=</span><span class="s1">&#39;01010002&#39;</span><span class="p">,</span> <span class="n">geom_id_col</span><span class="o">=</span><span class="s1">&#39;geom_id&#39;</span><span class="p">,</span> <span class="n">site_col</span><span class="o">=</span><span class="s1">&#39;site_no&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">wght_in_basin_col</span><span class="o">=</span><span class="s1">&#39;wght_basin&#39;</span><span class="p">,</span> <span class="n">wght_in_geom_col</span><span class="o">=</span><span class="s1">&#39;wght_huc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sites_lst</span><span class="p">)</span>
+<span class="go">[&#39;01014000&#39;, &#39;01014001&#39;]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2055,7 +2083,7 @@ by df_names argument.</p></li>
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gfb8e840 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga92fccc documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>
