@@ -726,6 +726,9 @@ def categorize_flows(df, data_col, schema_name='NWD', custom_schema=None):
     if "low_label" in schema:
         df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['low_label'])
         df.loc[df[data_col] == schema['ranges'][0], 'flow_cat'] = schema['low_label']  # noqa: E501
+        df['flow_cat'] = df['flow_cat'].cat.reorder_categories(
+            [schema['low_label']] +
+            df['flow_cat'].cat.categories[:-1].tolist())
     if "high_label" in schema:
         df['flow_cat'] = df['flow_cat'].cat.add_categories(schema['high_label'])  # noqa: E501
         df.loc[df[data_col] == schema['ranges'][-1], 'flow_cat'] = schema['high_label']  # noqa: E501
