@@ -223,10 +223,10 @@ def _get_date_range(df_list, start_date, end_date):
 def identify_sites_from_weights(geom_id,
                                 weights_df,
                                 geom_id_col,
-                                site_col,                           
-                                wght_in_basin_col = 'pct_in_basin',
-                                wght_in_geom_col = 'pct_in_huc'):
-    
+                                site_col,
+                                wght_in_basin_col='pct_in_basin',
+                                wght_in_geom_col='pct_in_huc'):
+
     """Identify sites for a specified geometry.
 
     Function to identify sites with non-zero weights for a given
@@ -237,30 +237,38 @@ def identify_sites_from_weights(geom_id,
     Parameters
     ----------
     geom_id : str
-        Geometry ids to filter to (e.g. geom_id = '03030006'). Ids range from 8 to 10 digits and sometime involve a leading 0. 
-    
+        Geometry ids to filter to (e.g. geom_id = '03030006').
+        Ids range from 8 to 10 digits and sometime involve a leading 0.
+
     weights_df : pandas.DataFrame
-        Tabular dataFrame containing columns the site numbers, geometry ids, and two columns wghts in huc and the drainage area basin.
+        Tabular dataFrame containing columns the site numbers,
+        geometry ids, and two columns wghts in huc and the drainage area basin.
 
-    geom_id_col : str 
-        Column in weights_df with geometry ids. 
+    geom_id_col : str
+        Column in weights_df with geometry ids.
 
-    site_col: str 
-        Column in weights_df with drainage area site numbers. Please make sure ids have the correct number of digits and have not lost leading 0s when read in. 
-        If the site numbers are the weights_df index col, site_col = 'index' 
+    site_col: str
+        Column in weights_df with drainage area site numbers.
+        Please make sure ids have the correct number of digits and have
+          not lost leading 0s when read in.
+        If the site numbers are the weights_df index col, site_col = 'index'.
 
     wght_in_basin_col: float, optional
-        Name of column with values representing the proportion (between 0 and 1) of the spatial geometry occurring in the corresponding drainage area (default name: pct_in_basin)
+        Name of column with values representing the proportion (0 to 1)
+        of the spatial geometry occurring in the corresponding drainage area.
+        Default name: pct_in_basin)
 
     wght_in_geom_col: float, optional
-        Name of column with values representing the proportion (between 0 and 1) of the drainage area occurring in the corresponding spatial geometry (default name: pct_in_huc)
+        Name of column with values representing the proportion (0 to 1)
+        of the drainage area occurring in the corresponding spatial geometry.
+        Default name: pct_in_huc
 
-                      
+
     Returns
     -------
     list
-        List of site IDs with non-zero weights for the geometry.
-        
+        List of site IDs with non-zero weights for the geometry
+
     Examples
     --------
     Find all drainage area site numbers that intersect with geometry id 0101002
@@ -272,8 +280,10 @@ def identify_sites_from_weights(geom_id,
             ['01014001', '01010002', 0.2, 0.8],
             ['01014002', '01010003', 0.9, 0.05]
             ]
-        >>>  df = pd.DataFrame(data, columns = ['site_no','geom_id','wght_basin','wght_huc'])
-        >>> sites_lst = identify_sites_from_weights(weights_df = df, geom_id = '01010002', geom_id_col = 'geom_id', site_col = 'site_no',
+        >>>  df = pd.DataFrame(data,
+        columns = ['site_no','geom_id','wght_basin','wght_huc'])
+        >>> sites_lst = identify_sites_from_weights(weights_df = df,
+          geom_id = '01010002', geom_id_col = 'geom_id', site_col = 'site_no',
             wght_in_basin_col = 'wght_basin', wght_in_geom_col = 'wght_huc')
         >>> print(sites_lst)
         ['01014000', '01014001']
@@ -284,16 +294,18 @@ def identify_sites_from_weights(geom_id,
     filtered_df = weights_df[weights_df[geom_id_col] == geom_id]
 
     # Check that all sites ids have a character count of at least 8
-    assert all(filtered_df[site_col].str.len() >= 8), 'site numbers character length must be greater or equal to 8 characters'
+    assert all(filtered_df[site_col].str.len() >= 8), (
+        'site numbers char length must be > or = to 8 char')
 
-    # Check whether sites is the df index or not 
+    # Check whether sites is the df index or not
     if site_col == 'index':
         site_col = filtered_df.index
     else:
         site_col = filtered_df[site_col]
 
     # Retrieve all non-0 sites within the designated geometry (e.g. huc8)
-    site_list = site_col[(filtered_df[wght_in_basin_col] != 0) | (filtered_df[wght_in_geom_col] != 0)].to_list()
+    site_list = site_col[(filtered_df[wght_in_basin_col] != 0) | (
+        filtered_df[wght_in_geom_col] != 0)].to_list()
 
     return site_list
 
