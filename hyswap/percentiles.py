@@ -209,7 +209,7 @@ def calculate_variable_percentile_thresholds_by_day(
                         ignore_na=ignore_na, **kwargs)
                     percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]  # noqa: E501
                 else:
-                    # if there are not at least 10 years of data,
+                    # if there are not at least 'min_years' of data,
                     # set percentiles to NaN
                     percentiles_by_day.loc[t_idx == doy, :] = np.nan
             else:
