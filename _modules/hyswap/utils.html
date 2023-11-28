@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+ga92fccc documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g323d104 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=368ca923"></script>
+    <script src="../../_static/documentation_options.js?v=49a08651"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga92fccc documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g323d104 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -803,6 +803,9 @@
     <span class="k">if</span> <span class="s2">&quot;low_label&quot;</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">add_categories</span><span class="p">(</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">])</span>
         <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">reorder_categories</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">]]</span> <span class="o">+</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
     <span class="k">if</span> <span class="s2">&quot;high_label&quot;</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">add_categories</span><span class="p">(</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;high_label&#39;</span><span class="p">])</span>  <span class="c1"># noqa: E501</span>
         <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;high_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
@@ -938,7 +941,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga92fccc documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g323d104 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
