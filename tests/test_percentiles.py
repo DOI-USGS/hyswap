@@ -78,6 +78,13 @@ class TestCalculateVariablePercentileThresholdsByDay:
             len(pd.date_range('2001-01-01', '2002-12-31'))),
         'date': pd.date_range('2001-01-01', '2002-12-31')})
 
+    include_months = [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12]
+    df_dummy_missing_days = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2001-01-01', '2002-12-31'))),
+        'date': pd.date_range('2001-01-01', '2002-12-31')})
+    df_dummy_missing_days = df_dummy_missing_days[df_dummy_missing_days['date'].dt.month.isin(include_months)] # noqa
+
     def test_calculate_variable_percentile_thresholds_by_day(self):
         """Test with date column."""
         # test the function
@@ -200,6 +207,19 @@ class TestCalculateVariablePercentileThresholdsByDay:
             pd.DataFrame([]), 'data')
         assert percentiles_.isna().all().all()
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+
+    def test_missing_doys(self):
+        """Test that function returns empty percentile df."""
+        # test the function can handle when days of the year
+        # are missing from the dataframe. These days should
+        # not be included or show up as NaN
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
+            self.df_dummy_missing_days, 'data', date_column_name='date',
+            min_years=1)
+        assert not percentiles_.isna().all().all()
+        assert percentiles_.iloc[126].isna().all()
+        assert percentiles_.shape == (365, 8)
+        # assert percentiles_[percentiles_.index.get_level_values('doy') == 5].isna().all() # noqa
 
 
 class TestCalculateFixedPercentilesFromValue:
