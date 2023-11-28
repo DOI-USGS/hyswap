@@ -185,12 +185,12 @@ def identify_sites_from_weights(geom_id,
     wght_in_basin_col: float, optional
         Name of column with values representing the proportion (0 to 1)
         of the spatial geometry occurring in the corresponding drainage area.
-        Default name: pct_in_basin)
+        Default name: 'pct_in_basin'
 
     wght_in_geom_col: float, optional
         Name of column with values representing the proportion (0 to 1)
         of the drainage area occurring in the corresponding spatial geometry.
-        Default name: pct_in_huc
+        Default name: 'pct_in_huc'
 
 
     Returns
@@ -237,46 +237,86 @@ def identify_sites_from_weights(geom_id,
     return site_list
 
 
-def _convert_df_to_matrix(weights_df,
-                          site_col='site_no',
-                          geom_id_col='huc_cd',
-                          wght_in_basin_col='pct_in_basin',
-                          wght_in_huc_col='pct_in_huc',
-                          percentage=False):
+def convert_df_to_matrix(weights_df,
+                         site_col='site_no',
+                         geom_id_col='huc_cd',
+                         wght_in_basin_col='pct_in_basin',
+                         wght_in_huc_col='pct_in_huc',
+                         percentage=False):
     
     """Convert df to matrix
 
+    This is an internal function used by the :obj:`calculate_geometric_runoff`
+    function to convert a weights df into a matrix to perform the runoff calculation 
+    as it was originally built.
+
     Parameters
     ----------
-    weights_df :
-    wght_in_basin_col :
-    wght_in_huc_col : 
-    percentage : 
+    weights_df : pandas.DataFrame
+        Tabular dataFrame containing columns the site numbers,
+        geometry ids, and two columns wghts in huc and the drainage area basin.
+
+    geom_id_col : str
+        Column in weights_df with geometry ids.
+
+    site_col: str
+        Column in weights_df with drainage area site numbers.
+        Please make sure ids have the correct number of digits and have
+          not lost leading 0s when read in.
+        If the site numbers are the weights_df index col, site_col = 'index'.
+
+    wght_in_basin_col: float
+        Name of column with values representing the proportion (0 to 1)
+        of the spatial geometry occurring in the corresponding drainage area.
+        Default name: 'pct_in_basin'
+
+    wght_in_geom_col: float
+        Name of column with values representing the proportion (0 to 1)
+        of the drainage area occurring in the corresponding spatial geometry.
+        Default name: 'pct_in_huc'
+
+    percentage : boolean, optional
+        If the weight values in weights_df are percentages, percentage = True. 
+        If the values are decimal proportions, percentage = False. 
+        Default: False
+
 
     """
 
+    # Check whether sites is the df index or not
+    if site_col == 'index':
+        weights_df = weights_df.reset_index()
+        site_col = weights_df.columns[0]
+        weights_df[site_col] = weights_df[site_co].astype(str)
+
+    # Assertion to check that site_no are not of type int 
+    assert weights_df[site_col].dtypes == 'str' or \
+        weights_df[site_col].dtypes == 'object' \
+            ,'weight_df site_col should be a str or obj'
+
+    # Check if weights are percentage values 
     if percentage == True:
         multiplier = 0.01
     else: 
         multiplier = 1 
 
-    # df = df.reset_index()
-
-    weights_df['value']=(weights_df[wght_in_basin_col] * multiplier) * (weights_df[wght_in_huc_col] * multiplier)
+    # multiply weights
+    weights_df['value']=(weights_df[wght_in_basin_col] * multiplier) * \
+        (weights_df[wght_in_huc_col] * multiplier)
     
-    df_pivoted=weights_df.pivot(index=site_col,
+
+    # pivot to create weight matrix
+    weight_matrix=weights_df.pivot(index=site_col,
                                 columns=geom_id_col,
                                 values='value'
                                 )
 
-    return df_pivoted
-
-
+    return weight_matrix
 
 
 def calculate_geometric_runoff(geom_id,
                                df_list,
-                               weights_df,
+                               weights_matrix,
                                start_date=None,
                                end_date=None,
                                data_col='runoff'):
@@ -316,16 +356,8 @@ def calculate_geometric_runoff(geom_id,
     # get date range
     date_range = _get_date_range(df_list, start_date, end_date)
 
-    # convert df to matrix
-    mtx = _convert_df_to_matrix(weights_df,
-                                site_col='site_no',
-                                geom_id_col='huc_cd',
-                                wght_in_basin_col='pct_in_basin',
-                                wght_in_huc_col='pct_in_huc',
-                                percentage=True)
-
     # get site list from weights matrix index
-    site_list = mtx.index.tolist()
+    site_list = weights_matrix.index.tolist()
 
     # create empty dataframe to store results, index is site_list,
     # columns are date_range
@@ -336,9 +368,9 @@ def calculate_geometric_runoff(geom_id,
         # get site id (assumed to be string from NWIS)
         site_id = df['site_no'][0]
         # convert site_id to int for indexing weights matrix
-        site_id = int(site_id)
+        #site_id = int(site_id)
         # get weight for site
-        weight = mtx[geom_id].loc[site_id]
+        weight = weights_matrix[geom_id].loc[site_id]
         # get runoff for site
         runoff = df[data_col]
         # multiply weights by runoff
@@ -350,7 +382,7 @@ def calculate_geometric_runoff(geom_id,
     # combine the new runoff_df with the existing weights matrix to calculate
     # the area-weighted runoff values for the geometry
     runoff_sum = runoff_df.sum(axis=0, skipna=True)
-    weights_sum = mtx[geom_id].sum(skipna=True)
+    weights_sum = weights_matrix[geom_id].sum(skipna=True)
     weighted_runoff = runoff_sum / weights_sum
 
     return weighted_runoff
