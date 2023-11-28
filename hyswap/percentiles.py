@@ -189,12 +189,11 @@ def calculate_variable_percentile_thresholds_by_day(
                                    leading_values=leading_values,
                                    trailing_values=trailing_values,
                                    drop_na=ignore_na)
-        # could insert other functions here to check or modify data
-        # as needed or based on any other criteria
-        meta = calculate_metadata(data)
 
+        if not data.empty:
+            meta = calculate_metadata(data)
         # only calculate data if there are at least min_years of data
-        if meta['n_years'] >= min_years:
+        if meta and meta['n_years'] >= min_years:
             # calculate percentiles for the day of year and add to DataFrame
             _pct = calculate_fixed_percentile_thresholds(
                     data, percentiles=percentiles, method=method,
@@ -347,14 +346,20 @@ def calculate_variable_percentile_from_value(value, percentile_df, mo_day):
     """
     # retrieve percentile thresholds for the day of year of interest
     pct_values = percentile_df.loc[percentile_df.index.get_level_values('month-day') == mo_day]  # noqa: E501
-    pct_values = pct_values.reset_index(drop=True)
-    pct_values = pct_values.rename(index={0: "values"})
 
-    # define values
-    thresholds = pct_values.columns.tolist()
-    percentile_values = pct_values.values.tolist()[0]
-    # do and return linear interpolation
-    return np.interp(value, percentile_values, thresholds).round(2)
+    if not pct_values.empty:
+        pct_values = pct_values.reset_index(drop=True)
+        pct_values = pct_values.rename(index={0: "values"})
+        # define values
+        thresholds = pct_values.columns.tolist()
+        percentile_values = pct_values.values.tolist()[0]
+        # do and return linear interpolation
+        est_pct = np.interp(value, percentile_values, thresholds).round(2)
+    else:
+        # return NaN if no threshold values are provided
+        est_pct = np.nan
+
+    return est_pct
 
 
 def calculate_multiple_variable_percentiles_from_values(df, data_column_name,
