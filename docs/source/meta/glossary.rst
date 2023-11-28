@@ -29,7 +29,7 @@ Glossary
 |                   | 30, and is designated by the |                                       |
 |                   | year in which it ends.       |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| .. _calabel:      | Starts January 1 and ends    | `Pope Gregory XIII (1582)`_           |
+| .. _calabel:      | Starts January 1 and ends    |                                       |
 |                   | December 31 of the calendar  |                                       |
 | Calendar Year     | year.                        |                                       |
 +-------------------+------------------------------+---------------------------------------+
@@ -78,13 +78,8 @@ Glossary
 |                   | data with years on the y-axis|                                       |
 |                   | and days on the x-axis.      |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| Metadata          | Data that provides           | `Merriam Webster`_                    |
+| Metadata          | Data that provides           |                                       |
 |                   | information about other data.|                                       |
-+-------------------+------------------------------+---------------------------------------+
-| Leap year         | Years evenly divisible by 4  | `US Naval Observatory`_               |
-|                   | are leap years, except for   |                                       |
-|                   | centurial years that are not |                                       |
-|                   | evenly divisible by 400.     |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Cubic feet per    | A rate of the flow, in       | `USGS Water Science Glossary`_        |
 | second (cfs)      | streams and rivers, for      |                                       |
@@ -181,11 +176,7 @@ Glossary
 
 .. _Hammond et al. (2022): https://doi.org/10.1029/2022WR031930
 
-.. _US Naval Observatory: https://aa.usno.navy.mil/faq/leap_years
-
 .. _hyswap: https://doi-usgs.github.io/hyswap/index.html
-
-.. _Pope Gregory XIII (1582): https://en.wikisource.org/wiki/Translation:Inter_gravissimas
 
 .. _USGS: https://www.usgs.gov/
 
@@ -194,8 +185,6 @@ Glossary
 .. _USGS Water Science Glossary: https://www.usgs.gov/special-topics/water-science-school/science/water-science-glossary
 
 .. _USGS NWIS: https://waterdata.usgs.gov/nwis
-
-.. _Merriam Webster: https://www.merriam-webster.com/dictionary/metadata
 
 .. _Searcy (1959): https://doi.org/10.3133/wsp1542A
 
