@@ -192,7 +192,6 @@ def identify_sites_from_weights(geom_id,
         of the drainage area occurring in the corresponding spatial geometry.
         Default name: 'pct_in_huc'
 
-
     Returns
     -------
     list
@@ -238,10 +237,10 @@ def identify_sites_from_weights(geom_id,
 
 
 def convert_df_to_matrix(weights_df,
-                         site_col='site_no',
-                         geom_id_col='huc_cd',
-                         wght_in_basin_col='pct_in_basin',
-                         wght_in_geom_col='pct_in_huc',
+                         site_col,
+                         geom_id_col,
+                         wght_in_basin_col,
+                         wght_in_geom_col,
                          percentage=False):
     
     """Convert df to matrix
@@ -258,18 +257,18 @@ def convert_df_to_matrix(weights_df,
     geom_id_col : str
         Column in weights_df with geometry ids.
 
-    site_col: str
+    site_col : str
         Column in weights_df with drainage area site numbers.
         Please make sure ids have the correct number of digits and have
           not lost leading 0s when read in.
         If the site numbers are the weights_df index col, site_col = 'index'.
 
-    wght_in_basin_col: float
+    wght_in_basin_col : float
         Name of column with values representing the proportion (0 to 1)
         of the spatial geometry occurring in the corresponding drainage area.
         Default name: 'pct_in_basin'
 
-    wght_in_geom_col: float
+    wght_in_geom_col : float
         Name of column with values representing the proportion (0 to 1)
         of the drainage area occurring in the corresponding spatial geometry.
         Default name: 'pct_in_huc'
@@ -279,6 +278,11 @@ def convert_df_to_matrix(weights_df,
         If the values are decimal proportions, percentage = False. 
         Default: False
 
+        Returns
+    -------
+    list
+        pandas.Dataframe containing the weights for all sites and all geometries.
+        Columns are geometry IDs, index is site IDs.
 
     """
 
@@ -303,7 +307,6 @@ def convert_df_to_matrix(weights_df,
     weights_df['value']=(weights_df[wght_in_basin_col] * multiplier) * \
         (weights_df[wght_in_geom_col] * multiplier)
     
-
     # pivot to create weight matrix
     weight_matrix=weights_df.pivot(index=site_col,
                                 columns=geom_id_col,
