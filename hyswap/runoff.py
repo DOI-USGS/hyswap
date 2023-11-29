@@ -245,8 +245,8 @@ def convert_df_to_matrix(weights_df,
     
     """Convert df to matrix
 
-    Function to convert a weights df tabular df into a matrix to perform the runoff calculation 
-    calculate_geometric_runoff(), which requires a weight_matrix. 
+    Function to convert a tabular weights df into a matrix to calculate runoff. 
+    runoff.calculate_geometric_runoff(), which requires a weight_matrix. 
 
     Parameters
     ----------
@@ -369,8 +369,6 @@ def calculate_geometric_runoff(geom_id,
     for df in df_list:
         # get site id (assumed to be string from NWIS)
         site_id = df['site_no'][0]
-        # convert site_id to int for indexing weights matrix
-        #site_id = int(site_id)
         # get weight for site
         weight = weights_matrix[geom_id].loc[site_id]
         # get runoff for site
