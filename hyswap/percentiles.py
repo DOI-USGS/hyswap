@@ -211,7 +211,8 @@ def calculate_variable_percentile_thresholds_by_day(
             if not np.isnan(data).all():
                 meta = calculate_metadata(data)
                 # only calculate data if there are at least min_years of data
-                if meta['n_years'] >= min_years:
+                # that are not nan
+                if meta['n_years'] - meta['n_nans'] >= min_years:
                     # calculate percentiles for the day of year
                     # and add to DataFrame
                     _pct = calculate_fixed_percentile_thresholds(
