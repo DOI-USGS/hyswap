@@ -88,7 +88,7 @@ class TestCalculateVariablePercentileThresholdsByDay:
     df_dummy_missing_days = df_dummy_missing_days[df_dummy_missing_days['date'].dt.month.isin(include_months)] # noqa
 
     # This dataframe has 10 years of data, but 5 days have nans
-    # in year 1. 
+    # in year 1.
     df_nans = pd.DataFrame({
         'data': np.random.random(
             len(pd.date_range('2001-01-01', '2010-12-31'))),
@@ -236,6 +236,7 @@ class TestCalculateVariablePercentileThresholdsByDay:
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.df_nans, 'data', date_column_name='date')
         assert percentiles_.iloc[0:4].isna().all().all()
+
 
 class TestCalculateFixedPercentilesFromValue:
     # define some test values
