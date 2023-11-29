@@ -174,18 +174,18 @@ def calculate_variable_percentile_thresholds_by_day(
     # If the dataframe is empty, create a dummy dataframe to
     # run through function
     if df.empty:
-        warnings.warn('No valid data provided, returning NA values for percentile thresholds') # noqa: E501
+        warnings.warn('No valid data provided, returning NA values for percentile thresholds')  # noqa: E501
         date_rng = pd.date_range(start='1900-01-01', end='1900-12-31')
         df = pd.DataFrame(index=date_rng)
         df[data_column_name] = np.nan
-    
+
     # If data column name is not in dataframe
-    if not data_column_name in df:
-        warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds') # noqa: E501
+    if data_column_name not in df:
+        warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds')  # noqa: E501
         date_rng = pd.date_range(start='1900-01-01', end='1900-12-31')
         df = pd.DataFrame(index=date_rng)
         df[data_column_name] = np.nan
-    
+
     # define year and day of year columns and convert date column to datetime
     # if necessary
     df = define_year_doy_columns(df, date_column_name=date_column_name,
