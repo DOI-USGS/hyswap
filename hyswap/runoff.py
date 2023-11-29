@@ -241,14 +241,13 @@ def convert_df_to_matrix(weights_df,
                          site_col='site_no',
                          geom_id_col='huc_cd',
                          wght_in_basin_col='pct_in_basin',
-                         wght_in_huc_col='pct_in_huc',
+                         wght_in_geom_col='pct_in_huc',
                          percentage=False):
     
     """Convert df to matrix
 
-    This is an internal function used by the :obj:`calculate_geometric_runoff`
-    function to convert a weights df into a matrix to perform the runoff calculation 
-    as it was originally built.
+    Function to convert a weights df tabular df into a matrix to perform the runoff calculation 
+    calculate_geometric_runoff(), which requires a weight_matrix. 
 
     Parameters
     ----------
@@ -287,7 +286,7 @@ def convert_df_to_matrix(weights_df,
     if site_col == 'index':
         weights_df = weights_df.reset_index()
         site_col = weights_df.columns[0]
-        weights_df[site_col] = weights_df[site_co].astype(str)
+        weights_df[site_col] = weights_df[site_col].astype(str)
 
     # Assertion to check that site_no are not of type int 
     assert weights_df[site_col].dtypes == 'str' or \
@@ -302,7 +301,7 @@ def convert_df_to_matrix(weights_df,
 
     # multiply weights
     weights_df['value']=(weights_df[wght_in_basin_col] * multiplier) * \
-        (weights_df[wght_in_huc_col] * multiplier)
+        (weights_df[wght_in_geom_col] * multiplier)
     
 
     # pivot to create weight matrix
@@ -333,7 +332,7 @@ def calculate_geometric_runoff(geom_id,
 
     weights_matrix : pandas.DataFrame
         DataFrame containing the weights for all sites and all geometries.
-        Columns are geometry IDs, index is site IDs.
+        Columns are geometry IDs, index is site IDs. Use convert_df_to_matrix() here.
 
     start_date : str, optional
         Start date for the runoff calculation. If not specified, the earliest
