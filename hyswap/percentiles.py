@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+import warnings
 from datetime import datetime
 from hyswap.utils import filter_data_by_time
 from hyswap.utils import calculate_metadata
@@ -173,9 +174,18 @@ def calculate_variable_percentile_thresholds_by_day(
     # If the dataframe is empty, create a dummy dataframe to
     # run through function
     if df.empty:
-        date_rng = pd.date_range(start='2023-01-01', end='2023-12-31')
+        warnings.warn('No valid data provided, returning NA values for percentile thresholds') # noqa: E501
+        date_rng = pd.date_range(start='1900-01-01', end='1900-12-31')
         df = pd.DataFrame(index=date_rng)
         df[data_column_name] = np.nan
+    
+    # If data column name is not in dataframe
+    if not data_column_name in df:
+        warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds') # noqa: E501
+        date_rng = pd.date_range(start='1900-01-01', end='1900-12-31')
+        df = pd.DataFrame(index=date_rng)
+        df[data_column_name] = np.nan
+    
     # define year and day of year columns and convert date column to datetime
     # if necessary
     df = define_year_doy_columns(df, date_column_name=date_column_name,
@@ -201,7 +211,7 @@ def calculate_variable_percentile_thresholds_by_day(
             if not np.isnan(data).all():
                 meta = calculate_metadata(data)
                 # only calculate data if there are at least min_years of data
-                if meta and meta['n_years'] >= min_years:
+                if meta['n_years'] >= min_years:
                     # calculate percentiles for the day of year
                     # and add to DataFrame
                     _pct = calculate_fixed_percentile_thresholds(
@@ -217,7 +227,7 @@ def calculate_variable_percentile_thresholds_by_day(
                 # set percentiles to NaN
                 percentiles_by_day.loc[t_idx == doy, :] = np.nan
         else:
-            # if the df is empty
+            # if the data subset for doy is empty
             # set percentiles to NaN
             percentiles_by_day.loc[t_idx == doy, :] = np.nan
     # replace index with multi-index of doy_index and month-day values
