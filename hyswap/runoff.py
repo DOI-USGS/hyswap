@@ -315,6 +315,116 @@ def convert_df_to_matrix(weights_df,
 
     return weight_matrix
 
+def calculate_geometric_runoff_2(geom_id,
+                                 df_list,
+                                 weights_df,
+                                 site_col,
+                                 geom_id_col,
+                                 percentage =False,
+                                 start_date=None,
+                                 end_date=None,
+                                 data_col='runoff'):
+    """Function to calculate the runoff for a specified geometry.
+
+    Parameters
+    ----------
+    geom_id : str
+        Geometry ID for the geometry of interest.
+
+    df_list : list
+        List of dataframes containing runoff data for each site in the
+        geometry.
+
+    weights_df : pandas.DataFrame
+        Tabular dataFrame containing columns the site numbers,
+        geometry ids, and two weight columns: proportion of basin in huc, proportion of huc in basin 
+
+    site_col : str
+        Column in weights_df with drainage area site numbers.
+        Please make sure ids have the correct number of digits and have
+        not lost leading 0s when read in.
+        If the site numbers are the weights_df index col, site_col = 'index'.
+
+    geom_id_col : str 
+        Column in weights_df with geometry ids.
+
+    start_date : str, optional
+        Start date for the runoff calculation. If not specified, the earliest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    end_date : str, optional
+        End date for the runoff calculation. If not specified, the latest
+        date in the df_list will be used. Format is 'YYYY-MM-DD'.
+
+    data_col : str, optional
+        Column name containing runoff data in the dataframes in df_list.
+        Default is 'runoff', as it is assumed these dataframes are created
+        using the :obj:`streamflow_to_runoff` function.
+
+    Returns
+    -------
+    pandas.Series
+        Series containing the area-weighted runoff values for the geometry.
+    """
+    # get date range
+    date_range = _get_date_range(df_list, start_date, end_date)
+
+    # check if weights are percentage values 
+    if percentage == True:
+        multiplier = 0.01
+    else: 
+        multiplier = 1 
+
+    # filtering with copy
+    filtered_weights_df = weights_df[weights_df[geom_id_col] == geom_id].copy()
+
+    filtered_weights_df['prop_in_basin'] = (filtered_weights_df['prop_in_basin'] * multiplier)
+    filtered_weights_df['prop_in_huc'] = (filtered_weights_df['prop_in_huc'] * multiplier)
+
+    # def to add conditionality to weight value
+    def weight_factor(row):
+        if (row['prop_in_basin'] > 0.9) & (row['prop_in_huc'] > 0.9):
+            # adding weight = 1 because not sure what to include
+            weight = 1
+        else:
+            weight = row['prop_in_basin'] * row['prop_in_huc']
+
+        return weight
+    
+
+    # proportions are multiplied by each other to compute a weighting factor (WEIGHT = BASIN_IN_HUC x HUC_IN_BASIN)
+    # apply weight_factor() fun 
+    filtered_weights_df['weight'] = filtered_weights_df.apply(weight_factor, axis = 1)
+
+    # get site list from weights matrix index
+    site_list = weights_df[site_col].unique().tolist()
+
+    # create empty dataframe to store results, index is site_list,
+    # columns are date_range
+    runoff_df = pd.DataFrame(index=site_list, columns=date_range)
+
+    # loop through the df_list to populate rows of the runoff_df
+    for df in df_list:
+         # get site id (assumed to be string from NWIS)
+         site_id = df['site_no'][0]
+         # get weight for site
+         weight = float(filtered_weights_df['weight'][filtered_weights_df[site_col] == site_id])
+         # get runoff for site
+         runoff = df[data_col]
+         # multiply weights by runoff
+         weighted_runoff = weight * runoff
+         # add weighted runoff to runoff_df
+         # pandas seems to use dates to automatically align data :)
+         runoff_df.loc[site_id] = weighted_runoff
+
+    # # combine the new runoff_df with the existing weights matrix to calculate
+    # # the area-weighted runoff values for the geometry
+    runoff_sum = runoff_df.sum(axis=0, skipna=True)
+    weights_sum = filtered_weights_df['weight'].sum(skipna=True)
+    weighted_runoff = runoff_sum / weights_sum
+
+    return weighted_runoff
+
 
 def calculate_geometric_runoff(geom_id,
                                df_list,
