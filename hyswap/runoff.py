@@ -97,7 +97,6 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
     )
     return df
 
-
 def _get_date_range(df_list, start_date, end_date):
     """Get date range for runoff calculation.
 
@@ -147,7 +146,6 @@ def _get_date_range(df_list, start_date, end_date):
     date_range = pd.date_range(start_date, end_date)
 
     return date_range
-
 
 def identify_sites_from_weights(geom_id,
                                 weights_df,
@@ -284,6 +282,21 @@ def calculate_geometric_runoff(geom_id,
     geom_id_col : str 
         Column in weights_df with geometry ids.
 
+    wght_in_basin_col : str
+        Name of column with values (type:float) representing the proportion (0 to 1)
+        of the spatial geometry occurring in the corresponding drainage area.
+        Default name: 'pct_in_basin'
+    
+    wght_in_geom_col : str
+        Name of column with values (type:float) representing the proportion (0 to 1)
+        of the drainage area occurring in the corresponding spatial geometry.
+        Default name: 'pct_in_huc'
+    
+    percentage : boolean, optional
+        If the weight values in weights_df are percentages, percentage = True. 
+        If the values are decimal proportions, percentage = False. 
+        Default: False
+
     start_date : str, optional
         Start date for the runoff calculation. If not specified, the earliest
         date in the df_list will be used. Format is 'YYYY-MM-DD'.
@@ -369,13 +382,23 @@ def calculate_geometric_runoff(geom_id,
 
 
 def calculate_multiple_geometric_runoff(
-        geom_id_list, df_list, weights_matrix,
-        start_date=None, end_date=None, data_col='runoff'):
+        geom_id_list,
+        df_list,
+        weights_df,
+        site_col,
+        geom_id_col,
+        wght_in_basin_col= 'prop_in_basin',
+        wght_in_geom_col='prop_in_huc',
+        percentage =False,
+        start_date=None,
+        end_date=None,
+        data_col='runoff'
+        ):
     """Calculate runoff for multiple geometries at once.
 
     Parameters
     ----------
-    geom_id : list
+    geom_id_list : list
         List of geometry ID strings for the geometries of interest.
         These should be columns in the weights matrix.
 
@@ -383,9 +406,33 @@ def calculate_multiple_geometric_runoff(
         List of dataframes containing runoff data for each site in the
         geometry.
 
-    weights_matrix : pandas.DataFrame
-        DataFrame containing the weights for all sites and all geometries.
-        Columns are geometry IDs, index is site IDs.
+    weights_df : pandas.DataFrame
+        Tabular dataFrame containing columns the site numbers,
+        geometry ids, and two weight columns: proportion of basin in huc, proportion of huc in basin 
+
+    site_col : str
+        Column in weights_df with drainage area site numbers.
+        Please make sure ids have the correct number of digits and have
+        not lost leading 0s when read in.
+        If the site numbers are the weights_df index col, site_col = 'index'.
+
+    geom_id_col : str 
+        Column in weights_df with geometry ids.
+
+    wght_in_basin_col : str
+        Name of column with values (type:float) representing the proportion (0 to 1)
+        of the spatial geometry occurring in the corresponding drainage area.
+        Default name: 'pct_in_basin'
+    
+    wght_in_geom_col : str
+        Name of column with values (type:float) representing the proportion (0 to 1)
+        of the drainage area occurring in the corresponding spatial geometry.
+        Default name: 'pct_in_huc'
+    
+    percentage : boolean, optional
+        If the weight values in weights_df are percentages, percentage = True. 
+        If the values are decimal proportions, percentage = False. 
+        Default: False
 
     start_date : str, optional
         Start date for the runoff calculation. If not specified, the earliest
@@ -412,9 +459,18 @@ def calculate_multiple_geometric_runoff(
     for geom_id in geom_id_list:
         # calculate runoff for geometry
         runoff = calculate_geometric_runoff(
-            geom_id, df_list, weights_matrix,
-            start_date=start_date, end_date=end_date,
+            geom_id=geom_id,
+            df_list=df_list,
+            weights_df=weights_df,
+            site_col=site_col,
+            geom_id_col=geom_id_col,
+            wght_in_basin_col= wght_in_basin_col,
+            wght_in_geom_col=wght_in_geom_col,
+            percentage =percentage,
+            start_date=start_date,
+            end_date=end_date,
             data_col=data_col)
+        
         # add runoff to results_df
         results_df[geom_id] = runoff.to_frame()
     return results_df
