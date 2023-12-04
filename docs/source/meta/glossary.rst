@@ -29,10 +29,6 @@ Glossary
 |                   | 30, and is designated by the |                                       |
 |                   | year in which it ends.       |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| .. _calabel:      | Starts January 1 and ends    |                                       |
-|                   | December 31 of the calendar  |                                       |
-| Calendar Year     | year.                        |                                       |
-+-------------------+------------------------------+---------------------------------------+
 | Hydrograph        | A plot of streamflow         | `USDA National Engineering Handbook`_ |
 |                   | (discharge) versus time.     |                                       |
 +-------------------+------------------------------+---------------------------------------+
@@ -60,9 +56,6 @@ Glossary
 +-------------------+------------------------------+---------------------------------------+
 | NWIS              | National Water Information   | `USGS NWIS`_                          |
 |                   | System                       |                                       |
-+-------------------+------------------------------+---------------------------------------+
-| USGS              | United States Geological     | `USGS`_                               |
-|                   | Survey                       |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Flow duration     | A cumulative frequency curve | `Searcy (1959)`_                      |
 | curve             | showing the percent of time  |                                       |
@@ -113,10 +106,6 @@ Glossary
 |                   | and discharge of a stream at |                                       |
 |                   | a given gaging station.      |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| River             | A natural stream of water of | `USGS Water Science Glossary`_        |
-|                   | considerable volume, larger  |                                       |
-|                   | than a brook or creek.       |                                       |
-+-------------------+------------------------------+---------------------------------------+
 | Runoff            | (1) That part of the         | `USGS Water Science Glossary`_        |
 |                   | precipitation, snow melt, or |                                       |
 |                   | irrigation water that        |                                       |
@@ -146,17 +135,6 @@ Glossary
 |                   | and is commonly measured in  |                                       |
 |                   | feet.                        |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| Stream            | A general term for a body of | `USGS Water Science Glossary`_        |
-|                   | flowing water; natural water |                                       |
-|                   | course containing water at   |                                       |
-|                   | least part of the year. In   |                                       |
-|                   | hydrology, it is generally   |                                       |
-|                   | applied to the water flowing |                                       |
-|                   | in a natural channel as      |                                       |
-|                   | distinct from a canal.       |                                       |
-+-------------------+------------------------------+---------------------------------------+
-| Brook             | A small stream               | `USGS Water Science Glossary`_        |
-+-------------------+------------------------------+---------------------------------------+
 | Exceedance        | The probability a given flow | `Searcy (1959)`_                      |
 | Probability       | value will be equaled or     |                                       |
 |                   | exceeded during a given time |                                       |
@@ -177,8 +155,6 @@ Glossary
 .. _Hammond et al. (2022): https://doi.org/10.1029/2022WR031930
 
 .. _hyswap: https://doi-usgs.github.io/hyswap/index.html
-
-.. _USGS: https://www.usgs.gov/
 
 .. _USDA National Engineering Handbook: https://directives.sc.egov.usda.gov/OpenNonWebContent.aspx?content=17755.wba
 
