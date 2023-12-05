@@ -464,9 +464,9 @@ def calculate_multiple_geometric_runoff(
             weights_df=weights_df,
             site_col=site_col,
             geom_id_col=geom_id_col,
-            wght_in_basin_col= wght_in_basin_col,
             wght_in_geom_col=wght_in_geom_col,
-            percentage =percentage,
+            wght_in_basin_col=wght_in_basin_col,
+            percentage=percentage,
             start_date=start_date,
             end_date=end_date,
             data_col=data_col)
