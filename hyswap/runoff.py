@@ -51,7 +51,6 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     mmf = cpf / drainage_area * 1000
     return mmf
 
-
 def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
     """Convert streamflow to runoff for a given drainage area.
 
@@ -236,11 +235,11 @@ def identify_sites_from_weights(geom_id,
 # def to add conditionality to weight value
 def _weight_factor(row, col1, col2):
 
-    # If both wieghts in both col1 and col2 values > 0.9, then only the RUN_BASIN value for the basin with the highest WEIGHT value is used to compute the RUN_HUC value.
-    # So weight factor is 1 (?)
+    # If both wieghts in both col1 and col2 values > 0.9,
+    # then only the RUN_BASIN value for the basin with the highest WEIGHT value is used to compute the RUN_HUC value.
     if (row[col1] > 0.9) & (row[col2] > 0.9):
-        # adding weight = 1 because not sure what to include
-        weight = 1
+        weight = max(row[col1],row[col2])
+
     # else, weight factor is the weights multiplied by each other (e.g. WEIGHT = BASIN_IN_HUC x HUC_IN_BASIN)
     else:
         weight = row[col1] * row[col2]
@@ -379,7 +378,6 @@ def calculate_geometric_runoff(geom_id,
     weighted_runoff = runoff_sum / weights_sum
 
     return weighted_runoff
-
 
 def calculate_multiple_geometric_runoff(
         geom_id_list,
