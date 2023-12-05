@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import warnings
 from datetime import datetime
-from hyswap.utils import filter_data_by_time
+from hyswap.utils import filter_data_by_month_day
 from hyswap.utils import calculate_metadata
 from hyswap.utils import define_year_doy_columns
 from hyswap.utils import set_data_type
@@ -185,7 +185,6 @@ def calculate_variable_percentile_thresholds_by_day(
         date_rng = pd.date_range(start='1900-01-01', end='1900-12-31')
         df = pd.DataFrame(index=date_rng)
         df[data_column_name] = np.nan
-
     # define year and day of year columns and convert date column to datetime
     # if necessary
     df = define_year_doy_columns(df, date_column_name=date_column_name,
@@ -193,17 +192,18 @@ def calculate_variable_percentile_thresholds_by_day(
     # do rolling average for time as needed
     data_type = set_data_type(data_type)
     df = rolling_average(df, data_column_name, data_type)
-    # based on date, get min and max day of year available
-    min_day = np.nanmax((1, df.index.dayofyear.min()))
-    max_day = np.nanmin((366, df.index.dayofyear.max() + 1))
-    # make temporal index
-    t_idx = np.arange(min_day, max_day)
+    # create an empty dataframe to hold percentiles based on month-day
+    # use leap year as reference for empty df
+    leap = pd.date_range(start='2000-01-01',end='2000-12-31')
+    t_idx = leap.strftime('%m-%d')
+    min_day = t_idx.min()
+    max_day = t_idx.max()
     # initialize a DataFrame to hold percentiles by day of year
     percentiles_by_day = pd.DataFrame(index=t_idx, columns=percentiles)
     # loop through days of year available
-    for doy in range(min_day, max_day):
+    for mo_day in range(min_day, max_day):
         # get historical data for the day of year
-        data = filter_data_by_time(df, doy, data_column_name,
+        data = filter_data_by_month_day(df, mo_day, data_column_name,
                                    leading_values=leading_values,
                                    trailing_values=trailing_values,
                                    drop_na=ignore_na)
@@ -218,19 +218,19 @@ def calculate_variable_percentile_thresholds_by_day(
                     _pct = calculate_fixed_percentile_thresholds(
                         data, percentiles=percentiles, method=method,
                         ignore_na=ignore_na, **kwargs)
-                    percentiles_by_day.loc[t_idx == doy, :] = _pct.values.tolist()[0]  # noqa: E501
+                    percentiles_by_day.loc[t_idx == mo_day, :] = _pct.values.tolist()[0]  # noqa: E501
                 else:
                     # if there are not at least 'min_years' of data,
                     # set percentiles to NaN
-                    percentiles_by_day.loc[t_idx == doy, :] = np.nan
+                    percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
             else:
                 # if all values are NA
                 # set percentiles to NaN
-                percentiles_by_day.loc[t_idx == doy, :] = np.nan
+                percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
         else:
             # if the data subset for doy is empty
             # set percentiles to NaN
-            percentiles_by_day.loc[t_idx == doy, :] = np.nan
+            percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
     # replace index with multi-index of doy_index and month-day values
     # month_day values
     month_day = pd.to_datetime(
