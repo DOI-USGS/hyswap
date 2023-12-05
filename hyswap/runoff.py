@@ -179,13 +179,13 @@ def identify_sites_from_weights(geom_id,
           not lost leading 0s when read in.
         If the site numbers are the weights_df index col, site_col = 'index'.
 
-    wght_in_basin_col: float, optional
-        Name of column with values representing the proportion (0 to 1)
+    wght_in_basin_col: str, optional
+        Name of column with values (type:float) representing the proportion (0 to 1)
         of the spatial geometry occurring in the corresponding drainage area.
         Default name: 'pct_in_basin'
 
-    wght_in_geom_col: float, optional
-        Name of column with values representing the proportion (0 to 1)
+    wght_in_geom_col: str, optional
+        Name of column with values (type:float) representing the proportion (0 to 1)
         of the drainage area occurring in the corresponding spatial geometry.
         Default name: 'pct_in_huc'
 
