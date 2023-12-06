@@ -831,13 +831,13 @@ def retrieve_schema(schema_name):
     return schema
 
 
-def filter_data_by_month_day(df, 
+def filter_data_by_month_day(df,
                              month_day,
                              data_column_name,
-                             date_column_name = None,
-                             leading_values = 0,
-                             trailing_values = 0,
-                             drop_na = False):
+                             date_column_name=None,
+                             leading_values=0,
+                             trailing_values=0,
+                             drop_na=False):
     """Function used to filter to a single month-day (alternate
     to filter_data_by_time)
 
@@ -912,18 +912,18 @@ def filter_data_by_month_day(df,
     # make date column the index if it is not already
     if date_column_name is not None:
         df = df.set_index(date_column_name)
-    # convert month-day to date-time object
-    month_day_dt = pd.to_datetime(month_day, format='%m-%d').replace(year=1900)
+    # convert month-day to month and day ints
+    t_month, t_day = map(int, month_day.split('-'))
     # subset df by month-day input
-    subset_df = df[(df.index.month == month_day_dt.month) & (df.index.day == month_day_dt.day)].copy()
+    subset_df = df[(df.index.month == t_month) & (df.index.day == t_day)].copy()  # noqa: E501
     if (leading_values == 0) and (trailing_values == 0):
         dff = subset_df[data_column_name]
     else:
         # if leading and trailing values are not zero,
         # create a column to define the trailing and leading
         # values for each year in the dataset
-        subset_df['lv'] = subset_df.index - pd.to_timedelta(leading_values, unit = 'D')
-        subset_df['tv'] = subset_df.index + pd.to_timedelta(trailing_values, unit = 'D')
+        subset_df['lv'] = subset_df.index - pd.to_timedelta(leading_values, unit='D')  # noqa: E501
+        subset_df['tv'] = subset_df.index + pd.to_timedelta(trailing_values, unit='D')  # noqa: E501
         # create empty dataframe to hold all data chunks from
         # each year
         date_ranges_df = pd.DataFrame()
@@ -934,10 +934,8 @@ def filter_data_by_month_day(df,
             start_date = pd.to_datetime(row['lv'])
             end_date = pd.to_datetime(row['tv'])
             rng = (df.index >= start_date) & (df.index <= end_date)
-            date_ranges_df = pd.concat([date_ranges_df,df.loc[rng]])
+            date_ranges_df = pd.concat([date_ranges_df, df.loc[rng]])
             dff = date_ranges_df[data_column_name]
     if drop_na:
         dff = dff.dropna()
     return dff
-        
-

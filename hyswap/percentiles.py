@@ -188,25 +188,24 @@ def calculate_variable_percentile_thresholds_by_day(
     # define year and day of year columns and convert date column to datetime
     # if necessary
     df = define_year_doy_columns(df, date_column_name=date_column_name,
-                                 year_type=year_type, clip_leap_day=True)
+                                 year_type=year_type, clip_leap_day=False)
     # do rolling average for time as needed
     data_type = set_data_type(data_type)
     df = rolling_average(df, data_column_name, data_type)
     # create an empty dataframe to hold percentiles based on month-day
     # use leap year as reference for empty df
-    leap = pd.date_range(start='2000-01-01',end='2000-12-31')
+    leap = pd.date_range(start='1904-01-01', end='1904-12-31')
     t_idx = leap.strftime('%m-%d')
-    min_day = t_idx.min()
-    max_day = t_idx.max()
+    doy_index = leap.day_of_year.values
     # initialize a DataFrame to hold percentiles by day of year
     percentiles_by_day = pd.DataFrame(index=t_idx, columns=percentiles)
     # loop through days of year available
-    for mo_day in range(min_day, max_day):
+    for mo_day in t_idx:
         # get historical data for the day of year
         data = filter_data_by_month_day(df, mo_day, data_column_name,
-                                   leading_values=leading_values,
-                                   trailing_values=trailing_values,
-                                   drop_na=ignore_na)
+                                        leading_values=leading_values,
+                                        trailing_values=trailing_values,
+                                        drop_na=ignore_na)
         if not data.empty:
             if not np.isnan(data).all():
                 meta = calculate_metadata(data)
@@ -233,18 +232,14 @@ def calculate_variable_percentile_thresholds_by_day(
             percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
     # replace index with multi-index of doy_index and month-day values
     # month_day values
-    month_day = pd.to_datetime(
-        percentiles_by_day.index, format='%j').strftime('%m-%d')
-    # doy_index values
-    doy_index = percentiles_by_day.index.values
     if year_type == 'water':
-        doy_index = doy_index - 273
-        doy_index[doy_index < 1] += 365
+        doy_index = doy_index - 274
+        doy_index[doy_index < 1] += 366
     elif year_type == 'climate':
-        doy_index = doy_index - 90
-        doy_index[doy_index < 1] += 365
+        doy_index = doy_index - 91
+        doy_index[doy_index < 1] += 366
     percentiles_by_day.index = pd.MultiIndex.from_arrays(
-        [doy_index, month_day], names=['doy', 'month-day'])
+        [doy_index, t_idx], names=['doy', 'month-day'])
 
     # sort percentiles by index
     percentiles_by_day.sort_index(inplace=True)
