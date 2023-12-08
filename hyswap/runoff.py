@@ -359,17 +359,25 @@ def calculate_geometric_runoff(geom_id,
 
     # loop through the df_list to populate rows of the runoff_df
     for df in df_list:
-         # get site id (assumed to be string from NWIS)
-         site_id = df['site_no'][0]
-         # get weight for site through df filtering
-         weight = float(filtered_weights_df['weight'][filtered_weights_df[site_col] == site_id])
-         # get runoff for site
-         runoff = df[data_col]
-         # multiply weights by runoff
-         weighted_runoff = weight * runoff
-         # add weighted runoff to runoff_df
-         # pandas seems to use dates to automatically align data :)
-         runoff_df.loc[site_id] = weighted_runoff
+        # get site id (assumed to be string from NWIS)
+        site_id = df['site_no'][0]
+        # get weight for site through df filtering
+
+        if (filtered_weights_df[filtered_weights_df[site_col] == site_id].empty):
+            pass
+            print('df is empty')
+        else:
+            weight = float(filtered_weights_df['weight'][filtered_weights_df[site_col] == site_id])
+    
+
+        weight = float(filtered_weights_df['weight'][filtered_weights_df[site_col] == site_id])
+        # get runoff for site
+        runoff = df[data_col]
+        # multiply weights by runoff
+        weighted_runoff = weight * runoff
+        # add weighted runoff to runoff_df
+        # pandas seems to use dates to automatically align data :)
+        runoff_df.loc[site_id] = weighted_runoff
 
     # combine the new runoff_df with the existing weights matrix to calculate
     # the area-weighted runoff values for the geometry
