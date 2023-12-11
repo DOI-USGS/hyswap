@@ -766,9 +766,9 @@ def retrieve_schema(schema_name):
         'labels': ['Much below normal', 'Below normal', 'Normal',
             'Above normal', 'Much above normal'],
         'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9', '#2641f1'],
-        'low_label': 'All-time low',
+        'low_label': 'All-time low for this day',
         'low_color': '#e82f3e',
-        'high_label': 'All-time high',
+        'high_label': 'All-time high for this day',
         'high_color': '#1f296b'}
     """
     if schema_name.lower() == 'nwd':
@@ -777,9 +777,9 @@ def retrieve_schema(schema_name):
                              'Above normal', 'Much above normal'],
                   'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9',
                              '#2641f1'],
-                  'low_label': 'All-time low',
+                  'low_label': 'All-time low for this day',
                   'low_color': '#e82f3e',
-                  'high_label': 'All-time high',
+                  'high_label': 'All-time high for this day',
                   'high_color': "#1f296b"}
     elif schema_name.lower() == 'waterwatch':
         schema = {'ranges': [0, 10, 25, 75, 90, 100],
