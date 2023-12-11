@@ -5,6 +5,7 @@ import pandas as pd
 import warnings
 from datetime import datetime
 from hyswap.utils import filter_data_by_month_day
+from hyswap.utils import filter_data_by_time
 from hyswap.utils import calculate_metadata
 from hyswap.utils import define_year_doy_columns
 from hyswap.utils import set_data_type
@@ -81,6 +82,7 @@ def calculate_variable_percentile_thresholds_by_day(
         percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
         method='weibull',
         date_column_name=None,
+        date_type='mo-day',
         data_type='daily',
         year_type='calendar',
         min_years=10,
@@ -88,7 +90,8 @@ def calculate_variable_percentile_thresholds_by_day(
         trailing_values=0,
         ignore_na=True,
         **kwargs):
-    """Calculate variable percentile thresholds of data by day of year.
+    """Calculate variable percentile thresholds of data by month-day
+    or day of year.
 
     Parameters
     ----------
@@ -108,6 +111,15 @@ def calculate_variable_percentile_thresholds_by_day(
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` is used.
+
+    date_type : str, optional
+        Method to use to loop through dates to calculate percentiles.
+        User may select 'mo-day', which means the funtion uses a
+        month-day index to calculate percentiles, or 'doy', which
+        uses day-of-year as the index to calculate percentiles.
+        Note that with the day-of-year index, leap years have an
+        extra day that throws off the month-day corresponding to
+        each day of the year starting on February 29th.
 
     data_type : str, optional
         The type of data. Must be one of 'daily', '7-day', '14-day', and
@@ -197,39 +209,76 @@ def calculate_variable_percentile_thresholds_by_day(
     leap = pd.date_range(start='1904-01-01', end='1904-12-31')
     t_idx = leap.strftime('%m-%d')
     doy_index = leap.day_of_year.values
-    # initialize a DataFrame to hold percentiles by day of year
-    percentiles_by_day = pd.DataFrame(index=t_idx, columns=percentiles)
-    # loop through days of year available
-    for mo_day in t_idx:
-        # get historical data for the day of year
-        data = filter_data_by_month_day(df, mo_day, data_column_name,
-                                        leading_values=leading_values,
-                                        trailing_values=trailing_values,
-                                        drop_na=ignore_na)
-        if not data.empty:
-            if not np.isnan(data).all():
-                meta = calculate_metadata(data)
-                # only calculate data if there are at least min_years of data
-                # that are not nan
-                if meta['n_years'] - meta['n_nans'] >= min_years:
-                    # calculate percentiles for the day of year
-                    # and add to DataFrame
-                    _pct = calculate_fixed_percentile_thresholds(
-                        data, percentiles=percentiles, method=method,
-                        ignore_na=ignore_na, **kwargs)
-                    percentiles_by_day.loc[t_idx == mo_day, :] = _pct.values.tolist()[0]  # noqa: E501
+    # use date type input to determine index
+    if date_type == 'mo-day':
+        # initialize a DataFrame to hold percentiles by day of year
+        percentiles_by_day = pd.DataFrame(index=t_idx, columns=percentiles)
+        # loop through days of year available
+        for mo_day in t_idx:
+            # get historical data for the day of year
+            data = filter_data_by_month_day(df, mo_day, data_column_name,
+                                            leading_values=leading_values,
+                                            trailing_values=trailing_values,
+                                            drop_na=ignore_na)
+            if not data.empty:
+                if not np.isnan(data).all():
+                    meta = calculate_metadata(data)
+                    # only calculate data if there are at least
+                    # min_years of data that are not nan
+                    if meta['n_years'] - meta['n_nans'] >= min_years:
+                        # calculate percentiles for the day of year
+                        # and add to DataFrame
+                        _pct = calculate_fixed_percentile_thresholds(
+                            data, percentiles=percentiles, method=method,
+                            ignore_na=ignore_na, **kwargs)
+                        percentiles_by_day.loc[t_idx == mo_day, :] = _pct.values.tolist()[0]  # noqa: E501
+                    else:
+                        # if there are not at least 'min_years' of data,
+                        # set percentiles to NaN
+                        percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
                 else:
-                    # if there are not at least 'min_years' of data,
+                    # if all values are NA
                     # set percentiles to NaN
                     percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
             else:
-                # if all values are NA
+                # if the data subset for doy is empty
                 # set percentiles to NaN
                 percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
-        else:
-            # if the data subset for doy is empty
-            # set percentiles to NaN
-            percentiles_by_day.loc[t_idx == mo_day, :] = np.nan
+    # else if date_type = 'doy'
+    else:
+        # initialize a DataFrame to hold percentiles by day of year
+        percentiles_by_day = pd.DataFrame(index=doy_index, columns=percentiles)
+        # loop through days of year available
+        for doy in doy_index:
+            # get historical data for the day of year
+            data = filter_data_by_time(df, doy, data_column_name,
+                                       leading_values=leading_values,
+                                       trailing_values=trailing_values,
+                                       drop_na=ignore_na)
+            if not data.empty:
+                if not np.isnan(data).all():
+                    meta = calculate_metadata(data)
+                    # only calculate data if there are at least
+                    # min_years of data that are not nan
+                    if meta['n_years'] - meta['n_nans'] >= min_years:
+                        # calculate percentiles for the day of year
+                        # and add to DataFrame
+                        _pct = calculate_fixed_percentile_thresholds(
+                            data, percentiles=percentiles, method=method,
+                            ignore_na=ignore_na, **kwargs)
+                        percentiles_by_day.loc[doy_index == doy, :] = _pct.values.tolist()[0]  # noqa: E501
+                    else:
+                        # if there are not at least 'min_years' of data,
+                        # set percentiles to NaN
+                        percentiles_by_day.loc[doy_index == doy, :] = np.nan
+                else:
+                    # if all values are NA
+                    # set percentiles to NaN
+                    percentiles_by_day.loc[doy_index == doy, :] = np.nan
+            else:
+                # if the data subset for doy is empty
+                # set percentiles to NaN
+                percentiles_by_day.loc[doy_index == doy, :] = np.nan
     # replace index with multi-index of doy_index and month-day values
     # month_day values
     if year_type == 'water':
