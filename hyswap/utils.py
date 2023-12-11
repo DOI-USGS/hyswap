@@ -934,7 +934,13 @@ def filter_data_by_month_day(df,
             start_date = pd.to_datetime(row['lv'])
             end_date = pd.to_datetime(row['tv'])
             rng = (df.index >= start_date) & (df.index <= end_date)
-            date_ranges_df = pd.concat([date_ranges_df, df.loc[rng]])
+            if df.loc[rng].shape[0] == (leading_values + trailing_values + 1):
+                date_ranges_df = pd.concat([date_ranges_df, df.loc[rng]])
+            else:
+                date_ranges_df = pd.concat([date_ranges_df, pd.DataFrame([])])
+        if date_ranges_df.empty:
+            dff = date_ranges_df
+        else:
             dff = date_ranges_df[data_column_name]
     if drop_na:
         dff = dff.dropna()
