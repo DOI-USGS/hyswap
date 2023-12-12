@@ -317,6 +317,11 @@ def calculate_geometric_runoff(geom_id,
     # get date range from runoff data in df_list
     date_range = _get_date_range(df_list, start_date, end_date)
 
+    # create one runoff df
+    runoff_dat = pd.concat(df_list)
+    runoff_dat['date'] = runoff_dat.index
+    runoff_dat = runoff_dat.reset_index()
+
     # check whether sites is the df index or not
     if site_col == 'index':
         weights_df = weights_df.reset_index()
@@ -340,7 +345,24 @@ def calculate_geometric_runoff(geom_id,
     # converting weights to decimal proportions if applicable
     filtered_weights_df[wght_in_basin_col] = (filtered_weights_df[wght_in_basin_col] * multiplier)
     filtered_weights_df[wght_in_geom_col] = (filtered_weights_df[wght_in_geom_col] * multiplier)
-    
+
+    # filter to basin-geom intersections that are greater than 0.9 for either
+    # wght_in_basin or wght_in_geom
+    geom_basin_overlap = filtered_weights_df[(filtered_weights_df[wght_in_basin_col] > 0.9) & (filtered_weights_df[wght_in_geom_col] > 0.9)]
+
+    if geom_basin_overlap.shape[0]>0:
+        huc_runoff = runoff_dat[runoff_dat['site_no'] == geom_basin_overlap['da_site_no'].iloc[0]]
+    else:
+        huc_in_basin = filtered_weights_df[(filtered_weights_df[wght_in_basin_col] > 0.98)].copy()
+        huc_in_basin['weight'] = huc_in_basin[wght_in_geom_col] * huc_in_basin[wght_in_basin_col]
+        huc_in_basin = huc_in_basin[huc_in_basin['weight']==huc_in_basin['weight'].max()]
+        basin_in_huc = filtered_weights_df[(filtered_weights_df[wght_in_geom_col] > 0.98)].copy() 
+        basin_in_huc['weight'] = basin_in_huc[wght_in_geom_col] * basin_in_huc[wght_in_basin_col]
+        filtered_weights_df = pd.concat([huc_in_basin, basin_in_huc])
+        weights_runoff = runoff_dat.merge(filtered_weights_df, left_on='site_no', right_on='da_site_no')
+        weights_runoff['huc_runoff'] = weights_runoff['runoff'] * weights_runoff['weight']
+        #runoff = weights_runoff.groupby('date').apply(lambda x: )
+   
     # proportions are multiplied by each other to compute a weighting factor (WEIGHT = BASIN_IN_HUC x HUC_IN_BASIN)
     # apply weight_factor() fun 
     # If both the HUC_IN_BASIN and BASIN_IN_HUC values were greater than 0.9 for a HUC, then only the RUN_BASIN value for the basin with the highest WEIGHT value was used to compute the RUN_HUC value.
