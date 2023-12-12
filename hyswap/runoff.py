@@ -242,7 +242,7 @@ def _weight_factor(row, col1, col2):
 
     # else, weight factor is the weights multiplied by each other (e.g. WEIGHT = BASIN_IN_HUC x HUC_IN_BASIN)
     else:
-        weight = row[col1] * row[col2]
+        weight = round(row[col1] * row[col2], 10)
 
     return weight
 
@@ -365,7 +365,7 @@ def calculate_geometric_runoff(geom_id,
 
         if (filtered_weights_df[filtered_weights_df[site_col] == site_id].empty):
             pass
-            print('df is empty')
+
         else:
             weight = float(filtered_weights_df['weight'][filtered_weights_df[site_col] == site_id])
     
