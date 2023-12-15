@@ -1,7 +1,6 @@
 """Runoff functions for hyswap."""
 import pandas as pd
 
-
 def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     """Convert cfs to runoff values for some drainage area.
 
