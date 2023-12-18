@@ -141,8 +141,8 @@ def test_identify_sites_from_weights(weight_table):
         weights_df=weight_table,
         geom_id_col='huc_cd',
         site_col='site_no',
-        wght_in_basin_col='pct_in_basin',
-        wght_in_geom_col='pct_in_huc')
+        prop_in_basin_col='pct_in_basin',
+        prop_in_geom_col='pct_in_huc')
 
     assert siteids == ['03234300']
 
