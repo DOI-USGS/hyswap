@@ -153,8 +153,8 @@ def identify_sites_from_weights(geom_id,
                                 weights_df,
                                 geom_id_col,
                                 site_col,
-                                wght_in_basin_col='pct_in_basin',
-                                wght_in_geom_col='pct_in_huc'):
+                                prop_in_basin_col='pct_in_basin',
+                                prop_in_geom_col='pct_in_huc'):
 
     """Identify sites for a specified geometry.
 
@@ -182,12 +182,12 @@ def identify_sites_from_weights(geom_id,
           not lost leading 0s when read in.
         If the site numbers are the weights_df index col, site_col = 'index'.
 
-    wght_in_basin_col: str, optional
+    prop_in_basin_col: str, optional
         Name of column with values (type:float) representing the proportion
         (0 to 1) of the spatial geometry occurring in the corresponding
         drainage area. Default name: 'pct_in_basin'
 
-    wght_in_geom_col: str, optional
+    prop_in_geom_col: str, optional
         Name of column with values (type:float) representing the proportion
         (0 to 1)of the drainage area occurring in the corresponding
         spatial geometry. Default name: 'pct_in_huc'
@@ -210,7 +210,7 @@ def identify_sites_from_weights(geom_id,
         ... columns = ['site_no', 'geom_id', 'wght_basin', 'wght_huc'])
         >>> sites_lst = runoff.identify_sites_from_weights(weights_df=df,
         ... geom_id='01010002', geom_id_col='geom_id', site_col='site_no',
-        ... wght_in_basin_col='wght_basin', wght_in_geom_col='wght_huc')
+        ... prop_in_basin_col='wght_basin', prop_in_geom_col='wght_huc')
         >>> print(sites_lst)
         ['01014000', '01014001']
 
@@ -230,8 +230,8 @@ def identify_sites_from_weights(geom_id,
         site_col = filtered_df[site_col]
 
     # Retrieve all non-0 sites within the designated geometry (e.g. huc8)
-    site_list = site_col[(filtered_df[wght_in_basin_col] != 0) | (
-        filtered_df[wght_in_geom_col] != 0)].to_list()
+    site_list = site_col[(filtered_df[prop_in_basin_col] != 0) | (
+        filtered_df[prop_in_geom_col] != 0)].to_list()
 
     return site_list
 
@@ -315,24 +315,27 @@ def calculate_geometric_runoff(geom_id,
     filtered_weights_df[geom_in_basin_col] = (filtered_weights_df[geom_in_basin_col] * multiplier)  # noqa: E501
     filtered_weights_df[basin_in_geom_col] = (filtered_weights_df[basin_in_geom_col] * multiplier)  # noqa: E501
     # check to see if there is overlap between geom and
-    # basin that is mutually > 0.9
+    # basin(s) that is mutually > 0.9
     geom_basin_overlap = filtered_weights_df[(filtered_weights_df[geom_in_basin_col] > 0.9) &  # noqa: E501
                                              (filtered_weights_df[basin_in_geom_col] > 0.9)].copy()  # noqa: E501
     # if geom_basin_overlap is not empty, then the runoff is simply
-    # the runoff from the basin with the > 0.9 overlap
+    # the runoff from the basin with proportion overlap of > 0.9 AND
+    # the highest weight.
     if geom_basin_overlap.shape[0] > 0:
-        # calculate weight(s)
+        # calculate weight(s) - need weights to determine which
+        # basin should be used to represent geom's runoff
         geom_basin_overlap['weight'] = geom_basin_overlap[basin_in_geom_col] * geom_basin_overlap[geom_in_basin_col]  # noqa: E501
         # order by weight in descending order
         geom_basin_overlap = geom_basin_overlap.sort_values(by='weight',
                                                             ascending=False)
         # sites ordered in descending order from highest to lowest weight
-        sites = geom_basin_overlap['da_site_no']
+        sites = geom_basin_overlap[site_col]
         # check to see which sites are in dictionary
         sites_w_data = [site for site in sites if site in df_dict]
-        # if sites exist in dictionary, use the one with the highest weight
-        # e.g. first in series to get runoff
+        # if sites exist in dictionary, use the basin with the highest
+        # weight, i.e. max(proportion in geom x proportion in basin)
         if bool(sites_w_data):
+            # this site's runoff will be the geom's estimated runoff
             geom_runoff = df_dict[sites_w_data[0]].runoff
             geom_runoff = geom_runoff.rename('geom_runoff')
             return geom_runoff
@@ -344,11 +347,11 @@ def calculate_geometric_runoff(geom_id,
     # find where geom in basin is ~ 1 (contained by basin)
     geom_in_basin = filtered_weights_df[(filtered_weights_df[geom_in_basin_col] > 0.98)].copy()  # noqa: E501
     # find basins with data in runoff dictionary
-    geom_in_basin = geom_in_basin[geom_in_basin['da_site_no'].map(df_dict).notna()]  # noqa: E501
+    geom_in_basin = geom_in_basin[geom_in_basin[site_col].map(df_dict).notna()]  # noqa: E501
     # if there are no basins containing the geometry object
     # with associated runoff data, return an empty series.
     if geom_in_basin.empty:
-        geom_runoff = pd.Series()
+        geom_runoff = pd.Series(dtype='float32')
         print("No runoff data associated with any basins containing the geometry object for the time period selected. Returning empty series.")  # noqa: E501
         return geom_runoff
     else:
@@ -364,7 +367,7 @@ def calculate_geometric_runoff(geom_id,
     # grab all basins fully contained within the geom
     basin_in_geom = filtered_weights_df[(filtered_weights_df[basin_in_geom_col] > 0.98)].copy()  # noqa: E501
     # find basins with data in runoff dictionary
-    basin_in_geom = basin_in_geom[basin_in_geom['da_site_no'].map(df_dict).notna()]  # noqa: E501
+    basin_in_geom = basin_in_geom[basin_in_geom[site_col].map(df_dict).notna()]  # noqa: E501
     # if there are no basins with runoff data, return an empty series.
     if basin_in_geom.empty:
         print("No runoff data associated with any basins contained within the geometry object for the time period selected. Only using the basin containing the geometry to estimate runoff.")  # noqa: E501
@@ -373,14 +376,14 @@ def calculate_geometric_runoff(geom_id,
         basin_in_geom['weight'] = basin_in_geom[basin_in_geom_col] * \
             basin_in_geom[geom_in_basin_col]
     # combine these two dfs into one
-    filtered_weights_df = pd.concat([geom_in_basin, basin_in_geom])
+    final_weights_df = pd.concat([geom_in_basin, basin_in_geom])
     # grab applicable basin runoff from dictionary
-    basins = filtered_weights_df['da_site_no']
+    basins = final_weights_df[site_col].tolist()
     basins_runoff = pd.concat([df_dict[basin] for basin in basins])
     # put dates in column so func can group by them
     basins_runoff['date'] = basins_runoff.index
     # merge basin weight info to basin runoff data
-    weights_runoff = basins_runoff.merge(filtered_weights_df, left_on='site_no', right_on='da_site_no')  # noqa: E501
+    weights_runoff = basins_runoff.merge(final_weights_df, left_on='site_no', right_on=site_col)  # noqa: E501
     # get weighted runoff value for each day
     weights_runoff['basin_weighted_runoff'] = weights_runoff[data_col] * weights_runoff['weight']  # noqa: E501
     # apply equation to each day to get estimated huc runoff
@@ -457,10 +460,22 @@ def calculate_multiple_geometric_runoff(
     results_df = pd.DataFrame()
     # loop through geom_id_list to calculate runoff for each geometry
     for geom_id in geom_id_list:
+        runoff_sites = identify_sites_from_weights(
+            geom_id=geom_id,
+            weights_df=weights_df,
+            geom_id_col='huc_id',
+            site_col='da_site_no',
+            prop_in_basin_col='prop_in_basin',
+            prop_in_geom_col='prop_in_huc'
+            )
+        # subset dictionary to sites with drainage areas that
+        # intersect the geom_id
+        site_dict = {site_no: df_dict[site_no]
+                     for site_no in runoff_sites if site_no in df_dict}
         # calculate runoff for geometry
         runoff = calculate_geometric_runoff(
             geom_id=geom_id,
-            df_dict=df_dict,
+            df_dict=site_dict,
             weights_df=weights_df,
             site_col=site_col,
             geom_id_col=geom_id_col,
