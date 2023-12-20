@@ -389,7 +389,8 @@ def calculate_geometric_runoff(geom_id,
     weights_runoff['basin_weighted_runoff'] = weights_runoff[data_col] * weights_runoff['weight']  # noqa: E501
     # apply equation to each day to get estimated huc runoff
     geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum()/x['weight'].sum()).reset_index(name='geom_runoff')  # noqa: E501
-    geom_runoff = geom_runoff_df.set_index('date')['geom_runoff'].rename_axis('datetime')
+    geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']\
+        .rename_axis('datetime')
     return geom_runoff
 
 
