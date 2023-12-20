@@ -311,6 +311,18 @@ def calculate_geometric_runoff(geom_id,
         multiplier = 1
     # filtering with copy
     filtered_weights_df = weights_df[weights_df[geom_id_col] == geom_id].copy()
+    # filter weights df to sites with data in df_dict
+    sites = filtered_weights_df[site_col]
+    # check to see which sites are in dictionary
+    sites_w_data = [site for site in sites if site in df_dict]
+    # filter weights df to sites with data
+    filtered_weights_df = filtered_weights_df[
+        filtered_weights_df[site_col].isin(sites_w_data)
+        ]
+    # check to see if empty
+    if filtered_weights_df.empty:
+        print("No runoff data available from intersecting sites to estimate weighted runoff. Returning empty series.")  # noqa: E501
+        return pd.Series(dtype='float32')
     # converting proportions to decimals if applicable
     filtered_weights_df[geom_in_basin_col] = (filtered_weights_df[geom_in_basin_col] * multiplier)  # noqa: E501
     filtered_weights_df[basin_in_geom_col] = (filtered_weights_df[basin_in_geom_col] * multiplier)  # noqa: E501
@@ -321,39 +333,31 @@ def calculate_geometric_runoff(geom_id,
     # if geom_basin_overlap is not empty, then the runoff is simply
     # the runoff from the basin with proportion overlap of > 0.9 AND
     # the highest weight.
-    if ~geom_basin_overlap.empty:
+    if not geom_basin_overlap.empty:
         # calculate weight(s) - need weights to determine which
         # basin should be used to represent geom's runoff
-        geom_basin_overlap['weight'] = geom_basin_overlap[basin_in_geom_col] * geom_basin_overlap[geom_in_basin_col]  # noqa: E501
+        geom_basin_overlap['weight'] = geom_basin_overlap[
+            basin_in_geom_col
+            ] * geom_basin_overlap[
+                geom_in_basin_col
+                ]
         # order by weight in descending order
-        geom_basin_overlap = geom_basin_overlap.sort_values(by='weight',
-                                                            ascending=False)
-        # sites ordered in descending order from highest to lowest weight
-        sites = geom_basin_overlap[site_col]
-        # check to see which sites are in dictionary
-        sites_w_data = [site for site in sites if site in df_dict]
-        # if sites exist in dictionary, use the basin with the highest
-        # weight, i.e. max(proportion in geom x proportion in basin)
-        if bool(sites_w_data):
-            # this site's runoff will be the geom's estimated runoff
-            geom_runoff = df_dict[sites_w_data[0]].runoff
-            geom_runoff = geom_runoff.rename('geom_runoff')
-            return geom_runoff
-        else:
-            print('Weights table contains basins that overlap with geom > 0.9, but no runoff data exists for basins that meet this critera. Continuing to alternative calculation of runoff')  # noqa: E501
+        geom_basin_overlap = geom_basin_overlap[
+            geom_basin_overlap['weight'] == geom_basin_overlap['weight'].max()
+            ]
+        site = geom_basin_overlap[site_col].iloc[0]
+        geom_runoff = df_dict[site].runoff
+        geom_runoff = geom_runoff.rename('geom_runoff')
+        return geom_runoff
     # If return not executed, then go to the next step of
     # finding basins within the geom and the basin that contains
     # the geom with the largest weight
     # find where geom in basin is ~ 1 (contained by basin)
     geom_in_basin = filtered_weights_df[(filtered_weights_df[geom_in_basin_col] > 0.98)].copy()  # noqa: E501
-    # find basins with data in runoff dictionary
-    geom_in_basin = geom_in_basin[geom_in_basin[site_col].map(df_dict).notna()]  # noqa: E501
     # if there are no basins containing the geometry object
     # with associated runoff data, return an empty series.
     if geom_in_basin.empty:
-        geom_runoff = pd.Series(dtype='float32')
-        print("No runoff data associated with any basins containing the geometry object for the time period selected. Returning empty series.")  # noqa: E501
-        return geom_runoff
+        print("No runoff data associated with any basins containing the geometry object for the time period selected.")  # noqa: E501
     else:
         # calculate their weights
         geom_in_basin['weight'] = geom_in_basin[basin_in_geom_col] * \
@@ -368,32 +372,34 @@ def calculate_geometric_runoff(geom_id,
         assert geom_in_basin.shape[0] == 1
     # grab all basins fully contained within the geom
     basin_in_geom = filtered_weights_df[(filtered_weights_df[basin_in_geom_col] > 0.98)].copy()  # noqa: E501
-    # find basins with data in runoff dictionary
-    basin_in_geom = basin_in_geom[basin_in_geom[site_col].map(df_dict).notna()]  # noqa: E501
     # if there are no basins with runoff data, return an empty series.
     if basin_in_geom.empty:
-        print("No runoff data associated with any basins contained within the geometry object for the time period selected. Only using the basin containing the geometry to estimate runoff.")  # noqa: E501
+        print("No runoff data associated with any basins contained within the geometry object for the time period selected.")  # noqa: E501
     else:
         # calculate their weights
         basin_in_geom['weight'] = basin_in_geom[basin_in_geom_col] * \
             basin_in_geom[geom_in_basin_col]
     # combine these two dfs into one
-    final_weights_df = pd.concat([geom_in_basin, basin_in_geom])
-    print(final_weights_df)
-    # grab applicable basin runoff from dictionary
-    basins = final_weights_df[site_col].tolist()
-    basins_runoff = pd.concat([df_dict[basin] for basin in basins])
-    # put dates in column so func can group by them
-    basins_runoff['date'] = basins_runoff.index
-    # merge basin weight info to basin runoff data
-    weights_runoff = basins_runoff.merge(final_weights_df, left_on='site_no', right_on=site_col)  # noqa: E501
-    # get weighted runoff value for each day
-    weights_runoff['basin_weighted_runoff'] = weights_runoff[data_col] * weights_runoff['weight']  # noqa: E501
-    # apply equation to each day to get estimated huc runoff
-    geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum()/x['weight'].sum()).reset_index(name='geom_runoff')  # noqa: E501
-    geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']\
-        .rename_axis('datetime')
-    return geom_runoff
+    if geom_in_basin.empty and basin_in_geom.empty:
+        print("Insufficient data and/or overlap between basins and geometry object. Returning empty series.")  # noqa: E501
+        return pd.Series(dtype='float32')
+    else:
+        final_weights_df = pd.concat([geom_in_basin, basin_in_geom])
+        print(final_weights_df)
+        # grab applicable basin runoff from dictionary
+        basins = final_weights_df[site_col].tolist()
+        basins_runoff = pd.concat([df_dict[basin] for basin in basins])
+        # put dates in column so func can group by them
+        basins_runoff['date'] = basins_runoff.index
+        # merge basin weight info to basin runoff data
+        weights_runoff = basins_runoff.merge(final_weights_df.drop(['prop_in_basin', 'prop_in_huc'], axis=1), left_on='site_no', right_on=site_col)  # noqa: E501
+        # get weighted runoff value for each day
+        weights_runoff['basin_weighted_runoff'] = weights_runoff[data_col] * weights_runoff['weight']  # noqa: E501
+        # apply equation to each day to get estimated huc runoff
+        geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum()/x['weight'].sum()).reset_index(name='geom_runoff')  # noqa: E501
+        geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']\
+            .rename_axis('datetime')
+        return geom_runoff
 
 
 def calculate_multiple_geometric_runoff(
@@ -463,29 +469,34 @@ def calculate_multiple_geometric_runoff(
     results_df = pd.DataFrame()
     # loop through geom_id_list to calculate runoff for each geometry
     for geom_id in geom_id_list:
+        print(geom_id)
         runoff_sites = identify_sites_from_weights(
             geom_id=geom_id,
             weights_df=weights_df,
             geom_id_col='huc_id',
             site_col='da_site_no',
-            prop_in_basin_col='prop_in_basin',
-            prop_in_geom_col='prop_in_huc'
+            wght_in_basin_col='prop_in_basin',
+            wght_in_geom_col='prop_in_huc'
             )
         # subset dictionary to sites with drainage areas that
         # intersect the geom_id
-        site_dict = {site_no: df_dict[site_no]
-                     for site_no in runoff_sites if site_no in df_dict}
-        # calculate runoff for geometry
-        runoff = calculate_geometric_runoff(
-            geom_id=geom_id,
-            df_dict=site_dict,
-            weights_df=weights_df,
-            site_col=site_col,
-            geom_id_col=geom_id_col,
-            basin_in_geom_col=basin_in_geom_col,
-            geom_in_basin_col=geom_in_basin_col,
-            percentage=percentage,
-            data_col=data_col)
+        site_dict = {
+            site_no: df_dict[site_no] for site_no in runoff_sites if site_no in df_dict  # noqa: E501
+            }
+        if bool(site_dict):
+            # calculate runoff for geometry
+            runoff = calculate_geometric_runoff(
+                geom_id=geom_id,
+                df_dict=site_dict,
+                weights_df=weights_df,
+                site_col=site_col,
+                geom_id_col=geom_id_col,
+                basin_in_geom_col=basin_in_geom_col,
+                geom_in_basin_col=geom_in_basin_col,
+                percentage=percentage,
+                data_col=data_col)
+        else:
+            runoff = pd.Series(dtype='float32')
 
         # add runoff to results_df
         results_df[geom_id] = runoff.to_frame()
