@@ -134,15 +134,15 @@ def test_get_date_range_start_end(df_list):
 #     assert isinstance(state_runoff.values, np.ndarray)
 
 
-def test_identify_sites_from_weights(weight_table):
-    """Test the identify_sites_from_weights function."""
-    siteids = runoff.identify_sites_from_weights(
+def test_identify_sites_from_geom_intersection(weight_table):
+    """Test the identify_sites_from_geom_intersection function."""
+    siteids = runoff.identify_sites_from_geom_intersection(
         geom_id="05090201",
-        weights_df=weight_table,
+        geom_intersection_df=weight_table,
         geom_id_col='huc_cd',
         site_col='site_no',
-        prop_in_basin_col='pct_in_basin',
-        prop_in_geom_col='pct_in_huc')
+        prop_geom_in_basin_col='pct_in_basin',
+        prop_basin_in_geom_col='pct_in_huc')
 
     assert siteids == ['03234300']
 
