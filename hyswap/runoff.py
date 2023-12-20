@@ -364,6 +364,8 @@ def calculate_geometric_runoff(geom_id,
         # proportion of the basin in geom would be smaller with a
         # bigger basin)
         geom_in_basin = geom_in_basin[geom_in_basin['weight'] == geom_in_basin['weight'].max()]  # noqa: E501
+        # make sure returns one value
+        assert geom_in_basin.shape[0] == 1
     # grab all basins fully contained within the geom
     basin_in_geom = filtered_weights_df[(filtered_weights_df[basin_in_geom_col] > 0.98)].copy()  # noqa: E501
     # find basins with data in runoff dictionary
