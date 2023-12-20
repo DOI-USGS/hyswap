@@ -400,6 +400,7 @@ def calculate_geometric_runoff(geom_id,
         basins_runoff = pd.concat([df_dict[basin] for basin in basins])
         # put dates in column so func can group by them
         basins_runoff['date'] = basins_runoff.index
+        basins_runoff.reset_index()
         # merge basin weight info to basin runoff data
         weights_runoff = basins_runoff.merge(final_geom_intersection_df.drop(['prop_in_basin', 'prop_in_huc'], axis=1), left_on='site_no', right_on=site_col)  # noqa: E501
         # get weighted runoff value for each day
