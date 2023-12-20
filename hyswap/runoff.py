@@ -311,7 +311,7 @@ def calculate_geometric_runoff(geom_id,
         multiplier = 1
     # filtering with copy
     filtered_weights_df = weights_df[weights_df[geom_id_col] == geom_id].copy()
-    # converting weights to decimal proportions if applicable
+    # converting proportions to decimals if applicable
     filtered_weights_df[geom_in_basin_col] = (filtered_weights_df[geom_in_basin_col] * multiplier)  # noqa: E501
     filtered_weights_df[basin_in_geom_col] = (filtered_weights_df[basin_in_geom_col] * multiplier)  # noqa: E501
     # check to see if there is overlap between geom and
@@ -321,7 +321,7 @@ def calculate_geometric_runoff(geom_id,
     # if geom_basin_overlap is not empty, then the runoff is simply
     # the runoff from the basin with proportion overlap of > 0.9 AND
     # the highest weight.
-    if geom_basin_overlap.shape[0] > 0:
+    if ~geom_basin_overlap.empty:
         # calculate weight(s) - need weights to determine which
         # basin should be used to represent geom's runoff
         geom_basin_overlap['weight'] = geom_basin_overlap[basin_in_geom_col] * geom_basin_overlap[geom_in_basin_col]  # noqa: E501
@@ -377,6 +377,7 @@ def calculate_geometric_runoff(geom_id,
             basin_in_geom[geom_in_basin_col]
     # combine these two dfs into one
     final_weights_df = pd.concat([geom_in_basin, basin_in_geom])
+    print(final_weights_df)
     # grab applicable basin runoff from dictionary
     basins = final_weights_df[site_col].tolist()
     basins_runoff = pd.concat([df_dict[basin] for basin in basins])
@@ -388,8 +389,7 @@ def calculate_geometric_runoff(geom_id,
     weights_runoff['basin_weighted_runoff'] = weights_runoff[data_col] * weights_runoff['weight']  # noqa: E501
     # apply equation to each day to get estimated huc runoff
     geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum()/x['weight'].sum()).reset_index(name='geom_runoff')  # noqa: E501
-    geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']
-    geom_runoff = geom_runoff.rename_axis('datetime')
+    geom_runoff = geom_runoff_df.set_index('date')['geom_runoff'].rename_axis('datetime')
     return geom_runoff
 
 
