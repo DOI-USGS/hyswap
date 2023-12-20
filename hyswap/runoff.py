@@ -149,12 +149,13 @@ def _get_date_range(df_list, start_date, end_date):
     return date_range
 
 
-def identify_sites_from_geom_intersection(geom_id,
-                                          geom_intersection_df,
-                                          geom_id_col,
-                                          site_col,
-                                          prop_geom_in_basin_col='pct_in_basin',
-                                          prop_basin_in_geom_col='pct_in_huc'):
+def identify_sites_from_geom_intersection(
+        geom_id,
+        geom_intersection_df,
+        geom_id_col,
+        site_col,
+        prop_geom_in_basin_col='pct_in_basin',
+        prop_basin_in_geom_col='pct_in_huc'):
 
     """Identify sites for a specified geometry.
 
@@ -180,8 +181,8 @@ def identify_sites_from_geom_intersection(geom_id,
     site_col: str
         Column in geom_intersection_df with drainage area site numbers.
         Please make sure ids have the correct number of digits and have
-          not lost leading 0s when read in.
-        If the site numbers are the geom_intersection_df index col, site_col = 'index'.
+        not lost leading 0s when read in. If the site numbers are the
+        geom_intersection_df index col, site_col = 'index'.
 
     prop_geom_in_basin_col: str, optional
         Name of column with values (type:float) representing the proportion
@@ -271,8 +272,8 @@ def calculate_geometric_runoff(geom_id,
     site_col : str
         Column in geom_intersection_df with drainage area site numbers.
         Please make sure ids have the correct number of digits and have
-        not lost leading 0s when read in.
-        If the site numbers are the geom_intersection_df index col, site_col = 'index'.
+        not lost leading 0s when read in. If the site numbers are the
+        geom_intersection_df index col, site_col = 'index'.
 
     geom_id_col : str
         Column in geom_intersection_df with geometry ids.
@@ -288,9 +289,9 @@ def calculate_geometric_runoff(geom_id,
         spatial geometry. Default name: 'prop_in_huc'
 
     percentage : boolean, optional
-        If the weight values in geom_intersection_df are percentages, percentage = True.
-        If the values are decimal proportions, percentage = False.
-        Default: False
+        If the weight values in geom_intersection_df are percentages,
+        percentage = True. If the values are decimal proportions,
+        percentage = False. Default: False
 
     data_col : str, optional
         Column name containing runoff data in the dataframes in df_dict.
@@ -337,7 +338,7 @@ def calculate_geometric_runoff(geom_id,
     # check to see if there is overlap between geom and
     # basin(s) that is mutually > 0.9
     geom_basin_overlap = filtered_intersection_df[(filtered_intersection_df[prop_geom_in_basin_col] > 0.9) &  # noqa: E501
-                                             (filtered_intersection_df[prop_basin_in_geom_col] > 0.9)].copy()  # noqa: E501
+                                                  (filtered_intersection_df[prop_basin_in_geom_col] > 0.9)].copy()  # noqa: E501
     # if geom_basin_overlap is not empty, then the runoff is simply
     # the runoff from the basin with proportion overlap of > 0.9 AND
     # the highest weight.
@@ -458,9 +459,9 @@ def calculate_multiple_geometric_runoff(
         spatial geometry. Default name: 'pct_in_huc'
 
     percentage : boolean, optional
-        If the weight values in geom_intersection_df are percentages, percentage = True.
-        If the values are decimal proportions, percentage = False.
-        Default: False
+        If the weight values in geom_intersection_df are percentages,
+        percentage = True. If the values are decimal proportions,
+        percentage = False. Default: False
 
     data_col : str, optional
         Column name containing runoff data in the dataframes in df_dict.
