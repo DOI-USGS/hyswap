@@ -249,7 +249,7 @@ N-day Moving Windows for Historical Daily Percentile Calculations
 
 In this example, we will calculate historical daily percentiles using n-day moving windows that can be compared to daily streamflow in the focal year of interest.
 N-day moving windows are specified using the `leading_values` and `trailing_values` arguments in :obj:`calculate_variable_percentile_thresholds_by_day`.
-We will use a leading value of 14 days and a trailing value of 15 days to show how to use a 30-day moving window to calculate percentiles for each day.
+We will use a leading value of 15 days and a trailing value of 14 days to show how to use a 30-day moving window to calculate percentiles for each day.
 What this means is that the set of historical percentiles calculated for each day are actually calculated using a 30-day window from each year in the dataset.
 
 .. plot::
@@ -268,8 +268,8 @@ What this means is that the set of historical percentiles calculated for each da
         "00060_Mean",
         data_type='daily',
         year_type="water",
-        leading_values=14,
-        trailing_values=15
+        leading_values=15,
+        trailing_values=14
     )
 
     # get year/doy information
