@@ -385,8 +385,7 @@ def leap_year_adjustment(df, year_type='calendar'):
     return df
 
 
-def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
-                     year_type='calendar'):
+def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
     """Function to munge and reformat NWIS statistics data.
 
     This is a utility function that exists to help munge NWIS percentile data
@@ -402,21 +401,12 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
         package like dataretrieval or similar.
     source_pct_col : list, optional
         List of column names to use as the source percentiles. If None, the
-        values are assumed to correspond to the 0, 5, 10, 25, 75, 90, 95,
-        and 100 percentiles in the NWIS statistics service return.
+        values are assumed to correspond to the 0, 5, 10, 20, 25, 50, 75, 80,
+        90, 95, and 100 percentiles in the NWIS statistics service return.
     target_pct_col : list, optional
         List of column names to use as the target percentiles. If None, then
         integer values are used as the column names corresponding to the
         default source values.
-    year_type : str, optional
-        The type of year to use. Must be one of 'calendar', 'water', or
-        'climate'. Default is 'calendar' which starts the year on January 1
-        and ends on December 31. 'water' starts the year on October 1 and
-        ends on September 30 of the following year which is the "water year".
-        For example, October 1, 2010 to September 30, 2011 is "water year
-        2011". 'climate' years begin on April 1 and end on March 31 of the
-        following year, they are numbered by the ending year. For example,
-        April 1, 2010 to March 31, 2011 is "climate year 2011".
 
     Returns
     -------
@@ -445,10 +435,11 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
     """
     # set defaults
     if source_pct_col is None:
-        source_pct_col = ['min_va', 'p05_va', 'p10_va', 'p25_va',
-                          'p75_va', 'p90_va', 'p95_va', 'max_va']
+        source_pct_col = ['min_va', 'p05_va', 'p10_va', 'p20_va', 'p25_va',
+                          'p50_va', 'p75_va', 'p80_va', 'p90_va', 'p95_va',
+                          'max_va']
     if target_pct_col is None:
-        target_pct_col = [0, 5, 10, 25, 75, 90, 95, 100]
+        target_pct_col = [0, 5, 10, 20, 25, 50, 75, 80, 90, 95, 100]
     # check lengths of lists for column names
     if len(source_pct_col) != len(target_pct_col):
         raise ValueError('source_pct_col and target_pct_col must be the same '
@@ -460,17 +451,9 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None,
     df['year'] = 2020
     # construct date column
     df['date'] = pd.to_datetime(df[['day', 'month', 'year']])
-    # set doy_index and month-day as multi-index
-    month_day = df['date'].dt.strftime('%m-%d')
-    doy_index = df['date'].dt.dayofyear
-    if year_type == 'water':
-        doy_index = doy_index - 273
-        doy_index[doy_index < 1] += 365
-    elif year_type == 'climate':
-        doy_index = doy_index - 90
-        doy_index[doy_index < 1] += 365
-    df.index = pd.MultiIndex.from_arrays(
-        [doy_index, month_day], names=['doy', 'month-day'])
+    # set month-day as index
+    df['month_day'] = df['date'].dt.strftime('%m-%d')
+    df = df.set_index('month_day')
     # slim down to just the columns used for the plot
     df_slim = df[source_pct_col]
     # rename columns
