@@ -204,7 +204,8 @@ def calculate_variable_percentile_thresholds_by_day(
     # define year and day of year columns and convert date column to datetime
     # if necessary
     df = define_year_doy_columns(df, date_column_name=date_column_name,
-                                 year_type=year_type, clip_leap_day=clip_leap_day)
+                                 year_type=year_type,
+                                 clip_leap_day=clip_leap_day)
     # do rolling average for time as needed
     data_type = set_data_type(data_type)
     df = rolling_average(df, data_column_name, data_type)
@@ -224,7 +225,8 @@ def calculate_variable_percentile_thresholds_by_day(
     if date_type == 'mo-day':
         month_day_index = year.strftime("%m-%d")
         # initialize a DataFrame to hold percentiles by day of year
-        percentiles_by_day = pd.DataFrame(index=month_day_index, columns=percentiles)
+        percentiles_by_day = pd.DataFrame(index=month_day_index,
+                                          columns=percentiles)
         # loop through days of year available
         for mo_day in month_day_index:
             # get historical data for the day of year
@@ -247,11 +249,13 @@ def calculate_variable_percentile_thresholds_by_day(
                     else:
                         # if there are not at least 'min_years' of data,
                         # set percentiles to NaN
-                        percentiles_by_day.loc[month_day_index == mo_day, :] = np.nan
+                        percentiles_by_day.loc[
+                            month_day_index == mo_day, :] = np.nan
                 else:
                     # if all values are NA
                     # set percentiles to NaN
-                    percentiles_by_day.loc[month_day_index == mo_day, :] = np.nan
+                    percentiles_by_day.loc[
+                        month_day_index == mo_day, :] = np.nan
             else:
                 # if the data subset for doy is empty
                 # set percentiles to NaN
@@ -301,7 +305,7 @@ def calculate_variable_percentile_thresholds_by_day(
         percentiles_by_day = percentiles_by_day.sort_index()
         if year_type == 'climate':
             doy_index = doy_index - cy_sub
-            doy_index[doy_index < 1] += wy_cy_sub    
+            doy_index[doy_index < 1] += wy_cy_sub
         if year_type == 'water':
             doy_index = doy_index - wy_sub
             doy_index[doy_index < 1] += wy_cy_sub
