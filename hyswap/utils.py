@@ -431,7 +431,7 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
 
         >>> df = utils.munge_nwis_stats(df)
         >>> df.shape
-        (366, 8)
+        (366, 11)
     """
     # set defaults
     if source_pct_col is None:
