@@ -264,7 +264,6 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     # return percentiles by day of year
     return percentiles_by_day
 
-
 def calculate_variable_percentile_thresholds_by_day(
         df,
         data_column_name,
@@ -420,7 +419,6 @@ def calculate_variable_percentile_thresholds_by_day(
             percentiles_by_day.loc[month_day_index == mo_day, :] = np.nan
     
     return percentiles_by_day
-
 
 def calculate_fixed_percentile_from_value(value, percentile_df):
     """Calculate percentile from a value and fixed percentile thresholds.
