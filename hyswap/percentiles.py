@@ -155,7 +155,8 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     -------
     percentiles : pandas.DataFrame
         DataFrame containing threshold percentiles of data by day of year.
-        Will return a DataFrame of NaNs for each percentile/day if
+        The DataFrame has a multi-index of 'doy' and 'year_type'.
+        Returns a DataFrame of NaNs for each percentile/day if
         provided an empty DataFrame or DataFrame with insufficient data
 
     Examples
@@ -169,7 +170,7 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         >>> df, _ = dataretrieval.nwis.get_dv(
         ...     "03586500", parameterCd="00060",
         ...     start="1776-01-01", end="2022-12-31")
-        >>> results = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
+        >>> results = percentiles.calculate_variable_percentile_thresholds_by_day_of_year(  # noqa: E501
         ...     df, "00060_Mean")
         >>> len(results.index)  # 366 days in a leap year
         366
@@ -372,10 +373,10 @@ def calculate_variable_percentile_thresholds_by_day(
         df = pd.DataFrame(index=date_rng)
         df[data_column_name] = np.nan
 
-    # add month-day column and convert date column to datetime if necessary
-    df = define_year_doy_columns(df, date_column_name=date_column_name,
-                                 year_type='calendar',
-                                 clip_leap_day=clip_leap_day)
+    # set the df index
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
+
     # do rolling average for time as needed
     data_type = set_data_type(data_type)
     df = rolling_average(df, data_column_name, data_type)
