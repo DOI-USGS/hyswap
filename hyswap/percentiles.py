@@ -154,11 +154,9 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     Returns
     -------
     percentiles : pandas.DataFrame
-        DataFrame containing threshold percentiles of data by day of year,
-        where the multi-index contains the day of year ('doy') and the
-        year type ('year_type'). Returns a DataFrame of NaNs for each
-        percentile/day if provided an empty DataFrame or DataFrame with
-        insufficient data.
+        DataFrame containing threshold percentiles of data by day of year.
+        Will return a DataFrame of NaNs for each percentile/day if
+        provided an empty DataFrame or DataFrame with insufficient data
 
     Examples
     --------
@@ -171,7 +169,7 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         >>> df, _ = dataretrieval.nwis.get_dv(
         ...     "03586500", parameterCd="00060",
         ...     start="1776-01-01", end="2022-12-31")
-        >>> results = percentiles.calculate_variable_percentile_thresholds_by_day_of_year(  # noqa: E501
+        >>> results = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
         ...     df, "00060_Mean")
         >>> len(results.index)  # 366 days in a leap year
         366
@@ -213,9 +211,9 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     for doy in doy_index:
         # get historical data for the day of year
         data = filter_data_by_time(df, doy, data_column_name,
-                                   leading_values=leading_values,
-                                   trailing_values=trailing_values,
-                                   drop_na=ignore_na)
+                                    leading_values=leading_values,
+                                    trailing_values=trailing_values,
+                                    drop_na=ignore_na)
         if not data.empty:
             if not np.isnan(data).all():
                 meta = calculate_metadata(data)
@@ -261,7 +259,7 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     percentiles_by_day.reset_index(drop=True, inplace=True)
     percentiles_by_day.index = pd.MultiIndex.from_arrays(
         [percentiles_by_day.index + 1, [year_type] * len(doy_index)],
-        names=['doy', 'year_type'])
+         names=['doy', 'year_type'])
 
     # return percentiles by day of year
     return percentiles_by_day
@@ -335,7 +333,7 @@ def calculate_variable_percentile_thresholds_by_day(
     -------
     percentiles : pandas.DataFrame
         DataFrame containing threshold percentiles of data by month-day.
-        Returns a DataFrame of NaNs for each percentile/day if
+        Will return a DataFrame of NaNs for each percentile/day if
         provided an empty DataFrame or DataFrame with insufficient data
 
     Examples
@@ -356,7 +354,8 @@ def calculate_variable_percentile_thresholds_by_day(
         >>> len(results.columns)  # 8 default percentiles
         8
     """
-    # Create a dummy dataframe to fill in function
+    # If the dataframe is empty, create a dummy dataframe to
+    # run through function
     if clip_leap_day:
         # use a non-leap year as reference for empty df
         date_rng = pd.date_range(start='1901-01-01', end='1901-12-31')
@@ -372,15 +371,19 @@ def calculate_variable_percentile_thresholds_by_day(
         warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds')  # noqa: E501
         df = pd.DataFrame(index=date_rng)
         df[data_column_name] = np.nan
-
+        
+    # add month-day column and convert date column to datetime if necessary
+    df = define_year_doy_columns(df, date_column_name=date_column_name,
+                                 year_type='calendar',
+                                 clip_leap_day=clip_leap_day)
     # do rolling average for time as needed
     data_type = set_data_type(data_type)
     df = rolling_average(df, data_column_name, data_type)
-
+    
     # create an empty dataframe to hold percentiles based on month-day
     month_day_index = date_rng.strftime("%m-%d")
     percentiles_by_day = pd.DataFrame(index=month_day_index,
-                                      columns=percentiles)
+                                        columns=percentiles)
     percentiles_by_day.index.names = ['month-day']
     # loop through days of year available
     for mo_day in month_day_index:
@@ -415,7 +418,7 @@ def calculate_variable_percentile_thresholds_by_day(
             # if the data subset for doy is empty
             # set percentiles to NaN
             percentiles_by_day.loc[month_day_index == mo_day, :] = np.nan
-
+    
     return percentiles_by_day
 
 
