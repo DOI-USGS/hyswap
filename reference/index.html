@@ -7,12 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g811a50f documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+gb63d623 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=f6d5df52"></script>
+    <script src="../_static/documentation_options.js?v=d07b8b18"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g811a50f documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb63d623 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -391,7 +391,7 @@ April 1, 2010 to March 31, 2011 is “climate year 2011”.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.utils.munge_nwis_stats">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">munge_nwis_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_pct_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_pct_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#munge_nwis_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.munge_nwis_stats" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">munge_nwis_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_pct_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_pct_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#munge_nwis_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.munge_nwis_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Function to munge and reformat NWIS statistics data.</p>
 <p>This is a utility function that exists to help munge NWIS percentile data
 served via the NWIS statistics web service. This function is intended to
@@ -404,19 +404,11 @@ function for “daily” data, a single site, and a single parameter code.</p>
 web service. Assumed to come in as a dataframe retrieved with a
 package like dataretrieval or similar.</p></li>
 <li><p><strong>source_pct_col</strong> (<em>list</em><em>, </em><em>optional</em>) – List of column names to use as the source percentiles. If None, the
-values are assumed to correspond to the 0, 5, 10, 25, 75, 90, 95,
-and 100 percentiles in the NWIS statistics service return.</p></li>
+values are assumed to correspond to the 0, 5, 10, 20, 25, 50, 75, 80,
+90, 95, and 100 percentiles in the NWIS statistics service return.</p></li>
 <li><p><strong>target_pct_col</strong> (<em>list</em><em>, </em><em>optional</em>) – List of column names to use as the target percentiles. If None, then
 integer values are used as the column names corresponding to the
 default source values.</p></li>
-<li><p><strong>year_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of year to use. Must be one of ‘calendar’, ‘water’, or
-‘climate’. Default is ‘calendar’ which starts the year on January 1
-and ends on December 31. ‘water’ starts the year on October 1 and
-ends on September 30 of the following year which is the “water year”.
-For example, October 1, 2010 to September 30, 2011 is “water year
-2011”. ‘climate’ years begin on April 1 and end on March 31 of the
-following year, they are numbered by the ending year. For example,
-April 1, 2010 to March 31, 2011 is “climate year 2011”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -438,7 +430,7 @@ the plot.</p>
 <p>Then apply the function to munge the data.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">shape</span>
-<span class="go">(366, 8)</span>
+<span class="go">(366, 11)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2085,7 +2077,7 @@ by df_names argument.</p></li>
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g811a50f documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gb63d623 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>

@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g811a50f documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gb63d623 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=f6d5df52"></script>
+    <script src="../../_static/documentation_options.js?v=d07b8b18"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g811a50f documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb63d623 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -450,8 +450,7 @@
 
 <div class="viewcode-block" id="munge_nwis_stats">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.munge_nwis_stats">[docs]</a>
-<span class="k">def</span> <span class="nf">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to munge and reformat NWIS statistics data.</span>
 
 <span class="sd">    This is a utility function that exists to help munge NWIS percentile data</span>
@@ -467,21 +466,12 @@
 <span class="sd">        package like dataretrieval or similar.</span>
 <span class="sd">    source_pct_col : list, optional</span>
 <span class="sd">        List of column names to use as the source percentiles. If None, the</span>
-<span class="sd">        values are assumed to correspond to the 0, 5, 10, 25, 75, 90, 95,</span>
-<span class="sd">        and 100 percentiles in the NWIS statistics service return.</span>
+<span class="sd">        values are assumed to correspond to the 0, 5, 10, 20, 25, 50, 75, 80,</span>
+<span class="sd">        90, 95, and 100 percentiles in the NWIS statistics service return.</span>
 <span class="sd">    target_pct_col : list, optional</span>
 <span class="sd">        List of column names to use as the target percentiles. If None, then</span>
 <span class="sd">        integer values are used as the column names corresponding to the</span>
 <span class="sd">        default source values.</span>
-<span class="sd">    year_type : str, optional</span>
-<span class="sd">        The type of year to use. Must be one of &#39;calendar&#39;, &#39;water&#39;, or</span>
-<span class="sd">        &#39;climate&#39;. Default is &#39;calendar&#39; which starts the year on January 1</span>
-<span class="sd">        and ends on December 31. &#39;water&#39; starts the year on October 1 and</span>
-<span class="sd">        ends on September 30 of the following year which is the &quot;water year&quot;.</span>
-<span class="sd">        For example, October 1, 2010 to September 30, 2011 is &quot;water year</span>
-<span class="sd">        2011&quot;. &#39;climate&#39; years begin on April 1 and end on March 31 of the</span>
-<span class="sd">        following year, they are numbered by the ending year. For example,</span>
-<span class="sd">        April 1, 2010 to March 31, 2011 is &quot;climate year 2011&quot;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -506,14 +496,15 @@
 
 <span class="sd">        &gt;&gt;&gt; df = utils.munge_nwis_stats(df)</span>
 <span class="sd">        &gt;&gt;&gt; df.shape</span>
-<span class="sd">        (366, 8)</span>
+<span class="sd">        (366, 11)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># set defaults</span>
     <span class="k">if</span> <span class="n">source_pct_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">source_pct_col</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;min_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p05_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p10_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p25_va&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;p75_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p90_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p95_va&#39;</span><span class="p">,</span> <span class="s1">&#39;max_va&#39;</span><span class="p">]</span>
+        <span class="n">source_pct_col</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;min_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p05_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p10_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p20_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p25_va&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;p50_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p75_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p80_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p90_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p95_va&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;max_va&#39;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">target_pct_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">target_pct_col</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+        <span class="n">target_pct_col</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
     <span class="c1"># check lengths of lists for column names</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">source_pct_col</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_pct_col</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;source_pct_col and target_pct_col must be the same &#39;</span>
@@ -525,17 +516,9 @@
     <span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2020</span>
     <span class="c1"># construct date column</span>
     <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">]])</span>
-    <span class="c1"># set doy_index and month-day as multi-index</span>
-    <span class="n">month_day</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">doy_index</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofyear</span>
-    <span class="k">if</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;water&#39;</span><span class="p">:</span>
-        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="mi">273</span>
-        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">365</span>
-    <span class="k">elif</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;climate&#39;</span><span class="p">:</span>
-        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="mi">90</span>
-        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">365</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">doy_index</span><span class="p">,</span> <span class="n">month_day</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;doy&#39;</span><span class="p">,</span> <span class="s1">&#39;month-day&#39;</span><span class="p">])</span>
+    <span class="c1"># set month-day as index</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;month_day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;month_day&#39;</span><span class="p">)</span>
     <span class="c1"># slim down to just the columns used for the plot</span>
     <span class="n">df_slim</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_pct_col</span><span class="p">]</span>
     <span class="c1"># rename columns</span>
@@ -941,7 +924,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g811a50f documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gb63d623 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
