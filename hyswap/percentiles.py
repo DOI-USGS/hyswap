@@ -204,7 +204,7 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     data_type = set_data_type(data_type)
     df = rolling_average(df, data_column_name, data_type)
 
-    # create an empty dataframe to hold percentiles based on month-day
+    # create an empty dataframe to hold percentiles based on month_day
     doy_index = date_rng.day_of_year.values
     percentiles_by_day = pd.DataFrame(index=doy_index, columns=percentiles)
 
@@ -385,11 +385,11 @@ def calculate_variable_percentile_thresholds_by_day(
     month_day_index = date_rng.strftime("%m-%d")
     percentiles_by_day = pd.DataFrame(index=month_day_index,
                                       columns=percentiles)
-    percentiles_by_day.index.names = ['month-day']
+    percentiles_by_day.index.names = ['month_day']
     # loop through days of year available
-    for mo_day in month_day_index:
+    for month_day in month_day_index:
         # get historical data for the day of year
-        data = filter_data_by_month_day(df, mo_day, data_column_name,
+        data = filter_data_by_month_day(df, month_day, data_column_name,
                                         leading_values=leading_values,
                                         trailing_values=trailing_values,
                                         drop_na=ignore_na)
@@ -404,21 +404,21 @@ def calculate_variable_percentile_thresholds_by_day(
                     _pct = calculate_fixed_percentile_thresholds(
                         data, percentiles=percentiles, method=method,
                         ignore_na=ignore_na, **kwargs)
-                    percentiles_by_day.loc[month_day_index == mo_day, :] = _pct.values.tolist()[0]  # noqa: E501
+                    percentiles_by_day.loc[month_day_index == month_day, :] = _pct.values.tolist()[0]  # noqa: E501
                 else:
                     # if there are not at least 'min_years' of data,
                     # set percentiles to NaN
                     percentiles_by_day.loc[
-                        month_day_index == mo_day, :] = np.nan
+                        month_day_index == month_day, :] = np.nan
             else:
                 # if all values are NA
                 # set percentiles to NaN
                 percentiles_by_day.loc[
-                    month_day_index == mo_day, :] = np.nan
+                    month_day_index == month_day, :] = np.nan
         else:
             # if the data subset for doy is empty
             # set percentiles to NaN
-            percentiles_by_day.loc[month_day_index == mo_day, :] = np.nan
+            percentiles_by_day.loc[month_day_index == month_day, :] = np.nan
 
     return percentiles_by_day
 
@@ -492,7 +492,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     return np.interp(value, percentile_values, thresholds).round(2)
 
 
-def calculate_variable_percentile_from_value(value, percentile_df, mo_day):
+def calculate_variable_percentile_from_value(value, percentile_df, month_day):
     """Calculate percentile from a value and variable percentile thresholds.
 
     This function enables faster calculation of the percentile associated with
@@ -513,7 +513,7 @@ def calculate_variable_percentile_from_value(value, percentile_df, mo_day):
         function but could be provided manually or from data pulled from the
         NWIS stats service.
 
-    mo_day : str
+    month_day : str
         string of month-day of year to lookup percentile thresholds for value
 
     Returns
@@ -542,7 +542,7 @@ def calculate_variable_percentile_from_value(value, percentile_df, mo_day):
         96.21
     """
     # retrieve percentile thresholds for the day of year of interest
-    pct_values = percentile_df.loc[percentile_df.index.get_level_values('month-day') == mo_day]  # noqa: E501
+    pct_values = percentile_df.loc[percentile_df.index.get_level_values('month_day') == month_day]  # noqa: E501
 
     if not pct_values.empty:
         pct_values = pct_values.reset_index(drop=True)
