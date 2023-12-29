@@ -210,6 +210,10 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
                     (df.index.dayofyear >= value - leading_values) &
                     (df.index.dayofyear <= value + trailing_values),
                     data_column_name]
+            # If there are not sufficient data to complete moving
+            # window, return empty df
+            if dff.shape[0] < (leading_values + trailing_values + 1):
+                dff = pd.DataFrame([])
     elif time_interval == 'month':
         # grab data from the specified month
         dff = df.loc[df.index.month == value, data_column_name]
