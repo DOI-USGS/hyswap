@@ -1,6 +1,7 @@
 """Functions for plotting."""
 import calendar
 import numpy as np
+import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 from hyswap.percentiles import calculate_variable_percentile_thresholds_by_day
@@ -266,7 +267,8 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     return ax
 
 
-def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
+def plot_duration_hydrograph(percentiles_by_day, df, data_col,
+                             date_column_name=None,
                              pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
                              data_label=None, ax=None,
                              disclaimer=False,
@@ -298,8 +300,9 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         Dataframe containing the data to plot.
     data_col : str
         Column name of the data to plot.
-    doy_col : str
-        Column name of the day of year.
+    date_column_name : str, optional
+        Defaults to None. If None, index is assumed to contain datetime
+        information.
     pct_list : list, optional
         List of integers corresponding to the percentile values to be
         plotted. Defaults to 0, 5, 10, 25, 75, 90, 95, 100.
@@ -348,11 +351,9 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         >>> pct_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
         ...     df, '00060_Mean')
         >>> df_2022 = df[df.index.year == 2022]
-        >>> df_2022['doy'] = df_2022.index.dayofyear
-        >>> df_2022 = df_2022.sort_values(by='doy')
         >>> fig, ax = plt.subplots(figsize=(12, 6))
         >>> ax = hyswap.plots.plot_duration_hydrograph(
-        ...     pct_by_day, df_2022, '00060_Mean', 'doy',
+        ...     pct_by_day, df_2022, '00060_Mean',
         ...     data_label='2022 Daily Mean Discharge',
         ...     ax=ax, title='Duration Hydrograph for USGS Site 06892350')
         >>> plt.tight_layout()
@@ -362,8 +363,8 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     if ax is None:
         _, ax = plt.subplots()
     # pop some kwargs
-    alpha = kwargs.pop('alpha', 0.5)
-    zorder = kwargs.pop('zorder', -20)
+    alpha = 0.5
+    zorder = -20
     if data_label is None:
         label = df[data_col].name
     else:
@@ -377,40 +378,49 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     if colors is None:
         colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
                   "#7bdbd2", "#7587bf", "#ad63ba"]
+    # set the df index
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
+    df['month_day'] = df.index.strftime('%m-%d')
+    # Join percentiles with data
+    df_combined = pd.merge(df, percentiles_by_day, left_on=df['month_day'], right_index=True, how = 'left')
     # plot the latest data -1 to 0-index day of year
-    ax.plot(df[doy_col]-1, df[data_col], color='k', zorder=10, label=label)
+    ax.plot(df_combined.index.values, df[data_col], color='k', zorder=10, label=label)
+    # sort the list in ascending order
+    pct_list = percentiles_by_day.columns.sort_values()
+
     # plot the historic percentiles filling between each pair
-    pct_list.sort()  # sort the list in ascending order
     for i in range(1, len(pct_list)):
+        # ax.plot(df_combined.index.values,
+        #         df_combined[pct_list[i-1]])
         ax.fill_between(
-            percentiles_by_day.index.get_level_values(1),
-            list(percentiles_by_day[pct_list[i - 1]].values),
-            list(percentiles_by_day[pct_list[i]].values),
-            color=colors[i - 1],
+            df_combined.index.values,
+            df_combined[pct_list[i-1]].tolist(),
+            df_combined[pct_list[i]].tolist(),
+            color=colors[i-1],
             alpha=alpha,
             linewidth=0,
             label="{}th - {}th Percentile".format(
                 pct_list[i - 1], pct_list[i]),
-            zorder=zorder, **kwargs
+            zorder=zorder
         )
     # set labels
     ax.set_xlabel(xlab)
-    ax.set_xlim(0, 365)
-    # major xticks at first/end of each month
-    months = [int(m.split('-')[0]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
-    month_switch = np.where(np.diff(months) != 0)[0]
-    ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
-    # minor xticks at 15th of each month
-    unique_months = []
-    [unique_months.append(x) for x in months if x not in unique_months]
-    month_names = [calendar.month_abbr[i] for i in unique_months]
-    month_names = [f'{m}' for m in month_names]
-    days = [int(m.split('-')[1]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
-    mid_days = np.where(np.array(days) == 15)[0]
-    ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
-    # make minor ticks invisible
-    ax.tick_params(axis='x', which='minor', length=0)
-    # other labels
+#     # major xticks at first/end of each month
+# months = [int(m.split('-')[0]) for m in df_combined[month_day_col]]  # noqa: E501
+# month_switch = np.where(np.diff(months) != 0)[0]
+# ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
+#     # minor xticks at 15th of each month
+# unique_months = []
+# [unique_months.append(x) for x in months if x not in unique_months]
+# month_names = [calendar.month_abbr[i] for i in unique_months]
+# month_names = [f'{m}' for m in month_names]
+# days = [int(m.split('-')[1]) for m in df_combined[month_day_col]]  # noqa: E501
+# mid_days = np.where(np.array(days) == 15)[0]
+# ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
+#     # make minor ticks invisible
+# ax.tick_params(axis='x', which='minor', length=0)
+#     # other labels
     ax.set_ylabel(ylab)
     ax.set_yscale("log")
     ax.set_title(title)
@@ -418,10 +428,10 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     ax.text(0, -0.18, txt, color='red', transform=ax.transAxes)
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
-    yticklabels = [f'{int(y):,}' for y in yticks]
+    yticklabels = [f'{float(y):,}' for y in yticks]
     ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
     # two column legend
-    ax.legend(loc="best", ncol=2)
+    ax.legend(loc="best", ncol=2, title = 'Historical percentiles')
     # return axes
     return ax
 
