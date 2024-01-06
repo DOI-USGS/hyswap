@@ -351,7 +351,8 @@ def leap_year_adjustment(df, year_type='calendar'):
     """Function to adjust leap year days in a DataFrame.
 
     Adjust for a leap year by removing February 29 from the DataFrame and
-    adjusting the day of year values for the remaining days of the year.
+    adjusting the day of year values for the remaining days of the year
+    if a 'doy_index' column is present.
 
     Parameters
     ----------
@@ -367,7 +368,10 @@ def leap_year_adjustment(df, year_type='calendar'):
         For example, October 1, 2010 to September 30, 2011 is "water year
         2011". 'climate' years begin on April 1 and end on March 31 of the
         following year, they are numbered by the ending year. For example,
-        April 1, 2010 to March 31, 2011 is "climate year 2011".
+        April 1, 2010 to March 31, 2011 is "climate year 2011". Please note
+        that this input is used to adjust the day of year index when a leap
+        day is removed. If the dataframe does not have a day of year index,
+        this input is ignored.
 
     Returns
     -------
@@ -375,17 +379,18 @@ def leap_year_adjustment(df, year_type='calendar'):
         DataFrame with leap year days removed and day of year values adjusted.
     """
     df = df.loc[~((df.index.month == 2) & (df.index.day == 29))]
-    if year_type == 'calendar':
-        df.loc[df.index.is_leap_year & (df.index.month > 2),
-               'index_doy'] -= 1
-    elif year_type == 'water':
-        df.loc[df.index.is_leap_year &
-               (df.index.month > 2) &
-               (df.index.month < 10), 'index_doy'] -= 1
-    elif year_type == 'climate':
-        df.loc[df.index.is_leap_year &
-               (df.index.month > 2) &
-               (df.index.month < 4), 'index_doy'] -= 1
+    if 'index_doy' in df.columns:
+        if year_type == 'calendar':
+            df.loc[df.index.is_leap_year & (df.index.month > 2),
+                   'index_doy'] -= 1
+        elif year_type == 'water':
+            df.loc[df.index.is_leap_year &
+                   (df.index.month > 2) &
+                   (df.index.month < 10), 'index_doy'] -= 1
+        elif year_type == 'climate':
+            df.loc[df.index.is_leap_year &
+                   (df.index.month > 2) &
+                   (df.index.month < 4), 'index_doy'] -= 1
     return df
 
 
