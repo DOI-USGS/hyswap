@@ -7,7 +7,8 @@ from hyswap.utils import define_year_doy_columns
 
 def calculate_daily_cumulative_values(df, data_column_name,
                                       date_column_name=None,
-                                      year_type='calendar'):
+                                      year_type='calendar',
+                                      clip_leap_day=False):
     """Calculate daily cumulative values.
 
     Parameters
@@ -53,24 +54,35 @@ def calculate_daily_cumulative_values(df, data_column_name,
     """
     # set date index, add day/year columns with function
     df = define_year_doy_columns(df, date_column_name=date_column_name,
-                                 year_type=year_type, clip_leap_day=True)
+                                 year_type=year_type, clip_leap_day=clip_leap_day)
     # get unique years in the data
     years = df['index_year'].unique()
-    # make a dataframe to hold cumulative values for each year
-    cdf = pd.DataFrame(index=years, columns=np.arange(1, 366))
+
+    # Set up month-day index for cdf dataframe
+    if year_type is 'water':
+        date_range = pd.date_range(start = "10-01-1999", end = "09-30-2000", freq="D")
+    elif year_type is 'climate':
+        date_range = pd.date_range(start = "04-01-1999", end = "03-31-2000", freq="D")
+    else:
+        date_range = pd.date_range(start = "01-01-2000", end = "12-31-2000", freq="D")
+    date_range = date_range.strftime("%m-%d")
+    
+    # make an empty dataframe to hold cumulative values for each year
+    cdf = pd.DataFrame(columns=date_range)
     # loop through each year and calculate cumulative values
     for year in years:
         # get data for the year
-        year_data = df.loc[df['index_year'] == year, data_column_name]
+        year_data = df.loc[df['index_year'] == year,[data_column_name, 'index_month_day', 'index_year']]
         # year must be complete
-        if len(year_data) == 365:
+        if len(year_data) >= 365:
             # calculate cumulative values and assign to cdf
             # converted to acre-feet
             # multiplied by seconds per day
-            cdf.loc[cdf.index == year, :len(year_data)] = \
-                year_data.cumsum().values * 0.0000229568 * 86400
-    # reformat the dataframe
-    cdf = _tidy_cumulative_dataframe(cdf, year_type)
+            year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.0000229568 * 86400
+            year_data_pivot = year_data.pivot(index = 'index_year', columns = 'index_month_day', values='cumulative')
+        else:
+            year_data_pivot = pd.DataFrame([])
+        cdf = pd.concat([cdf, year_data_pivot])
     return cdf
 
 
