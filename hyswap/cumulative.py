@@ -73,6 +73,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
     for year in years:
         # get data for the year
         year_data = df.loc[df['index_year'] == year,[data_column_name, 'index_month_day', 'index_year']]
+        year_data = year_data.sort_index(inplace=True)
         # year must be complete
         if len(year_data) >= 365:
             # calculate cumulative values and assign to cdf
