@@ -58,32 +58,21 @@ def calculate_daily_cumulative_values(df, data_column_name,
     # get unique years in the data
     years = df['index_year'].unique()
 
-    # Set up month-day index for cdf dataframe
-    if year_type is 'water':
-        date_range = pd.date_range(start = "10-01-1999", end = "09-30-2000", freq="D")
-    elif year_type is 'climate':
-        date_range = pd.date_range(start = "04-01-1999", end = "03-31-2000", freq="D")
-    else:
-        date_range = pd.date_range(start = "01-01-2000", end = "12-31-2000", freq="D")
-    date_range = date_range.strftime("%m-%d")
-    
     # make an empty dataframe to hold cumulative values for each year
-    cdf = pd.DataFrame(columns=date_range)
+    cdf = pd.DataFrame([])
+    selected_columns = [data_column_name, 'index_month_day', 'index_year', 'index_doy']
     # loop through each year and calculate cumulative values
     for year in years:
         # get data for the year
-        year_data = df.loc[df['index_year'] == year,[data_column_name, 'index_month_day', 'index_year']]
-        year_data = year_data.sort_index(inplace=True)
+        year_data = df[df['index_year'] == year][selected_columns]
+        year_data = year_data.sort_index()
         # year must be complete
-        if len(year_data) >= 365:
+        if year_data.shape[0] >= 365:
             # calculate cumulative values and assign to cdf
             # converted to acre-feet
             # multiplied by seconds per day
             year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.0000229568 * 86400
-            year_data_pivot = year_data.pivot(index = 'index_year', columns = 'index_month_day', values='cumulative')
-        else:
-            year_data_pivot = pd.DataFrame([])
-        cdf = pd.concat([cdf, year_data_pivot])
+            cdf = pd.concat([cdf, year_data])
     return cdf
 
 
