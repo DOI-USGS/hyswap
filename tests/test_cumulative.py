@@ -32,9 +32,9 @@ class TestDailyCumulativeValues:
         # test the function
         cdf = cumulative.calculate_daily_cumulative_values(
             df, 'data', date_column_name='date')
-        assert cdf.shape == (365, 3)
+        assert cdf.shape == (365, 4)
         assert cdf.columns.tolist() == \
-            ['index_year', 'index_doy', 'cumulative']
+            ['index_month_day', 'index_year', 'index_doy', 'cumulative']
         assert cdf.index.year.unique().tolist() == [2019]
         assert cdf['index_doy'].tolist() == list(range(1, 366))
         assert cdf['cumulative'].tolist() == \
@@ -48,9 +48,9 @@ class TestDailyCumulativeValues:
         # test the function with no date column and dates in the index
         df = df.set_index('date')
         cdf = cumulative.calculate_daily_cumulative_values(df, 'data')
-        assert cdf.shape == (365, 3)
+        assert cdf.shape == (365, 4)
         assert cdf.columns.tolist() == \
-            ['index_year', 'index_doy', 'cumulative']
+            ['index_month_day', 'index_year', 'index_doy', 'cumulative']
         assert cdf.index.year.unique().tolist() == [2019]
         assert cdf['index_doy'].tolist() == list(range(1, 366))
         assert cdf['cumulative'].tolist() == \
@@ -63,10 +63,11 @@ class TestDailyCumulativeValues:
             'date': pd.date_range('2016-01-01', '2019-12-31')})
         cdf = cumulative.calculate_daily_cumulative_values(
             df, 'data', date_column_name='date', year_type='water')
-        assert cdf.shape == (365*3, 3)
+        assert cdf.shape == (365*3, 4)
         assert cdf.columns.tolist() == \
-            ['index_year', 'index_doy', 'cumulative']
-        assert cdf.index.year.unique().tolist() == [2017, 2018, 2019, 2020]
+            ['index_month_day', 'index_year', 'index_doy', 'cumulative']
+        assert cdf.index.year.unique().tolist() == [2016, 2017, 2018, 2019]
+        assert cdf['index_year'].unique().tolist() == [2017, 2018, 2019]
         assert cdf['index_doy'].tolist()[0] == 1
         d_list = cdf['index_doy'].unique().tolist()
         d_list.sort()
@@ -81,10 +82,11 @@ class TestDailyCumulativeValues:
             'date': pd.date_range('2016-01-01', '2019-12-31')})
         cdf = cumulative.calculate_daily_cumulative_values(
             df, 'data', date_column_name='date', year_type='climate')
-        assert cdf.shape == (365*3, 3)
+        assert cdf.shape == (365*3, 4)
         assert cdf.columns.tolist() == \
-            ['index_year', 'index_doy', 'cumulative']
-        assert cdf.index.year.unique().tolist() == [2017, 2018, 2019, 2020]
+            ['index_month_day', 'index_year', 'index_doy', 'cumulative']
+        assert cdf.index.year.unique().tolist() == [2016, 2017, 2018, 2019]
+        assert cdf['index_year'].unique().tolist() == [2017, 2018, 2019]
         assert cdf['index_doy'].tolist()[0] == 1
         d_list = cdf['index_doy'].unique().tolist()
         d_list.sort()

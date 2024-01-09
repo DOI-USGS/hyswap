@@ -1,6 +1,5 @@
 """Cumulative calculation functions."""
 
-import numpy as np
 import pandas as pd
 from hyswap.utils import define_year_doy_columns
 
@@ -53,14 +52,21 @@ def calculate_daily_cumulative_values(df, data_column_name,
         ['index_year', 'index_doy', 'cumulative']
     """
     # set date index, add day/year columns with function
-    df = define_year_doy_columns(df, date_column_name=date_column_name,
-                                 year_type=year_type, clip_leap_day=clip_leap_day)
+    df = define_year_doy_columns(df,
+                                 date_column_name=date_column_name,
+                                 year_type=year_type,
+                                 clip_leap_day=clip_leap_day)
     # get unique years in the data
     years = df['index_year'].unique()
 
     # make an empty dataframe to hold cumulative values for each year
     cdf = pd.DataFrame([])
-    selected_columns = [data_column_name, 'index_month_day', 'index_year', 'index_doy']
+    selected_columns = [
+        data_column_name,
+        'index_month_day',
+        'index_year',
+        'index_doy'
+        ]
     # loop through each year and calculate cumulative values
     for year in years:
         # get data for the year
@@ -71,8 +77,9 @@ def calculate_daily_cumulative_values(df, data_column_name,
             # calculate cumulative values and assign to cdf
             # converted to acre-feet
             # multiplied by seconds per day
-            year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.0000229568 * 86400
+            year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.0000229568 * 86400  # noqa: E501
             cdf = pd.concat([cdf, year_data])
+    cdf = cdf.drop('data', axis=1)
     return cdf
 
 

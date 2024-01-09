@@ -383,16 +383,14 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
         df = df.set_index(date_column_name)
     df['month_day'] = df.index.strftime('%m-%d')
     # Join percentiles with data
-    df_combined = pd.merge(df, percentiles_by_day, left_on=df['month_day'], right_index=True, how = 'left')
+    df_combined = pd.merge(df, percentiles_by_day, left_on=df['month_day'], right_index=True, how='left')  # noqa: E501
     # plot the latest data -1 to 0-index day of year
-    ax.plot(df_combined.index.values, df[data_col], color='k', zorder=10, label=label)
+    ax.plot(df_combined.index.values, df[data_col], color='k', zorder=10, label=label)  # noqa: E501
     # sort the list in ascending order
     pct_list = percentiles_by_day.columns.sort_values()
 
     # plot the historic percentiles filling between each pair
     for i in range(1, len(pct_list)):
-        # ax.plot(df_combined.index.values,
-        #         df_combined[pct_list[i-1]])
         ax.fill_between(
             df_combined.index.values,
             df_combined[pct_list[i-1]].tolist(),
@@ -406,21 +404,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
         )
     # set labels
     ax.set_xlabel(xlab)
-#     # major xticks at first/end of each month
-# months = [int(m.split('-')[0]) for m in df_combined[month_day_col]]  # noqa: E501
-# month_switch = np.where(np.diff(months) != 0)[0]
-# ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
-#     # minor xticks at 15th of each month
-# unique_months = []
-# [unique_months.append(x) for x in months if x not in unique_months]
-# month_names = [calendar.month_abbr[i] for i in unique_months]
-# month_names = [f'{m}' for m in month_names]
-# days = [int(m.split('-')[1]) for m in df_combined[month_day_col]]  # noqa: E501
-# mid_days = np.where(np.array(days) == 15)[0]
-# ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
-#     # make minor ticks invisible
-# ax.tick_params(axis='x', which='minor', length=0)
-#     # other labels
+    # other labels
     ax.set_ylabel(ylab)
     ax.set_yscale("log")
     ax.set_title(title)
@@ -431,7 +415,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
     yticklabels = [f'{float(y):,}' for y in yticks]
     ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
     # two column legend
-    ax.legend(loc="best", ncol=2, title = 'Historical percentiles')
+    ax.legend(loc="best", ncol=2, title='Historical percentiles')
     # return axes
     return ax
 
@@ -543,26 +527,26 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     else:
         txt = ''
     # Incorporate leap year decision into x-axis labels
-    if clip_leap_day == True:
-       year = 1902
+    if clip_leap_day:
+        year = 1902
     else:
-       year = 1903
+        year = 1903
     # Create x-axis scale and labels
     if year_type == 'water':
-        month_day_order = pd.date_range(start = f'{year}-10-01', end = f'{year+1}-09-30').strftime('%m-%d')
-        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(10,13)] + [f"{str(month).zfill(2)}-01" for month in range(1,10)]
-        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(10,13)] + [f"{str(month).zfill(2)}-15" for month in range(1,10)]
-        month_labels = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+        month_day_order = pd.date_range(start=f'{year}-10-01', end=f'{year+1}-09-30').strftime('%m-%d')  # noqa: E501
+        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(10, 13)] + [f"{str(month).zfill(2)}-01" for month in range(1, 10)]  # noqa: E501
+        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(10, 13)] + [f"{str(month).zfill(2)}-15" for month in range(1, 10)]  # noqa: E501
+        month_labels = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']  # noqa: E501
     elif year_type == 'climate':
-        month_day_order = pd.date_range(start = f'{year}-04-01', end = f'{year+1}-03-31').strftime('%m-%d')
-        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(4,13)] + [f"{str(month).zfill(2)}-01" for month in range(1,4)]
-        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(4,13)] + [f"{str(month).zfill(2)}-15" for month in range(1,4)]
-        month_labels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']
+        month_day_order = pd.date_range(start=f'{year}-04-01', end=f'{year+1}-03-31').strftime('%m-%d')  # noqa: E501
+        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(4, 13)] + [f"{str(month).zfill(2)}-01" for month in range(1, 4)]  # noqa: E501
+        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(4, 13)] + [f"{str(month).zfill(2)}-15" for month in range(1, 4)]  # noqa: E501
+        month_labels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']  # noqa: E501
     else:
-        month_day_order = pd.date_range(start = f'{year}-01-01', end = f'{year}-12-31').strftime('%m-%d')
-        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(1,13)]
-        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(1,13)]
-        month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        month_day_order = pd.date_range(start=f'{year}-01-01', end=f'{year}-12-31').strftime('%m-%d')  # noqa: E501
+        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(1, 13)]  # noqa: E501
+        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(1, 13)]  # noqa: E501
+        month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']  # noqa: E501
     # Reorder percentile thresholds by year_type
     pdf_reordered = pdf.reindex(month_day_order)
     # plot percentile envelope
@@ -590,15 +574,18 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
         target_year_data = cumulative_percentiles.loc[
             cumulative_percentiles['index_year'] == target_year]
         # plot target year
-        ax.plot(target_year_data['index_month_day'], target_year_data['cumulative'],
+        ax.plot(target_year_data['index_month_day'],
+                target_year_data['cumulative'],
                 color=col_targets[i],
                 label=f"{target_year} Observed")
+    # Get axis labels and ticks in order
     ax.set_xlim(0, 365)
-    plt.xticks(month_begin_ticks, labels='')
+    ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)
     ax.set_title(title)
+    plt.xticks(month_begin_ticks, labels='')
     ax.set_xticks(month_label_ticks, labels=month_labels, minor=True)
-    # make minor ticks invisible
+    # make minor x-ticks invisible
     ax.tick_params(axis='x', which='minor', length=0)
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
