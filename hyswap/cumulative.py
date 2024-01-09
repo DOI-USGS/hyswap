@@ -49,7 +49,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
         >>> results = cumulative.calculate_daily_cumulative_values(
         ...     df, "data", date_column_name="date")
         >>> results.columns.tolist()
-        ['index_year', 'index_doy', 'cumulative']
+        ['index_month_day', 'index_year', 'index_doy', 'cumulative']
     """
     # set date index, add day/year columns with function
     df = define_year_doy_columns(df,
@@ -79,7 +79,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
             # multiplied by seconds per day
             year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.0000229568 * 86400  # noqa: E501
             cdf = pd.concat([cdf, year_data])
-    cdf = cdf.drop('data', axis=1)
+    cdf = cdf[['index_month_day', 'index_year', 'index_doy', 'cumulative']]
     return cdf
 
 
