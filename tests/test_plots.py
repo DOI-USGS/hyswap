@@ -92,7 +92,7 @@ def test_plot_duration_hydrograph():
     df['doy'] = df.index.dayofyear
     ax = plots.plot_duration_hydrograph(pct, df, 'data')
     assert isinstance(ax, plt.Axes)
-    assert ax.get_xlabel() == 'Month'
+    assert ax.get_xlabel() == 'Month-Year'
     assert ax.get_ylabel() == 'Discharge, ft3/s'
     assert ax.get_title() == 'Duration Hydrograph'
     # make one with custom labels
