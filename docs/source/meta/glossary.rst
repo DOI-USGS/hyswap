@@ -164,6 +164,6 @@ Glossary
 
 .. _Searcy (1959): https://doi.org/10.3133/wsp1542A
 
-.. _Koehler (2004): https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=461ba539a786645e7576720b0a72c0baa1fc4716
+.. _Koehler (2004): https://repository.arizona.edu/handle/10150/280516
 
 .. _USGS Water Science School: https://www.usgs.gov/special-topics/water-science-school/science/100-year-flood
