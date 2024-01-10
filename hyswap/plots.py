@@ -274,7 +274,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
                              disclaimer=False,
                              title="Duration Hydrograph",
                              ylab="Discharge, ft3/s",
-                             xlab="Month", colors=None, **kwargs):
+                             xlab="Month-Year", colors=None, **kwargs):
     """Plot a duration hydrograph.
 
     The duration hydrograph is a graphical presentation of recent daily
@@ -328,7 +328,8 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
         'Month'.
     colors : list, optional
         List of colors to use for the lines. If not provided, a default
-        list of colors will be used.
+        list of colors will be used. The max number of colors in this
+        list is seven.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
 
@@ -387,8 +388,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
     # plot the latest data -1 to 0-index day of year
     ax.plot(df_combined.index.values, df[data_col], color='k', zorder=10, label=label)  # noqa: E501
     # sort the list in ascending order
-    pct_list = percentiles_by_day.columns.sort_values()
-
+    pct_list.sort()
     # plot the historic percentiles filling between each pair
     for i in range(1, len(pct_list)):
         ax.fill_between(
@@ -404,6 +404,9 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
         )
     # set labels
     ax.set_xlabel(xlab)
+    ax.set_xlim(df_combined.index.min(), df_combined.index.max())
+    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%b-%Y'))  # noqa: E501
+    plt.xticks(ha='left')
     # other labels
     ax.set_ylabel(ylab)
     ax.set_yscale("log")

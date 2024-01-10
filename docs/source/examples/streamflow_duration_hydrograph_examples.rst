@@ -46,7 +46,6 @@ Finally, we will plot the streamflow data for 2022 on top of the historical perc
         percentiles_by_day,
         df_2022,
         "00060_Mean",
-        "index_doy",
         ax=ax,
         data_label="2022",
         title="Percentiles of Streamflow by Day of Year - Site 03586500"
@@ -125,7 +124,7 @@ The only change this requires from above is specifying the type of year we are p
 
     # calculate historic daily percentile thresholds for water years
     percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", year_type="water"
+        df, "00060_Mean"
     )
 
     # get year/doy information
@@ -168,7 +167,7 @@ The only change this requires from above is specifying the type of year we are p
 
     # calculate historic daily percentile thresholds for water years
     percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", year_type="climate"
+        df, "00060_Mean"
     )
 
     # get year/doy information
@@ -211,7 +210,7 @@ We will also specify the colors to be used for the percentile envelopes.
 
     # calculate specific historic daily percentile thresholds for water years
     percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", percentiles=[0, 25, 50, 75, 100], year_type="water"
+        df, "00060_Mean", percentiles=[0, 25, 50, 75, 100]
     )
 
     # get year/doy information
@@ -260,7 +259,6 @@ What this means is that the set of historical percentiles calculated for each da
         df,
         "00060_Mean",
         data_type='daily',
-        year_type="water",
         leading_values=15,
         trailing_values=14
     )
@@ -305,13 +303,13 @@ To show the effect of this, we will plot the historic daily percentile values fo
 
     # calculate specific historic daily percentile thresholds for water years
     percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", data_type='daily', year_type="water"
+        df, "00060_Mean", data_type='daily'
     )
     percentiles_by_7day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", data_type='7-day', year_type="water"
+        df, "00060_Mean", data_type='7-day'
     )
     percentiles_by_28day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", data_type='28-day', year_type="water"
+        df, "00060_Mean", data_type='28-day'
     )
 
     # get year/doy information
@@ -376,7 +374,7 @@ Specifically we will set the `alpha` argument to 1.0 to make the fill areas opaq
 
     # calculate historic daily percentile thresholds for water years
     percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", year_type="water"
+        df, "00060_Mean"
     )
 
     # get year/doy information
