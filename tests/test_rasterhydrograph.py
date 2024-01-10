@@ -57,108 +57,117 @@ class TestCheckInputs:
         # test the data frame input
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(None, None, None, None,
-                                           None, None, None)
+                                           None, None, None, False)
 
     def test_check_inputs_02(self):
         """Test the private function _check_inputs."""
         # test the data column name input
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), None, None, 'daily',
-                                           'calendar', None, None)
+                                           'calendar', None, None, False)
 
     def test_check_inputs_03(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 1, None, 'daily',
-                                           'calendar', None, None)
+                                           'calendar', None, None, False)
 
     def test_check_inputs_04(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 1.0, None, 'daily',
-                                           'calendar', None, None)
+                                           'calendar', None, None, False)
 
     def test_check_inputs_05(self):
         """Test the private function _check_inputs."""
         # test the date column name input
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', {"a": 1},
-                                           'daily', 'calendar', None, None)
+                                           'daily', 'calendar', None, None,
+                                           False)
 
     def test_check_inputs_06(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', 1, 'daily',
-                                           'calendar', None, None)
+                                           'calendar', None, None, False)
 
     def test_check_inputs_07(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', 1.0,
-                                           'daily', 'calendar', None, None)
+                                           'daily', 'calendar', None, None,
+                                           False)
 
     def test_check_inputs_08(self):
         """Test the private function _check_inputs."""
         # test the data type input
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None, 1,
-                                           None, None, None)
+                                           None, None, None, False)
 
     def test_check_inputs_09(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None, 1.0,
-                                           None, None, None)
+                                           None, None, None, False)
 
     def test_check_inputs_10(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None, None,
-                                           None, None, None)
+                                           None, None, None, False)
 
     def test_check_inputs_11(self):
         """Test the private function _check_inputs."""
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'string', None, None, None)
+                                           'string', None, None, None,
+                                           False)
 
     def test_check_inputs_12(self):
         """Test the private function _check_inputs."""
         # test the year type input
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', 1, None, None)
+                                           'daily', 1, None, None,
+                                           False)
 
     def test_check_inputs_13(self):
         """Test the private function _check_inputs."""
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', 1.0, None, None)
+                                           'daily', 1.0, None, None,
+                                           False)
 
     def test_check_inputs_14(self):
         """Test the private function _check_inputs."""
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', None, None, None)
+                                           'daily', None, None, None,
+                                           False)
 
     def test_check_inputs_15(self):
         """Test the private function _check_inputs."""
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', 'string', None, None)
+                                           'daily', 'string', None, None,
+                                           False)
 
     def test_check_inputs_16(self):
         """Test the private function _check_inputs."""
         # test the begin year input
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', 'calendar', 1.0, None)
+                                           'daily', 'calendar', 1.0, None,
+                                           False)
 
     def test_check_inputs_17(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', 'calendar', 'string', None)
+                                           'daily', 'calendar', 'string', None,
+                                           False)
 
     def test_check_inputs_18(self):
         """Test the private function _check_inputs."""
@@ -169,7 +178,7 @@ class TestCheckInputs:
             )
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(df, 'data', 'date', 'daily',
-                                           'calendar', 2000, None)
+                                           'calendar', 2000, None, False)
 
     def test_check_inputs_19(self):
         """Test the private function _check_inputs."""
@@ -181,20 +190,22 @@ class TestCheckInputs:
         df_date = df.set_index('date')
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(df_date, 'data', None, 'daily',
-                                           'calendar', 2000, None)
+                                           'calendar', 2000, None, False)
 
     def test_check_inputs_20(self):
         """Test the private function _check_inputs."""
         # test the end year input
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', 'calendar', None, 1.0)
+                                           'daily', 'calendar', None, 1.0,
+                                           False)
 
     def test_check_inputs_21(self):
         """Test the private function _check_inputs."""
         with pytest.raises(TypeError):
             rasterhydrograph._check_inputs(pd.DataFrame(), 'data', None,
-                                           'daily', 'calendar', None, 'string')
+                                           'daily', 'calendar', None, 'string',
+                                           False)
 
     def test_check_inputs_22(self):
         """Test the private function _check_inputs."""
@@ -205,7 +216,8 @@ class TestCheckInputs:
             )
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(df, 'data', 'date', 'daily',
-                                           'calendar', None, 3000)
+                                           'calendar', None, 3000,
+                                           False)
 
     def test_check_inputs_23(self):
         """Test the private function _check_inputs."""
@@ -217,7 +229,8 @@ class TestCheckInputs:
         df_date = df.set_index('date')
         with pytest.raises(ValueError):
             rasterhydrograph._check_inputs(df_date, 'data', None, 'daily',
-                                           'calendar', None, 3000)
+                                           'calendar', None, 3000,
+                                           False)
 
 
 class TestFormatData:
@@ -319,8 +332,10 @@ class TestFormatData:
         df_date = df.set_index('date')
         # test the function with a dataframe and a date index and a water year
         df_out_water = rasterhydrograph.format_data(df_date, 'value',
-                                                    year_type='water')
-        df_out = rasterhydrograph.format_data(df_date, 'value', end_year=2021)
+                                                    year_type='water',
+                                                    clip_leap_day=True)
+        df_out = rasterhydrograph.format_data(df_date, 'value', end_year=2021,
+                                              clip_leap_day=True)
         assert len(df_out_water.index) == 5
         assert len(df_out_water.columns) == 365
         # check that there are non-NaN values in the data frame
@@ -342,9 +357,11 @@ class TestFormatData:
         # data averaging scheme and a water year
         df_7out_water = rasterhydrograph.format_data(df_date, 'value',
                                                      data_type='7-day',
-                                                     year_type='water')
+                                                     year_type='water',
+                                                     clip_leap_day=True)
         df_7out = rasterhydrograph.format_data(df_date, 'value',
-                                               data_type='7-day')
+                                               data_type='7-day',
+                                               clip_leap_day=True)
         assert len(df_7out_water.index) == 5
         assert len(df_7out_water.columns) == 365
         # check that there are non-NaN values in the data frame
@@ -365,8 +382,10 @@ class TestFormatData:
         # test the function with a dataframe and a date index and in a
         # climate year
         df_out_climate = rasterhydrograph.format_data(df_date, 'value',
-                                                      year_type='climate')
-        df_out = rasterhydrograph.format_data(df_date, 'value', end_year=2021)
+                                                      year_type='climate',
+                                                      clip_leap_day=True)
+        df_out = rasterhydrograph.format_data(df_date, 'value', end_year=2021,
+                                              clip_leap_day=True)
         assert len(df_out_climate.index) == 4
         assert len(df_out_climate.columns) == 365
         # check that there are non-NaN values in the data frame
@@ -391,7 +410,7 @@ class TestFormatData:
                                                        year_type='climate',
                                                        center=True)
         assert len(df_7out_climate.index) == 4
-        assert len(df_7out_climate.columns) == 365
+        assert len(df_7out_climate.columns) == 366
         # check that there are non-NaN values in the data frame
         assert ~np.isnan(df_7out_climate.values).all()
 
@@ -409,6 +428,6 @@ class TestFormatData:
         df_out_climate = rasterhydrograph.format_data(df_date, 'value',
                                                       year_type='climate')
         assert len(df_out_climate.index) == 5
-        assert len(df_out_climate.columns) == 365
+        assert len(df_out_climate.columns) == 366
         # check that there are non-NaN values in the data frame
         assert ~np.isnan(df_out_climate.values).all()

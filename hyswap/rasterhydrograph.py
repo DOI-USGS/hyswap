@@ -8,7 +8,8 @@ from hyswap.utils import set_data_type
 
 def format_data(df, data_column_name, date_column_name=None,
                 data_type='daily', year_type='calendar',
-                begin_year=None, end_year=None, **kwargs):
+                begin_year=None, end_year=None,
+                clip_leap_day=False, **kwargs):
     """
     Format data for raster hydrograph.
 
@@ -43,6 +44,9 @@ def format_data(df, data_column_name, date_column_name=None,
     end_year : int, optional
         The last year to include in the data. Default is None which uses the
         last year in the data.
+    clip_leap_day : bool, optional
+        If True, removes leap day '02-29' from the percentiles dataset
+        used to create the plot. Defaults to False.
     **kwargs
         Keyword arguments to pass to the pandas.DataFrame.rolling method.
 
@@ -83,7 +87,8 @@ def format_data(df, data_column_name, date_column_name=None,
     """
     # check inputs, set date to index, define year/doy columns
     df_out = _check_inputs(df, data_column_name, date_column_name,
-                           data_type, year_type, begin_year, end_year)
+                           data_type, year_type, begin_year, end_year,
+                           clip_leap_day=clip_leap_day)
 
     # calculate the date range
     date_range = _calculate_date_range(df_out, year_type, begin_year, end_year)
@@ -109,22 +114,28 @@ def format_data(df, data_column_name, date_column_name=None,
 
     # re-define year and doy columns
     df_out = define_year_doy_columns(df_out, year_type=year_type,
-                                     clip_leap_day=True)
-
+                                     clip_leap_day=clip_leap_day)
     # sort by date
     df_out = df_out.sort_index()
 
-    # define future columns as doy_month-day
-    fut_col = [str(df_out['index_doy'][i]) + '-' +
-               str(df_out['index_month_day'][i])
-               for i in range(len(df_out['index_doy'].unique()))]
+    # Incorporate leap year decision into x-axis labels
+    if clip_leap_day:
+        year = 1902
+    else:
+        year = 1903
+    # Create x-axis scale and labels
+    if year_type == 'water':
+        month_day_order = pd.date_range(start=f'{year}-10-01', end=f'{year+1}-09-30').strftime('%m-%d')  # noqa: E501
+    elif year_type == 'climate':
+        month_day_order = pd.date_range(start=f'{year}-04-01', end=f'{year+1}-03-31').strftime('%m-%d')  # noqa: E501
+    else:
+        month_day_order = pd.date_range(start=f'{year}-01-01', end=f'{year}-12-31').strftime('%m-%d')  # noqa: E501
 
     # set index to year and day of year columns
-    df_out = df_out.pivot(index='index_year', columns='index_doy',
+    df_out = df_out.pivot(index='index_year', columns='index_month_day',
                           values=data_column_name)
-
-    # rename columns to be index_doy, index_month_day
-    df_out.columns = fut_col
+    # re-arrange columns by year_type
+    df_out = df_out[month_day_order]
 
     # reverse order of the index so year order matches legacy Water Watch
     df_out = df_out.iloc[::-1]
@@ -137,7 +148,8 @@ def format_data(df, data_column_name, date_column_name=None,
 
 
 def _check_inputs(df, data_column_name, date_column_name,
-                  data_type, year_type, begin_year, end_year):
+                  data_type, year_type, begin_year, end_year,
+                  clip_leap_day):
     """Private function to check inputs for the format_data function.
 
     Parameters
@@ -167,6 +179,9 @@ def _check_inputs(df, data_column_name, date_column_name,
     end_year : int, None
         The last year to include in the data. If None, the last year in the
         data will be used.
+    clip_leap_day : bool, optional
+        If True, removes leap day '02-29' from the percentiles dataset
+        used to create the plot.
 
     Returns
     -------
@@ -224,7 +239,7 @@ def _check_inputs(df, data_column_name, date_column_name,
 
     # define year and doy columns and set index as date col if needed
     df = define_year_doy_columns(df, date_column_name, year_type,
-                                 clip_leap_day=True)
+                                 clip_leap_day=clip_leap_day)
 
     return df
 

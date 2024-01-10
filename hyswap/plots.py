@@ -249,7 +249,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
                 label.set_visible(False)
     # set xticks at start/end of each month
     xvals = df_formatted.columns.values
-    months = [int(i.split('-')[1]) for i in xvals]
+    months = [int(i.split('-')[0]) for i in xvals]
     month_transitions = np.where(np.diff(months) != 0)[0]
     ax.set_xticks([0] + list(month_transitions),
                   labels=[], minor=False)
@@ -258,7 +258,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     [unique_months.append(x) for x in months if x not in unique_months]
     month_names = [calendar.month_abbr[i] for i in unique_months]
     month_names = [f'{m}' for m in month_names]
-    days = [int(i.split('-')[2]) for i in xvals]
+    days = [int(i.split('-')[1]) for i in xvals]
     midway_pts = np.where(np.array(days) == 15)[0]
     ax.set_xticks(midway_pts, labels=month_names, minor=True)
     # make minor ticks invisible
