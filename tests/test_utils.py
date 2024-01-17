@@ -182,7 +182,7 @@ class TestFilterMonthDay:
             'date': pd.date_range('2019-01-01', '2019-01-04')})
         # test the function
         data = utils.filter_data_by_month_day(df, "01-02", 'data',
-                                         date_column_name='date')
+                                              date_column_name='date')
         assert data.shape == (1,)
         assert data.values == [2]
 
