@@ -172,6 +172,7 @@ class TestFilterTime:
         assert data.shape == (4,)
         assert data_no_nan.shape == (3,)
 
+
 class TestFilterMonthDay:
     def test_filter_data_by_month_day(self):
         """Test the filter_data_by_time function."""
@@ -202,8 +203,8 @@ class TestFilterMonthDay:
             'data': [1, 2, 3, 4],
             'date': pd.date_range('2019-01-01', '2019-01-04')})
         data = utils.filter_data_by_month_day(df, '01-02', 'data',
-                                         date_column_name='date',
-                                         leading_values=1)
+                                              date_column_name='date',
+                                              leading_values=1)
         assert data.shape == (2,)
         assert np.all(data.values == [1, 2])
 
@@ -213,8 +214,8 @@ class TestFilterMonthDay:
             'data': [1, 2, 3, 4],
             'date': pd.date_range('2019-01-01', '2019-01-04')})
         data = utils.filter_data_by_month_day(df, '01-02', 'data',
-                                         date_column_name='date',
-                                         trailing_values=1)
+                                              date_column_name='date',
+                                              trailing_values=1)
         assert data.shape == (2,)
         assert np.all(data.values == [2, 3])
 
@@ -224,7 +225,12 @@ class TestFilterMonthDay:
             'date': pd.date_range('2019-01-01', '2019-01-04')})
         # raise value error for invalid month-day
         with pytest.raises(ValueError):
-            utils.filter_data_by_month_day(df, '13-99', 'data', date_column_name='date')
+            utils.filter_data_by_month_day(
+                df,
+                '13-99',
+                'data',
+                date_column_name='date'
+                )
 
     def test_filter_drop_na(self):
         # test ability to drop nans
@@ -233,8 +239,8 @@ class TestFilterMonthDay:
             'date': pd.date_range('2019-01-01', '2019-01-04')})
         # test the function
         data = utils.filter_data_by_month_day(df, '01-01', 'data',
-                                         date_column_name='date',
-                                         drop_na=False)
+                                              date_column_name='date',
+                                              drop_na=False)
         data_no_nan = utils.filter_data_by_month_day(
             df, '01-01', 'data', date_column_name='date',
             drop_na=True)

@@ -7,6 +7,7 @@ from hyswap.utils import define_year_doy_columns
 def calculate_daily_cumulative_values(df, data_column_name,
                                       date_column_name=None,
                                       year_type='calendar',
+                                      unit='acre-feet',
                                       clip_leap_day=False):
     """Calculate daily cumulative values.
 
@@ -29,6 +30,9 @@ def calculate_daily_cumulative_values(df, data_column_name,
         2011". 'climate' years begin on April 1 and end on March 31 of the
         following year, they are numbered by the ending year. For example,
         April 1, 2010 to March 31, 2011 is "climate year 2011".
+    unit : str, optional
+        The unit the user wants to use to report cumulative flow. One of
+        'acre-feet', 'cfs', 'cubic-meters', 'cubic-feet'.
 
     Returns
     -------
@@ -51,6 +55,10 @@ def calculate_daily_cumulative_values(df, data_column_name,
         >>> results.columns.tolist()
         ['index_month_day', 'index_year', 'index_doy', 'cumulative']
     """
+    # check that unit is valid
+    if unit not in ['acre-feet', 'cfs', 'cubic-meters', 'cubic-feet']:
+        raise ValueError(
+            'Unit must be one of "acre-feet", "cfs", "cubic-meters", "cubic-feet"')  # noqa: E501
     # set date index, add day/year columns with function
     df = define_year_doy_columns(df,
                                  date_column_name=date_column_name,
@@ -72,13 +80,20 @@ def calculate_daily_cumulative_values(df, data_column_name,
         # get data for the year
         year_data = df[df['index_year'] == year][selected_columns]
         year_data = year_data.sort_index()
-        # year must be complete
-        if year_data.shape[0] >= 365:
-            # calculate cumulative values and assign to cdf
-            # converted to acre-feet
+        # calculate cumulative values and assign to cdf
+        if unit == 'acre-feet':
+            # convert cubic feet to acre-feet
             # multiplied by seconds per day
             year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.0000229568 * 86400  # noqa: E501
-            cdf = pd.concat([cdf, year_data])
+        if unit == 'cubic-meters':
+            # convert cubic feet to cubic meters
+            # multiplied by seconds per day
+            year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.02831685 * 86400  # noqa: E501
+        if unit == 'cubic-feet':
+            # convert cubic feet per second to cubic feet
+            # multiplied by seconds per day
+            year_data['cumulative'] = year_data[data_column_name].cumsum().values * 86400  # noqa: E501
+        cdf = pd.concat([cdf, year_data])
     cdf = cdf[['index_month_day', 'index_year', 'index_doy', 'cumulative']]
     return cdf
 
