@@ -85,14 +85,16 @@ def calculate_daily_cumulative_values(df, data_column_name,
             # convert cubic feet to acre-feet
             # multiplied by seconds per day
             year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.0000229568 * 86400  # noqa: E501
-        if unit == 'cubic-meters':
+        elif unit == 'cubic-meters':
             # convert cubic feet to cubic meters
             # multiplied by seconds per day
             year_data['cumulative'] = year_data[data_column_name].cumsum().values * 0.02831685 * 86400  # noqa: E501
-        if unit == 'cubic-feet':
+        elif unit == 'cubic-feet':
             # convert cubic feet per second to cubic feet
             # multiplied by seconds per day
             year_data['cumulative'] = year_data[data_column_name].cumsum().values * 86400  # noqa: E501
+        else:
+            year_data['cumulative'] = year_data[data_column_name].cumsum().values  # noqa: E501
         cdf = pd.concat([cdf, year_data])
     cdf = cdf[['index_month_day', 'index_year', 'index_doy', 'cumulative']]
     return cdf

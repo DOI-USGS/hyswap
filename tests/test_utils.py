@@ -181,7 +181,7 @@ class TestFilterMonthDay:
             'data': [1, 2, 3, 4],
             'date': pd.date_range('2019-01-01', '2019-01-04')})
         # test the function
-        data = utils.filter_data_by_time(df, "01-02", 'data',
+        data = utils.filter_data_by_month_day(df, "01-02", 'data',
                                          date_column_name='date')
         assert data.shape == (1,)
         assert data.values == [2]
@@ -240,9 +240,11 @@ class TestFilterMonthDay:
         # test the function
         data = utils.filter_data_by_month_day(df, '01-01', 'data',
                                               date_column_name='date',
+                                              trailing_values=3,
                                               drop_na=False)
         data_no_nan = utils.filter_data_by_month_day(
             df, '01-01', 'data', date_column_name='date',
+            trailing_values=3,
             drop_na=True)
         # assertions
         assert np.isnan(data.values).sum() == 1
