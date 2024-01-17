@@ -172,6 +172,78 @@ class TestFilterTime:
         assert data.shape == (4,)
         assert data_no_nan.shape == (3,)
 
+class TestFilterMonthDay:
+    def test_filter_data_by_month_day(self):
+        """Test the filter_data_by_time function."""
+        # make a dataframe
+        df = pd.DataFrame({
+            'data': [1, 2, 3, 4],
+            'date': pd.date_range('2019-01-01', '2019-01-04')})
+        # test the function
+        data = utils.filter_data_by_time(df, "01-02", 'data',
+                                         date_column_name='date')
+        assert data.shape == (1,)
+        assert data.values == [2]
+
+    def test_filter_no_date(self):
+        # make a dataframe
+        df = pd.DataFrame({
+            'data': [1, 2, 3, 4],
+            'date': pd.date_range('2019-01-01', '2019-01-04')})
+        # test the function with no date column and dates in the index
+        df = df.set_index('date')
+        data = utils.filter_data_by_month_day(df, '01-02', 'data')
+        assert data.shape == (1,)
+        assert data.values == [2]
+
+    def test_filter_windowing(self):
+        # test the windowing
+        df = pd.DataFrame({
+            'data': [1, 2, 3, 4],
+            'date': pd.date_range('2019-01-01', '2019-01-04')})
+        data = utils.filter_data_by_month_day(df, '01-02', 'data',
+                                         date_column_name='date',
+                                         leading_values=1)
+        assert data.shape == (2,)
+        assert np.all(data.values == [1, 2])
+
+    def test_filter_tailing_window(self):
+        # test tailing window
+        df = pd.DataFrame({
+            'data': [1, 2, 3, 4],
+            'date': pd.date_range('2019-01-01', '2019-01-04')})
+        data = utils.filter_data_by_month_day(df, '01-02', 'data',
+                                         date_column_name='date',
+                                         trailing_values=1)
+        assert data.shape == (2,)
+        assert np.all(data.values == [2, 3])
+
+    def test_month_error(self):
+        df = pd.DataFrame({
+            'data': [1, 2, 3, 4],
+            'date': pd.date_range('2019-01-01', '2019-01-04')})
+        # raise value error for invalid month-day
+        with pytest.raises(ValueError):
+            utils.filter_data_by_month_day(df, '13-99', 'data', date_column_name='date')
+
+    def test_filter_drop_na(self):
+        # test ability to drop nans
+        df = pd.DataFrame({
+            'data': [1, 2, np.nan, 4],
+            'date': pd.date_range('2019-01-01', '2019-01-04')})
+        # test the function
+        data = utils.filter_data_by_month_day(df, '01-01', 'data',
+                                         date_column_name='date',
+                                         drop_na=False)
+        data_no_nan = utils.filter_data_by_month_day(
+            df, '01-01', 'data', date_column_name='date',
+            drop_na=True)
+        # assertions
+        assert np.isnan(data.values).sum() == 1
+        assert np.isnan(data_no_nan.values).sum() == 0
+        assert data.shape == (4,)
+        assert data_no_nan.shape == (3,)
+
 
 class TestMetadata:
     def test_calculate_metadata_01(self):
