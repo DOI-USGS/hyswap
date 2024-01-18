@@ -154,8 +154,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 
     `Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the
     rivers: representing streamflow of the greater Yellowstone ecosystem.
-    Cartographic Perspectives, no. 55, 54-29.
-    <https://cartographicperspectives.org/index.php/journal/article/view/cp55-strandhagen-et-al/pdf>`__  # noqa: E501
+    Cartographic Perspectives, no. 55, 54-29.`__
 
     Parameters
     ----------
