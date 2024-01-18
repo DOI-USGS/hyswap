@@ -140,7 +140,7 @@ def test_plot_cumulative_hydrograph():
                                           data_column_name='data',
                                           date_column_name='date',
                                           target_years=2010,
-                                          max_pct=True, min_pct=True)
+                                          max_year=True, min_year=True)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'
@@ -155,7 +155,7 @@ def test_plot_cumulative_hydrograph():
                                           data_column_name='data',
                                           date_column_name='date',
                                           target_years=[2010, 2011],
-                                          max_pct=True, min_pct=True)
+                                          max_year=True, min_year=True)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'

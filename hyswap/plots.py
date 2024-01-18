@@ -432,7 +432,7 @@ def plot_cumulative_hydrograph(df,
                                year_type='calendar',
                                unit='acre-feet',
                                envelope_pct=[25, 75],
-                               max_pct=False, min_pct=False,
+                               max_year=False, min_year=False,
                                ax=None,
                                disclaimer=False,
                                title="Cumulative Streamflow Hydrograph",
@@ -475,10 +475,12 @@ def plot_cumulative_hydrograph(df,
     envelope_pct : list, optional
         List of percentiles to plot as the envelope. Default is [25, 75].
         If an empty list, [], then no envelope is plotted.
-    max_pct : bool, optional
-        If True, plot the maximum value as a dashed line. Default is False.
-    min_pct : bool, optional
-        If True, plot the minimum value as a dotted line. Default is False.
+    max_year : bool, optional
+        If True, plot the cumulative flow for the year with the maximum
+        end of the year cumulative value as a dashed line. Default is False.
+    min_year : bool, optional
+        If True, plot the cumulative flow for the year with the minimum
+        end of the year cumulative value as a dashed line. Default is False.
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
@@ -586,27 +588,27 @@ def plot_cumulative_hydrograph(df,
                         "Percentile Envelope",
                         zorder=zorder)
     # plot min/max if desired
-    if max_pct:
-        max_year = cumulative_df.loc[
+    if max_year:
+        max_y = cumulative_df.loc[
             cumulative_df['cumulative'].idxmax()]['index_year']
         max_year_df = cumulative_df[
-            cumulative_df['index_year'] == max_year]
+            cumulative_df['index_year'] == max_y]
         ax.plot(
             max_year_df['index_month_day'],
             max_year_df['cumulative'], color='k',
             alpha=0.5, linestyle='--',
-            label=f"Highest observed cumulative flow ({max_year})"
+            label=f"Highest observed cumulative flow ({max_y})"
             )
-    if min_pct:
-        min_year = cumulative_df.loc[
+    if min_year:
+        min_y = cumulative_df.loc[
             cumulative_df['cumulative'].idxmin()]['index_year']
         min_year_df = cumulative_df[
-            cumulative_df['index_year'] == min_year]
+            cumulative_df['index_year'] == min_y]
         ax.plot(
             min_year_df['index_month_day'],
             min_year_df['cumulative'], color='k',
             alpha=0.5, linestyle=':',
-            label=f"Lowest observed cumulative flow ({min_year})"
+            label=f"Lowest observed cumulative flow ({min_y})"
             )
     # handle target years
     col_targets = ['k'] + list(matplotlib.colormaps['tab20'].colors)

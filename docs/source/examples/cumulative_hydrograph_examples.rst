@@ -100,7 +100,7 @@ We will use the calendar year example to showcase this functionality.
         df, data_column_name='00060_Mean',
         target_years=2021,
         ax=ax,
-        max_pct=True, min_pct=True,
+        max_year=True, min_year=True,
         title='Cumulative Streamflow Hydrograph')
     plt.show()
 
