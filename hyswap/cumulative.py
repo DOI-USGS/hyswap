@@ -32,14 +32,15 @@ def calculate_daily_cumulative_values(df, data_column_name,
         April 1, 2010 to March 31, 2011 is "climate year 2011".
     unit : str, optional
         The unit the user wants to use to report cumulative flow. One of
-        'acre-feet', 'cfs', 'cubic-meters', 'cubic-feet'.
+        'acre-feet', 'cfs', 'cubic-meters', 'cubic-feet'. Assumes input
+        data are in cubic feet per second (cfs).
 
     Returns
     -------
     cumulative_values : pandas.DataFrame
         DataFrame containing daily cumulative values for each year in the
-        input DataFrame, rows are dates and columns include years, days, and
-        cumulative values in acre-feet.
+        input DataFrame, rows are dates and columns include years, month-days,
+        day-of-year and cumulative values in the units specified.
 
     Examples
     --------
