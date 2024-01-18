@@ -211,6 +211,10 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
                     (df.index.dayofyear >= value - leading_values) &
                     (df.index.dayofyear <= value + trailing_values),
                     data_column_name]
+            # If there are not sufficient data to complete moving
+            # window, return empty df
+            if dff.shape[0] < (leading_values + trailing_values + 1):
+                dff = pd.DataFrame([])
     elif time_interval == 'month':
         # grab data from the specified month
         dff = df.loc[df.index.month == value, data_column_name]
@@ -220,6 +224,130 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
     if drop_na:
         dff = dff.dropna()
     # return data as a pandas Series where the index is the date
+    return dff
+
+
+def filter_data_by_month_day(df,
+                             month_day,
+                             data_column_name,
+                             date_column_name=None,
+                             leading_values=0,
+                             trailing_values=0,
+                             drop_na=False):
+    """Function used to filter to a single month-day (alternate
+    to filter_data_by_time)
+
+    DataFrame containing data to filter. Expects datetime information to be
+    available in the index or in a column named `date_column_name`. The
+    returned `pandas.Series` object will have the datetimes for the specified
+    time (day, month, year) as the index, and the corresponding data from the
+    `data_column_name` column as the values.
+
+    Parameters
+    ----------
+    month_day : string
+        Time value to use for filtering in the format 'MM-DD'.
+
+    data_column_name : str
+        Name of column containing data to filter.
+
+    date_column_name : str, optional
+        Name of column containing date information. If None, the index of
+        `df` is used.
+
+    leading_values : int, optional
+        Number of leading values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
+
+    trailing_values : int, optional
+        Number of trailing values to include in the output, inclusive.
+        Default is 0, and parameter only applies to 'day' time_interval.
+
+    drop_na : bool, optional
+        Drop NA values within filtered data
+
+    Returns
+    -------
+    data : pandas.Series
+        Data from the specified month-day, plus any leading/trailing
+        values.
+
+    Examples
+    --------
+    Filter some synthetic data by day of year. First make some synthetic data.
+
+    .. doctest::
+
+        >>> df = pd.DataFrame({
+        ...     'data': [1, 2, 3, 4],
+        ...     'date': pd.date_range('2019-01-01', '2019-01-04')})
+        >>> df.shape
+        (4, 2)
+
+    Then filter the data to get data from January 1st.
+
+    .. doctest::
+
+        >>> data = utils.filter_data_by_month_day(
+        ...     df, '01-01', 'data', date_column_name='date')
+        >>> data.shape
+        (1,)
+
+    Acquire and filter some real daily data to get all Jan. 1 data.
+
+    .. doctest::
+        :skipif: True  # dataretrieval functions break CI pipeline
+
+        >>> df, _ = dataretrieval.nwis.get_dv(
+        ...     "03586500", parameterCd="00060",
+        ...     start="2000-01-01", end="2003-01-05")
+        >>> data = utils.filter_data_by_month_day(df, '01-01', '00060_Mean')
+        >>> data.shape
+        (4,)
+    """
+    # make date column the index if it is not already
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
+    # convert month-day to month and day ints
+    t_month, t_day = map(int, month_day.split('-'))
+    # check that month is valid
+    if t_month > 12:
+        raise ValueError(
+            'Month invalid. month_day input must be format MM-DD')
+        # check that month is valid
+    if t_day > 31:
+        raise ValueError(
+            'Day invalid. month_day input must be format MM-DD')
+    # subset df by month-day input
+    subset_df = df[(df.index.month == t_month) & (df.index.day == t_day)].copy()  # noqa: E501
+    if (leading_values == 0) and (trailing_values == 0):
+        dff = subset_df[data_column_name]
+    else:
+        # if leading and trailing values are not zero,
+        # create a column to define the trailing and leading
+        # values for each year in the dataset
+        subset_df['lv'] = subset_df.index - pd.to_timedelta(leading_values, unit='D')  # noqa: E501
+        subset_df['tv'] = subset_df.index + pd.to_timedelta(trailing_values, unit='D')  # noqa: E501
+        # create empty dataframe to hold all data chunks from
+        # each year
+        date_ranges_df = pd.DataFrame()
+        # loop through each date range row
+        # grab data chunk and place it in
+        # dataframe created above
+        for _, row in subset_df.iterrows():
+            start_date = pd.to_datetime(row['lv'])
+            end_date = pd.to_datetime(row['tv'])
+            rng = (df.index >= start_date) & (df.index <= end_date)
+            if df.loc[rng].shape[0] == (leading_values + trailing_values + 1):
+                date_ranges_df = pd.concat([date_ranges_df, df.loc[rng]])
+            else:
+                date_ranges_df = pd.concat([date_ranges_df, pd.DataFrame([])])
+        if date_ranges_df.empty:
+            dff = date_ranges_df
+        else:
+            dff = date_ranges_df[data_column_name]
+    if drop_na:
+        dff = dff.dropna()
     return dff
 
 
@@ -348,7 +476,8 @@ def leap_year_adjustment(df, year_type='calendar'):
     """Function to adjust leap year days in a DataFrame.
 
     Adjust for a leap year by removing February 29 from the DataFrame and
-    adjusting the day of year values for the remaining days of the year.
+    adjusting the day of year values for the remaining days of the year
+    if a 'doy_index' column is present.
 
     Parameters
     ----------
@@ -364,7 +493,10 @@ def leap_year_adjustment(df, year_type='calendar'):
         For example, October 1, 2010 to September 30, 2011 is "water year
         2011". 'climate' years begin on April 1 and end on March 31 of the
         following year, they are numbered by the ending year. For example,
-        April 1, 2010 to March 31, 2011 is "climate year 2011".
+        April 1, 2010 to March 31, 2011 is "climate year 2011". Please note
+        that this input is used to adjust the day of year index when a leap
+        day is removed. If the dataframe does not have a day of year index,
+        this input is ignored.
 
     Returns
     -------
@@ -372,17 +504,18 @@ def leap_year_adjustment(df, year_type='calendar'):
         DataFrame with leap year days removed and day of year values adjusted.
     """
     df = df.loc[~((df.index.month == 2) & (df.index.day == 29))]
-    if year_type == 'calendar':
-        df.loc[df.index.is_leap_year & (df.index.month > 2),
-               'index_doy'] -= 1
-    elif year_type == 'water':
-        df.loc[df.index.is_leap_year &
-               (df.index.month > 2) &
-               (df.index.month < 10), 'index_doy'] -= 1
-    elif year_type == 'climate':
-        df.loc[df.index.is_leap_year &
-               (df.index.month > 2) &
-               (df.index.month < 4), 'index_doy'] -= 1
+    if 'index_doy' in df.columns:
+        if year_type == 'calendar':
+            df.loc[df.index.is_leap_year & (df.index.month > 2),
+                   'index_doy'] -= 1
+        elif year_type == 'water':
+            df.loc[df.index.is_leap_year &
+                   (df.index.month > 2) &
+                   (df.index.month < 10), 'index_doy'] -= 1
+        elif year_type == 'climate':
+            df.loc[df.index.is_leap_year &
+                   (df.index.month > 2) &
+                   (df.index.month < 4), 'index_doy'] -= 1
     return df
 
 

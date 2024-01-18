@@ -100,10 +100,10 @@ class TestCalculateVariablePercentileThresholdsByDay:
         # test the function
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.small_df, 'data', date_column_name='date')
-        assert percentiles_.shape == (101, 8)
+        assert percentiles_.shape == (366, 8)
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-        assert percentiles_.index.get_level_values(1).tolist()[0] == '01-01'
-        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
+        assert percentiles_.index[0] == '01-01'
+        assert percentiles_.isna().all().all()
 
     def test_calculate_variable_percentile_thresholds_by_day_dateindex(self):
         """Test with dates in the index."""
@@ -111,51 +111,18 @@ class TestCalculateVariablePercentileThresholdsByDay:
         self.small_df = self.small_df.set_index('date')
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.small_df, 'data')
-        assert percentiles_.shape == (101, 8)
+        assert percentiles_.shape == (366, 8)
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-        assert percentiles_.index.get_level_values(1).tolist()[0] == '01-01'
-        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
+        assert percentiles_.index[0] == '01-01'
 
     def test_calculate_variable_percentile_thresholds_by_day_percentiles(self):
         # test the function with a different set of percentiles
         self.small_df = self.small_df.set_index('date')
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.small_df, 'data', percentiles=np.array((0, 10, 50, 90, 100)))
-        assert percentiles_.shape == (101, 5)
+        assert percentiles_.shape == (366, 5)
         assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
-        assert percentiles_.index.get_level_values(1).tolist()[0] == '01-01'
-        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
-        # all percentiles should be NaN because demo dataset is 1 year only
-        assert percentiles_.isna().all().all()
-
-    def test_calculate_variable_percentile_thresholds_by_day_year_type(self):
-        """Test with a different year type."""
-        # test the function with a different year type
-        self.small_df = self.small_df.set_index('date')
-        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
-            self.small_df, 'data', year_type='water')
-        assert percentiles_.shape == (101, 8)
-        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-        assert percentiles_.index.get_level_values(1).tolist()[0] == '01-01'
-        assert percentiles_.index.get_level_values(0).tolist()[0] == 93
-        assert percentiles_.index.get_level_values(1).tolist()[-1] == '04-11'
-        assert percentiles_.index.get_level_values(0).tolist()[-1] == 193
-        # all percentiles should be NaN because demo dataset is 1 year only
-        assert percentiles_.isna().all().all()
-
-    def test_calculate_variable_percentile_thresholds_by_day_year_type_percentiles(self): # noqa
-        # test the function with a different year type and a different set of
-        # percentiles
-        self.small_df = self.small_df.set_index('date')
-        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
-            self.small_df, 'data', year_type='climate',
-            percentiles=np.array((0, 10, 50, 90, 100)))
-        assert percentiles_.shape == (101, 5)
-        assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
-        assert percentiles_.index.get_level_values(1).tolist()[0] == '04-01'
-        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
-        # all percentiles should be NaN because demo dataset is 1 year only
-        assert percentiles_.isna().all().all()
+        assert percentiles_.index[0] == '01-01'
 
     def test_non_nans(self):
         """Test that the percentiles are not NaN."""
@@ -163,33 +130,63 @@ class TestCalculateVariablePercentileThresholdsByDay:
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.bigger_df, 'data', date_column_name='date')
         assert not percentiles_.isna().all().all()
+        # test that the function is calculating percentiles for a given
+        # day correctly by comparing output to base percentile function
+        # calculation
+        percentiles_filter_ = percentiles_.filter(items = ['04-01'], axis = 0).iloc[0] # noqa
+        filter_df = self.bigger_df.loc[(self.bigger_df['date'].dt.month==4) & (self.bigger_df['date'].dt.day==1)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
 
     def test_longer_dummy_set(self):
         """Test with a longer dummy set."""
         # test a longer dummy set that exceeds 1 year
         # test the function
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
-            self.df_dummy, 'data', date_column_name='date', year_type='water')
-        assert percentiles_.shape == (365, 8)
+            self.df_dummy, 'data', date_column_name='date')
+        assert percentiles_.shape == (366, 8)
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-        assert percentiles_.index.get_level_values(1).tolist()[0] == '10-01'
-        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
-        assert percentiles_.index.get_level_values(1).tolist()[-1] == '09-30'
-        assert percentiles_.index.get_level_values(0).tolist()[-1] == 365
+
+    def test_longer_dummy_set_min_years(self):
+        """Test with a longer dummy set and shorter min_years."""
+        # test a longer dummy set that exceeds 1 year
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
+            self.df_dummy, 'data', date_column_name='date', min_years=1)
+        # test that the function is calculating percentiles for a given
+        # day correctly by comparing output to base percentile function
+        # calculation
+        percentiles_filter_ = percentiles_.filter(items=['04-01'], axis=0).iloc[0]  # noqa
+        filter_df = self.df_dummy.loc[(self.df_dummy['date'].dt.month == 4) & (self.df_dummy['date'].dt.day == 1)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
 
     def test_longer_dummy_alt(self):
         """Test with a different longer dummy set."""
         # test a longer dummy set that exceeds 1 year
         # test the function
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
-            self.df_dummy_alt, 'data', date_column_name='date',
-            year_type='water')
-        assert percentiles_.shape == (365, 8)
+            self.df_dummy_alt, 'data', date_column_name='date')
+        assert percentiles_.shape == (366, 8)
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
-        assert percentiles_.index.get_level_values(1).tolist()[0] == '10-01'
-        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
-        assert percentiles_.index.get_level_values(1).tolist()[-1] == '09-30'
-        assert percentiles_.index.get_level_values(0).tolist()[-1] == 365
+
+    def test_longer_dummy_alt_min_years(self):
+        """Test with a different longer dummy set and shorter min years."""
+        # test a longer dummy set that exceeds 1 year
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
+            self.df_dummy_alt, 'data', date_column_name='date', min_years=1)
+        # test that the function is calculating percentiles for a given
+        # day correctly by comparing output to base percentile function
+        # calculation
+        percentiles_filter_ = percentiles_.filter(items=['04-01'], axis=0).iloc[0] # noqa
+        filter_df = self.df_dummy_alt.loc[(self.df_dummy_alt['date'].dt.month == 4) & (self.df_dummy_alt['date'].dt.day == 1)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
 
     def test_bigger_rolling_avg(self):
         """Test rolling average."""
@@ -199,8 +196,8 @@ class TestCalculateVariablePercentileThresholdsByDay:
         percentiles_7day = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.bigger_df, 'data', date_column_name='date',
             data_type='7-day')
-        assert percentiles_.shape == (365, 8)
-        assert percentiles_7day.shape == (365, 8)
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_7day.shape == (366, 8)
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
         assert percentiles_7day.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100] # noqa
         # check that the percentiles are not NaN
@@ -208,6 +205,36 @@ class TestCalculateVariablePercentileThresholdsByDay:
         assert not percentiles_7day.isna().all().all()
         # check that the percentiles are not the same
         assert not percentiles_.equals(percentiles_7day)
+        # check that 7 day rolling average calculated and handled
+        # correctly
+        self.bigger_df = self.bigger_df.set_index('date')
+        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean()
+        percentiles_7day_filter_ = percentiles_7day.filter(items=['04-01'], axis=0).iloc[0] # noqa 
+        filter_df = self.bigger_df.loc[(self.bigger_df.index.month == 4) & (self.bigger_df.index.day == 1)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_7day_filter_ == filter_df_perc).all()
+
+    def test_small_df_trailing_leading_values(self):
+        """Test that percentiles are not calculated if there aren't sufficient leading/trailing values""" # noqa
+        # test a short dataset lacking leading values
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
+            self.small_df, 'data', date_column_name='date',
+            leading_values=14,
+            trailing_values=14,
+            min_years=1)
+        # shouldn't all be na
+        assert not percentiles_.isna().all().all()
+        # but some should be na
+        assert percentiles_[0][0:13].isna().all()
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        # check leading and trailing values calc
+        percentiles_filter_ = percentiles_.filter(items=['01-15'], axis=0).iloc[0] # noqa
+        self.small_df = self.small_df.set_index('date')
+        filter_df = self.small_df.loc[(self.small_df.index >= '2019-01-01') & (self.small_df.index < '2019-01-30')] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
 
     def test_empty_df(self):
         """Test that function returns empty percentile df."""
@@ -228,12 +255,248 @@ class TestCalculateVariablePercentileThresholdsByDay:
             min_years=1)
         assert not percentiles_.isna().all().all()
         assert percentiles_.iloc[126].isna().all()
-        assert percentiles_.shape == (365, 8)
-        # assert percentiles_[percentiles_.index.get_level_values('doy') == 5].isna().all() # noqa
+        assert percentiles_.shape == (366, 8)
 
     def test_nan_years_variable_percentiles_calculations(self):
         """Test that function returns empty percentiles for insufficient years due to nans."""  # noqa
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
+            self.df_nans, 'data', date_column_name='date')
+        assert percentiles_.iloc[0:4].isna().all().all()
+
+
+class TestCalculateVariablePercentileThresholdsByDayOfYear:
+    # data for all tests in this class
+    small_df = pd.DataFrame({
+        'data': np.arange(101),
+        'date': pd.date_range('2019-01-01', '2019-04-11')})
+
+    bigger_df = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2000-01-01', '2020-12-31'))),
+        'date': pd.date_range('2000-01-01', '2020-12-31')})
+
+    df_dummy = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2000-01-01', '2001-12-31'))),
+        'date': pd.date_range('2000-01-01', '2001-12-31')})
+
+    df_dummy_alt = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2001-01-01', '2002-12-31'))),
+        'date': pd.date_range('2001-01-01', '2002-12-31')})
+
+    # This dataframe has 2 years of data but is missing values
+    # in the month of May.
+    include_months = [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12]
+    df_dummy_missing_days = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2001-01-01', '2002-12-31'))),
+        'date': pd.date_range('2001-01-01', '2002-12-31')})
+    df_dummy_missing_days = df_dummy_missing_days[df_dummy_missing_days['date'].dt.month.isin(include_months)] # noqa
+
+    # This dataframe has 10 years of data, but 5 days have nans
+    # in year 1.
+    df_nans = pd.DataFrame({
+        'data': np.random.random(
+            len(pd.date_range('2001-01-01', '2010-12-31'))),
+        'date': pd.date_range('2001-01-01', '2010-12-31')})
+    df_nans.data.iloc[0:5] = np.nan
+
+    def test_calculate_variable_percentile_thresholds_by_day_of_year(self):
+        """Test with date column."""
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.small_df, 'data', date_column_name='date')
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
+        assert percentiles_.index.get_level_values(1).tolist()[0] == 'calendar'
+        assert percentiles_.isna().all().all()
+
+    def test_calculate_variable_percentile_thresholds_by_day_of_year_dateindex(self): # noqa
+        """Test with dates in the index."""
+        # test the function with no date column and dates in the index
+        self.small_df = self.small_df.set_index('date')
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.small_df, 'data')
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
+        assert percentiles_.index.get_level_values(1).tolist()[0] == 'calendar'
+
+    def test_calculate_variable_percentile_thresholds_by_day_of_year_percentiles(self): # noqa
+        # test the function with a different set of percentiles
+        self.small_df = self.small_df.set_index('date')
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.small_df, 'data', percentiles=np.array((0, 10, 50, 90, 100)))
+        assert percentiles_.shape == (366, 5)
+        assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
+        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
+        assert percentiles_.index.get_level_values(1).tolist()[0] == 'calendar'
+        # all percentiles should be NaN because demo dataset is 1 year only
+        assert percentiles_.isna().all().all()
+
+    def test_calculate_variable_percentile_thresholds_by_day_of_year_year_type(self): # noqa
+        """Test with a different year type."""
+        # test the function with a different year type
+        self.small_df = self.small_df.set_index('date')
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.small_df, 'data', year_type='water')
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
+        assert percentiles_.index.get_level_values(1).tolist()[0] == 'water'
+
+    def test_calculate_variable_percentile_thresholds_by_day_of_year_year_type_percentiles(self): # noqa
+        # test the function with a different year type and a different set of
+        # percentiles
+        self.small_df = self.small_df.set_index('date')
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.small_df, 'data',
+            percentiles=np.array((0, 10, 50, 90, 100)), year_type='water')
+        assert percentiles_.shape == (366, 5)
+        assert percentiles_.columns.tolist() == [0, 10, 50, 90, 100]
+        assert percentiles_.index.get_level_values(0).tolist()[0] == 1
+        assert percentiles_.index.get_level_values(1).tolist()[0] == 'water'
+        # all percentiles should be NaN because demo dataset is 1 year only
+        assert percentiles_.isna().all().all()
+
+    def test_non_nans(self):
+        """Test that the percentiles are not NaN."""
+        # test the function and check that the percentiles are not NaN
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.bigger_df, 'data', date_column_name='date')
+        assert not percentiles_.isna().all().all()
+        # test that the function is calculating percentiles for a given
+        # day correctly by comparing output to base percentile function
+        # calculation
+        percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 133].iloc[0] # noqa
+        filter_df = self.bigger_df.loc[(self.bigger_df['date'].dt.day_of_year==133)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
+
+    def test_longer_dummy_set(self):
+        """Test with a longer dummy set."""
+        # test a longer dummy set that exceeds 1 year
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.df_dummy, 'data', date_column_name='date')
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+
+    def test_longer_dummy_set_min_years(self):
+        """Test with a longer dummy set and shorter min_years."""
+        # test a longer dummy set that exceeds 1 year
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.df_dummy, 'data', date_column_name='date', min_years=1)
+        # test that the function is calculating percentiles for a given
+        # day correctly by comparing output to base percentile function
+        # calculation
+        percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 133].iloc[0] # noqa
+        filter_df = self.df_dummy.loc[(self.df_dummy['date'].dt.day_of_year==133)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+
+    def test_longer_dummy_alt(self):
+        """Test with a different longer dummy set."""
+        # test a longer dummy set that exceeds 1 year
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.df_dummy_alt, 'data', date_column_name='date')
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+
+    def test_longer_dummy_alt_min_years(self):
+        """Test with a different longer dummy set."""
+        # test a longer dummy set that exceeds 1 year
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.df_dummy_alt, 'data', date_column_name='date', min_years=1)
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        # test that the function is calculating percentiles for a given
+        # day correctly by comparing output to base percentile function
+        # calculation
+        percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 133].iloc[0] # noqa
+        filter_df = self.df_dummy_alt.loc[(self.df_dummy_alt['date'].dt.day_of_year==133)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
+
+    def test_bigger_rolling_avg(self):
+        """Test rolling average."""
+        # function w/ daily percentiles
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.bigger_df, 'data', date_column_name='date')
+        percentiles_7day = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.bigger_df, 'data', date_column_name='date',
+            data_type='7-day')
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_7day.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_7day.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100] # noqa
+        # check that the percentiles are not NaN
+        assert not percentiles_.isna().all().all()
+        assert not percentiles_7day.isna().all().all()
+        # check that the percentiles are not the same
+        assert not percentiles_.equals(percentiles_7day)
+        # check that 7 day rolling average calculated and handled
+        # correctly
+        self.bigger_df = self.bigger_df.set_index('date')
+        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean()
+        percentiles_7day_filter_ = percentiles_7day[percentiles_7day.index.get_level_values(0) == 133].iloc[0] # noqa
+        filter_df = self.bigger_df.loc[(self.bigger_df.index.day_of_year==133)] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_7day_filter_ == filter_df_perc).all()
+
+    def test_small_df_trailing_leading_values(self):
+        """Test that percentiles are not calculated if there aren't sufficient leading/trailing values""" # noqa
+        # test a short dataset lacking leading values
+        # test the function
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.small_df, 'data', date_column_name='date',
+            leading_values=14,
+            trailing_values=14,
+            min_years=1)
+        # shouldn't all be na
+        assert not percentiles_.isna().all().all()
+        # but some should be na
+        assert percentiles_[0][0:13].isna().all()
+        assert percentiles_.shape == (366, 8)
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        # test leading and trailing values calculation
+        percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 15].iloc[0] # noqa
+        filter_df = self.small_df.loc[(self.small_df['date'] >= '2019-01-01') & (self.small_df['date'] < '2019-01-30')] # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((0, 5, 10, 25, 75, 90, 95, 100)), method='weibull') # noqa
+        assert (percentiles_filter_ == filter_df_perc).all()
+
+    def test_empty_df(self):
+        """Test that function returns empty percentile df."""
+        # test the function with an empty DataFrame and check
+        # that the percentiles are all NaN
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            pd.DataFrame([]), 'data')
+        assert percentiles_.isna().all().all()
+        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+
+    def test_missing_doys(self):
+        """Test that function returns empty percentile df."""
+        # test the function can handle when days of the year
+        # are missing from the dataframe. These days should
+        # not be included or show up as NaN
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
+            self.df_dummy_missing_days, 'data', date_column_name='date',
+            min_years=1)
+        assert not percentiles_.isna().all().all()
+        assert percentiles_.iloc[126].isna().all()
+        assert percentiles_.shape == (366, 8)
+        # assert percentiles_[percentiles_.index.get_level_values('doy') == 5].isna().all() # noqa
+
+    def test_nan_years_variable_percentiles_calculations(self):
+        """Test that function returns empty percentiles for insufficient years due to nans."""  # noqa
+        percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
             self.df_nans, 'data', date_column_name='date')
         assert percentiles_.iloc[0:4].isna().all().all()
 

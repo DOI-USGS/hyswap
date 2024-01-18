@@ -29,7 +29,7 @@ Glossary
 |                   | 30, and is designated by the |                                       |
 |                   | year in which it ends.       |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| Hydrograph        | A plot of streamflow         | `USDA National Engineering Handbook`_ |
+| Hydrograph        | A plot of streamflow         | `USGS Water Science School (2019)`_   |
 |                   | (discharge) versus time.     |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Streamflow        | The water discharge that     | `USGS Water Science Glossary`_        |
@@ -140,7 +140,7 @@ Glossary
 |                   | exceeded during a given time |                                       |
 |                   | period.                      |                                       |
 +-------------------+------------------------------+---------------------------------------+
-| Recurrence        | The average number of years  | `USGS Water Science School`_          |
+| Recurrence        | The average number of years  | `USGS Water Science School (2018)`_   |
 | Interval          | between floods of a certain  |                                       |
 |                   | size is the recurrence       |                                       |
 |                   | interval or return period.   |                                       |
@@ -156,14 +156,14 @@ Glossary
 
 .. _hyswap: https://doi-usgs.github.io/hyswap/index.html
 
-.. _USDA National Engineering Handbook: https://directives.sc.egov.usda.gov/OpenNonWebContent.aspx?content=17755.wba
-
 .. _USGS Water Science Glossary: https://www.usgs.gov/special-topics/water-science-school/science/water-science-glossary
 
 .. _USGS NWIS: https://waterdata.usgs.gov/nwis
 
 .. _Searcy (1959): https://doi.org/10.3133/wsp1542A
 
-.. _Koehler (2004): https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=461ba539a786645e7576720b0a72c0baa1fc4716
+.. _Koehler (2004): https://repository.arizona.edu/handle/10150/280516
 
-.. _USGS Water Science School: https://www.usgs.gov/special-topics/water-science-school/science/100-year-flood
+.. _USGS Water Science School (2018): https://www.usgs.gov/special-topics/water-science-school/science/100-year-flood
+
+.. _USGS Water Science School (2019): https://www.usgs.gov/special-topics/water-science-school/science/streamflow-and-water-cycle

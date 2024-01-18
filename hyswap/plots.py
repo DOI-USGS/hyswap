@@ -1,9 +1,11 @@
 """Functions for plotting."""
 import calendar
 import numpy as np
+import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 from hyswap.percentiles import calculate_variable_percentile_thresholds_by_day
+from hyswap.cumulative import calculate_daily_cumulative_values
 
 
 def plot_flow_duration_curve(
@@ -152,8 +154,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 
     `Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the
     rivers: representing streamflow of the greater Yellowstone ecosystem.
-    Cartographic Perspectives, no. 55, 54-29.
-    <https://cartographicperspectives.org/index.php/journal/article/view/cp55-strandhagen-et-al/pdf>`__  # noqa: E501
+    Cartographic Perspectives, no. 55, 54-29.`__
 
     Parameters
     ----------
@@ -248,7 +249,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
                 label.set_visible(False)
     # set xticks at start/end of each month
     xvals = df_formatted.columns.values
-    months = [int(i.split('-')[1]) for i in xvals]
+    months = [int(i.split('-')[0]) for i in xvals]
     month_transitions = np.where(np.diff(months) != 0)[0]
     ax.set_xticks([0] + list(month_transitions),
                   labels=[], minor=False)
@@ -257,7 +258,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     [unique_months.append(x) for x in months if x not in unique_months]
     month_names = [calendar.month_abbr[i] for i in unique_months]
     month_names = [f'{m}' for m in month_names]
-    days = [int(i.split('-')[2]) for i in xvals]
+    days = [int(i.split('-')[1]) for i in xvals]
     midway_pts = np.where(np.array(days) == 15)[0]
     ax.set_xticks(midway_pts, labels=month_names, minor=True)
     # make minor ticks invisible
@@ -266,13 +267,14 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     return ax
 
 
-def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
+def plot_duration_hydrograph(percentiles_by_day, df, data_col,
+                             date_column_name=None,
                              pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
                              data_label=None, ax=None,
                              disclaimer=False,
                              title="Duration Hydrograph",
                              ylab="Discharge, ft3/s",
-                             xlab="Month", colors=None, **kwargs):
+                             xlab="Month-Year", colors=None, **kwargs):
     """Plot a duration hydrograph.
 
     The duration hydrograph is a graphical presentation of recent daily
@@ -293,13 +295,16 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     Parameters
     ----------
     percentiles_by_day : pandas.DataFrame
-        Dataframe containing the percentiles by day.
+        Dataframe containing the percentiles by month-day.
+        Note that this plotting function is incompatible
+        with percentiles calculated by day-of-year.
     df : pandas.DataFrame
         Dataframe containing the data to plot.
     data_col : str
         Column name of the data to plot.
-    doy_col : str
-        Column name of the day of year.
+    date_column_name : str, optional
+        Defaults to None. If None, index is assumed to contain datetime
+        information.
     pct_list : list, optional
         List of integers corresponding to the percentile values to be
         plotted. Defaults to 0, 5, 10, 25, 75, 90, 95, 100.
@@ -325,7 +330,8 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         'Month'.
     colors : list, optional
         List of colors to use for the lines. If not provided, a default
-        list of colors will be used.
+        list of colors will be used. The max number of colors in this
+        list is seven.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
 
@@ -348,11 +354,9 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
         >>> pct_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
         ...     df, '00060_Mean')
         >>> df_2022 = df[df.index.year == 2022]
-        >>> df_2022['doy'] = df_2022.index.dayofyear
-        >>> df_2022 = df_2022.sort_values(by='doy')
         >>> fig, ax = plt.subplots(figsize=(12, 6))
         >>> ax = hyswap.plots.plot_duration_hydrograph(
-        ...     pct_by_day, df_2022, '00060_Mean', 'doy',
+        ...     pct_by_day, df_2022, '00060_Mean',
         ...     data_label='2022 Daily Mean Discharge',
         ...     ax=ax, title='Duration Hydrograph for USGS Site 06892350')
         >>> plt.tight_layout()
@@ -377,39 +381,34 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     if colors is None:
         colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
                   "#7bdbd2", "#7587bf", "#ad63ba"]
+    # set the df index
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
+    df['month_day'] = df.index.strftime('%m-%d')
+    # Join percentiles with data
+    df_combined = pd.merge(df, percentiles_by_day, left_on=df['month_day'], right_index=True, how='left')  # noqa: E501
     # plot the latest data -1 to 0-index day of year
-    ax.plot(df[doy_col]-1, df[data_col], color='k', zorder=10, label=label)
+    ax.plot(df_combined.index.values, df[data_col], color='k', zorder=10, label=label)  # noqa: E501
+    # sort the list in ascending order
+    pct_list.sort()
     # plot the historic percentiles filling between each pair
-    pct_list.sort()  # sort the list in ascending order
     for i in range(1, len(pct_list)):
         ax.fill_between(
-            percentiles_by_day.index.get_level_values(1),
-            list(percentiles_by_day[pct_list[i - 1]].values),
-            list(percentiles_by_day[pct_list[i]].values),
-            color=colors[i - 1],
+            df_combined.index.values,
+            df_combined[pct_list[i-1]].tolist(),
+            df_combined[pct_list[i]].tolist(),
+            color=colors[i-1],
             alpha=alpha,
             linewidth=0,
             label="{}th - {}th Percentile".format(
                 pct_list[i - 1], pct_list[i]),
-            zorder=zorder, **kwargs
+            zorder=zorder
         )
     # set labels
     ax.set_xlabel(xlab)
-    ax.set_xlim(0, 365)
-    # major xticks at first/end of each month
-    months = [int(m.split('-')[0]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
-    month_switch = np.where(np.diff(months) != 0)[0]
-    ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
-    # minor xticks at 15th of each month
-    unique_months = []
-    [unique_months.append(x) for x in months if x not in unique_months]
-    month_names = [calendar.month_abbr[i] for i in unique_months]
-    month_names = [f'{m}' for m in month_names]
-    days = [int(m.split('-')[1]) for m in percentiles_by_day.index.get_level_values(1).to_list()]  # noqa: E501
-    mid_days = np.where(np.array(days) == 15)[0]
-    ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
-    # make minor ticks invisible
-    ax.tick_params(axis='x', which='minor', length=0)
+    ax.set_xlim(df_combined.index.min(), df_combined.index.max())
+    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%b-%Y'))  # noqa: E501
+    plt.xticks(ha='left')
     # other labels
     ax.set_ylabel(ylab)
     ax.set_yscale("log")
@@ -418,23 +417,29 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col, doy_col,
     ax.text(0, -0.18, txt, color='red', transform=ax.transAxes)
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
-    yticklabels = [f'{int(y):,}' for y in yticks]
+    yticklabels = [f'{float(y):,}' for y in yticks]
     ax.set_yticks(yticks[1:-1], labels=yticklabels[1:-1])
     # two column legend
-    ax.legend(loc="best", ncol=2)
+    ax.legend(loc="best", ncol=2, title='Historical percentiles')
     # return axes
     return ax
 
 
-def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
+def plot_cumulative_hydrograph(df,
+                               target_years,
+                               data_column_name,
+                               date_column_name=None,
                                year_type='calendar',
+                               unit='acre-feet',
                                envelope_pct=[25, 75],
-                               max_pct=False, min_pct=False,
+                               max_year=False, min_year=False,
                                ax=None,
                                disclaimer=False,
                                title="Cumulative Streamflow Hydrograph",
                                ylab="Cumulative discharge, acre-feet",
-                               xlab="Month", **kwargs):
+                               xlab="Month",
+                               clip_leap_day=False,
+                               **kwargs):
     """Plot a cumulative hydrograph.
 
     The cumulative-streamflow hydrograph is a graphical presentation of
@@ -452,28 +457,30 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
 
     Parameters
     ----------
-    cumulative_percentiles : pandas.DataFrame
-        Dataframe containing the cumulative percentiles per year, output
-        from :obj:`hyswap.cumulative.calculate_daily_cumulative_values`.
+    df : pandas.DataFrame
+        Dataframe containing the data to plot.
     target_years : int, or list
         Target year(s) to plot in black as the line. Can provide a single year
         as an integer, or a list of years.
-    year_type : str, optional
-        The type of year to use. Must be one of 'calendar', 'water', or
-        'climate'. Default is 'calendar' which starts the year on January 1
-        and ends on December 31. 'water' starts the year on October 1 and
-        ends on September 30 of the following year which is the "water year".
-        For example, October 1, 2010 to September 30, 2011 is "water year
-        2011". 'climate' years begin on April 1 and end on March 31 of the
-        following year, they are numbered by the ending year. For example,
-        April 1, 2010 to March 31, 2011 is "climate year 2011".
+    data_column_name : str
+        Name of column containing data to calculate cumulative values for.
+        Discharge data assumed to be in unit of ft3/s.
+    date_column_name : str, optional
+        Name of column containing date information. If None, the index of
+        `df` will be used.
+    unit : str, optional
+        The unit the user wants to use to report cumulative flow. One of
+        'acre-feet', 'cfs', 'cubic-meters', 'cubic-feet'. Assumes input
+        data are in cubic feet per second (cfs).
     envelope_pct : list, optional
         List of percentiles to plot as the envelope. Default is [25, 75].
         If an empty list, [], then no envelope is plotted.
-    max_pct : bool, optional
-        If True, plot the maximum value as a dashed line. Default is False.
-    min_pct : bool, optional
-        If True, plot the minimum value as a dotted line. Default is False.
+    max_year : bool, optional
+        If True, plot the cumulative flow for the year with the maximum
+        end of the year cumulative value as a dashed line. Default is False.
+    min_year : bool, optional
+        If True, plot the cumulative flow for the year with the minimum
+        end of the year cumulative value as a dashed line. Default is False.
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If not provided, a new figure and axes will be
         created.
@@ -491,6 +498,9 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
         'Month'.
+    clip_leap_day : bool, optional
+        If True, removes leap day '02-29' from the percentiles dataset
+        used to create the plot. Defaults to False.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
 
@@ -510,11 +520,11 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
         ...                                   parameterCd='00060',
         ...                                   start='1900-01-01',
         ...                                   end='2021-12-31')
-        >>> cdf = hyswap.cumulative.calculate_daily_cumulative_values(
-        ...     df, '00060_Mean')
         >>> fig, ax = plt.subplots(figsize=(8, 5))
         >>> ax = hyswap.plots.plot_cumulative_hydrograph(
-        ...     cdf, 2020, ax=ax,
+        ...     df,
+        ...     data_column_name='00060_Mean',
+        ...     target_years=2020, ax=ax,
         ...     title='2020 Cumulative Streamflow Hydrograph, site 06892350')
         >>> plt.tight_layout()
         >>> plt.show()
@@ -522,11 +532,20 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     # Create axes if not provided
     if ax is None:
         _, ax = plt.subplots()
+    # calculate cumulative values
+    cumulative_df = calculate_daily_cumulative_values(
+        df=df,
+        data_column_name=data_column_name,
+        date_column_name=date_column_name,
+        year_type=year_type,
+        unit=unit,
+        clip_leap_day=clip_leap_day
+        )
     # calculations for percentiles by day
     pdf = calculate_variable_percentile_thresholds_by_day(
-        cumulative_percentiles, data_column_name='cumulative',
-        percentiles=[0] + envelope_pct + [100],
-        year_type=year_type)
+        cumulative_df, data_column_name='cumulative',
+        clip_leap_day=clip_leap_day,
+        percentiles=[0] + envelope_pct + [100])
     # pop some kwargs
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
@@ -536,55 +555,83 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
         txt = 'For some streams, flow statistics may have been computed from mixed \nregulated and unregulated flows; this can affect depictions of flow conditions.'  # noqa: E501
     else:
         txt = ''
+    # Incorporate leap year decision into x-axis labels
+    if clip_leap_day:
+        year = 1901
+    else:
+        year = 1904
+    # Create x-axis scale and labels
+    if year_type == 'water':
+        month_day_order = pd.date_range(start=f'{year-1}-10-01', end=f'{year}-09-30').strftime('%m-%d')  # noqa: E501
+        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(10, 13)] + [f"{str(month).zfill(2)}-01" for month in range(1, 10)]  # noqa: E501
+        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(10, 13)] + [f"{str(month).zfill(2)}-15" for month in range(1, 10)]  # noqa: E501
+        month_labels = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']  # noqa: E501
+    elif year_type == 'climate':
+        month_day_order = pd.date_range(start=f'{year-1}-04-01', end=f'{year}-03-31').strftime('%m-%d')  # noqa: E501
+        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(4, 13)] + [f"{str(month).zfill(2)}-01" for month in range(1, 4)]  # noqa: E501
+        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(4, 13)] + [f"{str(month).zfill(2)}-15" for month in range(1, 4)]  # noqa: E501
+        month_labels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar']  # noqa: E501
+    else:
+        month_day_order = pd.date_range(start=f'{year}-01-01', end=f'{year}-12-31').strftime('%m-%d')  # noqa: E501
+        month_begin_ticks = [f"{str(month).zfill(2)}-01" for month in range(1, 13)]  # noqa: E501
+        month_label_ticks = [f"{str(month).zfill(2)}-15" for month in range(1, 13)]  # noqa: E501
+        month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']  # noqa: E501
+    # Reorder percentile thresholds by year_type
+    pdf_reordered = pdf.reindex(month_day_order)
     # plot percentile envelope
     if len(envelope_pct) == 2:
-        ax.fill_between(pdf.index.get_level_values(1),
-                        list(pdf[envelope_pct[0]].values),
-                        list(pdf[envelope_pct[1]].values),
+        ax.fill_between(pdf_reordered.index,
+                        list(pdf_reordered[envelope_pct[0]].values),
+                        list(pdf_reordered[envelope_pct[1]].values),
                         color=color, alpha=alpha,
                         label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
                         "Percentile Envelope",
-                        zorder=zorder, **kwargs)
+                        zorder=zorder)
     # plot min/max if desired
-    if min_pct:
-        ax.plot(pdf.index.get_level_values(1), pdf[0], color='k',
-                alpha=0.5, linestyle=':', label="Minimum")
-    if max_pct:
-        ax.plot(pdf.index.get_level_values(1), pdf[100], color='k',
-                alpha=0.5, linestyle='--', label="Maximum")
+    if max_year:
+        max_y = cumulative_df.loc[
+            cumulative_df['cumulative'].idxmax()]['index_year']
+        max_year_df = cumulative_df[
+            cumulative_df['index_year'] == max_y]
+        ax.plot(
+            max_year_df['index_month_day'],
+            max_year_df['cumulative'], color='k',
+            alpha=0.5, linestyle='--',
+            label=f"Highest observed cumulative flow ({max_y})"
+            )
+    if min_year:
+        min_y = cumulative_df.loc[
+            cumulative_df['cumulative'].idxmin()]['index_year']
+        min_year_df = cumulative_df[
+            cumulative_df['index_year'] == min_y]
+        ax.plot(
+            min_year_df['index_month_day'],
+            min_year_df['cumulative'], color='k',
+            alpha=0.5, linestyle=':',
+            label=f"Lowest observed cumulative flow ({min_y})"
+            )
     # handle target years
     col_targets = ['k'] + list(matplotlib.colormaps['tab20'].colors)
     if isinstance(target_years, int):
         target_years = [target_years]  # make int a list
     for i, target_year in enumerate(target_years):
         # get data from target year
-        target_year_data = cumulative_percentiles.loc[
-            cumulative_percentiles['index_year'] == target_year]
+        target_year_data = cumulative_df.loc[
+            cumulative_df['index_year'] == target_year]
         # plot target year
-        ax.plot(target_year_data['index_doy'], target_year_data['cumulative'],
+        ax.plot(target_year_data['index_month_day'],
+                target_year_data['cumulative'],
                 color=col_targets[i],
-                label=f"{target_year} Observed")
-
-    # set labels
-    ax.set_xlabel(xlab)
+                label=f"Observed cumulative flow ({target_year})")
+    # Get axis labels and ticks in order
     ax.set_xlim(0, 365)
-    # major xticks at first/end of each month
-    months = [int(m.split('-')[0]) for m in pdf.index.get_level_values(1).to_list()]  # noqa: E501
-    month_switch = np.where(np.diff(months) != 0)[0]
-    ax.set_xticks([0] + list(month_switch + 1) + [365], labels=[], minor=False)
-    # minor xticks at 15th of each month
-    unique_months = []
-    [unique_months.append(x) for x in months if x not in unique_months]
-    month_names = [calendar.month_abbr[i] for i in unique_months]
-    month_names = [f'{m}' for m in month_names]
-    days = [int(m.split('-')[1]) for m in pdf.index.get_level_values(1).to_list()]  # noqa: E501
-    mid_days = np.where(np.array(days) == 15)[0]
-    ax.set_xticks(list(mid_days + 1), labels=month_names, minor=True)
-    # make minor ticks invisible
-    ax.tick_params(axis='x', which='minor', length=0)
-    # other labels
+    ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)
     ax.set_title(title)
+    plt.xticks(month_begin_ticks, labels='')
+    ax.set_xticks(month_label_ticks, labels=month_labels, minor=True)
+    # make minor x-ticks invisible
+    ax.tick_params(axis='x', which='minor', length=0)
     # get y-axis ticks and convert to comma-separated strings
     yticks = ax.get_yticks()
     yticklabels = [f'{int(y):,}' for y in yticks]
@@ -594,7 +641,6 @@ def plot_cumulative_hydrograph(cumulative_percentiles, target_years,
     ax.text(0, -0.18, txt, color='red', transform=ax.transAxes)
     # two column legend
     ax.legend(loc="best")
-
     # return
     return ax
 
