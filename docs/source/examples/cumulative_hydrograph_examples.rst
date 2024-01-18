@@ -9,7 +9,7 @@ Cumulative Streamflow Over The 2021 Water Year
 **********************************************
 
 First we will fetch some streamflow data from the NWIS service using the `dataretrieval` package.
-In this example we will fetch 20 years of data from a single site and then calculate the cumulative streamflow percentiles from that data.
+In this example we will fetch 20 years of data from a single site and then use the :obj:`hyswap.plot.plot_cumulative_hydrograph` function to calculate (via :obj:`hyswap.cumulative.calculate_daily_cumulative_values`) and plot cumulative flows.
 
 .. plot::
     :context: reset
@@ -19,18 +19,6 @@ In this example we will fetch 20 years of data from a single site and then calcu
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2001-01-01', end='2021-12-31')
 
-Now we can calculate the cumulative streamflow values per year using the :obj:`hyswap.cumulative.calculate_daily_cumulative_values` function.
-
-.. plot::
-    :context:
-    :include-source:
-
-    # calculate the cumulative streamflow values per year
-    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
-        df, '00060_Mean', year_type='water')
-
-Then we can plot the cumulative streamflow hydrograph. 
-
 .. plot::
     :context:
     :include-source:
@@ -38,7 +26,8 @@ Then we can plot the cumulative streamflow hydrograph.
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        cdf, 2021, ax=ax, year_type='water',
+        df, data_column_name='00060_Mean',target_years=2021,
+        ax=ax, year_type='water',
         title='Cumulative Streamflow Hydrograph')
     plt.show()
 
@@ -47,7 +36,7 @@ Cumulative Streamflow Over The 2021 Calendar Year
 *************************************************
 
 We can also calculate and visualize the cumulative streamflow hydrograph for the 2021 calendar year, rather than the water year.
-The code is very similar, we simply do not specify the `year_type` argument in the :obj:`hyswap.cumulative.calculate_daily_cumulative_values` function, as the default is to use the calendar year.
+The code is very similar, we simply do not specify the `year_type` argument in the :obj:`hyswap.plot.plot_cumulative_hydrograph` function, as the default is to use the calendar year.
 
 .. plot::
     :context: reset
@@ -57,14 +46,12 @@ The code is very similar, we simply do not specify the `year_type` argument in t
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2001-01-01', end='2021-12-31')
 
-    # calculate the cumulative streamflow values per year
-    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
-        df, '00060_Mean')
-
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        cdf, 2021, ax=ax, title='Cumulative Streamflow Hydrograph')
+        df, data_column_name='00060_Mean',
+        target_years=2021,ax=ax,
+        title='Cumulative Streamflow Hydrograph')
     plt.show()
 
 
@@ -72,7 +59,7 @@ Cumulative Streamflow Over The 2021 Climate Year
 ************************************************
 
 We can also calculate and visualize the cumulative streamflow hydrograph for the 2021 climate year, rather than the water year or the calendar year.
-The code is very similar, we simply specify the `year_type` argument in the :obj:`hyswap.cumulative.calculate_daily_cumulative_values` function to be 'climate'.
+The code is very similar, we simply specify the `year_type` argument in the :obj:`hyswap.plot.plot_cumulative_hydrograph` function to be 'climate'.
 
 .. plot::
     :context: reset
@@ -82,14 +69,12 @@ The code is very similar, we simply specify the `year_type` argument in the :obj
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2001-01-01', end='2021-12-31')
 
-    # calculate the cumulative streamflow values per year
-    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
-        df, '00060_Mean', year_type='climate')
-
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        cdf, 2021, ax=ax, year_type='climate',
+        df, data_column_name='00060_Mean',
+        target_years=2021,
+        ax=ax, year_type='climate',
         title='Cumulative Streamflow Hydrograph')
     plt.show()
 
@@ -108,15 +93,15 @@ We will use the calendar year example to showcase this functionality.
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2001-01-01', end='2021-12-31')
 
-    # calculate the cumulative streamflow values per year
-    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
-        df, '00060_Mean')
-
+    # plot the cumulative streamflow hydrograph
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        cdf, 2021, max_pct=True, min_pct=True,
-        ax=ax, title='Cumulative Streamflow Hydrograph')
+        df, data_column_name='00060_Mean',
+        target_years=2021,
+        ax=ax,
+        max_pct=True, min_pct=True,
+        title='Cumulative Streamflow Hydrograph')
     plt.show()
 
 
@@ -135,14 +120,11 @@ Below is an example of this functionality wherein we plot the cumulative dischar
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2001-01-01', end='2021-12-31')
 
-    # calculate the cumulative streamflow values per year
-    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
-        df, '00060_Mean')
-
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        cdf, target_years=[2010, 2015, 2020],
+        df, data_column_name='00060_Mean',
+        target_years=[2010, 2015, 2020],
         ax=ax, title='Cumulative Streamflow Hydrograph')
     plt.show()
 
@@ -163,13 +145,10 @@ We provide an example of doing this by filling between the 10th and 90th percent
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2001-01-01', end='2021-12-31')
 
-    # calculate the cumulative streamflow values per year
-    cdf = hyswap.cumulative.calculate_daily_cumulative_values(
-        df, '00060_Mean')
-
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        cdf, 2021, envelope_pct=[10, 90], color='red', alpha=0.25,
+        df, data_column_name='00060_Mean',
+        2021, envelope_pct=[10, 90], color='red', alpha=0.25,
         ax=ax, title='Cumulative Streamflow Hydrograph')
     plt.show()
