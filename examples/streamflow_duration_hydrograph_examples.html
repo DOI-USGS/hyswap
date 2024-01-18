@@ -7,12 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Streamflow Duration Hydrographs &#8212; hyswap 0.1.dev1+g1826fa6 documentation</title>
+    <title>Streamflow Duration Hydrographs &#8212; hyswap 0.1.dev1+ga787bec documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=5d96e694"></script>
+    <script src="../_static/documentation_options.js?v=3a7eb12f"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="raster_hydrograph_examples.html" title="Raster Hydrographs"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Streamflow Duration Hydrographs</a></li> 
       </ul>
@@ -81,7 +81,6 @@
     <span class="n">percentiles_by_day</span><span class="p">,</span>
     <span class="n">df_2022</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year - Site 03586500&quot;</span>
@@ -122,14 +121,11 @@ as well as streamflow data from the year 2022.</p>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="c1"># munge the statistics data</span>
 <span class="n">df_stats</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">munge_nwis_stats</span><span class="p">(</span><span class="n">df_stats</span><span class="p">)</span>
-<span class="c1"># add day of year column to the flow data</span>
-<span class="n">df_flow</span><span class="p">[</span><span class="s2">&quot;doy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_flow</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span>
 <span class="c1"># plot the duration hydrograph</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_duration_hydrograph</span><span class="p">(</span>
     <span class="n">df_stats</span><span class="p">,</span>
     <span class="n">df_flow</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year - Site 03586500&quot;</span>
@@ -138,6 +134,10 @@ as well as streamflow data from the year 2022.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>(<a class="reference download internal" download="" href="../_downloads/256c82dd580093f66bea3660c74fefa1/streamflow_duration_hydrograph_examples-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/91cf229ae73aa8aa034179d240ab171d/streamflow_duration_hydrograph_examples-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/streamflow_duration_hydrograph_examples-5.png" class="plot-directive" src="../_images/streamflow_duration_hydrograph_examples-5.png" />
+</figure>
 </section>
 <section id="plotting-by-water-year">
 <h2>Plotting by Water Year<a class="headerlink" href="#plotting-by-water-year" title="Link to this heading">¶</a></h2>
@@ -152,7 +152,7 @@ The only change this requires from above is specifying the type of year we are p
 
 <span class="c1"># calculate historic daily percentile thresholds for water years</span>
 <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;water&quot;</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span>
 <span class="p">)</span>
 
 <span class="c1"># get year/doy information</span>
@@ -169,7 +169,6 @@ The only change this requires from above is specifying the type of year we are p
     <span class="n">percentiles_by_day</span><span class="p">,</span>
     <span class="n">df_2022</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Water Year 2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year - Site 03586500&quot;</span>
@@ -195,7 +194,7 @@ The only change this requires from above is specifying the type of year we are p
 
 <span class="c1"># calculate historic daily percentile thresholds for water years</span>
 <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;climate&quot;</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span>
 <span class="p">)</span>
 
 <span class="c1"># get year/doy information</span>
@@ -212,7 +211,6 @@ The only change this requires from above is specifying the type of year we are p
     <span class="n">percentiles_by_day</span><span class="p">,</span>
     <span class="n">df_2022</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Climate Year 2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year - Site 03586500&quot;</span>
@@ -238,7 +236,7 @@ We will also specify the colors to be used for the percentile envelopes.</p>
 
 <span class="c1"># calculate specific historic daily percentile thresholds for water years</span>
 <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;water&quot;</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="c1"># get year/doy information</span>
@@ -255,7 +253,6 @@ We will also specify the colors to be used for the percentile envelopes.</p>
     <span class="n">percentiles_by_day</span><span class="p">,</span>
     <span class="n">df_2022</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;index_doy&#39;</span><span class="p">,</span>
     <span class="n">pct_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Water Year 2022&quot;</span><span class="p">,</span>
@@ -275,7 +272,7 @@ We will also specify the colors to be used for the percentile envelopes.</p>
 <h2>N-day Moving Windows for Historical Daily Percentile Calculations<a class="headerlink" href="#n-day-moving-windows-for-historical-daily-percentile-calculations" title="Link to this heading">¶</a></h2>
 <p>In this example, we will calculate historical daily percentiles using n-day moving windows that can be compared to daily streamflow in the focal year of interest.
 N-day moving windows are specified using the <cite>leading_values</cite> and <cite>trailing_values</cite> arguments in <code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></code>.
-We will use a leading value of 15 days and a trailing value of 15 days to show how to use a 30-day moving window to calculate percentiles for each day.
+We will use a leading value of 15 days and a trailing value of 14 days to show how to use a 30-day moving window to calculate percentiles for each day.
 What this means is that the set of historical percentiles calculated for each day are actually calculated using a 30-day window from each year in the dataset.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch historic data from NWIS</span>
 <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
@@ -288,9 +285,8 @@ What this means is that the set of historical percentiles calculated for each da
     <span class="n">df</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
     <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
-    <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;water&quot;</span><span class="p">,</span>
     <span class="n">leading_values</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-    <span class="n">trailing_values</span><span class="o">=</span><span class="mi">15</span>
+    <span class="n">trailing_values</span><span class="o">=</span><span class="mi">14</span>
 <span class="p">)</span>
 
 <span class="c1"># get year/doy information</span>
@@ -307,7 +303,6 @@ What this means is that the set of historical percentiles calculated for each da
     <span class="n">percentiles_by_day</span><span class="p">,</span>
     <span class="n">df_2022</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Water Year 2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year Using a 30-Day Moving Window - Site 03586500&quot;</span>
@@ -334,13 +329,13 @@ To show the effect of this, we will plot the historic daily percentile values fo
 
 <span class="c1"># calculate specific historic daily percentile thresholds for water years</span>
 <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;water&quot;</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span>
 <span class="p">)</span>
 <span class="n">percentiles_by_7day</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;7-day&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;water&quot;</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;7-day&#39;</span>
 <span class="p">)</span>
 <span class="n">percentiles_by_28day</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;28-day&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;water&quot;</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;28-day&#39;</span>
 <span class="p">)</span>
 
 <span class="c1"># get year/doy information</span>
@@ -357,7 +352,6 @@ To show the effect of this, we will plot the historic daily percentile values fo
     <span class="n">percentiles_by_day</span><span class="p">,</span>
     <span class="n">df_2022</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Water Year 2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year - Site 03586500&quot;</span><span class="p">,</span>
@@ -368,7 +362,6 @@ To show the effect of this, we will plot the historic daily percentile values fo
     <span class="n">percentiles_by_7day</span><span class="p">,</span>
     <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rolling_average</span><span class="p">(</span><span class="n">df_2022</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="s2">&quot;7D&quot;</span><span class="p">),</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Water Year 2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year (7-day rolling average) - Site 03586500&quot;</span><span class="p">,</span>
@@ -380,7 +373,6 @@ To show the effect of this, we will plot the historic daily percentile values fo
     <span class="n">percentiles_by_28day</span><span class="p">,</span>
     <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">rolling_average</span><span class="p">(</span><span class="n">df_2022</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="s2">&quot;28D&quot;</span><span class="p">),</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Water Year 2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year (28-day rolling average) - Site 03586500&quot;</span><span class="p">,</span>
@@ -407,7 +399,7 @@ Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill
 
 <span class="c1"># calculate historic daily percentile thresholds for water years</span>
 <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s2">&quot;water&quot;</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span>
 <span class="p">)</span>
 
 <span class="c1"># get year/doy information</span>
@@ -424,7 +416,6 @@ Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill
     <span class="n">percentiles_by_day</span><span class="p">,</span>
     <span class="n">df_2022</span><span class="p">,</span>
     <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;index_doy&quot;</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">data_label</span><span class="o">=</span><span class="s2">&quot;Water Year 2022&quot;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Percentiles of Streamflow by Day of Year - Site 03586500&quot;</span><span class="p">,</span>
@@ -511,7 +502,7 @@ Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill
         <li class="right" >
           <a href="raster_hydrograph_examples.html" title="Raster Hydrographs"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Streamflow Duration Hydrographs</a></li> 
       </ul>

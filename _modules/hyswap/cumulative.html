@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.cumulative &#8212; hyswap 0.1.dev1+g1826fa6 documentation</title>
+    <title>hyswap.cumulative &#8212; hyswap 0.1.dev1+ga787bec documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=5d96e694"></script>
+    <script src="../../_static/documentation_options.js?v=3a7eb12f"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.cumulative</a></li> 
       </ul>
@@ -45,7 +45,6 @@
   <h1>Source code for hyswap.cumulative</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Cumulative calculation functions.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
 
@@ -54,7 +53,9 @@
 <a class="viewcode-back" href="../../reference/index.html#hyswap.cumulative.calculate_daily_cumulative_values">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_daily_cumulative_values</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span>
                                       <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                      <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">):</span>
+                                      <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
+                                      <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;acre-feet&#39;</span><span class="p">,</span>
+                                      <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate daily cumulative values.</span>
 
 <span class="sd">    Parameters</span>
@@ -76,13 +77,17 @@
 <span class="sd">        2011&quot;. &#39;climate&#39; years begin on April 1 and end on March 31 of the</span>
 <span class="sd">        following year, they are numbered by the ending year. For example,</span>
 <span class="sd">        April 1, 2010 to March 31, 2011 is &quot;climate year 2011&quot;.</span>
+<span class="sd">    unit : str, optional</span>
+<span class="sd">        The unit the user wants to use to report cumulative flow. One of</span>
+<span class="sd">        &#39;acre-feet&#39;, &#39;cfs&#39;, &#39;cubic-meters&#39;, &#39;cubic-feet&#39;. Assumes input</span>
+<span class="sd">        data are in cubic feet per second (cfs).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    cumulative_values : pandas.DataFrame</span>
 <span class="sd">        DataFrame containing daily cumulative values for each year in the</span>
-<span class="sd">        input DataFrame, rows are dates and columns include years, days, and</span>
-<span class="sd">        cumulative values in acre-feet.</span>
+<span class="sd">        input DataFrame, rows are dates and columns include years, month-days,</span>
+<span class="sd">        day-of-year and cumulative values in the units specified.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -96,28 +101,50 @@
 <span class="sd">        &gt;&gt;&gt; results = cumulative.calculate_daily_cumulative_values(</span>
 <span class="sd">        ...     df, &quot;data&quot;, date_column_name=&quot;date&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; results.columns.tolist()</span>
-<span class="sd">        [&#39;index_year&#39;, &#39;index_doy&#39;, &#39;cumulative&#39;]</span>
+<span class="sd">        [&#39;index_month_day&#39;, &#39;index_year&#39;, &#39;index_doy&#39;, &#39;cumulative&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that unit is valid</span>
+    <span class="k">if</span> <span class="n">unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;acre-feet&#39;</span><span class="p">,</span> <span class="s1">&#39;cfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic-meters&#39;</span><span class="p">,</span> <span class="s1">&#39;cubic-feet&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Unit must be one of &quot;acre-feet&quot;, &quot;cfs&quot;, &quot;cubic-meters&quot;, &quot;cubic-feet&quot;&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
     <span class="c1"># set date index, add day/year columns with function</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">,</span>
-                                 <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">,</span> <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                                 <span class="n">date_column_name</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">,</span>
+                                 <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">,</span>
+                                 <span class="n">clip_leap_day</span><span class="o">=</span><span class="n">clip_leap_day</span><span class="p">)</span>
     <span class="c1"># get unique years in the data</span>
     <span class="n">years</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index_year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-    <span class="c1"># make a dataframe to hold cumulative values for each year</span>
-    <span class="n">cdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">years</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">366</span><span class="p">))</span>
+
+    <span class="c1"># make an empty dataframe to hold cumulative values for each year</span>
+    <span class="n">cdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
+    <span class="n">selected_columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">data_column_name</span><span class="p">,</span>
+        <span class="s1">&#39;index_month_day&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;index_year&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;index_doy&#39;</span>
+        <span class="p">]</span>
     <span class="c1"># loop through each year and calculate cumulative values</span>
     <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
         <span class="c1"># get data for the year</span>
-        <span class="n">year_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;index_year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">year</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">]</span>
-        <span class="c1"># year must be complete</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">year_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">365</span><span class="p">:</span>
-            <span class="c1"># calculate cumulative values and assign to cdf</span>
-            <span class="c1"># converted to acre-feet</span>
+        <span class="n">year_data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;index_year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">year</span><span class="p">][</span><span class="n">selected_columns</span><span class="p">]</span>
+        <span class="n">year_data</span> <span class="o">=</span> <span class="n">year_data</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+        <span class="c1"># calculate cumulative values and assign to cdf</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;acre-feet&#39;</span><span class="p">:</span>
+            <span class="c1"># convert cubic feet to acre-feet</span>
             <span class="c1"># multiplied by seconds per day</span>
-            <span class="n">cdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cdf</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">year</span><span class="p">,</span> <span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">year_data</span><span class="p">)]</span> <span class="o">=</span> \
-                <span class="n">year_data</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mf">0.0000229568</span> <span class="o">*</span> <span class="mi">86400</span>
-    <span class="c1"># reformat the dataframe</span>
-    <span class="n">cdf</span> <span class="o">=</span> <span class="n">_tidy_cumulative_dataframe</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">year_type</span><span class="p">)</span>
+            <span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">year_data</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mf">0.0000229568</span> <span class="o">*</span> <span class="mi">86400</span>  <span class="c1"># noqa: E501</span>
+        <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;cubic-meters&#39;</span><span class="p">:</span>
+            <span class="c1"># convert cubic feet to cubic meters</span>
+            <span class="c1"># multiplied by seconds per day</span>
+            <span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">year_data</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mf">0.02831685</span> <span class="o">*</span> <span class="mi">86400</span>  <span class="c1"># noqa: E501</span>
+        <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;cubic-feet&#39;</span><span class="p">:</span>
+            <span class="c1"># convert cubic feet per second to cubic feet</span>
+            <span class="c1"># multiplied by seconds per day</span>
+            <span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">year_data</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span> <span class="o">*</span> <span class="mi">86400</span>  <span class="c1"># noqa: E501</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">year_data</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">cdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">cdf</span><span class="p">,</span> <span class="n">year_data</span><span class="p">])</span>
+    <span class="n">cdf</span> <span class="o">=</span> <span class="n">cdf</span><span class="p">[[</span><span class="s1">&#39;index_month_day&#39;</span><span class="p">,</span> <span class="s1">&#39;index_year&#39;</span><span class="p">,</span> <span class="s1">&#39;index_doy&#39;</span><span class="p">,</span> <span class="s1">&#39;cumulative&#39;</span><span class="p">]]</span>
     <span class="k">return</span> <span class="n">cdf</span></div>
 
 
@@ -202,7 +229,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.cumulative</a></li> 
       </ul>

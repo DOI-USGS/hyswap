@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g1826fa6 documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+ga787bec documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=5d96e694"></script>
+    <script src="../../_static/documentation_options.js?v=3a7eb12f"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -264,6 +264,10 @@
                     <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&gt;=</span> <span class="n">value</span> <span class="o">-</span> <span class="n">leading_values</span><span class="p">)</span> <span class="o">&amp;</span>
                     <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">+</span> <span class="n">trailing_values</span><span class="p">),</span>
                     <span class="n">data_column_name</span><span class="p">]</span>
+            <span class="c1"># If there are not sufficient data to complete moving</span>
+            <span class="c1"># window, return empty df</span>
+            <span class="k">if</span> <span class="n">dff</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">leading_values</span> <span class="o">+</span> <span class="n">trailing_values</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">dff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])</span>
     <span class="k">elif</span> <span class="n">time_interval</span> <span class="o">==</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span>
         <span class="c1"># grab data from the specified month</span>
         <span class="n">dff</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">]</span>
@@ -273,6 +277,133 @@
     <span class="k">if</span> <span class="n">drop_na</span><span class="p">:</span>
         <span class="n">dff</span> <span class="o">=</span> <span class="n">dff</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="c1"># return data as a pandas Series where the index is the date</span>
+    <span class="k">return</span> <span class="n">dff</span></div>
+
+
+
+<div class="viewcode-block" id="filter_data_by_month_day">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_data_by_month_day">[docs]</a>
+<span class="k">def</span> <span class="nf">filter_data_by_month_day</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                             <span class="n">month_day</span><span class="p">,</span>
+                             <span class="n">data_column_name</span><span class="p">,</span>
+                             <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                             <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                             <span class="n">drop_na</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function used to filter to a single month-day (alternate</span>
+<span class="sd">    to filter_data_by_time)</span>
+
+<span class="sd">    DataFrame containing data to filter. Expects datetime information to be</span>
+<span class="sd">    available in the index or in a column named `date_column_name`. The</span>
+<span class="sd">    returned `pandas.Series` object will have the datetimes for the specified</span>
+<span class="sd">    time (day, month, year) as the index, and the corresponding data from the</span>
+<span class="sd">    `data_column_name` column as the values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    month_day : string</span>
+<span class="sd">        Time value to use for filtering in the format &#39;MM-DD&#39;.</span>
+
+<span class="sd">    data_column_name : str</span>
+<span class="sd">        Name of column containing data to filter.</span>
+
+<span class="sd">    date_column_name : str, optional</span>
+<span class="sd">        Name of column containing date information. If None, the index of</span>
+<span class="sd">        `df` is used.</span>
+
+<span class="sd">    leading_values : int, optional</span>
+<span class="sd">        Number of leading values to include in the output, inclusive.</span>
+<span class="sd">        Default is 0, and parameter only applies to &#39;day&#39; time_interval.</span>
+
+<span class="sd">    trailing_values : int, optional</span>
+<span class="sd">        Number of trailing values to include in the output, inclusive.</span>
+<span class="sd">        Default is 0, and parameter only applies to &#39;day&#39; time_interval.</span>
+
+<span class="sd">    drop_na : bool, optional</span>
+<span class="sd">        Drop NA values within filtered data</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : pandas.Series</span>
+<span class="sd">        Data from the specified month-day, plus any leading/trailing</span>
+<span class="sd">        values.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Filter some synthetic data by day of year. First make some synthetic data.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({</span>
+<span class="sd">        ...     &#39;data&#39;: [1, 2, 3, 4],</span>
+<span class="sd">        ...     &#39;date&#39;: pd.date_range(&#39;2019-01-01&#39;, &#39;2019-01-04&#39;)})</span>
+<span class="sd">        &gt;&gt;&gt; df.shape</span>
+<span class="sd">        (4, 2)</span>
+
+<span class="sd">    Then filter the data to get data from January 1st.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">        &gt;&gt;&gt; data = utils.filter_data_by_month_day(</span>
+<span class="sd">        ...     df, &#39;01-01&#39;, &#39;data&#39;, date_column_name=&#39;date&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; data.shape</span>
+<span class="sd">        (1,)</span>
+
+<span class="sd">    Acquire and filter some real daily data to get all Jan. 1 data.</span>
+
+<span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;2000-01-01&quot;, end=&quot;2003-01-05&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; data = utils.filter_data_by_month_day(df, &#39;01-01&#39;, &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; data.shape</span>
+<span class="sd">        (4,)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># make date column the index if it is not already</span>
+    <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span>
+    <span class="c1"># convert month-day to month and day ints</span>
+    <span class="n">t_month</span><span class="p">,</span> <span class="n">t_day</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">month_day</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">))</span>
+    <span class="c1"># check that month is valid</span>
+    <span class="k">if</span> <span class="n">t_month</span> <span class="o">&gt;</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Month invalid. month_day input must be format MM-DD&#39;</span><span class="p">)</span>
+        <span class="c1"># check that month is valid</span>
+    <span class="k">if</span> <span class="n">t_day</span> <span class="o">&gt;</span> <span class="mi">31</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Day invalid. month_day input must be format MM-DD&#39;</span><span class="p">)</span>
+    <span class="c1"># subset df by month-day input</span>
+    <span class="n">subset_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="n">t_month</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">day</span> <span class="o">==</span> <span class="n">t_day</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">leading_values</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">trailing_values</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">dff</span> <span class="o">=</span> <span class="n">subset_df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># if leading and trailing values are not zero,</span>
+        <span class="c1"># create a column to define the trailing and leading</span>
+        <span class="c1"># values for each year in the dataset</span>
+        <span class="n">subset_df</span><span class="p">[</span><span class="s1">&#39;lv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subset_df</span><span class="o">.</span><span class="n">index</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">leading_values</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">subset_df</span><span class="p">[</span><span class="s1">&#39;tv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subset_df</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">trailing_values</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="c1"># create empty dataframe to hold all data chunks from</span>
+        <span class="c1"># each year</span>
+        <span class="n">date_ranges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="c1"># loop through each date range row</span>
+        <span class="c1"># grab data chunk and place it in</span>
+        <span class="c1"># dataframe created above</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">subset_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">start_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;lv&#39;</span><span class="p">])</span>
+            <span class="n">end_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;tv&#39;</span><span class="p">])</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="n">start_date</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;=</span> <span class="n">end_date</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rng</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="n">leading_values</span> <span class="o">+</span> <span class="n">trailing_values</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">date_ranges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">date_ranges_df</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rng</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">date_ranges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">date_ranges_df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([])])</span>
+        <span class="k">if</span> <span class="n">date_ranges_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">dff</span> <span class="o">=</span> <span class="n">date_ranges_df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dff</span> <span class="o">=</span> <span class="n">date_ranges_df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">drop_na</span><span class="p">:</span>
+        <span class="n">dff</span> <span class="o">=</span> <span class="n">dff</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">dff</span></div>
 
 
@@ -410,7 +541,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to adjust leap year days in a DataFrame.</span>
 
 <span class="sd">    Adjust for a leap year by removing February 29 from the DataFrame and</span>
-<span class="sd">    adjusting the day of year values for the remaining days of the year.</span>
+<span class="sd">    adjusting the day of year values for the remaining days of the year</span>
+<span class="sd">    if a &#39;doy_index&#39; column is present.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -426,7 +558,10 @@
 <span class="sd">        For example, October 1, 2010 to September 30, 2011 is &quot;water year</span>
 <span class="sd">        2011&quot;. &#39;climate&#39; years begin on April 1 and end on March 31 of the</span>
 <span class="sd">        following year, they are numbered by the ending year. For example,</span>
-<span class="sd">        April 1, 2010 to March 31, 2011 is &quot;climate year 2011&quot;.</span>
+<span class="sd">        April 1, 2010 to March 31, 2011 is &quot;climate year 2011&quot;. Please note</span>
+<span class="sd">        that this input is used to adjust the day of year index when a leap</span>
+<span class="sd">        day is removed. If the dataframe does not have a day of year index,</span>
+<span class="sd">        this input is ignored.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -434,17 +569,18 @@
 <span class="sd">        DataFrame with leap year days removed and day of year values adjusted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">day</span> <span class="o">==</span> <span class="mi">29</span><span class="p">))]</span>
-    <span class="k">if</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;calendar&#39;</span><span class="p">:</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_leap_year</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">),</span>
-               <span class="s1">&#39;index_doy&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-    <span class="k">elif</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;water&#39;</span><span class="p">:</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_leap_year</span> <span class="o">&amp;</span>
-               <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span>
-               <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;index_doy&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-    <span class="k">elif</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;climate&#39;</span><span class="p">:</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_leap_year</span> <span class="o">&amp;</span>
-               <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span>
-               <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">),</span> <span class="s1">&#39;index_doy&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="s1">&#39;index_doy&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;calendar&#39;</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_leap_year</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">),</span>
+                   <span class="s1">&#39;index_doy&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;water&#39;</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_leap_year</span> <span class="o">&amp;</span>
+                   <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span>
+                   <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">),</span> <span class="s1">&#39;index_doy&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;climate&#39;</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">is_leap_year</span> <span class="o">&amp;</span>
+                   <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span>
+                   <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">),</span> <span class="s1">&#39;index_doy&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">df</span></div>
 
 
@@ -925,7 +1061,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>

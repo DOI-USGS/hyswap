@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+g1826fa6 documentation</title>
+    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+ga787bec documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=5d96e694"></script>
+    <script src="../../_static/documentation_options.js?v=3a7eb12f"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
@@ -335,16 +335,15 @@
 <span class="sd">    .. doctest::</span>
 
 <span class="sd">        &gt;&gt;&gt; data = [[&#39;01014000&#39;, &#39;01010002&#39;, 0.01, 0.6],</span>
-<span class="sd">        ... [&#39;01014001&#39;, &#39;01010002&#39;, 0.2, 0.8],</span>
-<span class="sd">        ... [&#39;01014002&#39;, &#39;01010003&#39;, 0.9, 0.05]]</span>
+<span class="sd">        ...     [&#39;01014001&#39;, &#39;01010002&#39;, 0.2, 0.8],</span>
+<span class="sd">        ...     [&#39;01014002&#39;, &#39;01010003&#39;, 0.9, 0.05]]</span>
 <span class="sd">        &gt;&gt;&gt; df = pd.DataFrame(data,</span>
-<span class="sd">        ... columns = [&#39;site_no&#39;, &#39;geom_id&#39;, &#39;wght_basin&#39;, &#39;wght_huc&#39;])</span>
+<span class="sd">        ...     columns = [&#39;site_no&#39;, &#39;geom_id&#39;, &#39;wght_basin&#39;, &#39;wght_huc&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; sites_lst = runoff.identify_sites_from_weights(weights_df=df,</span>
-<span class="sd">        ... geom_id=&#39;01010002&#39;, geom_id_col=&#39;geom_id&#39;, site_col=&#39;site_no&#39;,</span>
-<span class="sd">        ... wght_in_basin_col=&#39;wght_basin&#39;, wght_in_geom_col=&#39;wght_huc&#39;)</span>
+<span class="sd">        ...     geom_id=&#39;01010002&#39;, geom_id_col=&#39;geom_id&#39;, site_col=&#39;site_no&#39;,</span>
+<span class="sd">        ...     wght_in_basin_col=&#39;wght_basin&#39;, wght_in_geom_col=&#39;wght_huc&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(sites_lst)</span>
 <span class="sd">        [&#39;01014000&#39;, &#39;01014001&#39;]</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Filter df to designated geometry (e.g. huc8)</span>
@@ -452,7 +451,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>

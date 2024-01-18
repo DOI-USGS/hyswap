@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+g1826fa6 documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+ga787bec documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=5d96e694"></script>
+    <script src="../../_static/documentation_options.js?v=3a7eb12f"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -49,6 +49,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_month_day</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_time</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">calculate_metadata</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
@@ -123,9 +124,9 @@
 
 
 
-<div class="viewcode-block" id="calculate_variable_percentile_thresholds_by_day">
-<a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
+<div class="viewcode-block" id="calculate_variable_percentile_thresholds_by_day_of_year">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day_of_year">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_variable_percentile_thresholds_by_day_of_year</span><span class="p">(</span>
         <span class="n">df</span><span class="p">,</span>
         <span class="n">data_column_name</span><span class="p">,</span>
         <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
@@ -136,6 +137,7 @@
         <span class="n">min_years</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">ignore_na</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate variable percentile thresholds of data by day of year.</span>
@@ -190,6 +192,9 @@
 <span class="sd">        number of trailing values to include in the output, inclusive.</span>
 <span class="sd">        Default is 0, and parameter only applies to &#39;day&#39; time_interval.</span>
 
+<span class="sd">    clip_leap_day : bool, optional</span>
+<span class="sd">        If True, February 29 is removed from the DataFrame. Default is False.</span>
+
 <span class="sd">    ignore_na : bool, optional</span>
 <span class="sd">        Ignore NA values in percentile calculations</span>
 
@@ -200,12 +205,194 @@
 <span class="sd">    -------</span>
 <span class="sd">    percentiles : pandas.DataFrame</span>
 <span class="sd">        DataFrame containing threshold percentiles of data by day of year.</span>
-<span class="sd">        Will return a DataFrame of NaNs for each percentile/day if</span>
+<span class="sd">        The DataFrame has a multi-index of &#39;doy&#39; and &#39;year_type&#39;.</span>
+<span class="sd">        Returns a DataFrame of NaNs for each percentile/day if</span>
 <span class="sd">        provided an empty DataFrame or DataFrame with insufficient data</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Calculate default thresholds by day of year from some real data in</span>
+<span class="sd">    preparation for plotting.</span>
+
+<span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
+
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
+<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
+<span class="sd">        ...     start=&quot;1776-01-01&quot;, end=&quot;2022-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; results = percentiles.calculate_variable_percentile_thresholds_by_day_of_year(  # noqa: E501</span>
+<span class="sd">        ...     df, &quot;00060_Mean&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; len(results.index)  # 366 days in a leap year</span>
+<span class="sd">        366</span>
+<span class="sd">        &gt;&gt;&gt; len(results.columns)  # 8 default percentiles</span>
+<span class="sd">        8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># If the dataframe is empty, create a dummy dataframe to</span>
+    <span class="c1"># run through function</span>
+    <span class="k">if</span> <span class="n">clip_leap_day</span><span class="p">:</span>
+        <span class="c1"># use a non-leap year as reference for empty df</span>
+        <span class="n">date_rng</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1901-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1901-12-31&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># use a leap year as reference for empty df</span>
+        <span class="n">date_rng</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1904-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1904-12-31&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No valid data provided, returning NA values for percentile thresholds&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">date_rng</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># If data column name is not in dataframe</span>
+    <span class="k">if</span> <span class="n">data_column_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;DataFrame missing data_column_name, returning NA values for percentile thresholds&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">date_rng</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="c1"># define year and day of year columns and convert date column to datetime</span>
+    <span class="c1"># if necessary</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">,</span>
+                                 <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">,</span>
+                                 <span class="n">clip_leap_day</span><span class="o">=</span><span class="n">clip_leap_day</span><span class="p">)</span>
+    <span class="c1"># do rolling average for time as needed</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+
+    <span class="c1"># create an empty dataframe to hold percentiles based on month_day</span>
+    <span class="n">doy_index</span> <span class="o">=</span> <span class="n">date_rng</span><span class="o">.</span><span class="n">day_of_year</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">doy_index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span>
+
+    <span class="c1"># loop through days of year available</span>
+    <span class="k">for</span> <span class="n">doy</span> <span class="ow">in</span> <span class="n">doy_index</span><span class="p">:</span>
+        <span class="c1"># get historical data for the day of year</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">filter_data_by_time</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">doy</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span>
+                                   <span class="n">leading_values</span><span class="o">=</span><span class="n">leading_values</span><span class="p">,</span>
+                                   <span class="n">trailing_values</span><span class="o">=</span><span class="n">trailing_values</span><span class="p">,</span>
+                                   <span class="n">drop_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="n">meta</span> <span class="o">=</span> <span class="n">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="c1"># only calculate data if there are at least</span>
+                <span class="c1"># min_years of data that are not nan</span>
+                <span class="k">if</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_years&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_nans&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_years</span><span class="p">:</span>
+                    <span class="c1"># calculate percentiles for the day of year</span>
+                    <span class="c1"># and add to DataFrame</span>
+                    <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
+                        <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                        <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># if there are not at least &#39;min_years&#39; of data,</span>
+                    <span class="c1"># set percentiles to NaN</span>
+                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># if all values are NA</span>
+                <span class="c1"># set percentiles to NaN</span>
+                <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if the data subset for doy is empty</span>
+            <span class="c1"># set percentiles to NaN</span>
+            <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">if</span> <span class="n">clip_leap_day</span><span class="p">:</span>
+        <span class="n">wy_sub</span> <span class="o">=</span> <span class="mi">273</span>
+        <span class="n">cy_sub</span> <span class="o">=</span> <span class="mi">90</span>
+        <span class="n">wy_cy_sub</span> <span class="o">=</span> <span class="mi">365</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">wy_sub</span> <span class="o">=</span> <span class="mi">274</span>
+        <span class="n">cy_sub</span> <span class="o">=</span> <span class="mi">91</span>
+        <span class="n">wy_cy_sub</span> <span class="o">=</span> <span class="mi">366</span>
+    <span class="c1"># sort index by year type</span>
+    <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;climate&#39;</span><span class="p">:</span>
+        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="n">cy_sub</span>
+        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">wy_cy_sub</span>
+    <span class="k">if</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;water&#39;</span><span class="p">:</span>
+        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="n">wy_sub</span>
+        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">wy_cy_sub</span>
+    <span class="c1"># reorder by water year or climate index and rename</span>
+    <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span><span class="p">]</span>
+    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">year_type</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">doy_index</span><span class="p">)],</span>
+        <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;doy&#39;</span><span class="p">,</span> <span class="s1">&#39;year_type&#39;</span><span class="p">])</span>
+
+    <span class="c1"># return percentiles by day of year</span>
+    <span class="k">return</span> <span class="n">percentiles_by_day</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_variable_percentile_thresholds_by_day">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day">[docs]</a>
+<span class="k">def</span> <span class="nf">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">data_column_name</span><span class="p">,</span>
+        <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
+        <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
+        <span class="n">min_years</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_na</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate variable percentile thresholds of data by day</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing data to calculate daily percentile thresholds for.</span>
+
+<span class="sd">    data_column_name : str</span>
+<span class="sd">        Name of column containing data to analyze.</span>
+
+<span class="sd">    percentiles : array_like, optional</span>
+<span class="sd">        Percentile thresholds to calculate, default is</span>
+<span class="sd">        [0, 5, 10, 25, 75, 90, 95, 100].</span>
+
+<span class="sd">    method : str, optional</span>
+<span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39;.</span>
+
+<span class="sd">    date_column_name : str, optional</span>
+<span class="sd">        Name of column containing date information. If None, the index of</span>
+<span class="sd">        `df` is used.</span>
+
+<span class="sd">    data_type : str, optional</span>
+<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
+<span class="sd">        &#39;28-day&#39;. Default is &#39;daily&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
+<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
+<span class="sd">        values will be used for any days that do not have data. If present,</span>
+<span class="sd">        NaN values will result in NaN values for the entire period.</span>
+
+<span class="sd">    min_years : int, optional</span>
+<span class="sd">        Minimum number of years of data required to calculate percentile</span>
+<span class="sd">        thresholds for a given day of year. Default is 10.</span>
+
+<span class="sd">    leading_values : int, optional</span>
+<span class="sd">        For the temporal filtering, this is an argument setting the</span>
+<span class="sd">        number of leading values to include in the output, inclusive.</span>
+<span class="sd">        Default is 0, and parameter only applies to &#39;day&#39; time_interval.</span>
+
+<span class="sd">    trailing_values : int, optional</span>
+<span class="sd">        For the temporal filtering, this is an argument setting the</span>
+<span class="sd">        number of trailing values to include in the output, inclusive.</span>
+<span class="sd">        Default is 0, and parameter only applies to &#39;day&#39; time_interval.</span>
+
+<span class="sd">    clip_leap_day : bool, optional</span>
+<span class="sd">        If True, February 29 is removed from the DataFrame. Default is False.</span>
+
+<span class="sd">    ignore_na : bool, optional</span>
+<span class="sd">        Ignore NA values in percentile calculations</span>
+
+<span class="sd">    **kwargs : dict, optional</span>
+<span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    percentiles : pandas.DataFrame</span>
+<span class="sd">        DataFrame containing threshold percentiles of data by month-day.</span>
+<span class="sd">        Will return a DataFrame of NaNs for each percentile/day if</span>
+<span class="sd">        provided an empty DataFrame or DataFrame with insufficient data</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Calculate default thresholds by day from some real data in</span>
 <span class="sd">    preparation for plotting.</span>
 
 <span class="sd">    .. doctest::</span>
@@ -223,83 +410,69 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># If the dataframe is empty, create a dummy dataframe to</span>
     <span class="c1"># run through function</span>
+    <span class="k">if</span> <span class="n">clip_leap_day</span><span class="p">:</span>
+        <span class="c1"># use a non-leap year as reference for empty df</span>
+        <span class="n">date_rng</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1901-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1901-12-31&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># use a leap year as reference for empty df</span>
+        <span class="n">date_rng</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1904-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1904-12-31&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No valid data provided, returning NA values for percentile thresholds&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
-        <span class="n">date_rng</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1900-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1900-12-31&#39;</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">date_rng</span><span class="p">)</span>
         <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-
     <span class="c1"># If data column name is not in dataframe</span>
     <span class="k">if</span> <span class="n">data_column_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;DataFrame missing data_column_name, returning NA values for percentile thresholds&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
-        <span class="n">date_rng</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s1">&#39;1900-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;1900-12-31&#39;</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">date_rng</span><span class="p">)</span>
         <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
-    <span class="c1"># define year and day of year columns and convert date column to datetime</span>
-    <span class="c1"># if necessary</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">define_year_doy_columns</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">,</span>
-                                 <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">,</span> <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># set the df index</span>
+    <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span>
+
     <span class="c1"># do rolling average for time as needed</span>
     <span class="n">data_type</span> <span class="o">=</span> <span class="n">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
-    <span class="c1"># based on date, get min and max day of year available</span>
-    <span class="n">min_day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span><span class="o">.</span><span class="n">min</span><span class="p">()))</span>
-    <span class="n">max_day</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">((</span><span class="mi">366</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="c1"># make temporal index</span>
-    <span class="n">t_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">min_day</span><span class="p">,</span> <span class="n">max_day</span><span class="p">)</span>
-    <span class="c1"># initialize a DataFrame to hold percentiles by day of year</span>
-    <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">t_idx</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span>
+
+    <span class="c1"># create an empty dataframe to hold percentiles based on month-day</span>
+    <span class="n">month_day_index</span> <span class="o">=</span> <span class="n">date_rng</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">month_day_index</span><span class="p">,</span>
+                                      <span class="n">columns</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span>
+    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;month_day&#39;</span><span class="p">]</span>
     <span class="c1"># loop through days of year available</span>
-    <span class="k">for</span> <span class="n">doy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_day</span><span class="p">,</span> <span class="n">max_day</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">month_day</span> <span class="ow">in</span> <span class="n">month_day_index</span><span class="p">:</span>
         <span class="c1"># get historical data for the day of year</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">filter_data_by_time</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">doy</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span>
-                                   <span class="n">leading_values</span><span class="o">=</span><span class="n">leading_values</span><span class="p">,</span>
-                                   <span class="n">trailing_values</span><span class="o">=</span><span class="n">trailing_values</span><span class="p">,</span>
-                                   <span class="n">drop_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">filter_data_by_month_day</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">month_day</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span>
+                                        <span class="n">leading_values</span><span class="o">=</span><span class="n">leading_values</span><span class="p">,</span>
+                                        <span class="n">trailing_values</span><span class="o">=</span><span class="n">trailing_values</span><span class="p">,</span>
+                                        <span class="n">drop_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="n">meta</span> <span class="o">=</span> <span class="n">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                <span class="c1"># only calculate data if there are at least min_years of data</span>
-                <span class="c1"># that are not nan</span>
+                <span class="c1"># only calculate data if there are at least</span>
+                <span class="c1"># min_years of data that are not nan</span>
                 <span class="k">if</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_years&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_nans&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_years</span><span class="p">:</span>
                     <span class="c1"># calculate percentiles for the day of year</span>
                     <span class="c1"># and add to DataFrame</span>
                     <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
                         <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
                         <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t_idx</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># if there are not at least &#39;min_years&#39; of data,</span>
                     <span class="c1"># set percentiles to NaN</span>
-                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t_idx</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                        <span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># if all values are NA</span>
                 <span class="c1"># set percentiles to NaN</span>
-                <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t_idx</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+                    <span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if the data subset for doy is empty</span>
             <span class="c1"># set percentiles to NaN</span>
-            <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t_idx</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="c1"># replace index with multi-index of doy_index and month-day values</span>
-    <span class="c1"># month_day values</span>
-    <span class="n">month_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
-        <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;%j&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="c1"># doy_index values</span>
-    <span class="n">doy_index</span> <span class="o">=</span> <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span>
-    <span class="k">if</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;water&#39;</span><span class="p">:</span>
-        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="mi">273</span>
-        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">365</span>
-    <span class="k">elif</span> <span class="n">year_type</span> <span class="o">==</span> <span class="s1">&#39;climate&#39;</span><span class="p">:</span>
-        <span class="n">doy_index</span> <span class="o">=</span> <span class="n">doy_index</span> <span class="o">-</span> <span class="mi">90</span>
-        <span class="n">doy_index</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">365</span>
-    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">doy_index</span><span class="p">,</span> <span class="n">month_day</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;doy&#39;</span><span class="p">,</span> <span class="s1">&#39;month-day&#39;</span><span class="p">])</span>
+            <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
-    <span class="c1"># sort percentiles by index</span>
-    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="c1"># return percentiles by day of year</span>
     <span class="k">return</span> <span class="n">percentiles_by_day</span></div>
 
 
@@ -378,7 +551,7 @@
 
 <div class="viewcode-block" id="calculate_variable_percentile_from_value">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_variable_percentile_from_value">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_variable_percentile_from_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_df</span><span class="p">,</span> <span class="n">mo_day</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">calculate_variable_percentile_from_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_df</span><span class="p">,</span> <span class="n">month_day</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate percentile from a value and variable percentile thresholds.</span>
 
 <span class="sd">    This function enables faster calculation of the percentile associated with</span>
@@ -399,7 +572,7 @@
 <span class="sd">        function but could be provided manually or from data pulled from the</span>
 <span class="sd">        NWIS stats service.</span>
 
-<span class="sd">    mo_day : str</span>
+<span class="sd">    month_day : str</span>
 <span class="sd">        string of month-day of year to lookup percentile thresholds for value</span>
 
 <span class="sd">    Returns</span>
@@ -428,7 +601,7 @@
 <span class="sd">        96.21</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># retrieve percentile thresholds for the day of year of interest</span>
-    <span class="n">pct_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;month-day&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">mo_day</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">pct_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;month_day&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -546,7 +719,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g1826fa6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+ga787bec documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
