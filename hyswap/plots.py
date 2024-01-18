@@ -587,17 +587,6 @@ def plot_cumulative_hydrograph(df,
                         "Percentile Envelope",
                         zorder=zorder)
     # plot min/max if desired
-    if min_pct:
-        min_year = cumulative_df.loc[
-            cumulative_df['cumulative'].idxmin()]['index_year']
-        min_year_df = cumulative_df[
-            cumulative_df['index_year'] == min_year]
-        ax.plot(
-            min_year_df['index_month_day'],
-            min_year_df['cumulative'], color='k',
-            alpha=0.5, linestyle=':',
-            label=f"Lowest observed cumulative flow ({min_year})"
-            )
     if max_pct:
         max_year = cumulative_df.loc[
             cumulative_df['cumulative'].idxmax()]['index_year']
@@ -608,6 +597,17 @@ def plot_cumulative_hydrograph(df,
             max_year_df['cumulative'], color='k',
             alpha=0.5, linestyle='--',
             label=f"Highest observed cumulative flow ({max_year})"
+            )
+    if min_pct:
+        min_year = cumulative_df.loc[
+            cumulative_df['cumulative'].idxmin()]['index_year']
+        min_year_df = cumulative_df[
+            cumulative_df['index_year'] == min_year]
+        ax.plot(
+            min_year_df['index_month_day'],
+            min_year_df['cumulative'], color='k',
+            alpha=0.5, linestyle=':',
+            label=f"Lowest observed cumulative flow ({min_year})"
             )
     # handle target years
     col_targets = ['k'] + list(matplotlib.colormaps['tab20'].colors)
