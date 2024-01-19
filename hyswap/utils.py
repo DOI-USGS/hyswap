@@ -519,7 +519,7 @@ def leap_year_adjustment(df, year_type='calendar'):
     return df
 
 
-def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
+def munge_nwis_stats(df, include_metadata=True):
     """Function to munge and reformat NWIS statistics data.
 
     This is a utility function that exists to help munge NWIS percentile data
@@ -533,22 +533,17 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
         DataFrame containing NWIS statistics data retrieved from the statistics
         web service. Assumed to come in as a dataframe retrieved with a
         package like dataretrieval or similar.
-    source_pct_col : list, optional
-        List of column names to use as the source percentiles. If None, the
-        values are assumed to correspond to the 0, 5, 10, 20, 25, 50, 75, 80,
-        90, 95, and 100 percentiles in the NWIS statistics service return.
-    target_pct_col : list, optional
-        List of column names to use as the target percentiles. If None, then
-        integer values are used as the column names corresponding to the
-        default source values.
+
+    include_metadata : bool, optional
+        If True, return additional columns from NWIS Stats Service including
+        count, mean, water year of start of record, water year of end of record
 
     Returns
     -------
-    df_slim : pandas.DataFrame
+    df : pandas.DataFrame
         DataFrame containing munged and reformatted NWIS statistics data.
-        Reformatting is for use with the hyswap package plotting function for
-        duration hydrographs with statistical information in background of
-        the plot.
+        Reformatting is to match the format created by
+        calculate_variable_percentile_thresholds_by_day function.
 
     Examples
     --------
@@ -567,33 +562,37 @@ def munge_nwis_stats(df, source_pct_col=None, target_pct_col=None):
         >>> df.shape
         (366, 11)
     """
-    # set defaults
-    if source_pct_col is None:
-        source_pct_col = ['min_va', 'p05_va', 'p10_va', 'p20_va', 'p25_va',
-                          'p50_va', 'p75_va', 'p80_va', 'p90_va', 'p95_va',
-                          'max_va']
-    if target_pct_col is None:
-        target_pct_col = [0, 5, 10, 20, 25, 50, 75, 80, 90, 95, 100]
-    # check lengths of lists for column names
-    if len(source_pct_col) != len(target_pct_col):
-        raise ValueError('source_pct_col and target_pct_col must be the same '
-                         'length')
-    # rename date columns
-    df.rename(columns={'month_nu': 'month', 'day_nu': 'day', 'end_yr': 'year'},
+    # rename columns from NWIS Stats Service
+    df.columns = df.columns.str.rstrip('_va')
+    # Note that NWIS Stats Service begin and end years are water years.
+    df.rename(columns={'count_nu': 'count', 'begin_yr': 'start_wy',
+                       'end_yr': 'end_wy', 'day_nu': 'day',
+                       'month_nu': 'month'},
               inplace=True)
-    # make end year 2020 for leap year
-    df['year'] = 2020
+    # Use a leap year as basis to have all possible days of year included
+    df['year'] = 1904
     # construct date column
     df['date'] = pd.to_datetime(df[['day', 'month', 'year']])
     # set month-day as index
     df['month_day'] = df['date'].dt.strftime('%m-%d')
     df = df.set_index('month_day')
-    # slim down to just the columns used for the plot
-    df_slim = df[source_pct_col]
-    # rename columns
-    df_slim.columns = target_pct_col
-    # return the dataframe
-    return df_slim
+
+    df = df.drop(['agency_cd', 'site_no', 'parameter_cd', 'ts_id',
+                  'loc_web_ds', 'month', 'day', 'year', 'max_va_yr', 
+                  'min_va_yr', 'date'], axis=1)
+
+    # move max and additional metadata columns (if returned) to end
+    if include_metadata:
+        cols_to_move = ['max', 'mean', 'count', 'start_wy', 'end_wy']
+    else:
+        df = df.drop(['mean', 'count', 'start_wy', 'end_wy'], axis=1)
+        cols_to_move = ['max']
+    # New column order with columns to move at the end
+    new_column_order = [col for col in df.columns if col not in cols_to_move] \
+        + cols_to_move
+    df = df.reindex(columns=new_column_order)
+
+    return df
 
 
 def calculate_summary_statistics(df, data_col="00060_Mean"):
