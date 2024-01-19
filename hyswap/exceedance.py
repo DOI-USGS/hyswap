@@ -101,7 +101,10 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
 
     method : str, optional
         Method (formulation) of plotting position formula.
-        Default is 'weibull' (Type 6).
+        Default is 'weibull' (Type 6). Additional available methods are
+        'interpolated_inverted_cdf' (Type 4), 'hazen' (Type 5),
+        'linear' (Type 7), 'median_unbiased' (Type 8), and 'normal_unbiased'
+        (Type 9).
 
     Returns
     -------
@@ -129,27 +132,26 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         0.0
     """
 
-    if method == 'weibull':     # R Type 6
+    if method in ['weibull', 'Type 6']:
         alpha = 0
         beta = 0
-    elif method == 'linear':    # R Type 4
+    elif method in ['interpolated_inverted_cdf', 'Type 4']:
         alpha = 0
         beta = 1
-    elif method == 'hazen':     # R Type 5
+    elif method in ['hazen', 'Type 5']:
         alpha = 0.5
         beta = 0.5
-    elif method == 'gumbel':    # R Type 7
+    elif method in ['linear', 'Type 7']:
         alpha = 1
         beta = 1
-    elif method == "reiss":     # R Type 8
+    elif method in ['median_unbiased', 'Type 8']:
         alpha = 1/3
         beta = 1/3
-    elif method == "blom":      # R Type 9
+    elif method in ['normal_unbiased', 'Type 9']:
         alpha = 3/8
         beta = 3/8
     else:
-        raise ValueError("dist must be one of 'weibull', 'linear'," +
-                         "'hazen', 'gumbel', 'reiss', or 'blom'.")
+        raise ValueError("method type not recognized")
 
     # some type conversions to get to a numpy array
     if isinstance(values_to_compare, list):
@@ -237,7 +239,10 @@ def calculate_exceedance_probability_from_values_multiple(values,
         The values to use to calculate the exceedance probability.
     method : str, optional
         Method (formulation) of plotting position formula.
-        Default is 'weibull' (Type 6).
+        Default is 'weibull' (Type 6). Additional available methods are
+        'interpolated_inverted_cdf' (Type 4), 'hazen' (Type 5),
+        'linear' (Type 7), 'median_unbiased' (Type 8), and 'normal_unbiased'
+        (Type 9).
 
     Returns
     -------

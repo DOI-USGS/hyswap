@@ -560,7 +560,7 @@ def munge_nwis_stats(df, include_metadata=True):
 
         >>> df = utils.munge_nwis_stats(df)
         >>> df.shape
-        (366, 11)
+        (366, 15)
     """
     # rename columns from NWIS Stats Service
     df.columns = df.columns.str.rstrip('_va')

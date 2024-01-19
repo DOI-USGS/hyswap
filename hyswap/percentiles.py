@@ -39,7 +39,10 @@ def calculate_fixed_percentile_thresholds(
         formulas do not assign values to 0 or 100th percentile.
 
     method : str, optional
-        Method to use to calculate percentiles. Default is 'weibull'.
+        Method to use to calculate percentiles. Default is 'weibull' (Type 6).
+        Additional available methods are 'interpolated_inverted_cdf' (Type 4),
+        'hazen' (Type 5), 'linear' (Type 7), 'median_unbiased' (Type 8),
+        and 'normal_unbiased' (Type 9).
 
     ignore_na : bool, optional
         Ignore NA values in percentile calculations
@@ -69,27 +72,41 @@ def calculate_fixed_percentile_thresholds(
 
     Examples
     --------
-    Calculate default percentile thresholds from some synthetic data.
+    Calculate percentile thresholds from some synthetic data using 'linear'
+    method.
 
     .. doctest::
 
-        >>> data = np.arange(101)
+        >>> data = pd.DataFrame(np.arange(101))
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
-        ...     data, method='linear')
+        ...     data, 'values', percentiles=[25, 75, 95], method='linear')
         >>> results
-        thresholds  0    5     10    25    75    90    95     100
-        values      0.0  5.0  10.0  25.0  75.0  90.0  95.0  100.0
+                min  p25   p75   p95   max   mean    count   begin_yr    end_yr
+        values  0.0  25.0  75.0  95.0  100.0 50.0    101     2020        2020
 
-    Calculate a different set of thresholds from some synthetic data.
+    Calculate percentile thresholds without additional metadata columns
 
     .. doctest::
 
-        >>> data = np.arange(101)
+        >>> data = pd.DataFrame(np.arange(101))
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
-        ...     data, percentiles=np.array((0, 10, 50, 90, 100)))
+        ...     data, 'values', percentiles=[5, 25, 75, 95], method='linear',
+        ...     include_metadata=False)
         >>> results
-        thresholds  0    10    50    90     100
-        values      0.0  9.2  50.0  90.8  100.0
+        >>> results
+                min  p05    p25   p75   p95   max
+        values  0.0  5.0    25.0  75.0  95.0  100.0
+
+    Calculate percentile thresholds using default 'weibull' method
+        >>> data = pd.DataFrame(np.arange(101))
+        >>> results = percentiles.calculate_fixed_percentile_thresholds(
+        ...     data, 'values', percentiles=[5, 25, 50, 75, 95],
+        ...     include_metadata=False)
+        >>> results
+        >>> results
+                min  p05    p25   p50   p75   p95   max
+        values  0.0  4.1    24.5  50.0  75.5  95.9  100.0
+
     """
     # If data column name is not in dataframe
     if data_column_name not in df:
@@ -127,9 +144,9 @@ def calculate_fixed_percentile_thresholds(
             df_out['max'] = np.nanmax(data)
     if include_metadata:
         if ignore_na:
-            df_out['mean'] = np.nanmean(data)
+            df_out['mean'] = np.round(np.nanmean(data),2)
         else:
-            df_out['mean'] = np.mean(data)
+            df_out['mean'] = np.round(np.mean(data),2)
         df_out['count'] = len(data)
         df_out['start_yr'] = df.index.min().strftime('%Y')
         df_out['end_yr'] = df.index.max().strftime('%Y')
@@ -140,7 +157,7 @@ def calculate_fixed_percentile_thresholds(
 def calculate_variable_percentile_thresholds_by_day_of_year(
         df,
         data_column_name,
-        percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
+        percentiles=[5, 10, 25, 50, 75, 90, 95],
         method='weibull',
         date_column_name=None,
         data_type='daily',
@@ -150,6 +167,9 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         trailing_values=0,
         clip_leap_day=False,
         ignore_na=True,
+        include_min_max=True,
+        include_metadata=True,
+        mask_out_of_range=True,
         **kwargs):
     """Calculate variable percentile thresholds of data by day of year.
 
@@ -163,10 +183,15 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
 
     percentiles : array_like, optional
         Percentile thresholds to calculate, default is
-        [0, 5, 10, 25, 75, 90, 95, 100].
+        [5, 10, 25, 50, 75, 90, 95]. Note: Values of 0 and 100 are ignored as
+        unbiased plotting position formulas do not assign values to 0 or 100th
+        percentile.
 
     method : str, optional
-        Method to use to calculate percentiles. Default is 'weibull'.
+        Method to use to calculate percentiles. Default is 'weibull' (Type 6).
+        Additional available methods are 'interpolated_inverted_cdf' (Type 4),
+        'hazen' (Type 5), 'linear' (Type 7), 'median_unbiased' (Type 8),
+        and 'normal_unbiased' (Type 9).
 
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
@@ -209,6 +234,20 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     ignore_na : bool, optional
         Ignore NA values in percentile calculations
 
+    include_min_max : bool, optional
+        If True, include min and max streamflow value in addition to streamflow
+        values for percentile levels. Default is True.
+
+    include_metadata : bool, optional
+        If True, return additional columns describing the data including
+        count, mean, start_yr, end_yr. Default is True
+
+    mask_out_of_range :  bool, optional
+        Set percentiles that are beyond the min/max percentile ranks of the
+        observed data to be NA. Effect of this being enables is that high or
+        low percentiles may not be calculated when few data points are
+        available. Default is True.
+
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
 
@@ -235,8 +274,6 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         ...     df, "00060_Mean")
         >>> len(results.index)  # 366 days in a leap year
         366
-        >>> len(results.columns)  # 8 default percentiles
-        8
     """
     # If the dataframe is empty, create a dummy dataframe to
     # run through function
@@ -265,9 +302,15 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     data_type = set_data_type(data_type)
     df = rolling_average(df, data_column_name, data_type)
 
-    # create an empty dataframe to hold percentiles based on month_day
+    # create an empty dataframe to hold percentiles based on day-of-year
+    cols = [f"p{perc:02d}" for perc in percentiles]
+    if include_min_max:
+        cols = ['min'] + cols + ['max']
+    if include_metadata:
+        cols = cols + ['mean', 'count', 'start_yr', 'end_yr']
     doy_index = date_rng.day_of_year.values
-    percentiles_by_day = pd.DataFrame(index=doy_index, columns=percentiles)
+    percentiles_by_day = pd.DataFrame(index=doy_index,
+                                      columns=cols)
 
     # loop through days of year available
     for doy in doy_index:
@@ -285,8 +328,12 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
                     # calculate percentiles for the day of year
                     # and add to DataFrame
                     _pct = calculate_fixed_percentile_thresholds(
-                        data, percentiles=percentiles, method=method,
-                        ignore_na=ignore_na, **kwargs)
+                        data.to_frame(), data_column_name, 
+                        percentiles=percentiles,
+                        method=method, ignore_na=ignore_na,
+                        include_min_max=include_min_max,
+                        include_metadata=include_metadata, 
+                        mask_out_of_range=mask_out_of_range, **kwargs)
                     percentiles_by_day.loc[doy_index == doy, :] = _pct.values.tolist()[0]  # noqa: E501
                 else:
                     # if there are not at least 'min_years' of data,
@@ -360,7 +407,10 @@ def calculate_variable_percentile_thresholds_by_day(
         percentile.
 
     method : str, optional
-        Method to use to calculate percentiles. Default is 'weibull'.
+        Method to use to calculate percentiles. Default is 'weibull' (Type 6).
+        Additional available methods are 'interpolated_inverted_cdf' (Type 4),
+        'hazen' (Type 5), 'linear' (Type 7), 'median_unbiased' (Type 8),
+        and 'normal_unbiased' (Type 9).
 
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
@@ -375,7 +425,9 @@ def calculate_variable_percentile_thresholds_by_day(
 
     min_years : int, optional
         Minimum number of years of data required to calculate percentile
-        thresholds for a given day of year. Default is 10.
+        thresholds for a given day of year. Default is 10. Note that this
+        threshold is independent from 'mask_out_of_range' setting and can be
+        used in combination with it.
 
     leading_values : int, optional
         For the temporal filtering, this is an argument setting the
@@ -432,8 +484,6 @@ def calculate_variable_percentile_thresholds_by_day(
         ...     df, "00060_Mean")
         >>> len(results.index)  # 366 days in a leap year
         366
-        >>> len(results.columns)  # 8 default percentiles
-        8
     """
     # If the dataframe is empty, create a dummy dataframe to
     # run through function
