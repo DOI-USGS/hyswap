@@ -154,15 +154,18 @@ def identify_sites_from_geom_intersection(
         geom_intersection_df,
         geom_id_col,
         site_col,
-        prop_geom_in_basin_col='pct_in_basin',
-        prop_basin_in_geom_col='pct_in_huc'):
+        prop_geom_in_basin_col='prop_huc_in_basin',
+        prop_basin_in_geom_col='prop_basin_in_huc'):
 
     """Identify sites for a specified geometry.
 
-    Function to identify sites with drainage areas intersecting a given
-    spatial geometry. This function is a helper function that can
-    be used to reduce the number of NWIS queries that are performed
-    to construct the list of dataframes for a given geometry.
+    Function to identify streamgage sites that have drainage areas
+    intersecting a given spatial geometry (e.g. HUC8) from the
+    output table of a previously computed spatial intersection
+    of drainage areas and spatial geometries. This function is a
+    helper function that can be used to reduce the number of NWIS
+    queries that are performed to construct the list of dataframes
+    for a given geometry.
 
     Parameters
     ----------
@@ -178,21 +181,21 @@ def identify_sites_from_geom_intersection(
     geom_id_col : str
         Column in geom_intersection_df with geometry ids.
 
-    site_col: str
+    site_col : str
         Column in geom_intersection_df with drainage area site numbers.
         Please make sure ids have the correct number of digits and have
         not lost leading 0s when read in. If the site numbers are the
         geom_intersection_df index col, site_col = 'index'.
 
-    prop_geom_in_basin_col: str, optional
+    prop_geom_in_basin_col : str, optional
         Name of column with values (type:float) representing the proportion
         (0 to 1) of the spatial geometry occurring in the corresponding
-        drainage area. Default name: 'pct_in_basin'
+        drainage area. Default name: 'prop_huc_in_basin'
 
-    prop_basin_in_geom_col: str, optional
+    prop_basin_in_geom_col : str, optional
         Name of column with values (type:float) representing the proportion
         (0 to 1)of the drainage area occurring in the corresponding
-        spatial geometry. Default name: 'pct_in_huc'
+        spatial geometry. Default name: 'prop_basin_in_huc'
 
     Returns
     -------
@@ -209,12 +212,13 @@ def identify_sites_from_geom_intersection(
         ...     ['01014001', '01010002', 0.2, 0.8],
         ...     ['01014002', '01010003', 0.9, 0.05]]
         >>> df = pd.DataFrame(data,
-        ... columns = ['site_no', 'geom_id', 'wght_basin', 'wght_huc'])
+        ... columns = ['site_no', 'geom_id', 'prop_huc_in_basin',
+        ... 'prop_basin_in_huc'])
         >>> sites_lst = runoff.identify_sites_from_geom_intersection(
         ... geom_intersection_df=df, geom_id='01010002',
         ... geom_id_col='geom_id', site_col='site_no',
-        ... prop_geom_in_basin_col='wght_basin',
-        ... prop_basin_in_geom_col='wght_huc')
+        ... prop_geom_in_basin_col='prop_huc_in_basin',
+        ... prop_basin_in_geom_col='prop_basin_in_huc')
         >>> print(sites_lst)
         ['01014000', '01014001']
     """
@@ -248,7 +252,8 @@ def calculate_geometric_runoff(geom_id,
                                prop_geom_in_basin_col='prop_in_basin',
                                prop_basin_in_geom_col='prop_in_huc',
                                percentage=False,
-                               data_col='runoff'):
+                               data_col='runoff',
+                               full_overlap_threshold=0.98):
     """Function to calculate the runoff for a specified geometry. Uses
     tabular dataframe containing proportion of geometry in each
     intersecting basin and proportion of intersecting basins in the
@@ -261,7 +266,7 @@ def calculate_geometric_runoff(geom_id,
 
     df_dict : dict
         Dictionary of dataframes containing runoff data for each site in the
-        geometry. Each entry in the dictionary takes on the name of the site.
+        geometry. Dictionary key is expected to be the name of the gage site.
 
     geom_intersection_df : pandas.DataFrame
         Tabular dataFrame containing columns indicating the site numbers,
@@ -288,7 +293,7 @@ def calculate_geometric_runoff(geom_id,
         spatial geometry. Default name: 'prop_in_huc'
 
     percentage : boolean, optional
-        If the weight values in geom_intersection_df are percentages,
+        If the values in geom_intersection_df are percentages,
         percentage = True. If the values are decimal proportions,
         percentage = False. Default: False
 
@@ -296,6 +301,14 @@ def calculate_geometric_runoff(geom_id,
         Column name containing runoff data in the dataframes in df_dict.
         Default is 'runoff', as it is assumed these dataframes are created
         using the :obj:`streamflow_to_runoff` function.
+
+    full_overlap_threshold : float, optional
+        The minimum proportion of overlap between geometry and basin that
+        constitutes "full" overlap. For example, occasionally a geometry
+        (or basin) may be completely contained by a basin (or geometry),
+        but polygon border artifacts might cause the intersection to be
+        slightly less than 1. This input accounts for that error.
+        Defaults to 0.98.
 
     Returns
     -------
@@ -309,7 +322,7 @@ def calculate_geometric_runoff(geom_id,
         geom_intersection_df[site_col] = geom_intersection_df[site_col].astype(str)  # noqa: E501
     # assertion to check that site_col are not of type int
     assert geom_intersection_df[site_col].dtypes == 'str' or \
-        geom_intersection_df[site_col].dtypes == 'object', 'weight_df site_col should be a str or obj'  # noqa: E501
+        geom_intersection_df[site_col].dtypes == 'object', 'geom_intersection_df site_col should be a str or obj'  # noqa: E501
     # check if weights are percentage values
     if percentage is True:
         multiplier = 0.01
@@ -350,10 +363,9 @@ def calculate_geometric_runoff(geom_id,
                 prop_geom_in_basin_col
                 ]
         # pick basin that has the highest weight: tightest overlap
-        geom_basin_overlap = geom_basin_overlap[
-            geom_basin_overlap['weight'] == geom_basin_overlap['weight'].max()
-            ]
-        site = geom_basin_overlap[site_col].iloc[0]
+        site = geom_basin_overlap.loc[
+            geom_basin_overlap.weight ==
+            geom_basin_overlap.weight.max(), site_col]
         geom_runoff = df_dict[site].runoff
         geom_runoff = geom_runoff.rename('geom_runoff')
         return geom_runoff
@@ -361,9 +373,10 @@ def calculate_geometric_runoff(geom_id,
     # finding basins within the geom and the basin that contains
     # the geom with the largest weight
     # find where geom in basin is ~ 1 (contained by basin)
-    geom_in_basin = filtered_intersection_df[(filtered_intersection_df[prop_geom_in_basin_col] > 0.98)].copy()  # noqa: E501
+    geom_in_basin = filtered_intersection_df[(filtered_intersection_df[prop_geom_in_basin_col] > full_overlap_threshold)].copy()  # noqa: E501
     # if there are no basins containing the geometry object
-    # with associated runoff data, return an empty series.
+    # with associated runoff data, let user know and then
+    # check if there are any basins within geom.
     if geom_in_basin.empty:
         print("No runoff data associated with any basins containing the geometry object for the time period selected.")  # noqa: E501
     else:
@@ -379,18 +392,21 @@ def calculate_geometric_runoff(geom_id,
         # make sure returns one value
         assert geom_in_basin.shape[0] == 1
     # grab all basins fully contained within the geom
-    basin_in_geom = filtered_intersection_df[(filtered_intersection_df[prop_basin_in_geom_col] > 0.98)].copy()  # noqa: E501
-    # if there are no basins with runoff data, return an empty series.
+    basin_in_geom = filtered_intersection_df[(filtered_intersection_df[prop_basin_in_geom_col] > full_overlap_threshold)].copy()  # noqa: E501
+    # if there are no basins with runoff data, let user know.
     if basin_in_geom.empty:
         print("No runoff data associated with any basins contained within the geometry object for the time period selected.")  # noqa: E501
     else:
         # calculate their weights
         basin_in_geom['weight'] = basin_in_geom[prop_basin_in_geom_col] * \
             basin_in_geom[prop_geom_in_basin_col]
-    # combine these two dfs into one
+    # if both geom_in_basin and basin_in_geom are empty, meaning
+    # no basins fully contain the huc and the huc doesn't fully
+    # contain any basins, return empty series.
     if geom_in_basin.empty and basin_in_geom.empty:
         print("Insufficient data and/or overlap between basins and geometry object. Returning empty series.")  # noqa: E501
         return pd.Series(dtype='float32')
+    # combine these two dfs into one
     else:
         final_geom_intersection_df = pd.concat([geom_in_basin, basin_in_geom])
         print(final_geom_intersection_df)
