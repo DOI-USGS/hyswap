@@ -577,7 +577,7 @@ def plot_cumulative_hydrograph(df,
     pdf = calculate_variable_percentile_thresholds_by_day(
         cumulative_df, data_column_name='cumulative',
         clip_leap_day=clip_leap_day,
-        percentiles=[0] + envelope_pct + [100])
+        percentiles=envelope_pct)
     # pop some kwargs
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
@@ -613,8 +613,8 @@ def plot_cumulative_hydrograph(df,
     # plot percentile envelope
     if len(envelope_pct) == 2:
         ax.fill_between(pdf_reordered.index,
-                        list(pdf_reordered[envelope_pct[0]].values),
-                        list(pdf_reordered[envelope_pct[1]].values),
+                        list(pdf_reordered["p" + str(envelope_pct[0]).zfill(2)].values),  # noqa: E501
+                        list(pdf_reordered["p" + str(envelope_pct[1]).zfill(2)].values),
                         color=color, alpha=alpha,
                         label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
                         "Percentile Envelope",
