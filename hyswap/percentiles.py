@@ -77,7 +77,7 @@ def calculate_fixed_percentile_thresholds(
 
     .. doctest::
 
-        >>> data = pd.DataFrame({'values': np.arange(101), 
+        >>> data = pd.DataFrame({'values': np.arange(101),
         ...                      'date': pd.date_range('2020-01-01', '2020-04-10')}).set_index('date')  # noqa: E501
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, 'values', percentiles=[25, 75, 95], method='linear')
@@ -89,7 +89,7 @@ def calculate_fixed_percentile_thresholds(
 
     .. doctest::
 
-        >>> data = pd.DataFrame({'values': np.arange(101), 
+        >>> data = pd.DataFrame({'values': np.arange(101),
         ...                      'date': pd.date_range('2020-01-01', '2020-04-10')}).set_index('date')  # noqa: E501
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, 'values', percentiles=[5, 25, 75, 95], method='linear',
@@ -132,7 +132,7 @@ def calculate_fixed_percentile_thresholds(
     if mask_out_of_range:
         min_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmin(data), data, method=method))*100  # noqa: E501
         max_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmax(data), data, method=method))*100  # noqa: E501
-        df_out.loc[(df_out.index > max_pct_rank) | (df_out.index < min_pct_rank)] = np.nan
+        df_out.loc[(df_out.index > max_pct_rank) | (df_out.index < min_pct_rank)] = np.nan  # noqa: E501
 
     # transpose so percentile levels are columns
     df_out = df_out.T
@@ -147,9 +147,9 @@ def calculate_fixed_percentile_thresholds(
             df_out['max'] = np.nanmax(data)
     if include_metadata:
         if ignore_na:
-            df_out['mean'] = np.round(np.nanmean(data),2)
+            df_out['mean'] = np.round(np.nanmean(data), 2)
         else:
-            df_out['mean'] = np.round(np.mean(data),2)
+            df_out['mean'] = np.round(np.mean(data), 2)
         df_out['count'] = len(data)
         df_out['start_yr'] = df.index.min().strftime('%Y')
         df_out['end_yr'] = df.index.max().strftime('%Y')
@@ -331,11 +331,11 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
                     # calculate percentiles for the day of year
                     # and add to DataFrame
                     _pct = calculate_fixed_percentile_thresholds(
-                        data.to_frame(), data_column_name, 
+                        data.to_frame(), data_column_name,
                         percentiles=percentiles,
                         method=method, ignore_na=ignore_na,
                         include_min_max=include_min_max,
-                        include_metadata=include_metadata, 
+                        include_metadata=include_metadata,
                         mask_out_of_range=mask_out_of_range, **kwargs)
                     percentiles_by_day.loc[doy_index == doy, :] = _pct.values.tolist()[0]  # noqa: E501
                 else:
@@ -540,11 +540,11 @@ def calculate_variable_percentile_thresholds_by_day(
                     # calculate percentiles for the day of year
                     # and add to DataFrame
                     _pct = calculate_fixed_percentile_thresholds(
-                        data.to_frame(), data_column_name, 
+                        data.to_frame(), data_column_name,
                         percentiles=percentiles,
                         method=method, ignore_na=ignore_na,
                         include_min_max=include_min_max,
-                        include_metadata=include_metadata, 
+                        include_metadata=include_metadata,
                         mask_out_of_range=mask_out_of_range, **kwargs)
                     percentiles_by_day.loc[month_day_index == month_day, :] = _pct.values.tolist()[0]  # noqa: E501
                 else:
@@ -574,7 +574,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     This calculation is done using linear interpolation. A value greater than
     the largest streamflow value in the percentile threshold dataframe results
     in a percentile of 100. A value less than the smallest streamflow value in
-    the percentile threshold dataframe results in a percentile of 0. 
+    the percentile threshold dataframe results in a percentile of 0.
 
     Parameters
     ----------
@@ -599,7 +599,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
 
     .. doctest::
 
-        >>> data = pd.DataFrame({'values': np.arange(1001), 
+        >>> data = pd.DataFrame({'values': np.arange(1001),
         ...                      'date': pd.date_range('2020-01-01', '2022-09-27')}).set_index('date')  # noqa: E501
         >>> pcts_df = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, 'values', percentiles=[5, 10, 25, 50, 75, 90, 95])
@@ -635,15 +635,15 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     percentile_values = percentile_df.filter(like='p').iloc[0].to_list()
     if 'min' and 'max' in percentile_df.columns:
         thresholds = [0] + thresholds + [100]
-        percentile_values = [percentile_df.at['values','min']] + \
-            percentile_values + [percentile_df.at['values','max']]
+        percentile_values = [percentile_df.at['values', 'min']] + \
+            percentile_values + [percentile_df.at['values', 'max']]
     # ensure all values are set to float type for interpolation
     thresholds = np.array(thresholds, dtype=np.float32)
     percentile_values = np.array(percentile_values, dtype=np.float32)
     # do and return linear interpolation
     estimated_percentile = np.interp(value, percentile_values,
-                      thresholds, left=0, right=0).round(2) 
-    return  estimated_percentile
+                                     thresholds, left=0, right=0).round(2)
+    return estimated_percentile
 
 
 def calculate_variable_percentile_from_value(value, percentile_df, month_day):
@@ -656,7 +656,7 @@ def calculate_variable_percentile_from_value(value, percentile_df, month_day):
     interpolation. A value greater than the largest streamflow value in the
     percentile threshold dataframe for the month-day of interest results
     in a percentile of 100. A value less than the smallest streamflow value in
-    the percentile threshold dataframe results in a percentile of 0. 
+    the percentile threshold dataframe results in a percentile of 0.
 
     Parameters
     ----------
@@ -719,11 +719,11 @@ def calculate_multiple_variable_percentiles_from_values(df, data_column_name,
 
     This function enables calculation of estimated percentiles for multiple
     values across multiple days of the year using existing variable percentile
-    thresholds. This calculation is done using linear interpolation. 
+    thresholds. This calculation is done using linear interpolation.
     A value greater than the largest streamflow value in the
     percentile threshold dataframe for the month-day of interest results
     in a percentile of 100. A value less than the smallest streamflow value in
-    the percentile threshold dataframe results in a percentile of 0. 
+    the percentile threshold dataframe results in a percentile of 0.
 
     Parameters
     ----------

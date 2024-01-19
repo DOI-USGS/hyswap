@@ -578,7 +578,7 @@ def munge_nwis_stats(df, include_metadata=True):
     df = df.set_index('month_day')
 
     df = df.drop(['agency_cd', 'site_no', 'parameter_cd', 'ts_id',
-                  'loc_web_ds', 'month', 'day', 'year', 'max_va_yr', 
+                  'loc_web_ds', 'month', 'day', 'year', 'max_va_yr',
                   'min_va_yr', 'date'], axis=1)
 
     # move max and additional metadata columns (if returned) to end
