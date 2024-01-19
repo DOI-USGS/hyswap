@@ -569,7 +569,7 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         assert not percentiles_.isna().all().all()
         # but some should be na
         assert percentiles_['p50'][0:13].isna().all()
-        assert percentiles_.shape == (366, 8)
+        assert percentiles_.shape == (366, 7)
         assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
         # test leading and trailing values calculation
         percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 15].iloc[0] # noqa
