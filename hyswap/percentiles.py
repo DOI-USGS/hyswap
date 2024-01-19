@@ -82,8 +82,8 @@ def calculate_fixed_percentile_thresholds(
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, 'values', percentiles=[25, 75, 95], method='linear')
         >>> results
-                min  p25   p75   p95   max   mean    count   begin_yr    end_yr
-        values  0.0  25.0  75.0  95.0  100.0 50.0    101     2020        2020
+                min p25   p75   p95   max   mean    count   begin_yr    end_yr
+        values  0   25.0  75.0  95.0  100   50.0    101     2020        2020
 
     Calculate percentile thresholds without additional metadata columns
 
@@ -95,9 +95,8 @@ def calculate_fixed_percentile_thresholds(
         ...     data, 'values', percentiles=[5, 25, 75, 95], method='linear',
         ...     include_metadata=False)
         >>> results
-        >>> results
-                min  p05    p25   p75   p95   max
-        values  0.0  5.0    25.0  75.0  95.0  100.0
+                min p05    p25   p75   p95   max
+        values  0   5.0    25.0  75.0  95.0  100
 
     Calculate percentile thresholds using default 'weibull' method
         >>> data = pd.DataFrame({'values': np.arange(101),
@@ -106,9 +105,8 @@ def calculate_fixed_percentile_thresholds(
         ...     data, 'values', percentiles=[5, 25, 50, 75, 95],
         ...     include_metadata=False)
         >>> results
-        >>> results
-                min  p05    p25   p50   p75   p95   max
-        values  0.0  4.1    24.5  50.0  75.5  95.9  100.0
+                min p05    p25   p50   p75   p95   max
+        values  0   4.1    24.5  50.0  75.5  95.9  100
 
     """
     # If data column name is not in dataframe
