@@ -570,7 +570,8 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         # but some should be na
         assert percentiles_['p50'][0:13].isna().all()
         assert percentiles_.shape == (366, 7)
-        assert percentiles_.columns.tolist() == [0, 5, 10, 25, 75, 90, 95, 100]
+        assert percentiles_.columns.tolist() == [
+            'p05', 'p10', 'p25', 'p50', 'p75', 'p90', 'p95']
         # test leading and trailing values calculation
         percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 15].iloc[0] # noqa
         filter_df = self.small_df.loc[(self.small_df['date'] >= '2019-01-01') & (self.small_df['date'] < '2019-01-30')] # noqa
