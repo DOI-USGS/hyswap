@@ -257,7 +257,7 @@ def calculate_exceedance_probability_from_values_multiple(values,
     .. doctest::
 
         >>> exceedance.calculate_exceedance_probability_from_values_multiple(
-        ...     [1, 1.25, 2.5], [1, 2, 3, 4], method='Type 7')
+        ...     [1, 1.25, 2.5], [1, 2, 3, 4], method='Type 4')
         array([1.  , 0.75, 0.5 ])
 
     Fetch some data from NWIS and calculate the exceedance probability for a
