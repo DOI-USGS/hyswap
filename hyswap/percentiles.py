@@ -50,11 +50,13 @@ def calculate_fixed_percentile_thresholds(
 
     include_metadata : bool, optional
         If True, return additional columns describing the data including
-        count, mean. Default is True
+        count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
         Set percentiles that are beyond the min/max percentile ranks of the
-        observed data to be NA. Default is True.
+        observed data to be NA. Effect of this being enables is that high or
+        low percentiles may not be calculated when few data points are
+        available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -105,32 +107,34 @@ def calculate_fixed_percentile_thresholds(
     else:
         pct = np.percentile(data, percentiles, method=method, **kwargs)
 
-    df = pd.DataFrame(data={"values": pct}, index=percentiles)
+    df_out = pd.DataFrame(data={"values": pct}, index=percentiles)
 
     if mask_out_of_range:
         min_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmin(data), data, method=method))*100  # noqa: E501
         max_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmax(data), data, method=method))*100  # noqa: E501
-        df.loc[(df.index > max_pct_rank) | (df.index < min_pct_rank)] = np.nan
+        df_out.loc[(df_out.index > max_pct_rank) | (df_out.index < min_pct_rank)] = np.nan
 
     # transpose so percentile levels are columns
-    df = df.T
-    df.columns = "p" + df.columns.astype(str).str.zfill(2)
+    df_out = df_out.T
+    df_out.columns = "p" + df_out.columns.astype(str).str.zfill(2)
 
     if include_min_max:
         if ignore_na:
-            df.insert(0, 'min', np.min(data))
-            df['max'] = np.max(data)
+            df_out.insert(0, 'min', np.min(data))
+            df_out['max'] = np.max(data)
         else:
-            df.insert(0, 'min', np.nanmin(data))
-            df['max'] = np.nanmax(data)
+            df_out.insert(0, 'min', np.nanmin(data))
+            df_out['max'] = np.nanmax(data)
     if include_metadata:
         if ignore_na:
-            df['mean'] = np.nanmean(data)
+            df_out['mean'] = np.nanmean(data)
         else:
-            df['mean'] = np.mean(data)
-        df['count'] = len(data)
+            df_out['mean'] = np.mean(data)
+        df_out['count'] = len(data)
+        df_out['start_yr'] = df.index.min().strftime('%Y')
+        df_out['end_yr'] = df.index.max().strftime('%Y')
 
-    return df
+    return df_out
 
 
 def calculate_variable_percentile_thresholds_by_day_of_year(
@@ -326,7 +330,7 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
 def calculate_variable_percentile_thresholds_by_day(
         df,
         data_column_name,
-        percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
+        percentiles=[5, 10, 25, 50, 75, 90, 95],
         method='weibull',
         date_column_name=None,
         data_type='daily',
@@ -335,7 +339,9 @@ def calculate_variable_percentile_thresholds_by_day(
         trailing_values=0,
         clip_leap_day=False,
         ignore_na=True,
-        include_metadata=False,
+        include_min_max=True,
+        include_metadata=True,
+        mask_out_of_range=True,
         **kwargs):
     """Calculate variable percentile thresholds of data by day
 
@@ -349,7 +355,9 @@ def calculate_variable_percentile_thresholds_by_day(
 
     percentiles : array_like, optional
         Percentile thresholds to calculate, default is
-        [0, 5, 10, 25, 75, 90, 95, 100].
+        [5, 10, 25, 50, 75, 90, 95]. Note: Values of 0 and 100 are ignored as
+        unbiased plotting position formulas do not assign values to 0 or 100th
+        percentile.
 
     method : str, optional
         Method to use to calculate percentiles. Default is 'weibull'.
@@ -385,7 +393,19 @@ def calculate_variable_percentile_thresholds_by_day(
     ignore_na : bool, optional
         Ignore NA values in percentile calculations
 
+    include_min_max : bool, optional
+        If True, include min and max streamflow value in addition to streamflow
+        values for percentile levels. Default is True.
+
     include_metadata : bool, optional
+        If True, return additional columns describing the data including
+        count, mean, start_yr, end_yr. Default is True
+
+    mask_out_of_range :  bool, optional
+        Set percentiles that are beyond the min/max percentile ranks of the
+        observed data to be NA. Effect of this being enables is that high or
+        low percentiles may not be calculated when few data points are
+        available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -442,9 +462,14 @@ def calculate_variable_percentile_thresholds_by_day(
     df = rolling_average(df, data_column_name, data_type)
 
     # create an empty dataframe to hold percentiles based on month-day
+    cols = [f"p{perc:02d}" for perc in percentiles]
+    if include_min_max:
+        cols = ['min'] + cols + ['max']
+    if include_metadata:
+        cols = cols + ['mean', 'count', 'start_yr', 'end_yr']
     month_day_index = date_rng.strftime("%m-%d")
     percentiles_by_day = pd.DataFrame(index=month_day_index,
-                                      columns=percentiles)
+                                      columns=cols)
     percentiles_by_day.index.names = ['month_day']
     # loop through days of year available
     for month_day in month_day_index:
@@ -462,9 +487,13 @@ def calculate_variable_percentile_thresholds_by_day(
                     # calculate percentiles for the day of year
                     # and add to DataFrame
                     _pct = calculate_fixed_percentile_thresholds(
-                        data, percentiles=percentiles, method=method,
-                        ignore_na=ignore_na, **kwargs)
-                    percentiles_by_day.loc[month_day_index == month_day, percentiles] = _pct.values.tolist()[0]  # noqa: E501
+                        data.to_frame(), data_column_name, 
+                        percentiles=percentiles,
+                        method=method, ignore_na=ignore_na,
+                        include_min_max=include_min_max,
+                        include_metadata=include_metadata, 
+                        mask_out_of_range=mask_out_of_range, **kwargs)
+                    percentiles_by_day.loc[month_day_index == month_day, :] = _pct.values.tolist()[0]  # noqa: E501
                 else:
                     # if there are not at least 'min_years' of data,
                     # set percentiles to NaN
@@ -479,20 +508,6 @@ def calculate_variable_percentile_thresholds_by_day(
             # if the data subset for doy is empty
             # set percentiles to NaN
             percentiles_by_day.loc[month_day_index == month_day, :] = np.nan
-
-        if include_metadata == True:
-            if (not data.empty) and (not np.isnan(data).all()):
-                percentiles_by_day.loc[month_day_index == month_day, 'count'] = meta['n_years'] - meta['n_nans']
-                percentiles_by_day.loc[month_day_index == month_day, 'start_date'] = meta['start_date']
-                percentiles_by_day.loc[month_day_index == month_day, 'end_date'] = meta['end_date']
-                percentiles_by_day.loc[month_day_index == month_day, 'mean'] = data.mean().round(2)
-                percentiles_by_day.loc[month_day_index == month_day, 'std'] = data.std().round(2)
-            else: 
-                percentiles_by_day.loc[month_day_index == month_day, 'count'] = np.nan
-                percentiles_by_day.loc[month_day_index == month_day, 'start_date'] = np.nan
-                percentiles_by_day.loc[month_day_index == month_day, 'end_date'] = np.nan
-                percentiles_by_day.loc[month_day_index == month_day, 'mean'] = np.nan
-                percentiles_by_day.loc[month_day_index == month_day, 'std'] = np.nan
 
     return percentiles_by_day
 
