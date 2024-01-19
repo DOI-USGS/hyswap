@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from hyswap import exceedance
-from hyswap import cumulative
 from hyswap import rasterhydrograph
 from hyswap import percentiles
 from hyswap import plots
@@ -90,13 +89,13 @@ def test_plot_duration_hydrograph():
     pct = percentiles.calculate_variable_percentile_thresholds_by_day(
         df, 'data')
     df['doy'] = df.index.dayofyear
-    ax = plots.plot_duration_hydrograph(pct, df, 'data', 'doy')
+    ax = plots.plot_duration_hydrograph(pct, df, 'data')
     assert isinstance(ax, plt.Axes)
-    assert ax.get_xlabel() == 'Month'
+    assert ax.get_xlabel() == 'Month-Year'
     assert ax.get_ylabel() == 'Discharge, ft3/s'
     assert ax.get_title() == 'Duration Hydrograph'
     # make one with custom labels
-    ax = plots.plot_duration_hydrograph(pct, df, 'data', 'doy',
+    ax = plots.plot_duration_hydrograph(pct, df, 'data',
                                         title='Test Title',
                                         xlab='Test X Label',
                                         ylab='Test Y Label',
@@ -113,17 +112,21 @@ def test_plot_cumulative_hydrograph():
     """Test the plot_cumulative_hydrograph function."""
     df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2010'),
                        'data': np.random.rand(365)})
-    df_cumulative = cumulative.calculate_daily_cumulative_values(
-        df, 'data', date_column_name='date')
     # apply plot function
-    ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010)
+    ax = plots.plot_cumulative_hydrograph(df,
+                                          data_column_name='data',
+                                          date_column_name='date',
+                                          target_years=2010)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'
     assert ax.get_title() == 'Cumulative Streamflow Hydrograph'
     assert len(ax.lines) == 1
     # make one with custom labels
-    ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010,
+    ax = plots.plot_cumulative_hydrograph(df,
+                                          data_column_name='data',
+                                          date_column_name='date',
+                                          target_years=2010,
                                           title='Test Title',
                                           xlab='Test X Label',
                                           ylab='Test Y Label')
@@ -133,8 +136,11 @@ def test_plot_cumulative_hydrograph():
     assert ax.get_title() == 'Test Title'
     assert len(ax.lines) == 1
     # make one with min/max lines plotted
-    ax = plots.plot_cumulative_hydrograph(df_cumulative, 2010,
-                                          max_pct=True, min_pct=True)
+    ax = plots.plot_cumulative_hydrograph(df,
+                                          data_column_name='data',
+                                          date_column_name='date',
+                                          target_years=2010,
+                                          max_year=True, min_year=True)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'
@@ -145,10 +151,11 @@ def test_plot_cumulative_hydrograph():
     _date = pd.date_range('1/1/2010', '12/31/2012')
     df = pd.DataFrame({'date': _date,
                        'data': np.random.rand(len(_date))})
-    df_cumulative = cumulative.calculate_daily_cumulative_values(
-        df, 'data', date_column_name='date')
-    ax = plots.plot_cumulative_hydrograph(df_cumulative, [2010, 2011],
-                                          max_pct=True, min_pct=True)
+    ax = plots.plot_cumulative_hydrograph(df,
+                                          data_column_name='data',
+                                          date_column_name='date',
+                                          target_years=[2010, 2011],
+                                          max_year=True, min_year=True)
     assert isinstance(ax, plt.Axes)
     assert ax.get_xlabel() == 'Month'
     assert ax.get_ylabel() == 'Cumulative discharge, acre-feet'
