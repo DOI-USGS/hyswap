@@ -115,11 +115,11 @@ def calculate_fixed_percentile_thresholds(
     if data_column_name not in df:
         warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds')  # noqa: E501
         df[data_column_name] = np.nan
-
-    if 0 in percentiles:
-        percentiles.remove(0)
-    if 100 in percentiles:
-        percentiles.remove(100)
+    # ignore 0 and 100 percentiles if passed in
+    if isinstance(percentiles, np.ndarray):
+        percentiles = percentiles[~np.isin(percentiles, [0, 100])]
+    elif isinstance(percentiles, list):
+        percentiles = [x for x in percentiles if x not in (0, 100)]
 
     data = df[data_column_name]
     if ignore_na:
@@ -642,7 +642,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     percentile_values = np.array(percentile_values, dtype=np.float32)
     # do and return linear interpolation
     estimated_percentile = np.interp(value, percentile_values,
-                                     thresholds, left=0, right=0).round(2)
+                                     thresholds, left=0, right=100).round(2)
     return estimated_percentile
 
 
