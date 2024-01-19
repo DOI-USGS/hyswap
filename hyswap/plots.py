@@ -366,7 +366,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
     """
     # check that pct_list is present in percentile threshold data
     if all(pct in pct_list + ['min', 'max'] for pct in percentiles_by_day.columns):  # noqa: E501
-        raise ValueError('one or more percent values are not in provided' + \
+        raise ValueError('one or more percent values are not in provided' +
                          'percentile threshold data')
     # ignore 0 and 100 percentile levels if provided in pct_list
     if 0 in pct_list:
@@ -614,7 +614,7 @@ def plot_cumulative_hydrograph(df,
     if len(envelope_pct) == 2:
         ax.fill_between(pdf_reordered.index,
                         list(pdf_reordered["p" + str(envelope_pct[0]).zfill(2)].values),  # noqa: E501
-                        list(pdf_reordered["p" + str(envelope_pct[1]).zfill(2)].values),
+                        list(pdf_reordered["p" + str(envelope_pct[1]).zfill(2)].values),  # noqa: E501
                         color=color, alpha=alpha,
                         label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
                         "Percentile Envelope",
