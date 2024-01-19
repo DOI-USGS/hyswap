@@ -437,8 +437,8 @@ class TestMungingNWISStats:
         # check the output
         assert df_munged.shape == (4, 15)
         assert len(df.columns) > len(df_munged.columns)
-        assert df_munged.columns.tolist() == ['min', 'p05', 'p10', 'p20', 
-                                              'p25', 'p50', 'p75', 'p80', 
+        assert df_munged.columns.tolist() == ['min', 'p05', 'p10', 'p20',
+                                              'p25', 'p50', 'p75', 'p80',
                                               'p90', 'p95', 'max', 'mean',
                                               'count', 'start_wy', 'end_wy']
 
@@ -470,9 +470,9 @@ class TestMungingNWISStats:
         df_munged = utils.munge_nwis_stats(df, include_metadata=False)
         assert df_munged.shape == (4, 11)
         assert len(df.columns) > len(df_munged.columns)
-        assert df_munged.columns.tolist() == ['min', 'p05', 'p10', 'p20', 
-                                        'p25', 'p50', 'p75', 'p80', 
-                                        'p90', 'p95', 'max']
+        assert df_munged.columns.tolist() == ['min', 'p05', 'p10', 'p20',
+                                              'p25', 'p50', 'p75', 'p80',
+                                              'p90', 'p95', 'max']
 
 
 def test_filter_to_common_time():
