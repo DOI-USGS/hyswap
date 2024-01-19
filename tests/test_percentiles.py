@@ -68,7 +68,7 @@ class TestCalculateFixedPercentileThresholds:
         assert percentiles_.shape == (1, 9)
         assert percentiles_.values.tolist()[0] == [
             0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0, 100.0]
- 
+
     def test_with_nans_and_not_ignore_na(self):
         # test with some nan values and not ignoring NAs
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
