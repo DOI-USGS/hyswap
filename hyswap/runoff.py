@@ -245,14 +245,15 @@ def identify_sites_from_geom_intersection(
 
 
 def calculate_geometric_runoff(geom_id,
-                               df_dict,
+                               runoff_dict,
                                geom_intersection_df,
                                site_col,
                                geom_id_col,
                                prop_geom_in_basin_col='prop_in_basin',
                                prop_basin_in_geom_col='prop_in_huc',
                                percentage=False,
-                               data_col='runoff',
+                               runoff_data_col='runoff',
+                               runoff_site_col='site_no',
                                full_overlap_threshold=0.98):
     """Function to calculate the runoff for a specified geometry. Uses
     tabular dataframe containing proportion of geometry in each
@@ -264,9 +265,12 @@ def calculate_geometric_runoff(geom_id,
     geom_id : str
         Geometry ID for the geometry of interest.
 
-    df_dict : dict
+    runoff_dict : dict
         Dictionary of dataframes containing runoff data for each site in the
         geometry. Dictionary key is expected to be the name of the gage site.
+        Each dictionary entry is expected to have a date index, a data
+        column filled with runoff data, and a site column that matches
+        the dictionary key.
 
     geom_intersection_df : pandas.DataFrame
         Tabular dataFrame containing columns indicating the site numbers,
@@ -297,10 +301,16 @@ def calculate_geometric_runoff(geom_id,
         percentage = True. If the values are decimal proportions,
         percentage = False. Default: False
 
-    data_col : str, optional
-        Column name containing runoff data in the dataframes in df_dict.
+    runoff_data_col : str, optional
+        Column name containing runoff data in the dataframes in runoff_dict.
         Default is 'runoff', as it is assumed these dataframes are created
         using the :obj:`streamflow_to_runoff` function.
+
+    runoff_site_col : str
+        Column name in runoff dictionary with drainage area site numbers.
+        Please make sure ids have the correct number of digits and have
+        not lost leading 0s when read in. If the site numbers are the
+        geom_intersection_df index col, site_col = 'index'.
 
     full_overlap_threshold : float, optional
         The minimum proportion of overlap between geometry and basin that
@@ -332,10 +342,10 @@ def calculate_geometric_runoff(geom_id,
     filtered_intersection_df = geom_intersection_df[
         geom_intersection_df[geom_id_col] == geom_id
         ].copy()
-    # filter weights df to sites with data in df_dict
+    # filter weights df to sites with data in runoff_dict
     sites = filtered_intersection_df[site_col]
     # check to see which sites are in dictionary
-    sites_w_data = [site for site in sites if site in df_dict]
+    sites_w_data = [site for site in sites if site in runoff_dict]
     # filter weights df to sites with data
     filtered_intersection_df = filtered_intersection_df[
         filtered_intersection_df[site_col].isin(sites_w_data)
@@ -366,7 +376,7 @@ def calculate_geometric_runoff(geom_id,
         site = geom_basin_overlap.loc[
             geom_basin_overlap.weight ==
             geom_basin_overlap.weight.max(), site_col]
-        geom_runoff = df_dict[site].runoff
+        geom_runoff = runoff_dict[site].runoff
         geom_runoff = geom_runoff.rename('geom_runoff')
         return geom_runoff
     # If return not executed, then go to the next step of
@@ -412,16 +422,16 @@ def calculate_geometric_runoff(geom_id,
         print(final_geom_intersection_df)
         # grab applicable basin runoff from dictionary
         basins = final_geom_intersection_df[site_col].tolist()
-        basins_runoff = pd.concat([df_dict[basin] for basin in basins])
+        basins_runoff = pd.concat([runoff_dict[basin] for basin in basins])
         # put dates in column so func can group by them
         basins_runoff['date'] = basins_runoff.index
         basins_runoff.reset_index()
         # merge basin weight info to basin runoff data
-        weights_runoff = basins_runoff.merge(final_geom_intersection_df.drop(['prop_in_basin', 'prop_in_huc'], axis=1), left_on='site_no', right_on=site_col)  # noqa: E501
+        weights_runoff = basins_runoff.merge(final_geom_intersection_df.drop(['prop_in_basin', 'prop_in_huc'], axis=1), left_on=runoff_site_col, right_on=site_col)  # noqa: E501
         # get weighted runoff value for each day
-        weights_runoff['basin_weighted_runoff'] = weights_runoff[data_col] * weights_runoff['weight']  # noqa: E501
+        weights_runoff['basin_weighted_runoff'] = weights_runoff[runoff_data_col] * weights_runoff['weight']  # noqa: E501
         # apply equation to each day to get estimated huc runoff
-        geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum()/x['weight'].sum()).reset_index(name='geom_runoff')  # noqa: E501
+        geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum(skipna=False)/x['weight'].sum(skipna=False)).reset_index(name='geom_runoff')  # noqa: E501
         geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']\
             .rename_axis('datetime')
         return geom_runoff
@@ -429,14 +439,14 @@ def calculate_geometric_runoff(geom_id,
 
 def calculate_multiple_geometric_runoff(
         geom_id_list,
-        df_dict,
+        runoff_dict,
         geom_intersection_df,
         site_col,
         geom_id_col,
         prop_geom_in_basin_col='prop_in_basin',
         prop_basin_in_geom_col='prop_in_huc',
         percentage=False,
-        data_col='runoff'
+        runoff_data_col='runoff'
         ):
     """Calculate runoff for multiple geometries at once.
 
@@ -446,7 +456,7 @@ def calculate_multiple_geometric_runoff(
         List of geometry ID strings for the geometries of interest.
         These should be columns in the weights matrix.
 
-    df_dict : dict
+    runoff_dict : dict
         Dictionary of dataframes containing runoff data for each site in the
         geometry.
 
@@ -479,8 +489,8 @@ def calculate_multiple_geometric_runoff(
         percentage = True. If the values are decimal proportions,
         percentage = False. Default: False
 
-    data_col : str, optional
-        Column name containing runoff data in the dataframes in df_dict.
+    runoff_data_col : str, optional
+        Column name containing runoff data in the dataframes in runoff_dict.
         Default is 'runoff', as it is assumed these dataframes are created
         using the :obj:`streamflow_to_runoff` function.
 
@@ -506,20 +516,20 @@ def calculate_multiple_geometric_runoff(
         # subset dictionary to sites with drainage areas that
         # intersect the geom_id
         site_dict = {
-            site_no: df_dict[site_no] for site_no in runoff_sites if site_no in df_dict  # noqa: E501
+            site_no: runoff_dict[site_no] for site_no in runoff_sites if site_no in runoff_dict  # noqa: E501
             }
         if bool(site_dict):
             # calculate runoff for geometry
             runoff = calculate_geometric_runoff(
                 geom_id=geom_id,
-                df_dict=site_dict,
+                runoff_dict=site_dict,
                 geom_intersection_df=geom_intersection_df,
                 site_col=site_col,
                 geom_id_col=geom_id_col,
                 prop_basin_in_geom_col=prop_basin_in_geom_col,
                 prop_geom_in_basin_col=prop_geom_in_basin_col,
                 percentage=percentage,
-                data_col=data_col)
+                runoff_data_col=runoff_data_col)
         else:
             runoff = pd.Series(dtype='float32')
 
