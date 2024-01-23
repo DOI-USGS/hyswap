@@ -249,9 +249,10 @@ def calculate_geometric_runoff(geom_id,
                                geom_intersection_df,
                                site_col,
                                geom_id_col,
-                               prop_geom_in_basin_col='prop_in_basin',
-                               prop_basin_in_geom_col='prop_in_huc',
+                               prop_geom_in_basin_col='prop_huc_in_basin',
+                               prop_basin_in_geom_col='prop_basin_in_huc',
                                percentage=False,
+                               use_WW_method=True,
                                runoff_data_col='runoff',
                                runoff_site_col='site_no',
                                full_overlap_threshold=0.98):
@@ -300,6 +301,14 @@ def calculate_geometric_runoff(geom_id,
         If the values in geom_intersection_df are percentages,
         percentage = True. If the values are decimal proportions,
         percentage = False. Default: False
+
+    use_WW_method : boolean, optional
+        When True, the function uses the original Water Watch
+        method of estimating runoff using only basins that are (a)
+        contained within the geometry and (b) the smallest basin
+        containing the geometry in the weighted average. When False,
+        the function uses all overlapping basins to estimate runoff
+        for the geometry. Defaults to True.
 
     runoff_data_col : str, optional
         Column name containing runoff data in the dataframes in runoff_dict.
@@ -379,62 +388,69 @@ def calculate_geometric_runoff(geom_id,
         geom_runoff = runoff_dict[site].runoff
         geom_runoff = geom_runoff.rename('geom_runoff')
         return geom_runoff
-    # If return not executed, then go to the next step of
-    # finding basins within the geom and the basin that contains
-    # the geom with the largest weight
-    # find where geom in basin is ~ 1 (contained by basin)
-    geom_in_basin = filtered_intersection_df[(filtered_intersection_df[prop_geom_in_basin_col] > full_overlap_threshold)].copy()  # noqa: E501
-    # if there are no basins containing the geometry object
-    # with associated runoff data, let user know and then
-    # check if there are any basins within geom.
-    if geom_in_basin.empty:
-        print("No runoff data associated with any basins containing the geometry object for the time period selected.")  # noqa: E501
+    
+    if use_WW_method:
+        # If return not executed, then go to the next step of
+        # finding basins within the geom and the basin that contains
+        # the geom with the largest weight
+        # find where geom in basin is ~ 1 (contained by basin)
+        geom_in_basin = filtered_intersection_df[(filtered_intersection_df[prop_geom_in_basin_col] > full_overlap_threshold)].copy()  # noqa: E501
+        # if there are no basins containing the geometry object
+        # with associated runoff data, let user know and then
+        # check if there are any basins within geom.
+        if geom_in_basin.empty:
+            print("No runoff data associated with any basins containing the geometry object for the time period selected.")  # noqa: E501
+        else:
+            # calculate their weights
+            geom_in_basin['weight'] = geom_in_basin[prop_basin_in_geom_col] * \
+                geom_in_basin[prop_geom_in_basin_col]
+            # grab basin with greatest weight value: this means it fully
+            # contains the geom and closest in size to geom (a larger
+            # basin would result in a smaller overall weight since the
+            # proportion of the basin in geom would be smaller with a
+            # bigger basin)
+            geom_in_basin = geom_in_basin[geom_in_basin['weight'] == geom_in_basin['weight'].max()]  # noqa: E501
+            # make sure returns one value
+            assert geom_in_basin.shape[0] == 1
+        # grab all basins fully contained within the geom
+        basin_in_geom = filtered_intersection_df[(filtered_intersection_df[prop_basin_in_geom_col] > full_overlap_threshold)].copy()  # noqa: E501
+        # if there are no basins with runoff data, let user know.
+        if basin_in_geom.empty:
+            print("No runoff data associated with any basins contained within the geometry object for the time period selected.")  # noqa: E501
+        else:
+            # calculate their weights
+            basin_in_geom['weight'] = basin_in_geom[prop_basin_in_geom_col] * \
+                basin_in_geom[prop_geom_in_basin_col]
+        # if both geom_in_basin and basin_in_geom are empty, meaning
+        # no basins fully contain the huc and the huc doesn't fully
+        # contain any basins, return empty series.
+        if geom_in_basin.empty and basin_in_geom.empty:
+            print("Insufficient data and/or overlap between basins and geometry object. Returning empty series.")  # noqa: E501
+            return pd.Series(dtype='float32')
+        # combine these two dfs into one
+        else:
+            final_geom_intersection_df = pd.concat([geom_in_basin, basin_in_geom])
+            print(final_geom_intersection_df)
     else:
-        # calculate their weights
-        geom_in_basin['weight'] = geom_in_basin[prop_basin_in_geom_col] * \
-            geom_in_basin[prop_geom_in_basin_col]
-        # grab basin with greatest weight value: this means it fully
-        # contains the geom and closest in size to geom (a larger
-        # basin would result in a smaller overall weight since the
-        # proportion of the basin in geom would be smaller with a
-        # bigger basin)
-        geom_in_basin = geom_in_basin[geom_in_basin['weight'] == geom_in_basin['weight'].max()]  # noqa: E501
-        # make sure returns one value
-        assert geom_in_basin.shape[0] == 1
-    # grab all basins fully contained within the geom
-    basin_in_geom = filtered_intersection_df[(filtered_intersection_df[prop_basin_in_geom_col] > full_overlap_threshold)].copy()  # noqa: E501
-    # if there are no basins with runoff data, let user know.
-    if basin_in_geom.empty:
-        print("No runoff data associated with any basins contained within the geometry object for the time period selected.")  # noqa: E501
-    else:
-        # calculate their weights
-        basin_in_geom['weight'] = basin_in_geom[prop_basin_in_geom_col] * \
-            basin_in_geom[prop_geom_in_basin_col]
-    # if both geom_in_basin and basin_in_geom are empty, meaning
-    # no basins fully contain the huc and the huc doesn't fully
-    # contain any basins, return empty series.
-    if geom_in_basin.empty and basin_in_geom.empty:
-        print("Insufficient data and/or overlap between basins and geometry object. Returning empty series.")  # noqa: E501
-        return pd.Series(dtype='float32')
-    # combine these two dfs into one
-    else:
-        final_geom_intersection_df = pd.concat([geom_in_basin, basin_in_geom])
-        print(final_geom_intersection_df)
-        # grab applicable basin runoff from dictionary
-        basins = final_geom_intersection_df[site_col].tolist()
-        basins_runoff = pd.concat([runoff_dict[basin] for basin in basins])
-        # put dates in column so func can group by them
-        basins_runoff['date'] = basins_runoff.index
-        basins_runoff.reset_index()
-        # merge basin weight info to basin runoff data
-        weights_runoff = basins_runoff.merge(final_geom_intersection_df.drop(['prop_in_basin', 'prop_in_huc'], axis=1), left_on=runoff_site_col, right_on=site_col)  # noqa: E501
-        # get weighted runoff value for each day
-        weights_runoff['basin_weighted_runoff'] = weights_runoff[runoff_data_col] * weights_runoff['weight']  # noqa: E501
-        # apply equation to each day to get estimated huc runoff
-        geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum(skipna=False)/x['weight'].sum(skipna=False)).reset_index(name='geom_runoff')  # noqa: E501
-        geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']\
-            .rename_axis('datetime')
-        return geom_runoff
+        # Use all intersections to calculate a weighted average
+        final_geom_intersection_df = filtered_intersection_df.copy()
+        final_geom_intersection_df['weight'] = final_geom_intersection_df[prop_basin_in_geom_col] * \
+                final_geom_intersection_df[prop_geom_in_basin_col]
+    # grab applicable basin runoff from dictionary
+    basins = final_geom_intersection_df[site_col].tolist()
+    basins_runoff = pd.concat([runoff_dict[basin] for basin in basins])
+    # put dates in column so func can group by them
+    basins_runoff['date'] = basins_runoff.index
+    basins_runoff.reset_index()
+    # merge basin weight info to basin runoff data
+    weights_runoff = basins_runoff.merge(final_geom_intersection_df.drop([prop_geom_in_basin_col, prop_basin_in_geom_col], axis=1), left_on=runoff_site_col, right_on=site_col)  # noqa: E501
+    # get weighted runoff value for each day
+    weights_runoff['basin_weighted_runoff'] = weights_runoff[runoff_data_col] * weights_runoff['weight']  # noqa: E501
+    # apply equation to each day to get estimated huc runoff
+    geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum(skipna=False)/x['weight'].sum(skipna=False)).reset_index(name='geom_runoff')  # noqa: E501
+    geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']\
+        .rename_axis('datetime')
+    return geom_runoff
 
 
 def calculate_multiple_geometric_runoff(
@@ -443,8 +459,8 @@ def calculate_multiple_geometric_runoff(
         geom_intersection_df,
         site_col,
         geom_id_col,
-        prop_geom_in_basin_col='prop_in_basin',
-        prop_basin_in_geom_col='prop_in_huc',
+        prop_geom_in_basin_col='prop_huc_in_basin',
+        prop_basin_in_geom_col='prop_basin_in_huc',
         percentage=False,
         runoff_data_col='runoff'
         ):
@@ -510,8 +526,8 @@ def calculate_multiple_geometric_runoff(
             geom_intersection_df=geom_intersection_df,
             geom_id_col='huc_id',
             site_col='da_site_no',
-            prop_geom_in_basin_col='prop_in_basin',
-            prop_basin_in_geom_col='prop_in_huc'
+            prop_geom_in_basin_col=prop_geom_in_basin_col,
+            prop_basin_in_geom_col=prop_basin_in_geom_col
             )
         # subset dictionary to sites with drainage areas that
         # intersect the geom_id
