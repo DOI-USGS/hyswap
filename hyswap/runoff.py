@@ -1,5 +1,6 @@
 """Runoff functions for hyswap."""
 import pandas as pd
+import numpy as np
 
 
 def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
@@ -253,8 +254,6 @@ def calculate_geometric_runoff(geom_id,
                                prop_basin_in_geom_col='prop_basin_in_huc',
                                percentage=False,
                                use_WW_method=True,
-                               runoff_data_col='runoff',
-                               runoff_site_col='site_no',
                                full_overlap_threshold=0.98):
     """Function to calculate the runoff for a specified geometry. Uses
     tabular dataframe containing proportion of geometry in each
@@ -269,9 +268,8 @@ def calculate_geometric_runoff(geom_id,
     runoff_dict : dict
         Dictionary of dataframes containing runoff data for each site in the
         geometry. Dictionary key is expected to be the name of the gage site.
-        Each dictionary entry is expected to have a date index, a data
-        column filled with runoff data, and a site column that matches
-        the dictionary key.
+        Each dictionary entry is expected to have a date index and a data
+        column filled with runoff data.
 
     geom_intersection_df : pandas.DataFrame
         Tabular dataFrame containing columns indicating the site numbers,
@@ -309,17 +307,6 @@ def calculate_geometric_runoff(geom_id,
         containing the geometry in the weighted average. When False,
         the function uses all overlapping basins to estimate runoff
         for the geometry. Defaults to True.
-
-    runoff_data_col : str, optional
-        Column name containing runoff data in the dataframes in runoff_dict.
-        Default is 'runoff', as it is assumed these dataframes are created
-        using the :obj:`streamflow_to_runoff` function.
-
-    runoff_site_col : str
-        Column name in runoff dictionary with drainage area site numbers.
-        Please make sure ids have the correct number of digits and have
-        not lost leading 0s when read in. If the site numbers are the
-        geom_intersection_df index col, site_col = 'index'.
 
     full_overlap_threshold : float, optional
         The minimum proportion of overlap between geometry and basin that
@@ -385,10 +372,10 @@ def calculate_geometric_runoff(geom_id,
         site = geom_basin_overlap.loc[
             geom_basin_overlap.weight ==
             geom_basin_overlap.weight.max(), site_col]
-        geom_runoff = runoff_dict[site].runoff
+        geom_runoff = runoff_dict[site.tolist()[0]].runoff
         geom_runoff = geom_runoff.rename('geom_runoff')
         return geom_runoff
-    
+
     if use_WW_method:
         # If return not executed, then go to the next step of
         # finding basins within the geom and the basin that contains
@@ -429,27 +416,31 @@ def calculate_geometric_runoff(geom_id,
             return pd.Series(dtype='float32')
         # combine these two dfs into one
         else:
-            final_geom_intersection_df = pd.concat([geom_in_basin, basin_in_geom])
+            final_geom_intersection_df = pd.concat(
+                [geom_in_basin, basin_in_geom]
+                )
             print(final_geom_intersection_df)
     else:
         # Use all intersections to calculate a weighted average
         final_geom_intersection_df = filtered_intersection_df.copy()
-        final_geom_intersection_df['weight'] = final_geom_intersection_df[prop_basin_in_geom_col] * \
-                final_geom_intersection_df[prop_geom_in_basin_col]
+        final_geom_intersection_df['weight'] = final_geom_intersection_df[prop_basin_in_geom_col] * final_geom_intersection_df[prop_geom_in_basin_col]  # noqa: E501
     # grab applicable basin runoff from dictionary
     basins = final_geom_intersection_df[site_col].tolist()
-    basins_runoff = pd.concat([runoff_dict[basin] for basin in basins])
-    # put dates in column so func can group by them
-    basins_runoff['date'] = basins_runoff.index
-    basins_runoff.reset_index()
-    # merge basin weight info to basin runoff data
-    weights_runoff = basins_runoff.merge(final_geom_intersection_df.drop([prop_geom_in_basin_col, prop_basin_in_geom_col], axis=1), left_on=runoff_site_col, right_on=site_col)  # noqa: E501
-    # get weighted runoff value for each day
-    weights_runoff['basin_weighted_runoff'] = weights_runoff[runoff_data_col] * weights_runoff['weight']  # noqa: E501
-    # apply equation to each day to get estimated huc runoff
-    geom_runoff_df = weights_runoff.groupby('date').apply(lambda x: x['basin_weighted_runoff'].sum(skipna=False)/x['weight'].sum(skipna=False)).reset_index(name='geom_runoff')  # noqa: E501
-    geom_runoff = geom_runoff_df.set_index('date')['geom_runoff']\
-        .rename_axis('datetime')
+    # create df of applicable basin runoffs, where columns
+    # refer to basins and rows refer to runoff using a
+    # datetime index
+    basin_runoff = runoff_dict[basins[0]].runoff.rename(basins[0]).to_frame()  # noqa: E501
+    for basin in basins[1:]:
+        basin_runoff = basin_runoff.merge(runoff_dict[basin].runoff.rename(basin).to_frame(),  # noqa: E501
+                                          on='datetime')
+    # create masked array so that numpy can calculate weighted avg
+    # while ignoring nans
+    masked_basin_runoff = np.ma.masked_array(basin_runoff[basins], np.isnan(basin_runoff))  # noqa: E501
+    basin_runoff['geom_runoff'] = np.ma.average(masked_basin_runoff,
+                                                weights=final_geom_intersection_df['weight'].to_numpy(),  # noqa: E501
+                                                axis=1)
+    basin_runoff = basin_runoff.sort_index()
+    geom_runoff = basin_runoff['geom_runoff']
     return geom_runoff
 
 
@@ -462,7 +453,8 @@ def calculate_multiple_geometric_runoff(
         prop_geom_in_basin_col='prop_huc_in_basin',
         prop_basin_in_geom_col='prop_basin_in_huc',
         percentage=False,
-        runoff_data_col='runoff'
+        use_WW_method=True,
+        full_overlap_threshold=0.98
         ):
     """Calculate runoff for multiple geometries at once.
 
@@ -474,7 +466,9 @@ def calculate_multiple_geometric_runoff(
 
     runoff_dict : dict
         Dictionary of dataframes containing runoff data for each site in the
-        geometry.
+        geometry. Dictionary key is expected to be the name of the gage site.
+        Each dictionary entry is expected to have a date index and a data
+        column filled with runoff data.
 
     geom_intersection_df : pandas.DataFrame
         Tabular dataFrame containing columns indicating the site numbers,
@@ -501,14 +495,25 @@ def calculate_multiple_geometric_runoff(
         spatial geometry. Default name: 'pct_in_huc'
 
     percentage : boolean, optional
-        If the weight values in geom_intersection_df are percentages,
+        If the values in geom_intersection_df are percentages,
         percentage = True. If the values are decimal proportions,
         percentage = False. Default: False
 
-    runoff_data_col : str, optional
-        Column name containing runoff data in the dataframes in runoff_dict.
-        Default is 'runoff', as it is assumed these dataframes are created
-        using the :obj:`streamflow_to_runoff` function.
+    use_WW_method : boolean, optional
+        When True, the function uses the original Water Watch
+        method of estimating runoff using only basins that are (a)
+        contained within the geometry and (b) the smallest basin
+        containing the geometry in the weighted average. When False,
+        the function uses all overlapping basins to estimate runoff
+        for the geometry. Defaults to True.
+
+    full_overlap_threshold : float, optional
+        The minimum proportion of overlap between geometry and basin that
+        constitutes "full" overlap. For example, occasionally a geometry
+        (or basin) may be completely contained by a basin (or geometry),
+        but polygon border artifacts might cause the intersection to be
+        slightly less than 1. This input accounts for that error.
+        Defaults to 0.98.
 
     Returns
     -------
@@ -545,7 +550,8 @@ def calculate_multiple_geometric_runoff(
                 prop_basin_in_geom_col=prop_basin_in_geom_col,
                 prop_geom_in_basin_col=prop_geom_in_basin_col,
                 percentage=percentage,
-                runoff_data_col=runoff_data_col)
+                use_WW_method=use_WW_method,
+                full_overlap_threshold=full_overlap_threshold)
         else:
             runoff = pd.Series(dtype='float32')
 
