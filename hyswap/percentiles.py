@@ -48,18 +48,18 @@ def calculate_fixed_percentile_thresholds(
         Ignore NA values in percentile calculations
 
     include_min_max : bool, optional
-        If True, include min and max streamflow value in addition to streamflow
-        values for percentile levels. Default is True.
+        When set to True, include min and max streamflow value in addition to
+        streamflow values for percentile levels. Default is True.
 
     include_metadata : bool, optional
-        If True, return additional columns describing the data including
-        count, mean, start_yr, end_yr. Default is True
+        When set to True, return additional columns describing the data
+        including count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
-        Set percentiles that are beyond the min/max percentile ranks of the
-        observed data to be NA. Effect of this being enables is that high or
-        low percentiles may not be calculated when few data points are
-        available. Default is True.
+        When set to True, percentiles that are beyond the min/max percentile
+        ranks of the observed data to be NA. Effect of this being enables is
+        that high or low percentiles may not be calculated when few data points
+        are available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -108,6 +108,18 @@ def calculate_fixed_percentile_thresholds(
                 min  p05   p25   p50   p75   p95  max
         values    0  4.1  24.5  50.0  75.5  95.9  100
 
+    Calculate percentile thresholds from a small number of observations and
+    mask out out of range percentile levels
+
+        >>> data = pd.DataFrame({'values': np.arange(11),
+        ...                      'date': pd.date_range('2020-01-01', '2020-01-11')}).set_index('date')  # noqa: E501
+        >>> results = percentiles.calculate_fixed_percentile_thresholds(
+        ...     data, 'values',
+        ...     percentiles=np.array((1, 10, 50, 90, 99)),
+        ...     include_metadata=False)
+        >>> results
+                min  p05   p25   p50   p75   p95  max
+        values    0	 NaN   0.2	 5.0   9.8	 NaN   10
     """
     # If data column name is not in dataframe
     if data_column_name not in df:
@@ -137,6 +149,7 @@ def calculate_fixed_percentile_thresholds(
     df_out.columns = "p" + df_out.columns.astype(str).str.zfill(2)
 
     if include_min_max:
+        # add min as first column of dataframe and max as last column
         if ignore_na:
             df_out.insert(0, 'min', np.min(data))
             df_out['max'] = np.max(data)
@@ -236,18 +249,18 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         Ignore NA values in percentile calculations
 
     include_min_max : bool, optional
-        If True, include min and max streamflow value in addition to streamflow
-        values for percentile levels. Default is True.
+        When set to True, include min and max streamflow value in addition to
+        streamflow values for percentile levels. Default is True.
 
     include_metadata : bool, optional
-        If True, return additional columns describing the data including
-        count, mean, start_yr, end_yr. Default is True
+        When set to True, return additional columns describing the data
+        including count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
-        Set percentiles that are beyond the min/max percentile ranks of the
-        observed data to be NA. Effect of this being enables is that high or
-        low percentiles may not be calculated when few data points are
-        available. Default is True.
+        When set to True, percentiles that are beyond the min/max percentile
+        ranks of the observed data to be NA. Effect of this being enables is
+        that high or low percentiles may not be calculated when few data points
+        are available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -447,18 +460,18 @@ def calculate_variable_percentile_thresholds_by_day(
         Ignore NA values in percentile calculations
 
     include_min_max : bool, optional
-        If True, include min and max streamflow value in addition to streamflow
-        values for percentile levels. Default is True.
+        When set to True, include min and max streamflow value in addition to
+        streamflow values for percentile levels. Default is True.
 
     include_metadata : bool, optional
-        If True, return additional columns describing the data including
-        count, mean, start_yr, end_yr. Default is True
+        When set to True, return additional columns describing the data
+        including count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
-        Set percentiles that are beyond the min/max percentile ranks of the
-        observed data to be NA. Effect of this being enables is that high or
-        low percentiles may not be calculated when few data points are
-        available. Default is True.
+        When set to True, percentiles that are beyond the min/max percentile
+        ranks of the observed data to be NA. Effect of this being enables is
+        that high or low percentiles may not be calculated when few data points
+        are available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.

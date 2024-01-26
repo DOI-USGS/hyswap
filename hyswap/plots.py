@@ -419,7 +419,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
             df_combined.index.values,
             df_combined['p' + str(pct_list[i-1]).zfill(2)].tolist(),
             df_combined['p' + str(pct_list[i]).zfill(2)].tolist(),
-            color=colors[i-1],
+            color=colors[i],
             alpha=alpha,
             linewidth=0,
             label="{}th - {}th Percentile".format(

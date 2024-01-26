@@ -523,9 +523,9 @@ def munge_nwis_stats(df, include_metadata=True):
     """Function to munge and reformat NWIS statistics data.
 
     This is a utility function that exists to help munge NWIS percentile data
-    served via the NWIS statistics web service. This function is intended to
-    be used on Python dataretrieval dataframe returns for the nwis.get_stats()
-    function for "daily" data, a single site, and a single parameter code.
+    served via the NWIS statistics web service. This function uses the output
+    of nwis.get_stats() for daily data at a single site and for a single
+    parameter code.
 
     Parameters
     ----------
