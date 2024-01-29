@@ -119,7 +119,7 @@ def calculate_fixed_percentile_thresholds(
     Calculate percentile thresholds from a small number of observations and
     mask out out of range percentile levels
 
-        >>> data = np.arange(11),
+        >>> data = np.arange(11)
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, percentiles=np.array((1, 10, 50, 90, 99)),
         ...     include_metadata=False)
