@@ -253,7 +253,7 @@ def calculate_geometric_runoff(geom_id,
                                prop_geom_in_basin_col='prop_huc_in_basin',
                                prop_basin_in_geom_col='prop_basin_in_huc',
                                percentage=False,
-                               use_WW_method=True,
+                               clip_downstream_basins=True,
                                full_overlap_threshold=0.98):
     """Function to calculate the runoff for a specified geometry. Uses
     tabular dataframe containing proportion of geometry in each
@@ -300,10 +300,9 @@ def calculate_geometric_runoff(geom_id,
         percentage = True. If the values are decimal proportions,
         percentage = False. Default: False
 
-    use_WW_method : boolean, optional
-        When True, the function uses the original Water Watch
-        method of estimating runoff using only basins that are (a)
-        contained within the geometry and (b) the smallest basin
+    clip_downstream_basins : boolean, optional
+        When True, the function estimates runoff using only basins that are
+        (a) contained within the geometry and (b) the smallest basin
         containing the geometry in the weighted average. When False,
         the function uses all overlapping basins to estimate runoff
         for the geometry. Defaults to True.
@@ -376,7 +375,7 @@ def calculate_geometric_runoff(geom_id,
         geom_runoff = geom_runoff.rename('geom_runoff')
         return geom_runoff
 
-    if use_WW_method:
+    if clip_downstream_basins:
         # If return not executed, then go to the next step of
         # finding basins within the geom and the basin that contains
         # the geom with the largest weight
@@ -453,7 +452,7 @@ def calculate_multiple_geometric_runoff(
         prop_geom_in_basin_col='prop_huc_in_basin',
         prop_basin_in_geom_col='prop_basin_in_huc',
         percentage=False,
-        use_WW_method=True,
+        clip_downstream_basins=True,
         full_overlap_threshold=0.98
         ):
     """Calculate runoff for multiple geometries at once.
@@ -499,10 +498,9 @@ def calculate_multiple_geometric_runoff(
         percentage = True. If the values are decimal proportions,
         percentage = False. Default: False
 
-    use_WW_method : boolean, optional
-        When True, the function uses the original Water Watch
-        method of estimating runoff using only basins that are (a)
-        contained within the geometry and (b) the smallest basin
+    clip_downstream_basins : boolean, optional
+        When True, the function estimates runoff using only basins that are
+        (a) contained within the geometry and (b) the smallest basin
         containing the geometry in the weighted average. When False,
         the function uses all overlapping basins to estimate runoff
         for the geometry. Defaults to True.
@@ -550,7 +548,7 @@ def calculate_multiple_geometric_runoff(
                 prop_basin_in_geom_col=prop_basin_in_geom_col,
                 prop_geom_in_basin_col=prop_geom_in_basin_col,
                 percentage=percentage,
-                use_WW_method=use_WW_method,
+                clip_downstream_basins=clip_downstream_basins,
                 full_overlap_threshold=full_overlap_threshold)
         else:
             runoff = pd.Series(dtype='float32')
