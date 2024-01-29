@@ -124,8 +124,8 @@ def calculate_fixed_percentile_thresholds(
         ...     data, percentiles=np.array((1, 10, 50, 90, 99)),
         ...     include_metadata=False)
         >>> results
-                min  p05   p25   p50   p75   p95  max
-        values    0	 NaN   0.2	 5.0   9.8	 NaN   10
+                min  p01  p10  p50  p90  p99  max
+        values    0  NaN  0.2  5.0  9.8  NaN   10
     """
     if isinstance(data, pd.DataFrame):
         # set the df index
