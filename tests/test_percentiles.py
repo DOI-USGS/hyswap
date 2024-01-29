@@ -111,6 +111,36 @@ class TestCalculateFixedPercentileThresholds:
         assert np.sum(np.isnan(percentiles_.values)) == 4
         assert percentiles_.values.tolist()[0][2] == 2.0
 
+    def test_percentile_calcs_using_array(self):
+        # test the function with input just as a 1-D array
+        percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
+            np.arange(101), method='linear', ignore_na=False,
+            include_metadata=False)
+        assert percentiles_.shape == (1, 9)
+        assert percentiles_.columns.tolist() == [
+            'min', 'p05', 'p10', 'p25', 'p50', 'p75', 'p90', 'p95', 'max']
+        assert percentiles_.values.tolist()[0] == [
+            0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0, 100.0]
+
+    def test_percentile_calcs_using_series(self):
+        # test the function with input just as a series
+        percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
+            self.data['values'], method='linear', ignore_na=False,
+            include_metadata=False)
+        assert percentiles_.shape == (1, 9)
+        assert percentiles_.columns.tolist() == [
+            'min', 'p05', 'p10', 'p25', 'p50', 'p75', 'p90', 'p95', 'max']
+        assert percentiles_.values.tolist()[0] == [
+            0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0, 100.0]
+
+    def test_percentile_calcs_missing_datetime(self):
+        # test the function errors if include_metadata=True and no
+        # datetime index is present
+        with pytest.raises(ValueError):
+            percentiles.calculate_fixed_percentile_thresholds(
+                np.arange(101), method='linear', ignore_na=False,
+                include_metadata=True)
+
 
 class TestCalculateVariablePercentileThresholdsByDay:
     # data for all tests in this class

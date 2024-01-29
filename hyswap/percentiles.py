@@ -14,10 +14,11 @@ from hyswap.exceedance import calculate_exceedance_probability_from_values
 
 
 def calculate_fixed_percentile_thresholds(
-        df,
-        data_column_name,
+        data,
+        data_column_name=None,
         percentiles=np.array((5, 10, 25, 50, 75, 90, 95)),
         method='weibull',
+        date_column_name=None,
         ignore_na=True,
         include_min_max=True,
         include_metadata=True,
@@ -27,11 +28,13 @@ def calculate_fixed_percentile_thresholds(
 
     Parameters
     ----------
-    df : pandas.DataFrame
-        DataFrame containing data to calculate daily percentile thresholds for.
+    data : pandas.DataFrame or array-like
+        DataFrame, Series, or 1-D array containing data to calculate percentile
+        thresholds for.
 
-    data_column_name : str
-        Name of column containing data to analyze.
+    data_column_name : str, optional
+        Name of column containing data to analyze if input is a DataFrame.
+        Default is None.
 
     percentiles : array_like, optional
         Percentiles to calculate. Default is (5, 10, 25, 50, 75, 90, 95).
@@ -44,6 +47,11 @@ def calculate_fixed_percentile_thresholds(
         'hazen' (Type 5), 'linear' (Type 7), 'median_unbiased' (Type 8),
         and 'normal_unbiased' (Type 9).
 
+    date_column_name : str, optional
+        Name of column containing date information. If None, the index of
+        `data` is used. Either a date_date_column_name or datetime index must
+        be provided if
+
     ignore_na : bool, optional
         Ignore NA values in percentile calculations
 
@@ -53,7 +61,9 @@ def calculate_fixed_percentile_thresholds(
 
     include_metadata : bool, optional
         When set to True, return additional columns describing the data
-        including count, mean, start_yr, end_yr. Default is True
+        including count, mean, start_yr, end_yr. Default is True. Input data
+        must include a datetime column as either index or specified by
+        date_column_name.
 
     mask_out_of_range :  bool, optional
         When set to True, percentiles that are beyond the min/max percentile
@@ -89,20 +99,18 @@ def calculate_fixed_percentile_thresholds(
 
     .. doctest::
 
-        >>> data = pd.DataFrame({'values': np.arange(101),
-        ...                      'date': pd.date_range('2020-01-01', '2020-04-10')}).set_index('date')  # noqa: E501
+        >>> data = np.arange(101)
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
-        ...     data, 'values', percentiles=[5, 25, 75, 95], method='linear',
+        ...     data, percentiles=[5, 25, 75, 95], method='linear',
         ...     include_metadata=False)
         >>> results
                 min  p05   p25   p75   p95  max
         values    0  5.0  25.0  75.0  95.0  100
 
     Calculate percentile thresholds using default 'weibull' method
-        >>> data = pd.DataFrame({'values': np.arange(101),
-        ...                      'date': pd.date_range('2020-01-01', '2020-04-10')}).set_index('date')  # noqa: E501
+        >>> data = np.arange(101)
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
-        ...     data, 'values', percentiles=[5, 25, 50, 75, 95],
+        ...     data, percentiles=[5, 25, 50, 75, 95],
         ...     include_metadata=False)
         >>> results
                 min  p05   p25   p50   p75   p95  max
@@ -111,27 +119,30 @@ def calculate_fixed_percentile_thresholds(
     Calculate percentile thresholds from a small number of observations and
     mask out out of range percentile levels
 
-        >>> data = pd.DataFrame({'values': np.arange(11),
-        ...                      'date': pd.date_range('2020-01-01', '2020-01-11')}).set_index('date')  # noqa: E501
+        >>> data = np.arange(11),
         >>> results = percentiles.calculate_fixed_percentile_thresholds(
-        ...     data, 'values',
-        ...     percentiles=np.array((1, 10, 50, 90, 99)),
+        ...     data, percentiles=np.array((1, 10, 50, 90, 99)),
         ...     include_metadata=False)
         >>> results
                 min  p05   p25   p50   p75   p95  max
         values    0	 NaN   0.2	 5.0   9.8	 NaN   10
     """
-    # If data column name is not in dataframe
-    if data_column_name not in df:
-        warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds')  # noqa: E501
-        df[data_column_name] = np.nan
+    if isinstance(data, pd.DataFrame):
+        # set the df index
+        if date_column_name is not None:
+            data = data.set_index(date_column_name)
+        # If data column name is not in dataframe
+        if data_column_name not in data:
+            warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds')  # noqa: E501
+            data[data_column_name] = np.nan
+        data = data[data_column_name]
+
     # ignore 0 and 100 percentiles if passed in
     if isinstance(percentiles, np.ndarray):
         percentiles = percentiles[~np.isin(percentiles, [0, 100])]
     elif isinstance(percentiles, list):
         percentiles = [x for x in percentiles if x not in (0, 100)]
 
-    data = df[data_column_name]
     if ignore_na:
         pct = np.nanpercentile(data, percentiles, method=method, **kwargs)
     else:
@@ -157,13 +168,18 @@ def calculate_fixed_percentile_thresholds(
             df_out.insert(0, 'min', np.nanmin(data))
             df_out['max'] = np.nanmax(data)
     if include_metadata:
+        if isinstance(data, pd.Series):
+            if not data.index.inferred_type == "datetime64":
+                raise ValueError("Datetime index must be provided with include_metadata=True.")  # noqa: E501
+        else:
+            raise ValueError("Data input format must include a datetime index with include_metadata=True.")  # noqa: E501
         if ignore_na:
             df_out['mean'] = np.round(np.nanmean(data), 2)
         else:
             df_out['mean'] = np.round(np.mean(data), 2)
         df_out['count'] = len(data)
-        df_out['start_yr'] = df.index.min().strftime('%Y')
-        df_out['end_yr'] = df.index.max().strftime('%Y')
+        df_out['start_yr'] = data.index.min().strftime('%Y')
+        df_out['end_yr'] = data.index.max().strftime('%Y')
 
     return df_out
 
