@@ -12,7 +12,7 @@ Calculating Historic Percentiles for One Site
 The :obj:`hyswap.percentiles.calculate_fixed_percentile_thresholds` function
 is used to calculate a set of percentile thresholds given a set of data.
 This function simply calculates one set of fixed percentile thresholds using all available data, 
-and is not intended to be used for calculating percentiles for individual days of the year.
+and is not intended to be used for calculating percentile thresholds separatly for individual days of the year.
 
 By default this method calculates percentiles using the Weibull distribution
 with an alpha parameter of 0 and a beta parameter of 0. The Weibull
@@ -36,7 +36,8 @@ calculating the 10th, 50th, and 90th percentiles for that data.
 
     # print percentile values (corresponding to 10th, 50th, 90th percentiles)
     print(pct_values)
-    [  4.9  75.6 637. ]
+             min  p10   p50    p90      max    mean  count start_yr end_yr
+    values  0.23  4.9  75.6  637.0  18400.0  278.54  27911     1935   2022
 
 The percentile calculation can use a method other than the Weibull method if
 desired by specifying a keyword parameter `method`. See the `numpy.percentile`_
@@ -72,20 +73,18 @@ calculating the 10th, 50th, and 90th percentiles for each day of the year.
 
     # print first 5 rows of the percentile dataframe
     print(pcts.head())
-                    10     50      90
-    doy month-day
-    1   01-01      29.6  226.0  1514.0
-    2   01-02      41.0  199.0  1694.0
-    3   01-03      43.4  260.0  1724.0
-    4   01-04      56.4  239.0  1800.0
-    5   01-05      53.8  257.0  1368.0
+               min   p10    p50     p90     max    mean count start_yr end_yr
+    month_day                                                                
+    01-01      2.0  29.6  226.0  1514.0  4810.0  523.32    75     1936   2022
+    01-02      2.0  41.0  199.0  1694.0  3760.0  533.11    75     1936   2022
+    01-03      2.0  43.4  260.0  1724.0  3620.0  567.63    75     1936   2022
+    01-04      2.0  56.4  239.0  1800.0  5120.0  589.99    75     1936   2022
+    01-05      2.0  53.8  257.0  1368.0  8690.0  624.48    75     1936   2022
 
-This function also supports the calculation of percentiles by different types
-of years including the standard calendar year, as well as water years and
-climate years.
+
 By default, percentiles are only computed for days which have at least 10
 years of data available, however this parameter can be altered by setting the
-`min_years` parameter to a different value.
+`min_years` parameter to a different value. 
 Multi-day averaging can also be performed by setting the `data_type` parameter
 to a value like `7-day`, `14-day`, or `28-day`, the default value is `daily`
 which is no temporal averaging.
@@ -152,7 +151,7 @@ of 100.0 cfs on September 1st.
 
     # print that percentile value
     print(pct)
-    90.02
+    90.03
 
 Percentiles can also be calculated for multiple streamflow values at once. Below
 is an example of fetching NWIS streamflow data for a USGS gage and then
@@ -185,11 +184,12 @@ from a recent month.
     # print that percentile value
     print(pcts['est_pct'].head())
     
-    2023-01-01      24.31
-    2023-01-02      21.20
-    2023-01-03      29.80
-    2023-01-04      77.94
-    2023-01-05      73.77
+    datetime
+    2023-01-01    24.31
+    2023-01-02    21.20
+    2023-01-03    33.21
+    2023-01-04    77.94
+    2023-01-05    74.12
 
 
 Below is an example of fetching variable-threshold percentiles for January 1st and their
@@ -199,27 +199,20 @@ calculating a new variable-threshold percentile value for a measurement of 100.0
 .. code::
 
     # fetch data from NWIS using dataretrieval
-    df, _ = dataretrieval.nwis.get_stats("03586500",
-                                         parameterCd="00060",
-                                         statReportType="daily")
+    df, _ = nwis.get_stats("03586500",
+                                            parameterCd="00060",
+                                            statReportType="daily")
 
     # munge the data
     munged_df = hyswap.utils.munge_nwis_stats(df)
 
-    # pull out statistics for Jan. 1
-    day1 = munged_df.iloc[0]
-
-    # convert to a compatible dataframe
-    day1_df = pd.DataFrame(data={"values": day1.values},
-                           index=day1.index.values).T
-
     # calculate the percentile associated with 100.0 cfs
-    pct = hyswap.percentiles.calculate_fixed_percentile_from_value(
-        100.0, day1_df)
+    pct = hyswap.percentiles.calculate_variable_percentile_from_value(
+        100.0, munged_df, '01-01')
 
     # print that percentile value
     print(np.round(pct, 2))
-    22.62
+    22.97
 
 
 Categorizing Streamflow Conditions Based on Estimated Percentiles
