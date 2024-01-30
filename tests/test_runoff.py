@@ -120,20 +120,6 @@ def test_get_date_range_start_end(df_list):
     assert date_range[-1].day == 10
 
 
-# def test_state_runoff(weight_matrix, df_list):
-#     """Test for the area weighted runoff for a specific state."""
-#     state_runoff = runoff.calculate_geometric_runoff(
-#         "AL", df_list, weight_matrix)
-#     # assertions about the state runoff
-#     # input was 3 dates so expect there to be 3 dates in the index
-#     assert len(state_runoff.index) == 3
-#     assert isinstance(
-#         state_runoff.index, pd.core.indexes.datetimes.DatetimeIndex)
-#     # input was 3 sites so expect there to be 3 values, one for each site
-#     assert len(state_runoff.values) == 3
-#     assert isinstance(state_runoff.values, np.ndarray)
-
-
 def test_identify_sites_from_geom_intersection(weight_table):
     """Test the identify_sites_from_geom_intersection function."""
     siteids = runoff.identify_sites_from_geom_intersection(
@@ -147,17 +133,186 @@ def test_identify_sites_from_geom_intersection(weight_table):
     assert siteids == ['03234300']
 
 
-# def test_multiple_runoff(weight_matrix, df_list):
-#     """Test for the area weighted runoff for multiple states."""
-#     runoff_df = runoff.calculate_multiple_geometric_runoff(
-#         ["AL", "NY"], df_list, weight_matrix)
-#     # assertions about the runoff
-#     # should have 3 datetime values on the index
-#     assert len(runoff_df.index) == 3
-#     assert isinstance(
-#         runoff_df.index, pd.core.indexes.datetimes.DatetimeIndex)
-#     # should have both states in the columns
-#     assert len(runoff_df.columns) == 2
-#     assert runoff_df.columns.tolist() == ["AL", "NY"]
-#     # overall shape should be 3 dates x 2 states
-#     assert runoff_df.shape == (3, 2)
+class TestCalculateGeometricRunoff:
+    # data for all tests in this class
+    geom_intersection = pd.DataFrame({
+        'site_id': ['01', '02', '03', '04',
+                    '05', '06', '07', '08',
+                    '09', '010', '011'],
+        'huc_id': ['A', 'A', 'A', 'B', 'B',
+                   'B', 'C', 'C', 'C', 'D',
+                   'E'],
+        'prop_huc_in_basin': [0.98, 0.5, 0.1, 0.99,
+                              0.5, 0.3, 0.99, 0.99,
+                              0.01, 0.15, 0.98],
+        'prop_basin_in_huc': [0.98, 0.3, 0.2, 0.6,
+                              0.99, 0.1, 0.6, 0.1,
+                              0.01, 0.99, 0.99]
+    })
+    geom_intersection_perc = geom_intersection.copy()
+    geom_intersection_perc['perc_huc_in_basin'] = geom_intersection_perc['prop_huc_in_basin']*100  # noqa: E501
+    geom_intersection_perc['perc_basin_in_huc'] = geom_intersection_perc['prop_basin_in_huc']*100  # noqa: E501
+    runoff_dict = {
+        '01': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '02': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '03': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '04': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '05': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '06': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '07': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '08': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '09': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '010': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime')
+            }
+
+    def test_calculate_geometric_runoff_complete_overlap(self):
+        """Test runoff function with huc overlapping basin."""
+        # test with proportions and perfect overlap between
+        # huc and basin
+        testA = runoff.calculate_geometric_runoff(
+            geom_id="A",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin'
+            )
+        # should return runoff from site 01
+        assert testA.tolist() == self.runoff_dict['01']['runoff'].tolist()
+        # test with percentages rather than proportions
+        testA_2 = runoff.calculate_geometric_runoff(
+            geom_id="A",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection_perc,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='perc_basin_in_huc',
+            prop_geom_in_basin_col='perc_huc_in_basin',
+            percentage=True
+            )
+        # should return runoff from site 01
+        assert testA_2.tolist() == self.runoff_dict['01']['runoff'].tolist()
+
+    def test_calculate_geometric_runoff_within_contains_huc(self):
+        """Test runoff function with huc that has a basin containing
+        it and a basin within it."""
+        # huc contains basin and a basin contains huc
+        testB = runoff.calculate_geometric_runoff(
+            geom_id="B",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin'
+            )
+
+        check = pd.merge(self.runoff_dict['04'], self.runoff_dict['05'], left_index=True, right_index=True)  # noqa: E501
+        int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['04', '05'])]  # noqa: E501
+        int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
+        weighted = np.average(check, weights=int['weight'], axis=1)
+        # should return weighted runoff from sites 04 and 05
+        assert testB.tolist() == weighted.tolist()
+
+    def test_calculate_geometric_runoff_multiple_downstream_basins(self):
+        """Test runoff function with huc that has two downstream basins"""
+        # huc contained by two larger basins
+        # test when more downstream basin clipped
+        # from runoff calc
+        testC = runoff.calculate_geometric_runoff(
+            geom_id="C",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin',
+            clip_downstream_basins=True
+            )
+        # should return site 07 runoff
+        assert np.round(testC.tolist(), decimals=8).tolist() == np.round(self.runoff_dict['07']['runoff'].tolist(), decimals=8).tolist()  # noqa: E501
+        # huc contained by two larger basins
+        # and overlaps another basin
+        # test when all basins included
+        # in weighted runoff calc
+        testC_2 = runoff.calculate_geometric_runoff(
+            geom_id="C",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin',
+            clip_downstream_basins=False
+            )
+
+        check = pd.merge(self.runoff_dict['07'], self.runoff_dict['08'], left_index=True, right_index=True)  # noqa: E501
+        check = pd.merge(check, self.runoff_dict['09'], left_index=True, right_index=True)  # noqa: E501
+        int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['07', '08', '09'])]  # noqa: E501
+        int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
+        weighted = np.average(check, weights=int['weight'], axis=1)
+        # should return weighted runoff from sites 07,08,09
+        assert testC_2.tolist() == weighted.tolist()
+
+    def test_calculate_geometric_runoff_one_basin_in_huc(self):
+        """Test runoff function with huc that contains a basin only"""
+        # huc only contains a basin, not contained by
+        # any basins
+        testD = runoff.calculate_geometric_runoff(
+            geom_id="D",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin',
+            clip_downstream_basins=False
+            )
+        # should return runoff for site 010
+        assert np.round(testD.tolist(), decimals=8).tolist() == np.round(self.runoff_dict['010']['runoff'].tolist(), decimals=8).tolist()  # noqa: E501
+
+    def test_calculate_geometric_runoff_no_basin_data(self):
+        """Test runoff function with huc where no basin data
+        exist."""
+        # basin containing huc does not have data
+        testE = runoff.calculate_geometric_runoff(
+            geom_id="E",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin',
+            clip_downstream_basins=False)
+        assert testE.empty

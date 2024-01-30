@@ -265,8 +265,9 @@ def calculate_geometric_runoff(geom_id,
     runoff_dict : dict
         Dictionary of dataframes containing runoff data for each site in the
         geometry. Dictionary key is expected to be the name of the gage site.
-        Each dictionary entry is expected to have a date index and a data
-        column filled with runoff data.
+        Each dictionary item is expected to have a date index entitled
+        'datetime' and a data column entitled 'runoff' filled with runoff
+        data.
 
     geom_intersection_df : pandas.DataFrame
         Tabular dataFrame containing columns indicating the site numbers,
@@ -353,7 +354,7 @@ def calculate_geometric_runoff(geom_id,
     # check to see if empty
     if filtered_intersection_df.empty:
         print(('No runoff data available from intersecting sites to estimate '
-               'weighted runoff. Check to make sure your runoff dictionary '
+               'weighted runoff. Check that your runoff dictionary '
                'keys match site ids in your geom_intersection_df. Returning '
                'empty series.'))
         return pd.Series(dtype='float32')
@@ -426,11 +427,11 @@ def calculate_geometric_runoff(geom_id,
             final_geom_intersection_df = pd.concat(
                 [geom_in_basin, basin_in_geom]
                 )
-            print(final_geom_intersection_df)
     else:
         # Use all intersections to calculate a weighted average
         final_geom_intersection_df = filtered_intersection_df.copy()
         final_geom_intersection_df['weight'] = final_geom_intersection_df[prop_basin_in_geom_col] * final_geom_intersection_df[prop_geom_in_basin_col]  # noqa: E501
+    print(final_geom_intersection_df)
     # grab applicable basin runoff from dictionary
     basins = final_geom_intersection_df[site_col].tolist()
     # create df of applicable basin runoffs, where columns
