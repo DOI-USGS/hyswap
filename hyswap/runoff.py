@@ -228,9 +228,6 @@ def identify_sites_from_geom_intersection(
     filtered_df = geom_intersection_df[
         geom_intersection_df[geom_id_col] == geom_id
         ]
-    # Check that all sites ids have a character count of at least 8
-    assert all(filtered_df[site_col].str.len() >= 8), (
-        'site numbers char length must be > or = to 8 char')
 
     # Check whether sites is the df index or not
     if site_col == 'index':
@@ -320,6 +317,14 @@ def calculate_geometric_runoff(geom_id,
     pandas.Series
         Series containing the area-weighted runoff values for the geometry.
     """
+    # check whether dictionary contains sites not in geom_df
+    # this might indicate mismatched format in site ids between
+    # dictionary and geom_intersection df
+    check = list(set(runoff_dict.keys()) - set(geom_intersection_df[site_col].tolist()))  # noqa: E501
+    if check:
+        print(('There are dictionary keys (site ids) that are not present '
+               'in the intersection df. This might indicate a mismatch in '
+               'site id formats, e.g. missing leading zeroes if NWIS sites.'))
     # check whether sites is the df index or not
     if site_col == 'index':
         geom_intersection_df = geom_intersection_df.reset_index()
@@ -347,7 +352,10 @@ def calculate_geometric_runoff(geom_id,
         ]
     # check to see if empty
     if filtered_intersection_df.empty:
-        print("No runoff data available from intersecting sites to estimate weighted runoff. Returning empty series.")  # noqa: E501
+        print(('No runoff data available from intersecting sites to estimate '
+               'weighted runoff. Check to make sure your runoff dictionary '
+               'keys match site ids in your geom_intersection_df. Returning '
+               'empty series.'))
         return pd.Series(dtype='float32')
     # converting proportions to decimals if applicable
     filtered_intersection_df[prop_geom_in_basin_col] = (filtered_intersection_df[prop_geom_in_basin_col] * multiplier)  # noqa: E501
