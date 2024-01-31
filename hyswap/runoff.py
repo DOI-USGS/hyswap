@@ -431,6 +431,11 @@ def calculate_geometric_runoff(geom_id,
         # Use all intersections to calculate a weighted average
         final_geom_intersection_df = filtered_intersection_df.copy()
         final_geom_intersection_df['weight'] = final_geom_intersection_df[prop_basin_in_geom_col] * final_geom_intersection_df[prop_geom_in_basin_col]  # noqa: E501
+    # check if any weights are NaN
+    if final_geom_intersection_df['weight'].isnull().any():
+        print(('One or more geometry-basin weights are null. '
+               'Cannot estimate runoff values. '
+               'Returning nan values.'))
     print(final_geom_intersection_df)
     # grab applicable basin runoff from dictionary
     basins = final_geom_intersection_df[site_col].tolist()
@@ -536,8 +541,8 @@ def calculate_multiple_geometric_runoff(
         runoff_sites = identify_sites_from_geom_intersection(
             geom_id=geom_id,
             geom_intersection_df=geom_intersection_df,
-            geom_id_col='huc_id',
-            site_col='da_site_no',
+            geom_id_col=geom_id_col,
+            site_col=site_col,
             prop_geom_in_basin_col=prop_geom_in_basin_col,
             prop_basin_in_geom_col=prop_basin_in_geom_col
             )

@@ -135,19 +135,29 @@ def test_identify_sites_from_geom_intersection(weight_table):
 
 class TestCalculateGeometricRunoff:
     # data for all tests in this class
+    # HUC A - perfect overlap example
+    # HUC B - huc within and basin within example
+    # HUC C - two basins contain huc, so test different methods
+    # HUC D - basin contained within huc
+    # HUC E - no runoff data
+    # HUC F - missing intersection info
+    # HUC G - nan runoff value
     geom_intersection = pd.DataFrame({
         'site_id': ['01', '02', '03', '04',
                     '05', '06', '07', '08',
-                    '09', '010', '011'],
+                    '09', '010', '011', '012',
+                    '013', '014', '015'],
         'huc_id': ['A', 'A', 'A', 'B', 'B',
                    'B', 'C', 'C', 'C', 'D',
-                   'E'],
+                   'E', 'F', 'F', 'G', 'G'],
         'prop_huc_in_basin': [0.98, 0.5, 0.1, 0.99,
                               0.5, 0.3, 0.99, 0.99,
-                              0.01, 0.15, 0.98],
+                              0.01, 0.15, 0.98, np.nan,
+                              0.98, 0.99, 0.2],
         'prop_basin_in_huc': [0.98, 0.3, 0.2, 0.6,
                               0.99, 0.1, 0.6, 0.1,
-                              0.01, 0.99, 0.99]
+                              0.01, 0.99, 0.99, 0.99,
+                              0.7, 0.3, 0.99]
     })
     geom_intersection_perc = geom_intersection.copy()
     geom_intersection_perc['perc_huc_in_basin'] = geom_intersection_perc['prop_huc_in_basin']*100  # noqa: E501
@@ -190,6 +200,22 @@ class TestCalculateGeometricRunoff:
             'datetime': pd.date_range('2023-01-01', '2023-01-04')
             }).set_index('datetime'),
         '010': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '012': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '013': pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '014': pd.DataFrame({
+            'runoff': [1, 2, 3, np.nan],
+            'datetime': pd.date_range('2023-01-01', '2023-01-04')
+            }).set_index('datetime'),
+        '015': pd.DataFrame({
             'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
             'datetime': pd.date_range('2023-01-01', '2023-01-04')
             }).set_index('datetime')
@@ -316,3 +342,44 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin',
             clip_downstream_basins=False)
         assert testE.empty
+
+    def test_calculate_geometric_runoff_nan_weight(self):
+        """Test runoff function with basin that has nan
+        proportion."""
+        testF = runoff.calculate_geometric_runoff(
+            geom_id="F",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin')
+        assert testF.isnull().all()
+
+    def test_calculate_geometric_runoff_nan_data_value(self):
+        """Test runoff function with basin runoff with daily
+        value that is nan."""
+        testG = runoff.calculate_geometric_runoff(
+            geom_id="G",
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin')
+        # runoff value on last day should be runoff from basin '015'
+        # since basin '014' is nan on that day
+        assert np.round(testG[3], decimals=8) == np.round(self.runoff_dict['015']['runoff'][3], decimals=8)  # noqa: E501
+
+    def test_calculate_multiple_geometric_runoff(self):
+        """Test multiple runoff function."""
+        test_mult = runoff.calculate_multiple_geometric_runoff(
+            geom_id_list=['A', 'B', 'C', 'D'],
+            runoff_dict=self.runoff_dict,
+            geom_intersection_df=self.geom_intersection,
+            site_col='site_id',
+            geom_id_col='huc_id',
+            prop_basin_in_geom_col='prop_basin_in_huc',
+            prop_geom_in_basin_col='prop_huc_in_basin')
+        assert test_mult.shape == (4, 4)
+        assert test_mult.index.name == 'datetime'
