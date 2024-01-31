@@ -436,7 +436,6 @@ def calculate_geometric_runoff(geom_id,
         print(('One or more geometry-basin weights are null. '
                'Cannot estimate runoff values. '
                'Returning nan values.'))
-    print(final_geom_intersection_df)
     # grab applicable basin runoff from dictionary
     basins = final_geom_intersection_df[site_col].tolist()
     # create df of applicable basin runoffs, where columns
@@ -537,7 +536,6 @@ def calculate_multiple_geometric_runoff(
     results_df = pd.DataFrame()
     # loop through geom_id_list to calculate runoff for each geometry
     for geom_id in geom_id_list:
-        print(geom_id)
         runoff_sites = identify_sites_from_geom_intersection(
             geom_id=geom_id,
             geom_intersection_df=geom_intersection_df,
