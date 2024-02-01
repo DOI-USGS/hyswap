@@ -169,7 +169,8 @@ class TestCalculateGeometricRunoff:
             'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
             'datetime': pd.date_range('2023-01-01', '2023-01-04')
             }).set_index('datetime')
-    runoff_dict['014'].runoff = [1, 2, 3, np.nan]
+    runoff_dict['014'].runoff.iloc[3] = np.nan
+    del runoff_dict['011']
 
     def test_calculate_geometric_runoff_complete_overlap(self):
         """Test runoff function with huc overlapping basin."""
