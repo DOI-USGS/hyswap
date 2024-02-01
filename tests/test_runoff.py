@@ -166,7 +166,7 @@ class TestCalculateGeometricRunoff:
     runoff_dict = {}
     for key in keys:
         runoff_dict[key] = pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
             'datetime': pd.date_range('2023-01-01', '2023-01-04')
             }).set_index('datetime')
     runoff_dict['014'].runoff = [1, 2, 3, np.nan]
