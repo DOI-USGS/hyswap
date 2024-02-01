@@ -24,13 +24,17 @@ def calculate_fixed_percentile_thresholds(
         include_metadata=True,
         mask_out_of_range=True,
         **kwargs):
-    """Calculate fixed percentile thresholds using historic data.
+    """Calculate fixed percentile thresholds using historical data.
 
     Parameters
     ----------
     data : pandas.DataFrame or array-like
-        DataFrame, Series, or 1-D array containing data to calculate percentile
-        thresholds for.
+        DataFrame, Series, or 1-D array containing data used to calculate
+        percentile thresholds. If DataFrame, "data_column_name" must be
+        specified and expects a datetime index unless "date_column_name" is
+        provided. If Series, must include a datetime index. If 1-D array, then
+        "include_metadata" must be set to False since a datetime index is not
+        included with data.
 
     data_column_name : str, optional
         Name of column containing data to analyze if input is a DataFrame.
@@ -48,9 +52,8 @@ def calculate_fixed_percentile_thresholds(
         and 'normal_unbiased' (Type 9).
 
     date_column_name : str, optional
-        Name of column containing date information. If None, the index of
-        `data` is used. Either a date_date_column_name or datetime index must
-        be provided if
+        For data provided as DataFrame, name of column containing date
+        information. If None, the index of `data` is used.
 
     ignore_na : bool, optional
         Ignore NA values in percentile calculations
@@ -133,8 +136,7 @@ def calculate_fixed_percentile_thresholds(
             data = data.set_index(date_column_name)
         # If data column name is not in dataframe
         if data_column_name not in data:
-            warnings.warn('DataFrame missing data_column_name, returning NA values for percentile thresholds')  # noqa: E501
-            data[data_column_name] = np.nan
+            raise ValueError('DataFrame missing data_column_name')
         data = data[data_column_name]
 
     # ignore 0 and 100 percentiles if passed in

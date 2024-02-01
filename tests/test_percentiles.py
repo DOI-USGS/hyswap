@@ -141,6 +141,12 @@ class TestCalculateFixedPercentileThresholds:
                 np.arange(101), method='linear', ignore_na=False,
                 include_metadata=True)
 
+    def test_percentile_calcs_missing_data_col(self):
+        # test the function errors if data_column_name not present
+        with pytest.raises(ValueError):
+            percentiles.calculate_fixed_percentile_thresholds(
+                self.data, 'column_A')
+
 
 class TestCalculateVariablePercentileThresholdsByDay:
     # data for all tests in this class
