@@ -162,64 +162,14 @@ class TestCalculateGeometricRunoff:
     geom_intersection_perc = geom_intersection.copy()
     geom_intersection_perc['perc_huc_in_basin'] = geom_intersection_perc['prop_huc_in_basin']*100  # noqa: E501
     geom_intersection_perc['perc_basin_in_huc'] = geom_intersection_perc['prop_basin_in_huc']*100  # noqa: E501
-    runoff_dict = {
-        '01': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '02': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '03': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '04': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '05': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '06': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '07': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '08': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '09': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '010': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '012': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '013': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '014': pd.DataFrame({
-            'runoff': [1, 2, 3, np.nan],
-            'datetime': pd.date_range('2023-01-01', '2023-01-04')
-            }).set_index('datetime'),
-        '015': pd.DataFrame({
-            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
+    keys = [f'0{i}' for i in range(1, 16)]
+    runoff_dict = {}
+    for key in keys:
+        runoff_dict[key] = pd.DataFrame({
+            'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),
             'datetime': pd.date_range('2023-01-01', '2023-01-04')
             }).set_index('datetime')
-            }
+    runoff_dict['014'].runoff = [1, 2, 3, np.nan]
 
     def test_calculate_geometric_runoff_complete_overlap(self):
         """Test runoff function with huc overlapping basin."""
