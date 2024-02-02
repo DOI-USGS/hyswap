@@ -269,7 +269,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 
 def plot_duration_hydrograph(percentiles_by_day, df, data_col,
                              date_column_name=None,
-                             pct_list=[0, 5, 10, 25, 75, 90, 95, 100],
+                             pct_list=[5, 10, 25, 75, 90, 95],
                              data_label=None, ax=None,
                              disclaimer=False,
                              title="Duration Hydrograph",
@@ -307,7 +307,9 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
         information.
     pct_list : list, optional
         List of integers corresponding to the percentile values to be
-        plotted. Defaults to 0, 5, 10, 25, 75, 90, 95, 100.
+        plotted. Values of 0 and 100 are ignored as unbiased plotting position
+        formulas do not assign values to 0 or 100th percentile.
+        Defaults to 5, 10, 25, 75, 90, 95.
     data_label : str, optional
         Label for the data to plot. If not provided, a default label will
         be used.
@@ -362,6 +364,16 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
         >>> plt.tight_layout()
         >>> plt.show()
     """
+    # check that pct_list is present in percentile threshold data
+    if all(pct in pct_list + ['min', 'max'] for pct in percentiles_by_day.columns):  # noqa: E501
+        raise ValueError('one or more percent values are not in provided' +
+                         'percentile threshold data')
+    # ignore 0 and 100 percentile levels if provided in pct_list
+    if 0 in pct_list:
+        pct_list.remove(0)
+    if 100 in pct_list:
+        pct_list.remove(100)
+
     # Create axes if not provided
     if ax is None:
         _, ax = plt.subplots()
@@ -392,18 +404,38 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
     # sort the list in ascending order
     pct_list.sort()
     # plot the historic percentiles filling between each pair
+    ax.fill_between(
+            df_combined.index.values,
+            df_combined['min'].tolist(),
+            df_combined['p' + str(pct_list[0]).zfill(2)].tolist(),
+            color=colors[0],
+            alpha=alpha,
+            linewidth=0,
+            label="Min. - {}th Percentile".format(pct_list[0]),
+            zorder=zorder
+        )
     for i in range(1, len(pct_list)):
         ax.fill_between(
             df_combined.index.values,
-            df_combined[pct_list[i-1]].tolist(),
-            df_combined[pct_list[i]].tolist(),
-            color=colors[i-1],
+            df_combined['p' + str(pct_list[i-1]).zfill(2)].tolist(),
+            df_combined['p' + str(pct_list[i]).zfill(2)].tolist(),
+            color=colors[i],
             alpha=alpha,
             linewidth=0,
             label="{}th - {}th Percentile".format(
                 pct_list[i - 1], pct_list[i]),
             zorder=zorder
         )
+    ax.fill_between(
+        df_combined.index.values,
+        df_combined['p' + str(pct_list[-1]).zfill(2)].tolist(),
+        df_combined['max'].tolist(),
+        color=colors[-1],
+        alpha=alpha,
+        linewidth=0,
+        label="{}th Percentile - Max.".format(pct_list[-1]),
+        zorder=zorder
+    )
     # set labels
     ax.set_xlabel(xlab)
     ax.set_xlim(df_combined.index.min(), df_combined.index.max())
@@ -545,7 +577,7 @@ def plot_cumulative_hydrograph(df,
     pdf = calculate_variable_percentile_thresholds_by_day(
         cumulative_df, data_column_name='cumulative',
         clip_leap_day=clip_leap_day,
-        percentiles=[0] + envelope_pct + [100])
+        percentiles=envelope_pct)
     # pop some kwargs
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
@@ -581,8 +613,8 @@ def plot_cumulative_hydrograph(df,
     # plot percentile envelope
     if len(envelope_pct) == 2:
         ax.fill_between(pdf_reordered.index,
-                        list(pdf_reordered[envelope_pct[0]].values),
-                        list(pdf_reordered[envelope_pct[1]].values),
+                        list(pdf_reordered["p" + str(envelope_pct[0]).zfill(2)].values),  # noqa: E501
+                        list(pdf_reordered["p" + str(envelope_pct[1]).zfill(2)].values),  # noqa: E501
                         color=color, alpha=alpha,
                         label=f"{envelope_pct[0]}th - {envelope_pct[1]}th " +
                         "Percentile Envelope",

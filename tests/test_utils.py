@@ -413,6 +413,7 @@ class TestMungingNWISStats:
         df = pd.DataFrame({
             'month_nu': [1, 2, 3, 4],
             'day_nu': [1, 2, 3, 4],
+            'begin_yr': [2019, 2019, 2019, 2019],
             'end_yr': [2019, 2019, 2019, 2019],
             'min_va': [1, 2, 3, 4],
             'max_va': [5, 6, 7, 8],
@@ -426,59 +427,52 @@ class TestMungingNWISStats:
             'p80_va': [37, 38, 39, 40],
             'p90_va': [41, 42, 43, 44],
             'p95_va': [45, 46, 47, 48],
+            'count_nu': [1, 1, 1, 1]
         })
+        addl_nwis_cols = ['agency_cd', 'site_no', 'parameter_cd',
+                          'ts_id', 'loc_web_ds', 'max_va_yr', 'min_va_yr']
+        df[addl_nwis_cols] = ' '
         # apply the function
-        df_slim = utils.munge_nwis_stats(df)
+        df_munged = utils.munge_nwis_stats(df)
         # check the output
-        assert df_slim.shape == (4, 11)
-        assert len(df.columns) > len(df_slim.columns)
-        assert 0 in df_slim.columns
-        assert df_slim.columns.tolist() == [0, 5, 10, 20, 25, 50, 75, 80, 90,
-                                            95, 100]
+        assert df_munged.shape == (4, 15)
+        assert len(df.columns) > len(df_munged.columns)
+        assert df_munged.columns.tolist() == ['min', 'p05', 'p10', 'p20',
+                                              'p25', 'p50', 'p75', 'p80',
+                                              'p90', 'p95', 'max', 'mean',
+                                              'count', 'start_wy', 'end_wy']
 
-    def test_munge_additional_params(self):
+    def test_munge_without_metadata(self):
         # make a dataframe
         df = pd.DataFrame({
             'month_nu': [1, 2, 3, 4],
             'day_nu': [1, 2, 3, 4],
+            'begin_yr': [2019, 2019, 2019, 2019],
             'end_yr': [2019, 2019, 2019, 2019],
             'min_va': [1, 2, 3, 4],
             'max_va': [5, 6, 7, 8],
             'mean_va': [9, 10, 11, 12],
             'p05_va': [13, 14, 15, 16],
             'p10_va': [17, 18, 19, 20],
-            'p25_va': [21, 22, 23, 24],
-            'p50_va': [25, 26, 27, 28],
-            'p75_va': [29, 30, 31, 32],
-            'p90_va': [33, 34, 35, 36],
-            'p95_va': [37, 38, 39, 40],
+            'p20_va': [21, 22, 23, 24],
+            'p25_va': [25, 26, 27, 28],
+            'p50_va': [29, 30, 31, 32],
+            'p75_va': [33, 34, 35, 36],
+            'p80_va': [37, 38, 39, 40],
+            'p90_va': [41, 42, 43, 44],
+            'p95_va': [45, 46, 47, 48],
+            'count_nu': [1, 1, 1, 1]
         })
+        addl_nwis_cols = ['agency_cd', 'site_no', 'parameter_cd',
+                          'ts_id', 'loc_web_ds', 'max_va_yr', 'min_va_yr']
+        df[addl_nwis_cols] = ' '
         # function w/ additional parameters
-        df_slim = utils.munge_nwis_stats(df, ['min_va', 'max_va'], [0, 100])
-        assert df_slim.shape == (4, 2)
-        assert df_slim.columns.tolist() == [0, 100]
-        assert len(df.columns) > len(df_slim.columns)
-
-    def test_munge_raise_error(self):
-        # make a dataframe
-        df = pd.DataFrame({
-            'month_nu': [1, 2, 3, 4],
-            'day_nu': [1, 2, 3, 4],
-            'end_yr': [2019, 2019, 2019, 2019],
-            'min_va': [1, 2, 3, 4],
-            'max_va': [5, 6, 7, 8],
-            'mean_va': [9, 10, 11, 12],
-            'p05_va': [13, 14, 15, 16],
-            'p10_va': [17, 18, 19, 20],
-            'p25_va': [21, 22, 23, 24],
-            'p50_va': [25, 26, 27, 28],
-            'p75_va': [29, 30, 31, 32],
-            'p90_va': [33, 34, 35, 36],
-            'p95_va': [37, 38, 39, 40],
-        })
-        # raise error if column lists are of different lengths
-        with pytest.raises(ValueError):
-            utils.munge_nwis_stats(df, ['min_va', 'max_va'], [0, 100, 200])
+        df_munged = utils.munge_nwis_stats(df, include_metadata=False)
+        assert df_munged.shape == (4, 11)
+        assert len(df.columns) > len(df_munged.columns)
+        assert df_munged.columns.tolist() == ['min', 'p05', 'p10', 'p20',
+                                              'p25', 'p50', 'p75', 'p80',
+                                              'p90', 'p95', 'max']
 
 
 def test_filter_to_common_time():
