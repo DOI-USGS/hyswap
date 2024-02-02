@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.plots &#8212; hyswap 0.1.dev1+g2cb07e2 documentation</title>
+    <title>hyswap.plots &#8212; hyswap 0.1.dev1+gc24bffa documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=5a72505b"></script>
+    <script src="../../_static/documentation_options.js?v=b6d95723"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g2cb07e2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>
@@ -322,7 +322,7 @@
 <a class="viewcode-back" href="../../reference/index.html#hyswap.plots.plot_duration_hydrograph">[docs]</a>
 <span class="k">def</span> <span class="nf">plot_duration_hydrograph</span><span class="p">(</span><span class="n">percentiles_by_day</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span>
                              <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="n">pct_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                             <span class="n">pct_list</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span>
                              <span class="n">data_label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">disclaimer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                              <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Duration Hydrograph&quot;</span><span class="p">,</span>
@@ -360,7 +360,9 @@
 <span class="sd">        information.</span>
 <span class="sd">    pct_list : list, optional</span>
 <span class="sd">        List of integers corresponding to the percentile values to be</span>
-<span class="sd">        plotted. Defaults to 0, 5, 10, 25, 75, 90, 95, 100.</span>
+<span class="sd">        plotted. Values of 0 and 100 are ignored as unbiased plotting position</span>
+<span class="sd">        formulas do not assign values to 0 or 100th percentile.</span>
+<span class="sd">        Defaults to 5, 10, 25, 75, 90, 95.</span>
 <span class="sd">    data_label : str, optional</span>
 <span class="sd">        Label for the data to plot. If not provided, a default label will</span>
 <span class="sd">        be used.</span>
@@ -415,6 +417,16 @@
 <span class="sd">        &gt;&gt;&gt; plt.tight_layout()</span>
 <span class="sd">        &gt;&gt;&gt; plt.show()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that pct_list is present in percentile threshold data</span>
+    <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">pct</span> <span class="ow">in</span> <span class="n">pct_list</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">pct</span> <span class="ow">in</span> <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;one or more percent values are not in provided&#39;</span> <span class="o">+</span>
+                         <span class="s1">&#39;percentile threshold data&#39;</span><span class="p">)</span>
+    <span class="c1"># ignore 0 and 100 percentile levels if provided in pct_list</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">pct_list</span><span class="p">:</span>
+        <span class="n">pct_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">100</span> <span class="ow">in</span> <span class="n">pct_list</span><span class="p">:</span>
+        <span class="n">pct_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+
     <span class="c1"># Create axes if not provided</span>
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -445,18 +457,38 @@
     <span class="c1"># sort the list in ascending order</span>
     <span class="n">pct_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="c1"># plot the historic percentiles filling between each pair</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
+            <span class="n">df_combined</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;p&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pct_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Min. - </span><span class="si">{}</span><span class="s2">th Percentile&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pct_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span>
+        <span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pct_list</span><span class="p">)):</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
             <span class="n">df_combined</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-            <span class="n">df_combined</span><span class="p">[</span><span class="n">pct_list</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="n">df_combined</span><span class="p">[</span><span class="n">pct_list</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;p&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pct_list</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;p&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pct_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
             <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
             <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">th - </span><span class="si">{}</span><span class="s2">th Percentile&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">pct_list</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pct_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
             <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span>
         <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
+        <span class="n">df_combined</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;p&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pct_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="n">df_combined</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">th Percentile - Max.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pct_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span>
+    <span class="p">)</span>
     <span class="c1"># set labels</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">df_combined</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df_combined</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
@@ -601,7 +633,7 @@
     <span class="n">pdf</span> <span class="o">=</span> <span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
         <span class="n">cumulative_df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;cumulative&#39;</span><span class="p">,</span>
         <span class="n">clip_leap_day</span><span class="o">=</span><span class="n">clip_leap_day</span><span class="p">,</span>
-        <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">envelope_pct</span> <span class="o">+</span> <span class="p">[</span><span class="mi">100</span><span class="p">])</span>
+        <span class="n">percentiles</span><span class="o">=</span><span class="n">envelope_pct</span><span class="p">)</span>
     <span class="c1"># pop some kwargs</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
     <span class="n">zorder</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;zorder&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">)</span>
@@ -637,8 +669,8 @@
     <span class="c1"># plot percentile envelope</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">envelope_pct</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">pdf_reordered</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-                        <span class="nb">list</span><span class="p">(</span><span class="n">pdf_reordered</span><span class="p">[</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
-                        <span class="nb">list</span><span class="p">(</span><span class="n">pdf_reordered</span><span class="p">[</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">pdf_reordered</span><span class="p">[</span><span class="s2">&quot;p&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>  <span class="c1"># noqa: E501</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">pdf_reordered</span><span class="p">[</span><span class="s2">&quot;p&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>  <span class="c1"># noqa: E501</span>
                         <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
                         <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">th - </span><span class="si">{</span><span class="n">envelope_pct</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">th &quot;</span> <span class="o">+</span>
                         <span class="s2">&quot;Percentile Envelope&quot;</span><span class="p">,</span>
@@ -943,7 +975,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g2cb07e2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.plots</a></li> 
       </ul>

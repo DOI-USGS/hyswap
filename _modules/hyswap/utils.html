@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+g2cb07e2 documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gc24bffa documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=5a72505b"></script>
+    <script src="../../_static/documentation_options.js?v=b6d95723"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g2cb07e2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -587,13 +587,13 @@
 
 <div class="viewcode-block" id="munge_nwis_stats">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.munge_nwis_stats">[docs]</a>
-<span class="k">def</span> <span class="nf">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">source_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_pct_col</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">include_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to munge and reformat NWIS statistics data.</span>
 
 <span class="sd">    This is a utility function that exists to help munge NWIS percentile data</span>
-<span class="sd">    served via the NWIS statistics web service. This function is intended to</span>
-<span class="sd">    be used on Python dataretrieval dataframe returns for the nwis.get_stats()</span>
-<span class="sd">    function for &quot;daily&quot; data, a single site, and a single parameter code.</span>
+<span class="sd">    served via the NWIS statistics web service. This function uses the output</span>
+<span class="sd">    of nwis.get_stats() for daily data at a single site and for a single</span>
+<span class="sd">    parameter code.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -601,22 +601,17 @@
 <span class="sd">        DataFrame containing NWIS statistics data retrieved from the statistics</span>
 <span class="sd">        web service. Assumed to come in as a dataframe retrieved with a</span>
 <span class="sd">        package like dataretrieval or similar.</span>
-<span class="sd">    source_pct_col : list, optional</span>
-<span class="sd">        List of column names to use as the source percentiles. If None, the</span>
-<span class="sd">        values are assumed to correspond to the 0, 5, 10, 20, 25, 50, 75, 80,</span>
-<span class="sd">        90, 95, and 100 percentiles in the NWIS statistics service return.</span>
-<span class="sd">    target_pct_col : list, optional</span>
-<span class="sd">        List of column names to use as the target percentiles. If None, then</span>
-<span class="sd">        integer values are used as the column names corresponding to the</span>
-<span class="sd">        default source values.</span>
+
+<span class="sd">    include_metadata : bool, optional</span>
+<span class="sd">        If True, return additional columns from NWIS Stats Service including</span>
+<span class="sd">        count, mean, water year of start of record, water year of end of record</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    df_slim : pandas.DataFrame</span>
+<span class="sd">    df : pandas.DataFrame</span>
 <span class="sd">        DataFrame containing munged and reformatted NWIS statistics data.</span>
-<span class="sd">        Reformatting is for use with the hyswap package plotting function for</span>
-<span class="sd">        duration hydrographs with statistical information in background of</span>
-<span class="sd">        the plot.</span>
+<span class="sd">        Reformatting is to match the format created by</span>
+<span class="sd">        calculate_variable_percentile_thresholds_by_day function.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -633,35 +628,39 @@
 
 <span class="sd">        &gt;&gt;&gt; df = utils.munge_nwis_stats(df)</span>
 <span class="sd">        &gt;&gt;&gt; df.shape</span>
-<span class="sd">        (366, 11)</span>
+<span class="sd">        (366, 15)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># set defaults</span>
-    <span class="k">if</span> <span class="n">source_pct_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">source_pct_col</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;min_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p05_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p10_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p20_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p25_va&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;p50_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p75_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p80_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p90_va&#39;</span><span class="p">,</span> <span class="s1">&#39;p95_va&#39;</span><span class="p">,</span>
-                          <span class="s1">&#39;max_va&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">target_pct_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">target_pct_col</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
-    <span class="c1"># check lengths of lists for column names</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">source_pct_col</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_pct_col</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;source_pct_col and target_pct_col must be the same &#39;</span>
-                         <span class="s1">&#39;length&#39;</span><span class="p">)</span>
-    <span class="c1"># rename date columns</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;month_nu&#39;</span><span class="p">:</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day_nu&#39;</span><span class="p">:</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;end_yr&#39;</span><span class="p">:</span> <span class="s1">&#39;year&#39;</span><span class="p">},</span>
+    <span class="c1"># rename columns from NWIS Stats Service</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;_va&#39;</span><span class="p">)</span>
+    <span class="c1"># Note that NWIS Stats Service begin and end years are water years.</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;count_nu&#39;</span><span class="p">:</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;begin_yr&#39;</span><span class="p">:</span> <span class="s1">&#39;start_wy&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;end_yr&#39;</span><span class="p">:</span> <span class="s1">&#39;end_wy&#39;</span><span class="p">,</span> <span class="s1">&#39;day_nu&#39;</span><span class="p">:</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;month_nu&#39;</span><span class="p">:</span> <span class="s1">&#39;month&#39;</span><span class="p">},</span>
               <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="c1"># make end year 2020 for leap year</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2020</span>
+    <span class="c1"># Use a leap year as basis to have all possible days of year included</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1904</span>
     <span class="c1"># construct date column</span>
     <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">]])</span>
     <span class="c1"># set month-day as index</span>
     <span class="n">df</span><span class="p">[</span><span class="s1">&#39;month_day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;month_day&#39;</span><span class="p">)</span>
-    <span class="c1"># slim down to just the columns used for the plot</span>
-    <span class="n">df_slim</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">source_pct_col</span><span class="p">]</span>
-    <span class="c1"># rename columns</span>
-    <span class="n">df_slim</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">target_pct_col</span>
-    <span class="c1"># return the dataframe</span>
-    <span class="k">return</span> <span class="n">df_slim</span></div>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;agency_cd&#39;</span><span class="p">,</span> <span class="s1">&#39;site_no&#39;</span><span class="p">,</span> <span class="s1">&#39;parameter_cd&#39;</span><span class="p">,</span> <span class="s1">&#39;ts_id&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;loc_web_ds&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;max_va_yr&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;min_va_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># move max and additional metadata columns (if returned) to end</span>
+    <span class="k">if</span> <span class="n">include_metadata</span><span class="p">:</span>
+        <span class="n">cols_to_move</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;start_wy&#39;</span><span class="p">,</span> <span class="s1">&#39;end_wy&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;start_wy&#39;</span><span class="p">,</span> <span class="s1">&#39;end_wy&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cols_to_move</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
+    <span class="c1"># New column order with columns to move at the end</span>
+    <span class="n">new_column_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cols_to_move</span><span class="p">]</span> \
+        <span class="o">+</span> <span class="n">cols_to_move</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">new_column_order</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
 
 
 
@@ -1061,7 +1060,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g2cb07e2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>

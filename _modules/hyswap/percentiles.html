@@ -6,12 +6,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+g2cb07e2 documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gc24bffa documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=5a72505b"></script>
+    <script src="../../_static/documentation_options.js?v=b6d95723"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g2cb07e2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -55,31 +55,71 @@
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_data_type</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">rolling_average</span>
+<span class="kn">from</span> <span class="nn">hyswap.exceedance</span> <span class="kn">import</span> <span class="n">calculate_exceedance_probability_from_values</span>
 
 
 <div class="viewcode-block" id="calculate_fixed_percentile_thresholds">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_thresholds">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
         <span class="n">data</span><span class="p">,</span>
-        <span class="n">percentiles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">)),</span>
+        <span class="n">data_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">percentiles</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">)),</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
+        <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ignore_na</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">mask_out_of_range</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate fixed percentile thresholds using historic data.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate fixed percentile thresholds using historical data.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data : array_like</span>
-<span class="sd">        1D array of data from which to calculate percentile thresholds.</span>
+<span class="sd">    data : pandas.DataFrame or array-like</span>
+<span class="sd">        DataFrame, Series, or 1-D array containing data used to calculate</span>
+<span class="sd">        percentile thresholds. If DataFrame, &quot;data_column_name&quot; must be</span>
+<span class="sd">        specified and expects a datetime index unless &quot;date_column_name&quot; is</span>
+<span class="sd">        provided. If Series, must include a datetime index. If 1-D array, then</span>
+<span class="sd">        &quot;include_metadata&quot; must be set to False since a datetime index is not</span>
+<span class="sd">        included with data.</span>
+
+<span class="sd">    data_column_name : str, optional</span>
+<span class="sd">        Name of column containing data to analyze if input is a DataFrame.</span>
+<span class="sd">        Default is None.</span>
 
 <span class="sd">    percentiles : array_like, optional</span>
-<span class="sd">        Percentiles to calculate. Default is (0, 5, 10, 25, 75, 90, 95, 100).</span>
+<span class="sd">        Percentiles to calculate. Default is (5, 10, 25, 50, 75, 90, 95).</span>
+<span class="sd">        Note: Values of 0 and 100 are ignored as unbiased plotting position</span>
+<span class="sd">        formulas do not assign values to 0 or 100th percentile.</span>
 
 <span class="sd">    method : str, optional</span>
-<span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39;.</span>
+<span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39; (Type 6).</span>
+<span class="sd">        Additional available methods are &#39;interpolated_inverted_cdf&#39; (Type 4),</span>
+<span class="sd">        &#39;hazen&#39; (Type 5), &#39;linear&#39; (Type 7), &#39;median_unbiased&#39; (Type 8),</span>
+<span class="sd">        and &#39;normal_unbiased&#39; (Type 9).</span>
+
+<span class="sd">    date_column_name : str, optional</span>
+<span class="sd">        For data provided as DataFrame, name of column containing date</span>
+<span class="sd">        information. If None, the index of `data` is used.</span>
 
 <span class="sd">    ignore_na : bool, optional</span>
 <span class="sd">        Ignore NA values in percentile calculations</span>
+
+<span class="sd">    include_min_max : bool, optional</span>
+<span class="sd">        When set to True, include min and max streamflow value in addition to</span>
+<span class="sd">        streamflow values for percentile levels. Default is True.</span>
+
+<span class="sd">    include_metadata : bool, optional</span>
+<span class="sd">        When set to True, return additional columns describing the data</span>
+<span class="sd">        including count, mean, start_yr, end_yr. Default is True. Input data</span>
+<span class="sd">        must include a datetime column as either index or specified by</span>
+<span class="sd">        date_column_name.</span>
+
+<span class="sd">    mask_out_of_range :  bool, optional</span>
+<span class="sd">        When set to True, percentiles that are beyond the min/max percentile</span>
+<span class="sd">        ranks of the observed data to be NA. Effect of this being enables is</span>
+<span class="sd">        that high or low percentiles may not be calculated when few data points</span>
+<span class="sd">        are available. Default is True.</span>
 
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
@@ -92,35 +132,105 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Calculate default percentile thresholds from some synthetic data.</span>
+<span class="sd">    Calculate percentile thresholds from some synthetic data using &#39;linear&#39;</span>
+<span class="sd">    method.</span>
+
+<span class="sd">    .. doctest::</span>
+
+<span class="sd">        &gt;&gt;&gt; data = pd.DataFrame({&#39;values&#39;: np.arange(101),</span>
+<span class="sd">        ...                      &#39;date&#39;: pd.date_range(&#39;2020-01-01&#39;, &#39;2020-04-10&#39;)}).set_index(&#39;date&#39;)  # noqa: E501</span>
+<span class="sd">        &gt;&gt;&gt; results = percentiles.calculate_fixed_percentile_thresholds(</span>
+<span class="sd">        ...     data, &#39;values&#39;, percentiles=[25, 75, 95], method=&#39;linear&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; results</span>
+<span class="sd">                min   p25   p75   p95  max  mean  count start_yr end_yr</span>
+<span class="sd">        values    0  25.0  75.0  95.0  100  50.0    101     2020   2020</span>
+
+<span class="sd">    Calculate percentile thresholds without additional metadata columns</span>
 
 <span class="sd">    .. doctest::</span>
 
 <span class="sd">        &gt;&gt;&gt; data = np.arange(101)</span>
 <span class="sd">        &gt;&gt;&gt; results = percentiles.calculate_fixed_percentile_thresholds(</span>
-<span class="sd">        ...     data, method=&#39;linear&#39;)</span>
+<span class="sd">        ...     data, percentiles=[5, 25, 75, 95], method=&#39;linear&#39;,</span>
+<span class="sd">        ...     include_metadata=False)</span>
 <span class="sd">        &gt;&gt;&gt; results</span>
-<span class="sd">        thresholds  0    5     10    25    75    90    95     100</span>
-<span class="sd">        values      0.0  5.0  10.0  25.0  75.0  90.0  95.0  100.0</span>
+<span class="sd">                min  p05   p25   p75   p95  max</span>
+<span class="sd">        values    0  5.0  25.0  75.0  95.0  100</span>
 
-<span class="sd">    Calculate a different set of thresholds from some synthetic data.</span>
-
-<span class="sd">    .. doctest::</span>
-
+<span class="sd">    Calculate percentile thresholds using default &#39;weibull&#39; method</span>
 <span class="sd">        &gt;&gt;&gt; data = np.arange(101)</span>
 <span class="sd">        &gt;&gt;&gt; results = percentiles.calculate_fixed_percentile_thresholds(</span>
-<span class="sd">        ...     data, percentiles=np.array((0, 10, 50, 90, 100)))</span>
+<span class="sd">        ...     data, percentiles=[5, 25, 50, 75, 95],</span>
+<span class="sd">        ...     include_metadata=False)</span>
 <span class="sd">        &gt;&gt;&gt; results</span>
-<span class="sd">        thresholds  0    10    50    90     100</span>
-<span class="sd">        values      0.0  9.2  50.0  90.8  100.0</span>
+<span class="sd">                min  p05   p25   p50   p75   p95  max</span>
+<span class="sd">        values    0  4.1  24.5  50.0  75.5  95.9  100</span>
+
+<span class="sd">    Calculate percentile thresholds from a small number of observations and</span>
+<span class="sd">    mask out out of range percentile levels</span>
+
+<span class="sd">        &gt;&gt;&gt; data = np.arange(11)</span>
+<span class="sd">        &gt;&gt;&gt; results = percentiles.calculate_fixed_percentile_thresholds(</span>
+<span class="sd">        ...     data, percentiles=np.array((1, 10, 50, 90, 99)),</span>
+<span class="sd">        ...     include_metadata=False)</span>
+<span class="sd">        &gt;&gt;&gt; results</span>
+<span class="sd">                min  p01  p10  p50  p90  p99  max</span>
+<span class="sd">        values    0  NaN  0.2  5.0  9.8  NaN   10</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="c1"># set the df index</span>
+        <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span>
+        <span class="c1"># If data column name is not in dataframe</span>
+        <span class="k">if</span> <span class="n">data_column_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;DataFrame missing data_column_name&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span>
+
+    <span class="c1"># ignore 0 and 100 percentiles if passed in</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">percentiles</span> <span class="o">=</span> <span class="n">percentiles</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">percentiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">percentiles</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
+
     <span class="k">if</span> <span class="n">ignore_na</span><span class="p">:</span>
         <span class="n">pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">pct</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s2">&quot;thresholds&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;columns&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">df</span></div>
+
+    <span class="n">df_out</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">pct</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mask_out_of_range</span><span class="p">:</span>
+        <span class="n">min_pct_rank</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">calculate_exceedance_probability_from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">max_pct_rank</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">calculate_exceedance_probability_from_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">df_out</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_out</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;</span> <span class="n">max_pct_rank</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df_out</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;</span> <span class="n">min_pct_rank</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="c1"># transpose so percentile levels are columns</span>
+    <span class="n">df_out</span> <span class="o">=</span> <span class="n">df_out</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">df_out</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="s2">&quot;p&quot;</span> <span class="o">+</span> <span class="n">df_out</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">include_min_max</span><span class="p">:</span>
+        <span class="c1"># add min as first column of dataframe and max as last column</span>
+        <span class="k">if</span> <span class="n">ignore_na</span><span class="p">:</span>
+            <span class="n">df_out</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+            <span class="n">df_out</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df_out</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+            <span class="n">df_out</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">include_metadata</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">inferred_type</span> <span class="o">==</span> <span class="s2">&quot;datetime64&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Datetime index must be provided with include_metadata=True.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data input format must include a datetime index with include_metadata=True.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="k">if</span> <span class="n">ignore_na</span><span class="p">:</span>
+            <span class="n">df_out</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df_out</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">df_out</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">df_out</span><span class="p">[</span><span class="s1">&#39;start_yr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y&#39;</span><span class="p">)</span>
+        <span class="n">df_out</span><span class="p">[</span><span class="s1">&#39;end_yr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">df_out</span></div>
 
 
 
@@ -129,7 +239,7 @@
 <span class="k">def</span> <span class="nf">calculate_variable_percentile_thresholds_by_day_of_year</span><span class="p">(</span>
         <span class="n">df</span><span class="p">,</span>
         <span class="n">data_column_name</span><span class="p">,</span>
-        <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
         <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
@@ -139,6 +249,9 @@
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">ignore_na</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">mask_out_of_range</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate variable percentile thresholds of data by day of year.</span>
 
@@ -152,10 +265,15 @@
 
 <span class="sd">    percentiles : array_like, optional</span>
 <span class="sd">        Percentile thresholds to calculate, default is</span>
-<span class="sd">        [0, 5, 10, 25, 75, 90, 95, 100].</span>
+<span class="sd">        [5, 10, 25, 50, 75, 90, 95]. Note: Values of 0 and 100 are ignored as</span>
+<span class="sd">        unbiased plotting position formulas do not assign values to 0 or 100th</span>
+<span class="sd">        percentile.</span>
 
 <span class="sd">    method : str, optional</span>
-<span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39;.</span>
+<span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39; (Type 6).</span>
+<span class="sd">        Additional available methods are &#39;interpolated_inverted_cdf&#39; (Type 4),</span>
+<span class="sd">        &#39;hazen&#39; (Type 5), &#39;linear&#39; (Type 7), &#39;median_unbiased&#39; (Type 8),</span>
+<span class="sd">        and &#39;normal_unbiased&#39; (Type 9).</span>
 
 <span class="sd">    date_column_name : str, optional</span>
 <span class="sd">        Name of column containing date information. If None, the index of</span>
@@ -198,6 +316,20 @@
 <span class="sd">    ignore_na : bool, optional</span>
 <span class="sd">        Ignore NA values in percentile calculations</span>
 
+<span class="sd">    include_min_max : bool, optional</span>
+<span class="sd">        When set to True, include min and max streamflow value in addition to</span>
+<span class="sd">        streamflow values for percentile levels. Default is True.</span>
+
+<span class="sd">    include_metadata : bool, optional</span>
+<span class="sd">        When set to True, return additional columns describing the data</span>
+<span class="sd">        including count, mean, start_yr, end_yr. Default is True</span>
+
+<span class="sd">    mask_out_of_range :  bool, optional</span>
+<span class="sd">        When set to True, percentiles that are beyond the min/max percentile</span>
+<span class="sd">        ranks of the observed data to be NA. Effect of this being enables is</span>
+<span class="sd">        that high or low percentiles may not be calculated when few data points</span>
+<span class="sd">        are available. Default is True.</span>
+
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
 
@@ -224,8 +356,6 @@
 <span class="sd">        ...     df, &quot;00060_Mean&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; len(results.index)  # 366 days in a leap year</span>
 <span class="sd">        366</span>
-<span class="sd">        &gt;&gt;&gt; len(results.columns)  # 8 default percentiles</span>
-<span class="sd">        8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># If the dataframe is empty, create a dummy dataframe to</span>
     <span class="c1"># run through function</span>
@@ -254,9 +384,15 @@
     <span class="n">data_type</span> <span class="o">=</span> <span class="n">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
 
-    <span class="c1"># create an empty dataframe to hold percentiles based on month_day</span>
+    <span class="c1"># create an empty dataframe to hold percentiles based on day-of-year</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">perc</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">perc</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">include_min_max</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">include_metadata</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;end_yr&#39;</span><span class="p">]</span>
     <span class="n">doy_index</span> <span class="o">=</span> <span class="n">date_rng</span><span class="o">.</span><span class="n">day_of_year</span><span class="o">.</span><span class="n">values</span>
-    <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">doy_index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span>
+    <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">doy_index</span><span class="p">,</span>
+                                      <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
 
     <span class="c1"># loop through days of year available</span>
     <span class="k">for</span> <span class="n">doy</span> <span class="ow">in</span> <span class="n">doy_index</span><span class="p">:</span>
@@ -274,8 +410,12 @@
                     <span class="c1"># calculate percentiles for the day of year</span>
                     <span class="c1"># and add to DataFrame</span>
                     <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-                        <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
-                        <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">data_column_name</span><span class="p">,</span>
+                        <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span>
+                        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span>
+                        <span class="n">include_min_max</span><span class="o">=</span><span class="n">include_min_max</span><span class="p">,</span>
+                        <span class="n">include_metadata</span><span class="o">=</span><span class="n">include_metadata</span><span class="p">,</span>
+                        <span class="n">mask_out_of_range</span><span class="o">=</span><span class="n">mask_out_of_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># if there are not at least &#39;min_years&#39; of data,</span>
@@ -322,7 +462,7 @@
 <span class="k">def</span> <span class="nf">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
         <span class="n">df</span><span class="p">,</span>
         <span class="n">data_column_name</span><span class="p">,</span>
-        <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
         <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
@@ -331,6 +471,9 @@
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">ignore_na</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_min_max</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">include_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">mask_out_of_range</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate variable percentile thresholds of data by day</span>
 
@@ -344,10 +487,15 @@
 
 <span class="sd">    percentiles : array_like, optional</span>
 <span class="sd">        Percentile thresholds to calculate, default is</span>
-<span class="sd">        [0, 5, 10, 25, 75, 90, 95, 100].</span>
+<span class="sd">        [5, 10, 25, 50, 75, 90, 95]. Note: Values of 0 and 100 are ignored as</span>
+<span class="sd">        unbiased plotting position formulas do not assign values to 0 or 100th</span>
+<span class="sd">        percentile.</span>
 
 <span class="sd">    method : str, optional</span>
-<span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39;.</span>
+<span class="sd">        Method to use to calculate percentiles. Default is &#39;weibull&#39; (Type 6).</span>
+<span class="sd">        Additional available methods are &#39;interpolated_inverted_cdf&#39; (Type 4),</span>
+<span class="sd">        &#39;hazen&#39; (Type 5), &#39;linear&#39; (Type 7), &#39;median_unbiased&#39; (Type 8),</span>
+<span class="sd">        and &#39;normal_unbiased&#39; (Type 9).</span>
 
 <span class="sd">    date_column_name : str, optional</span>
 <span class="sd">        Name of column containing date information. If None, the index of</span>
@@ -362,7 +510,9 @@
 
 <span class="sd">    min_years : int, optional</span>
 <span class="sd">        Minimum number of years of data required to calculate percentile</span>
-<span class="sd">        thresholds for a given day of year. Default is 10.</span>
+<span class="sd">        thresholds for a given day of year. Default is 10. Note that this</span>
+<span class="sd">        threshold is independent from &#39;mask_out_of_range&#39; setting and can be</span>
+<span class="sd">        used in combination with it.</span>
 
 <span class="sd">    leading_values : int, optional</span>
 <span class="sd">        For the temporal filtering, this is an argument setting the</span>
@@ -379,6 +529,20 @@
 
 <span class="sd">    ignore_na : bool, optional</span>
 <span class="sd">        Ignore NA values in percentile calculations</span>
+
+<span class="sd">    include_min_max : bool, optional</span>
+<span class="sd">        When set to True, include min and max streamflow value in addition to</span>
+<span class="sd">        streamflow values for percentile levels. Default is True.</span>
+
+<span class="sd">    include_metadata : bool, optional</span>
+<span class="sd">        When set to True, return additional columns describing the data</span>
+<span class="sd">        including count, mean, start_yr, end_yr. Default is True</span>
+
+<span class="sd">    mask_out_of_range :  bool, optional</span>
+<span class="sd">        When set to True, percentiles that are beyond the min/max percentile</span>
+<span class="sd">        ranks of the observed data to be NA. Effect of this being enables is</span>
+<span class="sd">        that high or low percentiles may not be calculated when few data points</span>
+<span class="sd">        are available. Default is True.</span>
 
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
@@ -405,8 +569,6 @@
 <span class="sd">        ...     df, &quot;00060_Mean&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; len(results.index)  # 366 days in a leap year</span>
 <span class="sd">        366</span>
-<span class="sd">        &gt;&gt;&gt; len(results.columns)  # 8 default percentiles</span>
-<span class="sd">        8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># If the dataframe is empty, create a dummy dataframe to</span>
     <span class="c1"># run through function</span>
@@ -435,9 +597,14 @@
     <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
 
     <span class="c1"># create an empty dataframe to hold percentiles based on month-day</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">perc</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">perc</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">include_min_max</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">include_metadata</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;start_yr&#39;</span><span class="p">,</span> <span class="s1">&#39;end_yr&#39;</span><span class="p">]</span>
     <span class="n">month_day_index</span> <span class="o">=</span> <span class="n">date_rng</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">percentiles_by_day</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">month_day_index</span><span class="p">,</span>
-                                      <span class="n">columns</span><span class="o">=</span><span class="n">percentiles</span><span class="p">)</span>
+                                      <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
     <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;month_day&#39;</span><span class="p">]</span>
     <span class="c1"># loop through days of year available</span>
     <span class="k">for</span> <span class="n">month_day</span> <span class="ow">in</span> <span class="n">month_day_index</span><span class="p">:</span>
@@ -455,8 +622,12 @@
                     <span class="c1"># calculate percentiles for the day of year</span>
                     <span class="c1"># and add to DataFrame</span>
                     <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-                        <span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
-                        <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">data_column_name</span><span class="p">,</span>
+                        <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span>
+                        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span>
+                        <span class="n">include_min_max</span><span class="o">=</span><span class="n">include_min_max</span><span class="p">,</span>
+                        <span class="n">include_metadata</span><span class="o">=</span><span class="n">include_metadata</span><span class="p">,</span>
+                        <span class="n">mask_out_of_range</span><span class="o">=</span><span class="n">mask_out_of_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># if there are not at least &#39;min_years&#39; of data,</span>
@@ -485,7 +656,10 @@
 <span class="sd">    This function enables faster calculation of the percentile associated with</span>
 <span class="sd">    a given value if percentile values and corresponding fixed percentile</span>
 <span class="sd">    thresholds are known from other data from the same station or site.</span>
-<span class="sd">    This calculation is done using linear interpolation.</span>
+<span class="sd">    This calculation is done using linear interpolation. A value greater than</span>
+<span class="sd">    the largest streamflow value in the percentile threshold dataframe results</span>
+<span class="sd">    in a percentile of 100. A value less than the smallest streamflow value in</span>
+<span class="sd">    the percentile threshold dataframe results in a percentile of 0.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -510,10 +684,10 @@
 
 <span class="sd">    .. doctest::</span>
 
-<span class="sd">        &gt;&gt;&gt; data = np.arange(1001)</span>
+<span class="sd">        &gt;&gt;&gt; data = pd.DataFrame({&#39;values&#39;: np.arange(1001),</span>
+<span class="sd">        ...                      &#39;date&#39;: pd.date_range(&#39;2020-01-01&#39;, &#39;2022-09-27&#39;)}).set_index(&#39;date&#39;)  # noqa: E501</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_fixed_percentile_thresholds(</span>
-<span class="sd">        ...     data, percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
-<span class="sd">        ...     method=&#39;linear&#39;)</span>
+<span class="sd">        ...     data, &#39;values&#39;, percentiles=[5, 10, 25, 50, 75, 90, 95])</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile = percentiles.calculate_fixed_percentile_from_value(</span>
 <span class="sd">        ...     500, pcts_df)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile</span>
@@ -529,8 +703,8 @@
 <span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
 <span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_fixed_percentile_thresholds(</span>
-<span class="sd">        ...     data[&#39;00060_Mean&#39;],</span>
-<span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
+<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     percentiles=[5, 10, 25, 50, 75, 90, 95,],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
 <span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
@@ -538,14 +712,23 @@
 <span class="sd">        &gt;&gt;&gt; new_data[&#39;est_pct&#39;] = percentiles.calculate_fixed_percentile_from_value(  # noqa: E501</span>
 <span class="sd">        ...     new_data[&#39;00060_Mean&#39;], pcts_df)</span>
 <span class="sd">        &gt;&gt;&gt; new_data[&#39;est_pct&#39;].to_list()</span>
-<span class="sd">        [58.41, 75.0, 48.45, 39.16, 45.58, 48.01, 42.04]</span>
+<span class="sd">        [62.9, 75.0, 55.65, 47.54, 53.55, 55.32, 50.97]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># define values</span>
-    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># extract percentile levels and values</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">like</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)]</span>
+    <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">like</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;min&#39;</span> <span class="ow">and</span> <span class="s1">&#39;max&#39;</span> <span class="ow">in</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">thresholds</span> <span class="o">+</span> <span class="p">[</span><span class="mi">100</span><span class="p">]</span>
+        <span class="n">percentile_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">]]</span> <span class="o">+</span> \
+            <span class="n">percentile_values</span> <span class="o">+</span> <span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]]</span>
+    <span class="c1"># ensure all values are set to float type for interpolation</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">percentile_values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="c1"># do and return linear interpolation</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span></div>
+    <span class="n">estimated_percentile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span>
+                                     <span class="n">thresholds</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">estimated_percentile</span></div>
 
 
 
@@ -558,7 +741,10 @@
 <span class="sd">    a given value for a single day of the year if percentile values and</span>
 <span class="sd">    corresponding variable percentile thresholds are known from other data from</span>
 <span class="sd">    the same station or site. This calculation is done using linear</span>
-<span class="sd">    interpolation.</span>
+<span class="sd">    interpolation. A value greater than the largest streamflow value in the</span>
+<span class="sd">    percentile threshold dataframe for the month-day of interest results</span>
+<span class="sd">    in a percentile of 100. A value less than the smallest streamflow value in</span>
+<span class="sd">    the percentile threshold dataframe results in a percentile of 0.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -593,12 +779,12 @@
 <span class="sd">        ...     start=&quot;1776-01-01&quot;, end=&quot;2022-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
 <span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
-<span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
+<span class="sd">        ...     percentiles=[5, 10, 25, 50, 75, 90, 95],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile = percentiles.calculate_variable_percentile_from_value(  # noqa: E501</span>
 <span class="sd">        ...     500, pcts_df, &#39;06-30&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile</span>
-<span class="sd">        96.21</span>
+<span class="sd">        96.58</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># retrieve percentile thresholds for the day of year of interest</span>
     <span class="n">pct_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;month_day&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
@@ -606,11 +792,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;values&quot;</span><span class="p">})</span>
-        <span class="c1"># define values</span>
-        <span class="n">thresholds</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># do and return linear interpolation</span>
-        <span class="n">est_pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">est_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_from_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pct_values</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># return NaN if no threshold values are provided</span>
         <span class="n">est_pct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -628,7 +810,11 @@
 
 <span class="sd">    This function enables calculation of estimated percentiles for multiple</span>
 <span class="sd">    values across multiple days of the year using existing variable percentile</span>
-<span class="sd">    thresholds.</span>
+<span class="sd">    thresholds. This calculation is done using linear interpolation.</span>
+<span class="sd">    A value greater than the largest streamflow value in the</span>
+<span class="sd">    percentile threshold dataframe for the month-day of interest results</span>
+<span class="sd">    in a percentile of 100. A value less than the smallest streamflow value in</span>
+<span class="sd">    the percentile threshold dataframe results in a percentile of 0.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -666,7 +852,7 @@
 <span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
 <span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
-<span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
+<span class="sd">        ...     percentiles=[5, 10, 25, 50, 75, 90, 95],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
 <span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
@@ -674,7 +860,7 @@
 <span class="sd">        &gt;&gt;&gt; new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501</span>
 <span class="sd">        ...     new_data, &#39;00060_Mean&#39;, pcts_df)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles[&#39;est_pct&#39;].to_list()</span>
-<span class="sd">        [59.59, 77.7, 47.5, 37.5, 50.0, 55.77, 48.71]</span>
+<span class="sd">        [64.81, 77.7, 56.67, 45.0, 55.59, 59.38, 49.12]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">date_column_name</span> <span class="o">=</span> <span class="s1">&#39;datetime&#39;</span>
@@ -719,7 +905,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g2cb07e2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
