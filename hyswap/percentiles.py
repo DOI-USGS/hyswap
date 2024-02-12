@@ -335,6 +335,11 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
     df = rolling_average(df, data_column_name, data_type)
 
     # create an empty dataframe to hold percentiles based on day-of-year
+    # ignore 0 and 100 percentiles if passed in
+    if isinstance(percentiles, np.ndarray):
+        percentiles = percentiles[~np.isin(percentiles, [0, 100])]
+    elif isinstance(percentiles, list):
+        percentiles = [x for x in percentiles if x not in (0, 100)]
     cols = [f"p{perc:02d}" for perc in percentiles]
     if include_min_max:
         cols = ['min'] + cols + ['max']
@@ -544,6 +549,11 @@ def calculate_variable_percentile_thresholds_by_day(
     df = rolling_average(df, data_column_name, data_type)
 
     # create an empty dataframe to hold percentiles based on month-day
+    # ignore 0 and 100 percentiles if passed in
+    if isinstance(percentiles, np.ndarray):
+        percentiles = percentiles[~np.isin(percentiles, [0, 100])]
+    elif isinstance(percentiles, list):
+        percentiles = [x for x in percentiles if x not in (0, 100)]
     cols = [f"p{perc:02d}" for perc in percentiles]
     if include_min_max:
         cols = ['min'] + cols + ['max']
