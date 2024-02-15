@@ -124,24 +124,33 @@ In addition to information on a per-streamgage basis, ``hyswap`` can generate wa
 
 The calculation of area-based runoff in ``hyswap`` involves the steps described below and illustrated in an example in Figure 1:
 
-1. Computation of runoff values (flow per unit area) for each streamgage basin by dividing the average daily flow by the delineated drainage area. Drainage areas are an input to the ``streamflow_to_runoff`` function in ``hyswap``.
-2. Calculation of runoff for each HUC8 unit that is in the area of interest (e.g., state or HUC2 region) using the runoff from multiple streamgages along with associated weighting factors. Weight matrices that contain weighting factors for all HUC8s and streamgages are an input to the ``calculate_geometric_runoff`` functions in ``hyswap`` functions and must be created from spatial data layers describing HUC and streamgage drainage area boundaries. An example workflow for creating the weight matrix used in the area-based runoff calculations is described below.
+1. Computation of runoff values (flow per unit area) for each streamgage basin by dividing the average daily flow by the delineated drainage area. Drainage areas are an input to the ``streamflow_to_runoff`` function in ``hyswap`` to obtain runoff in units of millimeters per unit time (e.g. day, month, year).
+2. Calculation of runoff for each HUC8 unit that is in the area of interest (e.g., state or HUC2 region) using the runoff from multiple streamgages along with associated overlap between streamgage basins and the HUC8. This process is discussed in detail under the 'Workflow for Estimating Runoff' section. The dataframe containing the proportion of HUC8 area in each streamgage basin and the proportion of streamgage basin area in each HUC8 for all HUC8s is an input to the ``calculate_geometric_runoff`` functions in ``hyswap`` functions. This intersection table must be created from spatial data layers describing HUC and streamgage drainage area boundaries (more info below).
 3. Aggregation runoff from the individual HUC8s that are within the area of interest (e.g., state or HUC2 region)
 
-.. image:: ../reference/huc8_runoff_example.gif
-  :width: 600
-  :alt: Map and table that provide an example of the computation of area-based runoff for a given HUC. 
+*Description of methods for area-based runoff computation is adapted from `USGS WaterWatch <https://pubs.usgs.gov/publication/fs20083031>`*
 
-Figure 1. Example computation for computation of runoff for a selected HUC unit. (The drainage area of basin A is shaded light gray and the drainage area of basin B is shaded pink. Note that drainage basin B is nested within drainage basin A). Figure from `(Brakebill and others, 2011)`_
-
-Workflow for Determing Weighting of Streamgages for Area-Based Runoff Calculations
+Workflow for Associating Streamgages with HUC8s for Area-Based Runoff Calculations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Spatial datasets describing the respective drainage basin boundaries of the streamgages and the boundaries of hydrologic cataloging units must be obtained that cover the all areas of interest (e.g. CONUS). Geospatial boundaries of streamgages can be based on delineated gage drainage areas calculated using NHDPlus Version 1 data `(U.S. Geological Survey, 2011)`_ or determined via other watershed delineation approaches. HUC8 boundaries are contained within the `USGS Watershed Boundary Dataset (WBD)<https://www.usgs.gov/national-hydrography/watershed-boundary-dataset>`_. 
 
 Each geospatial streamgage drainage basin boundary is overlain on a geospatial dataset of HUC8s (the polygons outlined in bold black lines in Figure 1 example) to determine the area of intersection within the two datasets. For each overlapping area of HUC8s and streamgage drainage basin boundaries, the fraction of the basin in the HUC8 and the fraction of the HUC8 in the basin are calculated. These fractions are then multiplied by each other to compute a weighting factor for each basin. Weighting factors for each streamgage drainage basin for each HUC8 can then be stored in a single weight matrix.
 
-*Description of methods for area-based runoff computation is adapted from `USGS WaterWatch <https://pubs.usgs.gov/publication/fs20083031>`*
+*You can find an example intersection dataset between CONUS HUC8s and streamgage basins in the `hyswap-example-notebooks <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_*
+
+Workflow for Estimating Area-Based Runoff
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After obtaining a table of intersecting HUC8s and streamgage basins, the next step of the analysis is to determine which streamgage basins should be used to calculate a weighted average of runoff values for each HUC8 over each unit of time (e.g. days, months, years). The weight for each streamgage basin-HUC intersection is the product of the proportion of the HUC8's area in the streamgage basin area and the proportion of the streamgage basin's area in the HUC8 area. ``hyswap`` offers two options for estimating runoff using streamgage basins that overlap the HUC8s: 
+
+1. For each unit of time with runoff data at one or more streamgages, obtain a weighted average of all runoff values that intersect the HUC8. 
+2. If a HUC8 and a streamgage basin have near perfect overlap (e.g. the proportion of the HUC8's area in the basin is greater than 0.9 and the proportion of the basin's area in the HUC8 is greater than 0.9), simply use the runoff value(s) from that streamgage basin. If perfect overlap does not exist, use (a) all streamgage basins *contained* by the HUC8, and (b) the smallest streamgage basin that *contains* the HUC8 to calculate a weighted average. Note that in cases where there is near perfect overlap for multiple streamgage basins and a HUC8, the streamgage basin-HUC8 intersection with the *highest* weight is used to estimate runoff. This is the same method used to determine the smallest streamgage basin that contains the HUC8: among all the streamgage basins that contain the HUC8 (in other words, the proportion of the HUC8's area in the streamgage basins is roughly 1), find the HUC8-streamgage basin intersection with the highest weight (which means the proportion of the streamgage basin's area in the HUC8 is the largest). See Figure 1 for an example of this workflow.
+.. image:: ../reference/huc8_runoff_example.gif
+  :width: 600
+  :alt: Map and table that provide an example of the computation of area-based runoff for a given HUC. 
+
+Figure 1. Example computation for computation of runoff for a selected HUC unit. (The drainage area of basin A is shaded light gray and the drainage area of basin B is shaded pink. Note that drainage basin B is nested within drainage basin A). Figure from `(Brakebill and others, 2011)`_
 
 References
 ----------
