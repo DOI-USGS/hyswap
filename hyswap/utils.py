@@ -642,8 +642,9 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
     # make dictionary
     summary_dict = {}
     # populate it
-    # site number
-    summary_dict['Site number'] = str(int(df['site_no'][0])).zfill(8)
+    # site number (assumes USGS site number format)
+    summary_dict['Site number'] = str(int(df.at[df.index[0],
+                                                'site_no'])).zfill(8)
     # dates
     summary_dict['Begin date'] = df.index.min().strftime('%Y-%m-%d')
     summary_dict['End date'] = df.index.max().strftime('%Y-%m-%d')
