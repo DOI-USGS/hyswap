@@ -646,14 +646,14 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
         thresholds = [0] + thresholds + [100]
         percentile_values = [percentile_df.at['values', 'min']] + \
             percentile_values + [percentile_df.at['values', 'max']]
-    # check if there are NA percentile levels and remove them so they are
-    # ignored during interpolation
-    na_indices = [i for i, x in enumerate(percentile_values) if x is None]
-    thresholds = [x for i, x in enumerate(thresholds) if i not in na_indices]
-    percentile_values = [x for i, x in enumerate(percentile_values) if i not in na_indices]  # noqa: E501
     # ensure all values are set to float type for interpolation
     thresholds = np.array(thresholds, dtype=np.float32)
     percentile_values = np.array(percentile_values, dtype=np.float32)
+    # check if there are NA percentile levels and remove them so they are
+    # ignored during interpolation
+    na_mask = ~np.isnan(percentile_values)
+    percentile_values = percentile_values[na_mask]
+    thresholds = thresholds[na_mask]
     # do and return linear interpolation
     estimated_percentile = np.interp(value, percentile_values,
                                      thresholds, left=0, right=100).round(2)
