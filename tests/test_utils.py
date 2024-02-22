@@ -636,3 +636,13 @@ class TestFlowCategorization:
                                    'est_pct',
                                    min_years=10,
                                    custom_schema=self.schema)
+
+    def test_flow_categorization_missing_count_col(self):
+        """Test the function flow_categorization."""
+        pct_df = self.pct_df.rename(columns={'count': 'col_A'})
+        with pytest.raises(ValueError):
+            utils.categorize_flows(self.df,
+                                   'est_pct',
+                                   percentile_df=pct_df,
+                                   min_years=10,
+                                   custom_schema=self.schema)
