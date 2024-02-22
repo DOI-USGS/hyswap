@@ -6,7 +6,6 @@ import warnings
 from datetime import datetime
 from hyswap.utils import filter_data_by_month_day
 from hyswap.utils import filter_data_by_time
-from hyswap.utils import calculate_metadata
 from hyswap.utils import define_year_doy_columns
 from hyswap.utils import set_data_type
 from hyswap.utils import rolling_average
@@ -194,7 +193,6 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         date_column_name=None,
         data_type='daily',
         year_type='calendar',
-        min_years=10,
         leading_values=0,
         trailing_values=0,
         clip_leap_day=False,
@@ -245,10 +243,6 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         2011". 'climate' years begin on April 1 and end on March 31 of the
         following year, they are numbered by the ending year. For example,
         April 1, 2010 to March 31, 2011 is "climate year 2011".
-
-    min_years : int, optional
-        Minimum number of years of data required to calculate percentile
-        thresholds for a given day of year. Default is 10.
 
     leading_values : int, optional
         For the temporal filtering, this is an argument setting the
@@ -358,24 +352,16 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
                                    drop_na=ignore_na)
         if not data.empty:
             if not np.isnan(data).all():
-                meta = calculate_metadata(data)
-                # only calculate data if there are at least
-                # min_years of data that are not nan
-                if meta['n_years'] - meta['n_nans'] >= min_years:
-                    # calculate percentiles for the day of year
-                    # and add to DataFrame
-                    _pct = calculate_fixed_percentile_thresholds(
-                        data.to_frame(), data_column_name,
-                        percentiles=percentiles,
-                        method=method, ignore_na=ignore_na,
-                        include_min_max=include_min_max,
-                        include_metadata=include_metadata,
-                        mask_out_of_range=mask_out_of_range, **kwargs)
-                    percentiles_by_day.loc[doy_index == doy, :] = _pct.values.tolist()[0]  # noqa: E501
-                else:
-                    # if there are not at least 'min_years' of data,
-                    # set percentiles to NaN
-                    percentiles_by_day.loc[doy_index == doy, :] = np.nan
+                # calculate percentiles for the day of year
+                # and add to DataFrame
+                _pct = calculate_fixed_percentile_thresholds(
+                    data.to_frame(), data_column_name,
+                    percentiles=percentiles,
+                    method=method, ignore_na=ignore_na,
+                    include_min_max=include_min_max,
+                    include_metadata=include_metadata,
+                    mask_out_of_range=mask_out_of_range, **kwargs)
+                percentiles_by_day.loc[doy_index == doy, :] = _pct.values.tolist()[0]  # noqa: E501
             else:
                 # if all values are NA
                 # set percentiles to NaN
@@ -418,7 +404,6 @@ def calculate_variable_percentile_thresholds_by_day(
         method='weibull',
         date_column_name=None,
         data_type='daily',
-        min_years=10,
         leading_values=0,
         trailing_values=0,
         clip_leap_day=False,
@@ -459,12 +444,6 @@ def calculate_variable_percentile_thresholds_by_day(
         specified, the data will be averaged over the specified period. NaN
         values will be used for any days that do not have data. If present,
         NaN values will result in NaN values for the entire period.
-
-    min_years : int, optional
-        Minimum number of years of data required to calculate percentile
-        thresholds for a given day of year. Default is 10. Note that this
-        threshold is independent from 'mask_out_of_range' setting and can be
-        used in combination with it.
 
     leading_values : int, optional
         For the temporal filtering, this is an argument setting the
@@ -572,25 +551,16 @@ def calculate_variable_percentile_thresholds_by_day(
                                         drop_na=ignore_na)
         if not data.empty:
             if not np.isnan(data).all():
-                meta = calculate_metadata(data)
-                # only calculate data if there are at least
-                # min_years of data that are not nan
-                if meta['n_years'] - meta['n_nans'] >= min_years:
-                    # calculate percentiles for the day of year
-                    # and add to DataFrame
-                    _pct = calculate_fixed_percentile_thresholds(
-                        data.to_frame(), data_column_name,
-                        percentiles=percentiles,
-                        method=method, ignore_na=ignore_na,
-                        include_min_max=include_min_max,
-                        include_metadata=include_metadata,
-                        mask_out_of_range=mask_out_of_range, **kwargs)
-                    percentiles_by_day.loc[month_day_index == month_day, :] = _pct.values.tolist()[0]  # noqa: E501
-                else:
-                    # if there are not at least 'min_years' of data,
-                    # set percentiles to NaN
-                    percentiles_by_day.loc[
-                        month_day_index == month_day, :] = np.nan
+                # calculate percentiles for the day of year
+                # and add to DataFrame
+                _pct = calculate_fixed_percentile_thresholds(
+                    data.to_frame(), data_column_name,
+                    percentiles=percentiles,
+                    method=method, ignore_na=ignore_na,
+                    include_min_max=include_min_max,
+                    include_metadata=include_metadata,
+                    mask_out_of_range=mask_out_of_range, **kwargs)
+                percentiles_by_day.loc[month_day_index == month_day, :] = _pct.values.tolist()[0]  # noqa: E501
             else:
                 # if all values are NA
                 # set percentiles to NaN
@@ -679,6 +649,11 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     # ensure all values are set to float type for interpolation
     thresholds = np.array(thresholds, dtype=np.float32)
     percentile_values = np.array(percentile_values, dtype=np.float32)
+    # check if there are NA percentile levels and remove them so they are
+    # ignored during interpolation
+    na_mask = ~np.isnan(percentile_values)
+    percentile_values = percentile_values[na_mask]
+    thresholds = thresholds[na_mask]
     # do and return linear interpolation
     estimated_percentile = np.interp(value, percentile_values,
                                      thresholds, left=0, right=100).round(2)
