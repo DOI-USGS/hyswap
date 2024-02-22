@@ -642,8 +642,9 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
     # make dictionary
     summary_dict = {}
     # populate it
-    # site number
-    summary_dict['Site number'] = str(int(df['site_no'][0])).zfill(8)
+    # site number (assumes USGS site number format)
+    summary_dict['Site number'] = str(int(df.at[df.index[0],
+                                                'site_no'])).zfill(8)
     # dates
     summary_dict['Begin date'] = df.index.min().strftime('%Y-%m-%d')
     summary_dict['End date'] = df.index.max().strftime('%Y-%m-%d')
@@ -894,6 +895,21 @@ def categorize_flows(df,
         else:
             raise ValueError("Percentile threshold dataframe must be " +
                              "provided when using min_years setting")
+
+    if min_years is not None:
+        if percentile_df is not None:
+            # add month-day column
+            df['month_day'] = df.index.strftime('%m-%d')
+            # join count (num years column)
+            df = pd.merge(df, percentile_df['count'], how="left",
+                          left_on="month_day", right_index=True)
+            # set days where min_years is > count to "Not Ranked"
+            df['flow_cat'] = np.where(df['count'] < min_years,
+                                      "Not Ranked",
+                                      df['flow_cat'])
+            df = df.drop(['month_day', 'count'], axis=1)
+        else:
+            raise ValueError("Percentile threshold dataframe must be provided when using min_years setting")  # noqa: E501
 
     return df
 
