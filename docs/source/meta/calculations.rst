@@ -125,8 +125,8 @@ In addition to information on a per-streamgage basis, ``hyswap`` can generate wa
 The calculation of area-based runoff in ``hyswap`` involves the steps described below and illustrated in an example in Figure 1:
 
 1. Compute runoff values (flow per unit area) for each streamgage basin by dividing the average daily flow by the delineated drainage area. Drainage areas are an input to the ``streamflow_to_runoff`` function in ``hyswap`` to obtain runoff in units of millimeters per unit time (e.g. day, month, year).
-2. Calculate runoff for each HUC8 unit that is in the area of interest (e.g., state or HUC2 region) using the runoff from multiple streamgages along with associated overlap between streamgage basins and the HUC8. This process is discussed in detail under the 'Workflow for Estimating Runoff' section. The dataframe containing the proportion of HUC8 area in each streamgage basin and the proportion of streamgage basin area in each HUC8 for all HUC8s is an input to the ``calculate_geometric_runoff`` functions in ``hyswap`` functions. This intersection table must be created from spatial data layers describing HUC and streamgage drainage area boundaries (more info below).
-3. Aggregate runoff from the individual HUC8s that are within the area of interest (e.g., state or HUC2 region)
+2. Calculate runoff for each HUC8 unit that is in the area of interest (e.g., state or HUC2 region) using the runoff from multiple streamgages along with associated overlap between streamgage basins and the HUC8. This process is discussed in detail under the 'Workflow for Estimating Area-Based Runoff' section. The dataframe containing the proportion of HUC8 area in each streamgage basin and the proportion of streamgage basin area in each HUC8 for all HUC8s is an input to the ``calculate_geometric_runoff`` functions in ``hyswap`` functions. This intersection table must be created from spatial data layers describing HUC and streamgage drainage area boundaries (more info below).
+3. Aggregate runoff from the individual HUC8s that are within the area of interest (e.g., state or HUC2 region).
 
 Workflow for Associating Streamgages with HUC8s for Area-Based Runoff Calculations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -135,7 +135,7 @@ Spatial datasets describing the respective drainage basin boundaries of the stre
 
 Each geospatial streamgage drainage basin boundary is overlain on a geospatial dataset of HUC8s (the polygons outlined in bold black lines in Figure 1 example) to determine the area of intersection within the two datasets. For each overlapping area of HUC8s and streamgage drainage basin boundaries, the fraction of the basin in the HUC8 and the fraction of the HUC8 in the basin are calculated. These fractions are then multiplied by each other to compute a weighting factor for each basin in the runoff calculation.
 
-You can find an example intersection dataset between CONUS HUC8s and streamgage basins in the `hyswap-example-notebooks repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_. This intersection dataset was created using the `surface water geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/surface-water-geospatial-data-assembly>`_
+You can find an example intersection dataset between CONUS HUC8s and streamgage basins in the `hyswap-example-notebooks repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_. This intersection dataset was created using the `surface water geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/surface-water-geospatial-data-assembly>`_.
 
 Workflow for Estimating Area-Based Runoff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
