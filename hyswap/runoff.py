@@ -355,9 +355,9 @@ def calculate_geometric_runoff(geom_id,
     # check to see if empty
     if filtered_intersection_df.empty:
         print(('No runoff data available from intersecting sites to estimate '
-               f'weighted runoff for {geom_id}. Check that your runoff dictionary '
-               'keys match site ids in your geom_intersection_df. Returning '
-               'empty series.'))
+               f'weighted runoff for {geom_id}. Check that your runoff '
+               'dictionary keys match site ids in your geom_intersection_df. '
+               'Returning empty series.'))
         return pd.Series(dtype='float32')
     # converting proportions to decimals if applicable
     filtered_intersection_df[prop_geom_in_basin_col] = (filtered_intersection_df[prop_geom_in_basin_col] * multiplier)  # noqa: E501
