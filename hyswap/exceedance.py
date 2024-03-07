@@ -130,6 +130,19 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         >>> exceedance.calculate_exceedance_probability_from_values(
         ...     5, [1, 2, 3, 4])
         0.0
+    
+    Fetch some data from NWIS and calculate the exceedance probability for a
+    value.
+
+    .. doctest::
+        :skipif: True  # skips this block of code as it broke CI pipeline
+
+        >>> df, _ = dataretrieval.nwis.get_dv(site='10171000',
+        ...                                         start='2000-01-01',
+        ...                                         end='2020-01-01')
+        >>> exceedance.calculate_exceedance_probability_from_value(
+        ...     300, df['00060_Mean'])
+        0.0001368550704803613
     """
 
     if method in ['weibull', 'Type 6']:
