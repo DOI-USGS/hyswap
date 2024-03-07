@@ -132,7 +132,8 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         0.0
     
     Fetch some data from NWIS and calculate the exceedance probability for a
-    value.
+    value of 300. This is close to the max flow value for this gage, so the
+    exceedance probability is very small.
 
     .. doctest::
         :skipif: True  # skips this block of code as it broke CI pipeline
