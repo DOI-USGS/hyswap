@@ -131,19 +131,23 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         ...     5, [1, 2, 3, 4])
         0.0
 
-    Fetch some data from NWIS and calculate the exceedance probability for a
-    value of 300. This is close to the max flow value for this gage and date
-    range, so the exceedance probability is very small.
+    Fetch some data from NWIS and calculate the exceedance probability
+    for a value of 300 cfs. This is close to the maximum stream flow
+    value for this gage and date range, so the exceedance probability
+    is very small.
 
     .. doctest::
         :skipif: True  # skips this block of code as it broke CI pipeline
 
-        >>> df, _ = dataretrieval.nwis.get_dv(site='10171000',
-        ...                                         start='2000-01-01',
-        ...                                         end='2020-01-01')
-        >>> exceedance.calculate_exceedance_probability_from_value(
-        ...     300, df['00060_Mean'])
-        0.0001368550704803613
+        >>> df, _ = dataretrieval.nwis.get_dv(
+        ...    site='10171000',
+        ...    start='2000-01-01',
+        ...    end='2020-01-01')
+        >>> np.round(
+        ...    exceedance.calculate_exceedance_probability_from_values(
+        ...        300, df['00060_Mean']),
+        ...        6)
+        0.000137
     """
 
     if method in ['weibull', 'Type 6']:
