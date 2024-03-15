@@ -324,8 +324,9 @@ def calculate_geometric_runoff(geom_id,
     check = list(set(runoff_dict.keys()) - set(geom_intersection_df[site_col].tolist()))  # noqa: E501
     if check:
         print(('There are dictionary keys (site ids) that are not present '
-               'in the intersection df. This might indicate a mismatch in '
-               'site id formats, e.g. missing leading zeroes if NWIS sites.'))
+               f'in the intersection df for {geom_id}. This might indicate '
+               'a mismatch in site id formats, e.g. missing leading '
+               'zeroes if NWIS sites.'))
     # check whether sites is the df index or not
     if site_col == 'index':
         geom_intersection_df = geom_intersection_df.reset_index()
@@ -354,9 +355,9 @@ def calculate_geometric_runoff(geom_id,
     # check to see if empty
     if filtered_intersection_df.empty:
         print(('No runoff data available from intersecting sites to estimate '
-               'weighted runoff. Check that your runoff dictionary '
-               'keys match site ids in your geom_intersection_df. Returning '
-               'empty series.'))
+               f'weighted runoff for {geom_id}. Check that your runoff '
+               'dictionary keys match site ids in your geom_intersection_df. '
+               'Returning empty series.'))
         return pd.Series(dtype='float32')
     # converting proportions to decimals if applicable
     filtered_intersection_df[prop_geom_in_basin_col] = (filtered_intersection_df[prop_geom_in_basin_col] * multiplier)  # noqa: E501
@@ -394,7 +395,7 @@ def calculate_geometric_runoff(geom_id,
         # with associated runoff data, let user know and then
         # check if there are any basins within geom.
         if geom_in_basin.empty:
-            print("No runoff data associated with any basins containing the geometry object for the time period selected.")  # noqa: E501
+            print(f"No runoff data associated with any basins containing the geometry object {geom_id} for the time period selected.")  # noqa: E501
         else:
             # calculate their weights
             geom_in_basin['weight'] = geom_in_basin[prop_basin_in_geom_col] * \
@@ -411,7 +412,7 @@ def calculate_geometric_runoff(geom_id,
         basin_in_geom = filtered_intersection_df[(filtered_intersection_df[prop_basin_in_geom_col] > full_overlap_threshold)].copy()  # noqa: E501
         # if there are no basins with runoff data, let user know.
         if basin_in_geom.empty:
-            print("No runoff data associated with any basins contained within the geometry object for the time period selected.")  # noqa: E501
+            print(f"No runoff data associated with any basins contained within the geometry object {geom_id} for the time period selected.")  # noqa: E501
         else:
             # calculate their weights
             basin_in_geom['weight'] = basin_in_geom[prop_basin_in_geom_col] * \
@@ -420,7 +421,7 @@ def calculate_geometric_runoff(geom_id,
         # no basins fully contain the huc and the huc doesn't fully
         # contain any basins, return empty series.
         if geom_in_basin.empty and basin_in_geom.empty:
-            print("Insufficient data and/or overlap between basins and geometry object. Returning empty series.")  # noqa: E501
+            print(f"Insufficient data and/or overlap between basins and geometry object {geom_id}. Returning empty series.")  # noqa: E501
             return pd.Series(dtype='float32')
         # combine these two dfs into one
         else:
@@ -434,7 +435,7 @@ def calculate_geometric_runoff(geom_id,
     # check if any weights are NaN
     if final_geom_intersection_df['weight'].isnull().any():
         print(('One or more geometry-basin weights are null. '
-               'Cannot estimate runoff values. '
+               f'Cannot estimate runoff values for {geom_id}. '
                'Returning nan values.'))
     # grab applicable basin runoff from dictionary
     basins = final_geom_intersection_df[site_col].tolist()
