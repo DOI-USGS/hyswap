@@ -590,3 +590,44 @@ class TestCalculateFixedPercentilesFromValue:
         with pytest.raises(AttributeError):
             percentiles.calculate_fixed_percentile_from_value(
                 self.low_val, [1, 2, 3])
+
+class TestCalculateVariablePercentilesFromValue_s:
+    # Test percentile and df
+    pct_df = pd.DataFrame(
+        np.array(
+            [[1, 2, 3, 4, 5],
+             [np.nan, 5, 6, 7, 8],
+             [7, 8, 9, 10, 11]]
+            ),
+            columns=['min', 'p25', 'p50', 'p75', 'max'],
+            index = ['01-01', '01-02', '01-03']
+            )
+    pct_df.index.names = ["month_day"]
+    df = pd.DataFrame(
+        pd.Series(
+            [3.7, 4.1, 9.8],
+            index = pd.date_range('2024-01-01', '2024-01-03')
+            ),
+            columns=['00060_Mean']
+            )
+    df.index.name = 'datetime'
+
+    def test_calculate_variable_percentile_from_value_simple(self):
+        """Test with a single value and no np.nans."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            3.5, self.pct_df, month_day='01-01')
+        pct_np = np.interp(3.5, np.array([1, 2, 3, 4, 5], dtype=np.float32),np.array([0, 25, 50, 75, 100], dtype=np.float32), left=0, right=100).round(2)
+        assert pct_out == pct_np
+
+    def test_calculate_variable_percentile_from_value_nan(self):
+        """Test with a single value and an np.nan."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            4.1, self.pct_df, month_day='01-02')
+        pct_np = np.interp(4.1, np.array([np.nan, 5, 6, 7, 8], dtype=np.float32),np.array([0, 25, 50, 75, 100], dtype=np.float32), left=0, right=100).round(2)
+        assert pct_out == pct_np
+
+    def test_calculate_variable_percentiles_from_values_basic(self):
+        """Test with multiple values"""
+        pct_df_out = percentiles.calculate_multiple_variable_percentiles_from_values(self.df, '00060_Mean', self.pct_df)
+
+
