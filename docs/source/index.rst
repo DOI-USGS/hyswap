@@ -7,7 +7,7 @@ Welcome to the documentation for the Python ``hyswap`` package.
 Specifically, a number of functions for calculating statistics (e.g., exceedance probabilities, daily historic percentiles) and generating related plots (e.g., flow duration curves, streamflow duration hydrographs) are available.
 These methods are provided in a modular fashion as individual functions, and are designed to give the user flexibility in implementation.
 For example, the raster hydrograph functionality is not limited to the visualization of historic streamflow information; it can be applied to any arbitrary information provided to the corresponding functions.
-See the :doc:`Examples </examples/index>` section for fairly standard examples of using the functions in `hyswap` to perform typical hydrologic calculations and visualizations.
+See the :doc:`Simple Examples </examples_simple/index>` section for fairly standard examples of using the functions in `hyswap` to perform typical hydrologic calculations and visualizations.
 Read the :doc:`API Reference </reference/index>` if you'd like to see the full set of functions that are available.
 
 Table of Contents
@@ -17,7 +17,8 @@ Table of Contents
    :maxdepth: 1
 
    meta/installation
-   examples/index
+   examples_simple/index
+   example_notebooks/index
    meta/glossary
    meta/calculations
    meta/contributing

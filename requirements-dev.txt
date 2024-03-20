@@ -6,3 +6,6 @@ pylint
 pydocstringformatter
 dataretrieval
 pydeps==1.12.3
+nbsphinx
+pandoc
+ipykernel
