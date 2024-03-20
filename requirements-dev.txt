@@ -7,5 +7,7 @@ pydocstringformatter
 dataretrieval
 pydeps==1.12.3
 nbsphinx
+nbsphinx_link
+sphinx-rtd-theme
 pandoc
 ipykernel
