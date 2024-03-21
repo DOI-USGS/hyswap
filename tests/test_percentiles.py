@@ -597,7 +597,7 @@ class TestCalculateVariablePercentileFromValue_s:
     pct_df = pd.DataFrame(
         np.array(
             [[1, 2, 3, 4, 5],
-             [np.nan, 5, 6, 7, 8],
+             [5, np.nan, 6, 7, 8],
              [7, 8, 9, 10, 11]]
             ),
         columns=['min', 'p25', 'p50', 'p75', 'max'],
@@ -630,7 +630,7 @@ class TestCalculateVariablePercentileFromValue_s:
     def test_calculate_variable_percentile_from_value_nan(self):
         """Test with a single value and an np.nan."""
         pct_out = percentiles.calculate_variable_percentile_from_value(
-            4.1,
+            5.5,
             self.pct_df,
             month_day='01-02'
             )
@@ -638,8 +638,38 @@ class TestCalculateVariablePercentileFromValue_s:
         na_mask = ~np.isnan(percentile_values)
         percentile_values = percentile_values[na_mask]
         thresholds = self.thresholds[na_mask]
-        pct_np = np.interp(4.1, percentile_values,thresholds, left=0, right=100).round(2) # noqa
+        pct_np = np.interp(5.5, percentile_values,thresholds, left=0, right=100).round(2) # noqa
         assert pct_out == pct_np
+
+    def test_calculate_variable_percentile_from_value_min(self):
+        """Test with a single value below the minimum percentile."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            0.5,
+            self.pct_df,
+            month_day='01-01'
+            )
+        percentile_values = np.array(self.pct_df.loc[self.pct_df.index == "01-01"].values.flatten().tolist(), dtype=np.float32) # noqa
+        na_mask = ~np.isnan(percentile_values)
+        percentile_values = percentile_values[na_mask]
+        thresholds = self.thresholds[na_mask]
+        pct_np = np.interp(0.5, percentile_values,thresholds, left=0, right=100).round(2) # noqa
+        assert pct_out == pct_np
+        assert pct_out == 0.0
+
+    def test_calculate_variable_percentile_from_value_max(self):
+        """Test with a single value above the maximum percentile."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            15,
+            self.pct_df,
+            month_day='01-03'
+            )
+        percentile_values = np.array(self.pct_df.loc[self.pct_df.index == "01-03"].values.flatten().tolist(), dtype=np.float32) # noqa
+        na_mask = ~np.isnan(percentile_values)
+        percentile_values = percentile_values[na_mask]
+        thresholds = self.thresholds[na_mask]
+        pct_np = np.interp(15, percentile_values,thresholds, left=0, right=100).round(2) # noqa
+        assert pct_out == pct_np
+        assert pct_out == 100.0
 
     def test_calculate_multiple_variable_percentiles_from_values_basic(self): # noqa
         """Test with multiple values from a df"""
