@@ -5,6 +5,7 @@ flake8
 pylint
 pydocstringformatter
 dataretrieval
+geopandas
 pydeps==1.12.3
 nbsphinx
 nbsphinx_link
