@@ -102,7 +102,6 @@ import geopandas
 import matplotlib.pyplot as plt
 import dataretrieval
 from pynhd import WaterData
-import contextily as ctx
 import warnings
 from datetime import datetime, timedelta
 from tqdm import tqdm
