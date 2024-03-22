@@ -6,6 +6,9 @@ pylint
 pydocstringformatter
 dataretrieval
 geopandas
+pynhd
+datetime
+tqdm
 pydeps==1.12.3
 nbsphinx
 nbsphinx_link
