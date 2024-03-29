@@ -655,8 +655,11 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     percentile_values = percentile_values[na_mask]
     thresholds = thresholds[na_mask]
     # do and return linear interpolation
-    estimated_percentile = np.interp(value, percentile_values,
+    if not percentile_values.empty:
+        estimated_percentile = np.interp(value, percentile_values,
                                      thresholds, left=0, right=100).round(2)
+    else:
+        estimated_percentile = np.nan
     return estimated_percentile
 
 
@@ -715,7 +718,7 @@ def calculate_variable_percentile_from_value(value, percentile_df, month_day):
     # retrieve percentile thresholds for the day of year of interest
     pct_values = percentile_df.loc[percentile_df.index.get_level_values('month_day') == month_day]  # noqa: E501
 
-    if not pct_values.empty:
+    if not pct_values.empty and not pct_values.isnull().all():
         pct_values = pct_values.reset_index(drop=True)
         pct_values = pct_values.rename(index={0: "values"})
         est_pct = calculate_fixed_percentile_from_value(value, pct_values)
