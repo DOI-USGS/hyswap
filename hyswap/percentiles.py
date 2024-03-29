@@ -655,7 +655,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     percentile_values = percentile_values[na_mask]
     thresholds = thresholds[na_mask]
     # do and return linear interpolation
-    if not percentile_values.empty:
+    if not percentile_values.length == 0:
         estimated_percentile = np.interp(value, percentile_values,
                                      thresholds, left=0, right=100).round(2)
     else:
