@@ -598,16 +598,17 @@ class TestCalculateVariablePercentileFromValue_s:
         np.array(
             [[1, 2, 3, 4, 5],
              [5, np.nan, 6, 7, 8],
-             [7, 8, 9, 10, 11]]
+             [7, 8, 9, 10, 11],
+             [np.nan, np.nan, np.nan, np.nan, np.nan]]
             ),
         columns=['min', 'p25', 'p50', 'p75', 'max'],
-        index=['01-01', '01-02', '01-03']
+        index=['01-01', '01-02', '01-03', '01-04']
         )
     pct_df.index.names = ["month_day"]
     df = pd.DataFrame(
         pd.Series(
-            [3.7, 4.1, 9.8],
-            index=pd.date_range('2024-01-01', '2024-01-03')
+            [3.7, 4.1, 9.8, 7.2],
+            index=pd.date_range('2024-01-01', '2024-01-04')
             ),
         columns=['00060_Mean']
         )
@@ -671,6 +672,15 @@ class TestCalculateVariablePercentileFromValue_s:
         assert pct_out == pct_np
         assert pct_out == 100.0
 
+    def test_calculate_variable_percentile_from_value_percentiles_nan(self):
+        """Test with a single value above the maximum percentile."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            5,
+            self.pct_df,
+            month_day='01-04'
+            )
+        assert np.isnan(pct_out)
+
     def test_calculate_multiple_variable_percentiles_from_values_basic(self): # noqa
         """Test with multiple values from a df"""
         pct_df_out = percentiles.calculate_multiple_variable_percentiles_from_values( # noqa
@@ -690,7 +700,8 @@ class TestCalculateVariablePercentileFromValue_s:
             self.thresholds,
             left=0,
             right=100).round(2)
-        assert pct_df_out.shape == (3, 2)
+        assert pct_df_out.shape == (4, 2)
         assert np.all(pct_df_out.index == self.df.index)
         assert pct_df_out.iloc[0]['est_pct'] == est_pct1
         assert pct_df_out.iloc[2]['est_pct'] == est_pct3
+        assert np.isnan(pct_df_out.iloc[3]['est_pct'])
