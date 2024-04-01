@@ -5,7 +5,9 @@ flake8
 pylint
 pydocstringformatter
 dataretrieval
-geopandas
+matplotlib
+folium
+mapclassify
 pynhd
 datetime
 tqdm
