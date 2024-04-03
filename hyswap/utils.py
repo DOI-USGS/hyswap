@@ -96,7 +96,7 @@ def rolling_average(df, data_column_name, data_type,
     df_out = df.copy(deep=True)
     df_out[data_column_name] = df_out[data_column_name].rolling(
         data_type,
-        min_periods, **kwargs).mean()
+        min_periods, **kwargs).mean().round(2)
     return df_out
 
 
