@@ -163,14 +163,17 @@ class TestCalculateGeometricRunoff:
     geom_intersection_perc['perc_huc_in_basin'] = geom_intersection_perc['prop_huc_in_basin']*100  # noqa: E501
     geom_intersection_perc['perc_basin_in_huc'] = geom_intersection_perc['prop_basin_in_huc']*100  # noqa: E501
     keys = [f'0{i}' for i in range(1, 16)]
-    runoff_dict = {}
+    runoff_df = pd.DataFrame()
     for key in keys:
-        runoff_dict[key] = pd.DataFrame({
+        df = pd.DataFrame({
+            'site_no': key,
             'runoff': np.random.random(len(pd.date_range('2023-01-01', '2023-01-04'))),  # noqa: E501
             'datetime': pd.date_range('2023-01-01', '2023-01-04')
             }).set_index('datetime')
-    runoff_dict['014'].runoff.iloc[3] = np.nan
-    del runoff_dict['011']
+        runoff_df = pd.concat([runoff_df, df])
+    runoff_df = runoff_df.loc[~(runoff_df['site_no'] == '011')]
+    reset = runoff_df.loc[runoff_df['site_no'] == '014'].runoff[3]
+    runoff_df['runoff'] = runoff_df['runoff'].replace({reset: np.nan})
 
     def test_calculate_geometric_runoff_complete_overlap(self):
         """Test runoff function with huc overlapping basin."""
@@ -178,7 +181,7 @@ class TestCalculateGeometricRunoff:
         # huc and basin
         testA = runoff.calculate_geometric_runoff(
             geom_id="A",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -186,11 +189,11 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin'
             )
         # should return runoff from site 01
-        assert testA.tolist() == self.runoff_dict['01']['runoff'].tolist()
+        assert testA.tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
         # test with percentages rather than proportions
         testA_2 = runoff.calculate_geometric_runoff(
             geom_id="A",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection_perc,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -199,7 +202,7 @@ class TestCalculateGeometricRunoff:
             percentage=True
             )
         # should return runoff from site 01
-        assert testA_2.tolist() == self.runoff_dict['01']['runoff'].tolist()
+        assert testA_2.tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
 
     def test_calculate_geometric_runoff_within_contains_huc(self):
         """Test runoff function with huc that has a basin containing
@@ -207,7 +210,7 @@ class TestCalculateGeometricRunoff:
         # huc contains basin and a basin contains huc
         testB = runoff.calculate_geometric_runoff(
             geom_id="B",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -215,7 +218,8 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin'
             )
 
-        check = pd.merge(self.runoff_dict['04'], self.runoff_dict['05'], left_index=True, right_index=True)  # noqa: E501
+        check = self.runoff_df[self.runoff_df['site_no'].isin(['04', '05'])].reset_index()  # noqa: E501
+        check = check.pivot(columns='site_no', index='datetime', values='runoff').dropna(axis='columns')  # noqa: E501
         int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['04', '05'])]  # noqa: E501
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
         weighted = np.average(check, weights=int['weight'], axis=1)
@@ -229,7 +233,7 @@ class TestCalculateGeometricRunoff:
         # from runoff calc
         testC = runoff.calculate_geometric_runoff(
             geom_id="C",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -238,14 +242,14 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=True
             )
         # should return site 07 runoff
-        assert np.round(testC.tolist(), decimals=8).tolist() == np.round(self.runoff_dict['07']['runoff'].tolist(), decimals=8).tolist()  # noqa: E501
+        assert np.round(testC.tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '07'].runoff, decimals=8).tolist()  # noqa: E501
         # huc contained by two larger basins
         # and overlaps another basin
         # test when all basins included
         # in weighted runoff calc
         testC_2 = runoff.calculate_geometric_runoff(
             geom_id="C",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -254,8 +258,8 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=False
             )
 
-        check = pd.merge(self.runoff_dict['07'], self.runoff_dict['08'], left_index=True, right_index=True)  # noqa: E501
-        check = pd.merge(check, self.runoff_dict['09'], left_index=True, right_index=True)  # noqa: E501
+        check = self.runoff_df[self.runoff_df['site_no'].isin(['07', '08', '09'])].reset_index()  # noqa: E501
+        check = check.pivot(columns='site_no', index='datetime', values='runoff').dropna(axis='columns')  # noqa: E501
         int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['07', '08', '09'])]  # noqa: E501
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
         weighted = np.average(check, weights=int['weight'], axis=1)
@@ -268,7 +272,7 @@ class TestCalculateGeometricRunoff:
         # any basins
         testD = runoff.calculate_geometric_runoff(
             geom_id="D",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -277,7 +281,7 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=False
             )
         # should return runoff for site 010
-        assert np.round(testD.tolist(), decimals=8).tolist() == np.round(self.runoff_dict['010']['runoff'].tolist(), decimals=8).tolist()  # noqa: E501
+        assert np.round(testD.tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '010'].runoff, decimals=8).tolist()  # noqa: E501
 
     def test_calculate_geometric_runoff_no_basin_data(self):
         """Test runoff function with huc where no basin data
@@ -285,7 +289,7 @@ class TestCalculateGeometricRunoff:
         # basin containing huc does not have data
         testE = runoff.calculate_geometric_runoff(
             geom_id="E",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -294,25 +298,12 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=False)
         assert testE.empty
 
-    def test_calculate_geometric_runoff_nan_weight(self):
-        """Test runoff function with basin that has nan
-        proportion."""
-        testF = runoff.calculate_geometric_runoff(
-            geom_id="F",
-            runoff_dict=self.runoff_dict,
-            geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
-            prop_basin_in_geom_col='prop_basin_in_huc',
-            prop_geom_in_basin_col='prop_huc_in_basin')
-        assert testF.isnull().all()
-
     def test_calculate_geometric_runoff_nan_data_value(self):
         """Test runoff function with basin runoff with daily
         value that is nan."""
         testG = runoff.calculate_geometric_runoff(
             geom_id="G",
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
@@ -320,13 +311,13 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin')
         # runoff value on last day should be runoff from basin '015'
         # since basin '014' is nan on that day
-        assert np.round(testG[3], decimals=8) == np.round(self.runoff_dict['015']['runoff'][3], decimals=8)  # noqa: E501
+        assert np.round(testG[3], decimals=8) == np.round(self.runoff_df[self.runoff_df['site_no'] == '015'].runoff[3], decimals=8)  # noqa: E501
 
     def test_calculate_multiple_geometric_runoff(self):
         """Test multiple runoff function."""
         test_mult = runoff.calculate_multiple_geometric_runoff(
             geom_id_list=['A', 'B', 'C', 'D'],
-            runoff_dict=self.runoff_dict,
+            runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
             site_col='site_id',
             geom_id_col='huc_id',
