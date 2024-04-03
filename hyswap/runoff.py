@@ -255,7 +255,12 @@ def calculate_geometric_runoff(geom_id,
     """Function to calculate the runoff for a specified geometry. Uses
     tabular dataframe containing proportion of geometry in each
     intersecting basin and proportion of intersecting basins in the
-    specified geometry, as well as a dictionary of basin runoff values.
+    specified geometry, as well as a dataframe of basin runoff values.
+    Note that this function only calculates estimated runoff using
+    intersecting basins with a complete runoff record over the
+    entire date range of the dataframe. For this reason, the user
+    may want to break up runoff calculations by month, year, or some
+    other time step.
 
     Parameters
     ----------
@@ -317,9 +322,9 @@ def calculate_geometric_runoff(geom_id,
     pandas.Series
         Series containing the area-weighted runoff values for the geometry.
     """
-    # check whether dictionary contains sites not in geom_df
+    # check whether runoff_df contains sites not in geom_df
     # this might indicate mismatched format in site ids between
-    # dictionary and geom_intersection df
+    # runoff_df and geom_intersection df
     check = list(set(runoff_df['site_no'].tolist()) - set(geom_intersection_df[site_col].tolist()))  # noqa: E501
     if check:
         print(('There are site ids in the runoff df that are not present '
@@ -471,7 +476,13 @@ def calculate_multiple_geometric_runoff(
         clip_downstream_basins=True,
         full_overlap_threshold=0.98
         ):
-    """Calculate runoff for multiple geometries at once.
+    """Calculate runoff for multiple geometries at once using
+    `hyswap.calculate_geometric_runoff()`.
+    Note that this function only calculates estimated runoff using
+    intersecting basins with a complete runoff record over the
+    entire date range of the dataframe. For this reason, the user
+    may want to break up runoff calculations by month, year, or some
+    other time step.
 
     Parameters
     ----------
@@ -479,11 +490,11 @@ def calculate_multiple_geometric_runoff(
         List of geometry ID strings for the geometries of interest.
         These should be columns in the weights matrix.
 
-    runoff_dict : dict
-        Dictionary of dataframes containing runoff data for each site in the
-        geometry. Dictionary key is expected to be the name of the gage site.
-        Each dictionary entry is expected to have a date index and a data
-        column filled with runoff data.
+    runoff_df : pandas.DataFrame
+        Dataframe containing runoff data for each site in the
+        geometry. Dataframe is expected to have a date index entitled
+        'datetime', a site id column entitled 'site_no', and a data
+        column entitled 'runoff' filled with runoff data.
 
     geom_intersection_df : pandas.DataFrame
         Tabular dataFrame containing columns indicating the site numbers,
