@@ -231,7 +231,7 @@ class TestCalculateVariablePercentileThresholdsByDay:
         # calculation
         percentiles_filter_ = percentiles_.filter(items = ['04-01'], axis = 0).iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df['date'].dt.month==4) & (self.bigger_df['date'].dt.day==1)] # noqa
-        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'].round(2), np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
         assert (percentiles_filter_ == filter_df_perc).all()
 
     def test_longer_dummy_set(self):
@@ -279,8 +279,8 @@ class TestCalculateVariablePercentileThresholdsByDay:
         # check that 7 day rolling average calculated and handled
         # correctly
         self.bigger_df = self.bigger_df.set_index('date')
-        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean()
-        percentiles_7day_filter_ = percentiles_7day.filter(items=['04-01'], axis=0).iloc[0] # noqa 
+        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean().round(2) # noqa
+        percentiles_7day_filter_ = percentiles_7day.filter(items=['04-01'], axis=0).iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df.index.month == 4) & (self.bigger_df.index.day == 1)] # noqa
         filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
         assert (percentiles_7day_filter_ == filter_df_perc).all()
@@ -445,7 +445,7 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         # calculation
         percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 133].iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df['date'].dt.day_of_year==133)] # noqa
-        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'].round(2), np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
         assert (percentiles_filter_ == filter_df_perc).all()
 
     def test_longer_dummy_set(self):
@@ -493,7 +493,7 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         # check that 7 day rolling average calculated and handled
         # correctly
         self.bigger_df = self.bigger_df.set_index('date')
-        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean()
+        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean().round(2) # noqa
         percentiles_7day_filter_ = percentiles_7day[percentiles_7day.index.get_level_values(0) == 133].iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df.index.day_of_year==133)] # noqa
         filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
