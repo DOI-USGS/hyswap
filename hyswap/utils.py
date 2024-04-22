@@ -41,9 +41,7 @@ def filter_approved_data(data, filter_column=None):
     """
     if filter_column is None:
         raise ValueError("filter_column must be specified.")
-    return data.loc[((data[filter_column] == "A") |
-                     (data[filter_column] == "A, e") |
-                     (data[filter_column] == "A, R"))]
+    return data[data[filter_column].str.contains("A")]
 
 
 def rolling_average(df, data_column_name, data_type,
@@ -96,7 +94,7 @@ def rolling_average(df, data_column_name, data_type,
     df_out = df.copy(deep=True)
     df_out[data_column_name] = df_out[data_column_name].rolling(
         data_type,
-        min_periods, **kwargs).mean()
+        min_periods, **kwargs).mean().round(2)
     return df_out
 
 
