@@ -236,7 +236,7 @@ def identify_sites_from_geom_intersection(
         site_col = filtered_df[site_col]
 
     # Retrieve all non-0 sites within the designated geometry (e.g. huc8)
-    site_list = site_col[(filtered_df[prop_geom_in_basin_col] != 0) | (
+    site_list = site_col[(filtered_df[prop_geom_in_basin_col] != 0) & (
         filtered_df[prop_basin_in_geom_col] != 0)].to_list()
 
     return site_list
@@ -319,8 +319,10 @@ def calculate_geometric_runoff(geom_id,
 
     Returns
     -------
-    pandas.Series
-        Series containing the area-weighted runoff values for the geometry.
+    pandas.DataFrame
+        Dataframe containing the area-weighted runoff values for the geometry,
+        as well as the number of sites used to generate the weight, the site
+        ids, and the max weight for any site used in the weighting calculation.
     """
     # check whether runoff_df contains sites not in geom_df
     # this might indicate mismatched format in site ids between
@@ -405,8 +407,14 @@ def calculate_geometric_runoff(geom_id,
         geom_basin_overlap = geom_basin_overlap[geom_basin_overlap['weight'] == geom_basin_overlap['weight'].max()]  # noqa: E501
         geom_basin_overlap = geom_basin_overlap.head(1)
         # pick basin that has the highest weight: tightest overlap
-        geom_runoff = runoff_df[runoff_df['site_no'] == geom_basin_overlap.iloc[0][site_col]].set_index('datetime').runoff  # noqa: E501
-        geom_runoff = geom_runoff.rename('geom_runoff')
+        geom_runoff_series = runoff_df[runoff_df['site_no'] == geom_basin_overlap.iloc[0][site_col]].set_index('datetime').runoff  # noqa: E501
+        # create new df with additional info about runoff calculations
+        geom_runoff = pd.DataFrame(geom_runoff_series)
+        geom_runoff = geom_runoff.rename(columns={'runoff': 'estimated_runoff'})  # noqa: E501
+        geom_runoff['geom_id'] = geom_id
+        geom_runoff['n_sites'] = 1
+        geom_runoff['site_ids'] = geom_basin_overlap.iloc[0][site_col]
+        geom_runoff['max_weight'] = geom_basin_overlap['weight'].max()
         return geom_runoff
 
     if clip_downstream_basins:
@@ -456,11 +464,20 @@ def calculate_geometric_runoff(geom_id,
     # ensure data df only has selected intersecting basins
     # and they are in the right order to apply weights
     basin_runoff_wide = basin_runoff_wide.filter(items=basins)[basins]
-    basin_runoff_wide['geom_runoff'] = np.average(basin_runoff_wide,
-                                                  weights=final_geom_intersection_df['weight'].to_numpy(),  # noqa: E501
-                                                  axis=1)
+    # get number of sites and site id stats
+    n_sites = basin_runoff_wide.shape[1]
+    site_ids = ', '.join(basin_runoff_wide.columns)
+    # calculate weighted runoff
+    basin_runoff_wide['estimated_runoff'] = np.average(basin_runoff_wide,
+                                                       weights=final_geom_intersection_df['weight'].to_numpy(),  # noqa: E501
+                                                       axis=1)
     basin_runoff = basin_runoff_wide.sort_index()
-    geom_runoff = basin_runoff['geom_runoff']
+    # add geom_id, number of sites, site ids, and max weight to the output df
+    basin_runoff['geom_id'] = geom_id
+    basin_runoff['n_sites'] = n_sites
+    basin_runoff['site_ids'] = site_ids
+    basin_runoff['max_weight'] = final_geom_intersection_df['weight'].max()
+    geom_runoff = basin_runoff[['geom_id', 'estimated_runoff', 'n_sites', 'site_ids', 'max_weight']]  # noqa: E501
     return geom_runoff
 
 
@@ -544,7 +561,9 @@ def calculate_multiple_geometric_runoff(
     -------
     pandas.DataFrame
         DataFrame containing the area-weighted runoff values for each
-        geometry. Columns are geometry IDs, index is date range.
+        geometry, as well as the number of sites used to generate the
+        weights, the site ids, and the max weight for any site used
+        in the weighting calculation for each geometry.
     """
     # create empty dataframe to store results
     results_df = pd.DataFrame()
@@ -577,8 +596,8 @@ def calculate_multiple_geometric_runoff(
                 clip_downstream_basins=clip_downstream_basins,
                 full_overlap_threshold=full_overlap_threshold)
         else:
-            runoff = pd.Series(dtype='float32')
+            runoff = pd.DataFrame()
 
         # add runoff to results_df
-        results_df[geom_id] = runoff.to_frame()
+        results_df = pd.concat([results_df, runoff])
     return results_df
