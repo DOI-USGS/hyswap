@@ -164,7 +164,7 @@ Brakebill, J.W., D.M. Wolock, and S.E. Terziotti, 2011. Digital Hydrologic Netwo
 
 Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, book 4, chap. A3, 458 p., `doi.org/10.3133/tm4a3 <https://doi.org/10.3133/tm4a3>`_. [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
 
-Jones, K.A., Niknami, L.S., Buto, S.G., and Decker, D., 2022, Federal standards and procedures for the national Watershed Boundary Dataset (WBD) (5 ed.): U.S. Geological Survey Techniques and Methods 11-A3, 54 p., `doi.org/10.3133/tm11A3 <https://doi.org/10.3133/tm11A3>`_.
+Jones, K.A., Niknami, L.S., Buto, S.G., and Decker, D., 2022, Federal standards and procedures for the national Watershed Boundary Dataset (WBD) (5 ed.): U.S. Geological Survey Techniques and Methods 11-A3, 54 p., `doi.org/10.3133/tm11A3 <https://pubs.usgs.gov/tm/11/a3/>`_.
 
 U.S. Geological Survey, 2011. USGS Streamgage NHDPlus Version 1 Basins 2011. Data Series [DS-719] `water.usgs.gov/lookup/getspatial?streamgagebasins <https://water.usgs.gov/lookup/getspatial?streamgagebasins>`_
 
@@ -174,6 +174,6 @@ Weibull, W., 1939. A statistical theory of strength of materials: Ingeniors Vete
 
 
 .. _(Helsel and others, 2020): https://doi.org/10.3133/tm4A3
-.. _(Jones and others, 2022): https://doi.org/10.3133/tm11A3
+.. _(Jones and others, 2022): https://pubs.usgs.gov/tm/11/a3/
 .. _(U.S. Geological Survey, 2011): https://water.usgs.gov/lookup/getspatial?streamgagebasins
 .. _(U.S. Geological Survey, 2023): http://dx.doi.org/10.5066/F7P55KJN
