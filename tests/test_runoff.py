@@ -189,7 +189,7 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin'
             )
         # should return runoff from site 01
-        assert testA.tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
+        assert testA['estimated_runoff'].tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
         # test with percentages rather than proportions
         testA_2 = runoff.calculate_geometric_runoff(
             geom_id="A",
@@ -202,7 +202,7 @@ class TestCalculateGeometricRunoff:
             percentage=True
             )
         # should return runoff from site 01
-        assert testA_2.tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
+        assert testA_2['estimated_runoff'].tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
 
     def test_calculate_geometric_runoff_within_contains_huc(self):
         """Test runoff function with huc that has a basin containing
@@ -224,7 +224,7 @@ class TestCalculateGeometricRunoff:
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
         weighted = np.average(check, weights=int['weight'], axis=1)
         # should return weighted runoff from sites 04 and 05
-        assert testB.tolist() == weighted.tolist()
+        assert testB['estimated_runoff'].tolist() == weighted.tolist()
 
     def test_calculate_geometric_runoff_multiple_downstream_basins(self):
         """Test runoff function with huc that has two downstream basins"""
@@ -242,7 +242,7 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=True
             )
         # should return site 07 runoff
-        assert np.round(testC.tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '07'].runoff, decimals=8).tolist()  # noqa: E501
+        assert np.round(testC['estimated_runoff'].tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '07'].runoff, decimals=8).tolist()  # noqa: E501
         # huc contained by two larger basins
         # and overlaps another basin
         # test when all basins included
@@ -264,7 +264,7 @@ class TestCalculateGeometricRunoff:
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
         weighted = np.average(check, weights=int['weight'], axis=1)
         # should return weighted runoff from sites 07,08,09
-        assert testC_2.tolist() == weighted.tolist()
+        assert testC_2['estimated_runoff'].tolist() == weighted.tolist()
 
     def test_calculate_geometric_runoff_one_basin_in_huc(self):
         """Test runoff function with huc that contains a basin only"""
@@ -281,7 +281,7 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=False
             )
         # should return runoff for site 010
-        assert np.round(testD.tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '010'].runoff, decimals=8).tolist()  # noqa: E501
+        assert np.round(testD['estimated_runoff'].tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '010'].runoff, decimals=8).tolist()  # noqa: E501
 
     def test_calculate_geometric_runoff_no_basin_data(self):
         """Test runoff function with huc where no basin data
@@ -311,7 +311,7 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin')
         # runoff value on last day should be runoff from basin '015'
         # since basin '014' is nan on that day
-        assert np.round(testG[3], decimals=8) == np.round(self.runoff_df[self.runoff_df['site_no'] == '015'].runoff[3], decimals=8)  # noqa: E501
+        assert np.round(testG.iloc[3]['estimated_runoff'], decimals=8) == np.round(self.runoff_df[self.runoff_df['site_no'] == '015'].runoff[3], decimals=8)  # noqa: E501
 
     def test_calculate_multiple_geometric_runoff(self):
         """Test multiple runoff function."""
@@ -323,5 +323,5 @@ class TestCalculateGeometricRunoff:
             geom_id_col='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin')
-        assert test_mult.shape == (4, 4)
+        assert test_mult.shape == (16, 5)
         assert test_mult.index.name == 'datetime'
