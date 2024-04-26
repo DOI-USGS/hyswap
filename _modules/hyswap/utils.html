@@ -1,18 +1,17 @@
 
-
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gc24bffa documentation</title>
+    <title>hyswap.utils &#8212; hyswap 0.1.dev1+gf8dded9 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=98f81e42" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=b6d95723"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=8b94e3ee"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -31,7 +30,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf8dded9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
@@ -45,6 +44,7 @@
   <h1>Source code for hyswap.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Utility functions for hyswap.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="filter_approved_data">
@@ -87,9 +87,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filter_column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;filter_column must be specified.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[((</span><span class="n">data</span><span class="p">[</span><span class="n">filter_column</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">|</span>
-                     <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">filter_column</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;A, e&quot;</span><span class="p">)</span> <span class="o">|</span>
-                     <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">filter_column</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;A, R&quot;</span><span class="p">))]</span></div>
+    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">filter_column</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)]</span></div>
 
 
 
@@ -145,7 +143,7 @@
     <span class="n">df_out</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">df_out</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_out</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span>
         <span class="n">data_type</span><span class="p">,</span>
-        <span class="n">min_periods</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">min_periods</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df_out</span></div>
 
 
@@ -712,8 +710,9 @@
     <span class="c1"># make dictionary</span>
     <span class="n">summary_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># populate it</span>
-    <span class="c1"># site number</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Site number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># site number (assumes USGS site number format)</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Site number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                <span class="s1">&#39;site_no&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
     <span class="c1"># dates</span>
     <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Begin date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;End date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -842,7 +841,13 @@
 
 <div class="viewcode-block" id="categorize_flows">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.categorize_flows">[docs]</a>
-<span class="k">def</span> <span class="nf">categorize_flows</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;NWD&#39;</span><span class="p">,</span> <span class="n">custom_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">categorize_flows</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                     <span class="n">percentile_col</span><span class="p">,</span>
+                     <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">min_years</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">percentile_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;NWD&#39;</span><span class="p">,</span>
+                     <span class="n">custom_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to categorize streamflows based on percentile ranges</span>
 
 <span class="sd">    This function assigns a category to each streamflow observation for a</span>
@@ -852,11 +857,29 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    df : pandas.DataFrame</span>
-<span class="sd">        DataFrame containing values for the site.</span>
+<span class="sd">        DataFrame containing percentile values for date(s) of interest for the</span>
+<span class="sd">        site.</span>
 
-<span class="sd">    data_col : str</span>
+<span class="sd">    percentile_col : str</span>
 <span class="sd">        Name of the column in the DataFrame that contains the data of</span>
 <span class="sd">        interest, in this case estimated streamflow percentile.</span>
+
+<span class="sd">    date_column_name : str, optional</span>
+<span class="sd">        Name of column containing date information. If None, the index of</span>
+<span class="sd">        `df` is used.</span>
+
+<span class="sd">    min_years : int, optional</span>
+<span class="sd">        Minimum number of years of data required to calculate percentile</span>
+<span class="sd">        thresholds for a given day of year. Default is None. Use of min_years</span>
+<span class="sd">        setting requires that percentile_df be provided.</span>
+
+<span class="sd">    percentile_df : pd.DataFrame</span>
+<span class="sd">        DataFrame where columns are the percentile thresholds values and the</span>
+<span class="sd">        values are stored in a row called &quot;values&quot;. Typically generated by the</span>
+<span class="sd">        `calculate_fixed_percentile_thresholds` or `munge_nwis_stats` functions</span>
+<span class="sd">        but could be provided manually. Must be indexed by month_day and</span>
+<span class="sd">        include `count` column that represents number of years of records for</span>
+<span class="sd">        that day of year.</span>
 
 <span class="sd">    schema_name : str, optional</span>
 <span class="sd">        Name of the categorization schema that should be used to categorize</span>
@@ -914,20 +937,56 @@
         <span class="n">schema</span> <span class="o">=</span> <span class="n">retrieve_schema</span><span class="p">(</span><span class="n">schema_name</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">schema</span> <span class="o">=</span> <span class="n">custom_schema</span>
-
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">],</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">],</span>
+    <span class="c1"># set the df index</span>
+    <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">percentile_col</span><span class="p">],</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">],</span>
                             <span class="n">labels</span><span class="o">=</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">],</span>
                             <span class="n">include_lowest</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                             <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;low_label&quot;</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">add_categories</span><span class="p">(</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">])</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">percentile_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">reorder_categories</span><span class="p">(</span>
             <span class="p">[</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;low_label&#39;</span><span class="p">]]</span> <span class="o">+</span>
             <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
     <span class="k">if</span> <span class="s2">&quot;high_label&quot;</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
         <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">add_categories</span><span class="p">(</span><span class="n">schema</span><span class="p">[</span><span class="s1">&#39;high_label&#39;</span><span class="p">])</span>  <span class="c1"># noqa: E501</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;high_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">percentile_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;ranges&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;high_label&#39;</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="k">if</span> <span class="n">min_years</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">percentile_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;count&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Percentile threshold dataframe must &quot;</span> <span class="o">+</span>
+                                 <span class="s2">&quot;include count column&quot;</span><span class="p">)</span>
+            <span class="c1"># add month-day column</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;month_day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># join count (num years column)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">percentile_df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+                          <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;month_day&quot;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># set days where min_years is &gt; count to &quot;Not Ranked&quot;</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_years</span><span class="p">,</span>
+                                      <span class="s2">&quot;Not Ranked&quot;</span><span class="p">,</span>
+                                      <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">])</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;month_day&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Percentile threshold dataframe must be &quot;</span> <span class="o">+</span>
+                             <span class="s2">&quot;provided when using min_years setting&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">min_years</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">percentile_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># add month-day column</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;month_day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># join count (num years column)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">percentile_df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+                          <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;month_day&quot;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># set days where min_years is &gt; count to &quot;Not Ranked&quot;</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_years</span><span class="p">,</span>
+                                      <span class="s2">&quot;Not Ranked&quot;</span><span class="p">,</span>
+                                      <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flow_cat&#39;</span><span class="p">])</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;month_day&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Percentile threshold dataframe must be provided when using min_years setting&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
 
     <span class="k">return</span> <span class="n">df</span></div>
 
@@ -1037,7 +1096,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -1045,7 +1104,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -1060,14 +1119,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf8dded9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.utils</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
 </html>

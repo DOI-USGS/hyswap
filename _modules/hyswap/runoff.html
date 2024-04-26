@@ -1,18 +1,17 @@
 
-
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+gc24bffa documentation</title>
+    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+gf8dded9 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=98f81e42" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=b6d95723"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=8b94e3ee"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -31,7 +30,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf8dded9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
@@ -383,8 +382,9 @@
     <span class="n">check</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">runoff_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;There are dictionary keys (site ids) that are not present &#39;</span>
-               <span class="s1">&#39;in the intersection df. This might indicate a mismatch in &#39;</span>
-               <span class="s1">&#39;site id formats, e.g. missing leading zeroes if NWIS sites.&#39;</span><span class="p">))</span>
+               <span class="sa">f</span><span class="s1">&#39;in the intersection df for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. This might indicate &#39;</span>
+               <span class="s1">&#39;a mismatch in site id formats, e.g. missing leading &#39;</span>
+               <span class="s1">&#39;zeroes if NWIS sites.&#39;</span><span class="p">))</span>
     <span class="c1"># check whether sites is the df index or not</span>
     <span class="k">if</span> <span class="n">site_col</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
         <span class="n">geom_intersection_df</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
@@ -413,9 +413,9 @@
     <span class="c1"># check to see if empty</span>
     <span class="k">if</span> <span class="n">filtered_intersection_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;No runoff data available from intersecting sites to estimate &#39;</span>
-               <span class="s1">&#39;weighted runoff. Check that your runoff dictionary &#39;</span>
-               <span class="s1">&#39;keys match site ids in your geom_intersection_df. Returning &#39;</span>
-               <span class="s1">&#39;empty series.&#39;</span><span class="p">))</span>
+               <span class="sa">f</span><span class="s1">&#39;weighted runoff for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. Check that your runoff &#39;</span>
+               <span class="s1">&#39;dictionary keys match site ids in your geom_intersection_df. &#39;</span>
+               <span class="s1">&#39;Returning empty series.&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
     <span class="c1"># converting proportions to decimals if applicable</span>
     <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
@@ -453,7 +453,7 @@
         <span class="c1"># with associated runoff data, let user know and then</span>
         <span class="c1"># check if there are any basins within geom.</span>
         <span class="k">if</span> <span class="n">geom_in_basin</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No runoff data associated with any basins containing the geometry object for the time period selected.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No runoff data associated with any basins containing the geometry object </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s2"> for the time period selected.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># calculate their weights</span>
             <span class="n">geom_in_basin</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_in_basin</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">*</span> \
@@ -470,7 +470,7 @@
         <span class="n">basin_in_geom</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[(</span><span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">full_overlap_threshold</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># noqa: E501</span>
         <span class="c1"># if there are no basins with runoff data, let user know.</span>
         <span class="k">if</span> <span class="n">basin_in_geom</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No runoff data associated with any basins contained within the geometry object for the time period selected.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No runoff data associated with any basins contained within the geometry object </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s2"> for the time period selected.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># calculate their weights</span>
             <span class="n">basin_in_geom</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">basin_in_geom</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">*</span> \
@@ -479,7 +479,7 @@
         <span class="c1"># no basins fully contain the huc and the huc doesn&#39;t fully</span>
         <span class="c1"># contain any basins, return empty series.</span>
         <span class="k">if</span> <span class="n">geom_in_basin</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="n">basin_in_geom</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Insufficient data and/or overlap between basins and geometry object. Returning empty series.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Insufficient data and/or overlap between basins and geometry object </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s2">. Returning empty series.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
         <span class="c1"># combine these two dfs into one</span>
         <span class="k">else</span><span class="p">:</span>
@@ -493,7 +493,7 @@
     <span class="c1"># check if any weights are NaN</span>
     <span class="k">if</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;One or more geometry-basin weights are null. &#39;</span>
-               <span class="s1">&#39;Cannot estimate runoff values. &#39;</span>
+               <span class="sa">f</span><span class="s1">&#39;Cannot estimate runoff values for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. &#39;</span>
                <span class="s1">&#39;Returning nan values.&#39;</span><span class="p">))</span>
     <span class="c1"># grab applicable basin runoff from dictionary</span>
     <span class="n">basins</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -639,7 +639,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -647,7 +647,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -662,14 +662,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf8dded9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
 </html>

@@ -1,18 +1,17 @@
 
-
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gc24bffa documentation</title>
+    <title>hyswap.percentiles &#8212; hyswap 0.1.dev1+gf8dded9 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=f15d3b81" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=98f81e42" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=b6d95723"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=8b94e3ee"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -31,7 +30,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf8dded9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
@@ -51,7 +50,6 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_month_day</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_time</span>
-<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">calculate_metadata</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_data_type</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">rolling_average</span>
@@ -244,7 +242,6 @@
         <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
         <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
-        <span class="n">min_years</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -295,10 +292,6 @@
 <span class="sd">        2011&quot;. &#39;climate&#39; years begin on April 1 and end on March 31 of the</span>
 <span class="sd">        following year, they are numbered by the ending year. For example,</span>
 <span class="sd">        April 1, 2010 to March 31, 2011 is &quot;climate year 2011&quot;.</span>
-
-<span class="sd">    min_years : int, optional</span>
-<span class="sd">        Minimum number of years of data required to calculate percentile</span>
-<span class="sd">        thresholds for a given day of year. Default is 10.</span>
 
 <span class="sd">    leading_values : int, optional</span>
 <span class="sd">        For the temporal filtering, this is an argument setting the</span>
@@ -385,6 +378,11 @@
     <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
 
     <span class="c1"># create an empty dataframe to hold percentiles based on day-of-year</span>
+    <span class="c1"># ignore 0 and 100 percentiles if passed in</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">percentiles</span> <span class="o">=</span> <span class="n">percentiles</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">percentiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">percentiles</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
     <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">perc</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">perc</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">include_min_max</span><span class="p">:</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
@@ -403,24 +401,16 @@
                                    <span class="n">drop_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                <span class="n">meta</span> <span class="o">=</span> <span class="n">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                <span class="c1"># only calculate data if there are at least</span>
-                <span class="c1"># min_years of data that are not nan</span>
-                <span class="k">if</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_years&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_nans&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_years</span><span class="p">:</span>
-                    <span class="c1"># calculate percentiles for the day of year</span>
-                    <span class="c1"># and add to DataFrame</span>
-                    <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-                        <span class="n">data</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">data_column_name</span><span class="p">,</span>
-                        <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span>
-                        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span>
-                        <span class="n">include_min_max</span><span class="o">=</span><span class="n">include_min_max</span><span class="p">,</span>
-                        <span class="n">include_metadata</span><span class="o">=</span><span class="n">include_metadata</span><span class="p">,</span>
-                        <span class="n">mask_out_of_range</span><span class="o">=</span><span class="n">mask_out_of_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># if there are not at least &#39;min_years&#39; of data,</span>
-                    <span class="c1"># set percentiles to NaN</span>
-                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="c1"># calculate percentiles for the day of year</span>
+                <span class="c1"># and add to DataFrame</span>
+                <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">data_column_name</span><span class="p">,</span>
+                    <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span>
+                    <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span>
+                    <span class="n">include_min_max</span><span class="o">=</span><span class="n">include_min_max</span><span class="p">,</span>
+                    <span class="n">include_metadata</span><span class="o">=</span><span class="n">include_metadata</span><span class="p">,</span>
+                    <span class="n">mask_out_of_range</span><span class="o">=</span><span class="n">mask_out_of_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">doy_index</span> <span class="o">==</span> <span class="n">doy</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># if all values are NA</span>
                 <span class="c1"># set percentiles to NaN</span>
@@ -466,7 +456,6 @@
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
         <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
-        <span class="n">min_years</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
         <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -507,12 +496,6 @@
 <span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
 <span class="sd">        values will be used for any days that do not have data. If present,</span>
 <span class="sd">        NaN values will result in NaN values for the entire period.</span>
-
-<span class="sd">    min_years : int, optional</span>
-<span class="sd">        Minimum number of years of data required to calculate percentile</span>
-<span class="sd">        thresholds for a given day of year. Default is 10. Note that this</span>
-<span class="sd">        threshold is independent from &#39;mask_out_of_range&#39; setting and can be</span>
-<span class="sd">        used in combination with it.</span>
 
 <span class="sd">    leading_values : int, optional</span>
 <span class="sd">        For the temporal filtering, this is an argument setting the</span>
@@ -597,6 +580,11 @@
     <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
 
     <span class="c1"># create an empty dataframe to hold percentiles based on month-day</span>
+    <span class="c1"># ignore 0 and 100 percentiles if passed in</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">percentiles</span> <span class="o">=</span> <span class="n">percentiles</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">percentiles</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">percentiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">percentiles</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)]</span>
     <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">perc</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">perc</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">include_min_max</span><span class="p">:</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]</span>
@@ -615,25 +603,16 @@
                                         <span class="n">drop_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                <span class="n">meta</span> <span class="o">=</span> <span class="n">calculate_metadata</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                <span class="c1"># only calculate data if there are at least</span>
-                <span class="c1"># min_years of data that are not nan</span>
-                <span class="k">if</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_years&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;n_nans&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_years</span><span class="p">:</span>
-                    <span class="c1"># calculate percentiles for the day of year</span>
-                    <span class="c1"># and add to DataFrame</span>
-                    <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-                        <span class="n">data</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">data_column_name</span><span class="p">,</span>
-                        <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span>
-                        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span>
-                        <span class="n">include_min_max</span><span class="o">=</span><span class="n">include_min_max</span><span class="p">,</span>
-                        <span class="n">include_metadata</span><span class="o">=</span><span class="n">include_metadata</span><span class="p">,</span>
-                        <span class="n">mask_out_of_range</span><span class="o">=</span><span class="n">mask_out_of_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># if there are not at least &#39;min_years&#39; of data,</span>
-                    <span class="c1"># set percentiles to NaN</span>
-                    <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-                        <span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="c1"># calculate percentiles for the day of year</span>
+                <span class="c1"># and add to DataFrame</span>
+                <span class="n">_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span> <span class="n">data_column_name</span><span class="p">,</span>
+                    <span class="n">percentiles</span><span class="o">=</span><span class="n">percentiles</span><span class="p">,</span>
+                    <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">ignore_na</span><span class="o">=</span><span class="n">ignore_na</span><span class="p">,</span>
+                    <span class="n">include_min_max</span><span class="o">=</span><span class="n">include_min_max</span><span class="p">,</span>
+                    <span class="n">include_metadata</span><span class="o">=</span><span class="n">include_metadata</span><span class="p">,</span>
+                    <span class="n">mask_out_of_range</span><span class="o">=</span><span class="n">mask_out_of_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">percentiles_by_day</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">month_day_index</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_pct</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># if all values are NA</span>
                 <span class="c1"># set percentiles to NaN</span>
@@ -725,9 +704,18 @@
     <span class="c1"># ensure all values are set to float type for interpolation</span>
     <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">percentile_values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="c1"># check if there are NA percentile levels and remove them so they are</span>
+    <span class="c1"># ignored during interpolation</span>
+    <span class="n">na_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">percentile_values</span><span class="p">)</span>
+    <span class="n">percentile_values</span> <span class="o">=</span> <span class="n">percentile_values</span><span class="p">[</span><span class="n">na_mask</span><span class="p">]</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">thresholds</span><span class="p">[</span><span class="n">na_mask</span><span class="p">]</span>
     <span class="c1"># do and return linear interpolation</span>
-    <span class="n">estimated_percentile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span>
-                                     <span class="n">thresholds</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">percentile_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">estimated_percentile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">percentile_values</span><span class="p">,</span>
+                                         <span class="n">thresholds</span><span class="p">,</span>
+                                         <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">estimated_percentile</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
     <span class="k">return</span> <span class="n">estimated_percentile</span></div>
 
 
@@ -789,7 +777,7 @@
     <span class="c1"># retrieve percentile thresholds for the day of year of interest</span>
     <span class="n">pct_values</span> <span class="o">=</span> <span class="n">percentile_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">percentile_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_level_values</span><span class="p">(</span><span class="s1">&#39;month_day&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">month_day</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
         <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">pct_values</span> <span class="o">=</span> <span class="n">pct_values</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;values&quot;</span><span class="p">})</span>
         <span class="n">est_pct</span> <span class="o">=</span> <span class="n">calculate_fixed_percentile_from_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pct_values</span><span class="p">)</span>
@@ -882,7 +870,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -890,7 +878,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
@@ -905,14 +893,14 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gc24bffa documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+gf8dded9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.percentiles</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
     </div>
   </body>
 </html>
