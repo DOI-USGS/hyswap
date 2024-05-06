@@ -323,5 +323,5 @@ class TestCalculateGeometricRunoff:
             geom_id_col='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin')
-        assert test_mult.shape == (16, 5)
+        assert test_mult.shape == (16, 6)
         assert test_mult.index.name == 'datetime'

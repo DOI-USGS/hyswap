@@ -415,6 +415,7 @@ def calculate_geometric_runoff(geom_id,
         geom_runoff['n_sites'] = 1
         geom_runoff['site_ids'] = geom_basin_overlap.iloc[0][site_col]
         geom_runoff['max_weight'] = geom_basin_overlap['weight'].max()
+        geom_runoff['max_site'] = geom_basin_overlap.iloc[0][site_col]
         return geom_runoff
 
     if clip_downstream_basins:
@@ -477,7 +478,8 @@ def calculate_geometric_runoff(geom_id,
     basin_runoff['n_sites'] = n_sites
     basin_runoff['site_ids'] = site_ids
     basin_runoff['max_weight'] = final_geom_intersection_df['weight'].max()
-    geom_runoff = basin_runoff[['geom_id', 'estimated_runoff', 'n_sites', 'site_ids', 'max_weight']]  # noqa: E501
+    basin_runoff['max_site'] = final_geom_intersection_df[site_col][final_geom_intersection_df['weight'] == final_geom_intersection_df['weight'].max()]  # noqa: E501
+    geom_runoff = basin_runoff[['geom_id', 'estimated_runoff', 'n_sites', 'site_ids', 'max_weight', 'max_site']]  # noqa: E501
     return geom_runoff
 
 
