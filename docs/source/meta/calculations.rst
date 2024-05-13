@@ -10,6 +10,7 @@ The ``hyswap`` package functions assume that provided streamflow data has been q
 - regulated flows or transitions from regulated to unregulated flows (or vice versa)
 - major watershed changes
 
+For users who are applying ``hyswap`` functions directly to data retrieved from USGS NWIS, please be aware that non-standard parameter names occasionally occur. Reasons for this could be to indicate that a site has an upstream and downstream sensor, a sensor was moved in the water column, or a site was measured multiple times. This package treats sites with non-standard parameter names as outliers and skips those sites. Users should take appropriate steps to check for non-standard parameter names and determine appropriate data handling steps based on their needs.
 
 Streamflow Percentiles
 ----------------------
