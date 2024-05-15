@@ -26,10 +26,10 @@ def filter_approved_data(data, filter_column=None):
     .. doctest::
 
         >>> df = pd.DataFrame({
-        ...     'data': [1, 2, 3, 4],
-        ...     'approved': ['A', 'A', 'P', 'P']})
+        ...     'data': [1, 2, 3, 4, 5],
+        ...     'approved': ['A', 'A, e', 'A', 'P', 'P']})
         >>> df.shape
-        (4, 2)
+        (5, 2)
 
     Then filter the data to only return approved data.
 
@@ -37,11 +37,11 @@ def filter_approved_data(data, filter_column=None):
 
         >>> df = utils.filter_approved_data(df, filter_column='approved')
         >>> df.shape
-        (2, 2)
+        (3, 2)
     """
     if filter_column is None:
         raise ValueError("filter_column must be specified.")
-    return data[data[filter_column].str.contains("A")]
+    return data[data[filter_column].str.contains("A", na=False)]
 
 
 def rolling_average(df, data_column_name, data_type,
