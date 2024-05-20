@@ -149,6 +149,9 @@ def calculate_fixed_percentile_thresholds(
     else:
         pct = np.percentile(data, percentiles, method=method, **kwargs)
 
+    # round values smaller than three decimal places to zero
+    pct = np.round(pct, 3)
+
     df_out = pd.DataFrame(data={"values": pct}, index=percentiles)
 
     if mask_out_of_range:
