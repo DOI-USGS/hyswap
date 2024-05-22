@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Similarity Measures &#8212; hyswap 0.1.dev1+g94bd738 documentation</title>
+    <title>Similarity Measures &#8212; hyswap 0.1.dev1+g7912e4a documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=98f81e42" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=50d157d9"></script>
+    <script src="../_static/documentation_options.js?v=64800dce"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="percentile_calculation_examples.html" title="Percentile Calculation Examples"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g94bd738 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g7912e4a documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Similarity Measures</a></li> 
       </ul>
@@ -52,12 +52,10 @@
             
   <section id="similarity-measures">
 <h1>Similarity Measures<a class="headerlink" href="#similarity-measures" title="Link to this heading">¶</a></h1>
-<p>These examples showcase the usage of the functions in the <cite>similarity</cite> module, with heatmap visualizations via the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_similarity_heatmap" title="hyswap.plots.plot_similarity_heatmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_similarity_heatmap</span></code></a> function.
-Sometimes it is helpful to compare the relationships between a set of stations and their respective measurements.
-The <cite>similarity</cite> functions packaged in <cite>hyswap</cite> handle some of the data clean-up for you by ensuring the time-series of observations being compared at the same, and by removing any missing data.
-This ensures that your results are not skewed by missing data or gaps in one of the time-series.</p>
-<section id="correlations-between-5-stations">
-<h2>Correlations Between 5 Stations<a class="headerlink" href="#correlations-between-5-stations" title="Link to this heading">¶</a></h2>
+<p>Sometimes it is helpful to compare the relationships between a set of streamgaging stations and their respective measurements. These examples showcase the usage of the functions in the <cite>similarity</cite> module to quantify how similar streamflow records are across multiple streamgages. Matrices of similarity measures (e.g., correlations) are calculated and visualized by generating heatmap visualizations via the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_similarity_heatmap" title="hyswap.plots.plot_similarity_heatmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_similarity_heatmap</span></code></a> function.</p>
+<p>The <cite>similarity</cite> functions packaged in <cite>hyswap</cite> handle some of the data clean-up for you by ensuring the time-series of observations being compared acros the same dates, and by removing any missing data. This ensures that your results are not skewed by missing data or gaps in one of the time-series.</p>
+<section id="pearson-s-r-correlations-between-5-stations">
+<h2>Pearson’s <em>r</em> Correlations Between 5 Stations<a class="headerlink" href="#pearson-s-r-correlations-between-5-stations" title="Link to this heading">¶</a></h2>
 <p>The following example shows the correlations between streamflow at 5 stations (07374525, 07374000, 07289000, 07032000, 07024175) along the Mississippi River, listed from downstream to upstream.
 First we have to fetch the streamflow data for these stations, to do this we will use the <cite>dataretrieval</cite> package to access the NWIS database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
@@ -208,7 +206,7 @@ Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_dis
     <h3><a href="../index.html">Table of Contents</a></h3>
     <ul>
 <li><a class="reference internal" href="#">Similarity Measures</a><ul>
-<li><a class="reference internal" href="#correlations-between-5-stations">Correlations Between 5 Stations</a></li>
+<li><a class="reference internal" href="#pearson-s-r-correlations-between-5-stations">Pearson’s <em>r</em> Correlations Between 5 Stations</a></li>
 <li><a class="reference internal" href="#wasserstein-distances-between-5-stations">Wasserstein Distances Between 5 Stations</a></li>
 <li><a class="reference internal" href="#energy-distances-between-5-stations">Energy Distances Between 5 Stations</a></li>
 </ul>
@@ -262,7 +260,7 @@ Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_dis
         <li class="right" >
           <a href="percentile_calculation_examples.html" title="Percentile Calculation Examples"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g94bd738 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g7912e4a documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Similarity Measures</a></li> 
       </ul>
