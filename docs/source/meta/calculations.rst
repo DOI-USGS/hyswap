@@ -158,23 +158,67 @@ Figure 1. Example computation for computation of runoff for a selected HUC unit.
 
 **Note:** Description of methods for area-based runoff computation is adapted from `USGS WaterWatch <https://pubs.usgs.gov/publication/fs20083031>`_.
 
+Streamflow Record Similarity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Identifying streamgages that are most similar or correlated is a common task when identifying potential streamgages to be used for estimating missing records or other hydrological modeling tasks. ``hyswap`` can compute the similarity of streamflow records using different similarity measures and plot these as a matrix. The available measures are:
+
++---------------------------+-------------------------------------------+
+| Similarity Measure        | Description                               |
++===========================+===========================================+
+| Pearson's *r* correlation | Commonly used measure of correlation that |
+|                           | measures the linear association between   |
+|                           | two datasets `(Helsel and others, 2020)`_.|
+|                           | Calculation of Pearson's *r* correlation  |
+|                           | on daily streamflow records or            |
+|                           | log-transformed daily streamflow records  |
+|                           | is often used to identify potential       |
+|                           | index or reference streamgages            |
+|                           | `(Yuan, 2013)_.`                          |
++---------------------------+-------------------------------------------+
+| Wasserstein Distance      | A metric that measures the distance       |
+|                           | between two distributions and in a        |
+|                           | hydrological context measures the “effort”|
+|                           | required to rearrange one distribution of |
+|                           | water into the other. The Wasserstein     |
+|                           | distance can be used to compare how       |
+|                           | similar two hydrographs are to each other |
+|                           | `(Magyar & Sambridge, 2023)`_.            |
++---------------------------+-------------------------------------------+
+| Energy Distance           | A metric that measures the distance       |
+|                           | between two distributions. The energy     |
+|                           | is experimental in hydrology but has been |
+|                           | used to identify similarity between time  |
+|                           | series such electricity demand            |
+|                           | `(Ziel, 2021)`_.                          |
++---------------------------+-------------------------------------------+
+
 References
 ----------
 
-Brakebill, J.W., D.M. Wolock, and S.E. Terziotti, 2011. Digital Hydrologic Networks Supporting Applications Related to Spatially Referenced Regression Modeling. Journal of the American Water Resources Association(JAWRA) 47(5):916-932. 
+Brakebill, J.W., D.M. Wolock, and S.E. Terziotti, 2011. Digital Hydrologic Networks Supporting Applications Related to Spatially Referenced Regression Modeling. Journal of the American Water Resources Association (JAWRA) 47(5):916-932. 
 
-Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020, Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, book 4, chap. A3, 458 p., `doi.org/10.3133/tm4a3 <https://doi.org/10.3133/tm4a3>`_. [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
+Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020. Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, book 4, chap. A3, 458 p., `doi.org/10.3133/tm4a3 <https://doi.org/10.3133/tm4a3>`_. [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
 
-Jones, K.A., Niknami, L.S., Buto, S.G., and Decker, D., 2022, Federal standards and procedures for the national Watershed Boundary Dataset (WBD) (5 ed.): U.S. Geological Survey Techniques and Methods 11-A3, 54 p., `doi.org/10.3133/tm11A3 <https://doi.org/10.3133/tm11A3>`_.
+Jones, K.A., Niknami, L.S., Buto, S.G., and Decker, D., 2022. Federal standards and procedures for the national Watershed Boundary Dataset (WBD) (5 ed.): U.S. Geological Survey Techniques and Methods 11-A3, 54 p., `doi.org/10.3133/tm11A3 <https://doi.org/10.3133/tm11A3>`_.
+
+Magyar, J.C. & Sambridge, M., 2023. Hydrological objective functions and ensemble averaging with the Wasserstein distance, Hydrol. Earth Syst. Sci., 27, 991–1010, `doi.org/10.5194/hess-27-991-2023 <https://doi.org/10.5194/hess-27-991-2023>`_.
 
 U.S. Geological Survey, 2011. USGS Streamgage NHDPlus Version 1 Basins 2011. Data Series [DS-719] `water.usgs.gov/lookup/getspatial?streamgagebasins <https://water.usgs.gov/lookup/getspatial?streamgagebasins>`_
 
 U.S. Geological Survey, 2023. USGS water data for the Nation: U.S. Geological Survey National Water Information System database, accessed at `doi.org/10.5066/F7P55KJN <http://dx.doi.org/10.5066/F7P55KJN>`_
 
-Weibull, W., 1939. A statistical theory of strength of materials: Ingeniors Vetenskaps Akademien Handlinga, no. 153, 9. 17
+Weibull, W., 1939. A statistical theory of strength of materials, Ingeniors Vetenskaps Akademien Handlinga, no. 153, 9. 17
 
+Yuan, L.L., 2013. Using correlation of daily flows to identify index gauges for ungauged streams, Water Resour. Res., 49, `doi:10.1002/wrcr.20070 <https://doi.org/10.1002/wrcr.20070>`_.
 
+Ziel, F., 2021. The energy distance for ensemble and scenario reduction, Phil, Trans. R. Soc. A. 379: 20190431, `doi.org/10.1098/rsta.2019.0431<http://doi.org/10.1098/rsta.2019.0431>`_.
+
+.. _(Brakebill and others, 2011): https://doi.org/10.1111/j.1752-1688.2011.00578.x
 .. _(Helsel and others, 2020): https://doi.org/10.3133/tm4A3
 .. _(Jones and others, 2022): https://doi.org/10.3133/tm11A3
+.. _(Magyar & Sambridge, 2023): https://doi.org/10.5194/hess-27-991-2023
 .. _(U.S. Geological Survey, 2011): https://water.usgs.gov/lookup/getspatial?streamgagebasins
 .. _(U.S. Geological Survey, 2023): http://dx.doi.org/10.5066/F7P55KJN
+.. _(Yuan, 2013): https://doi.org/10.1002/wrcr.20070
+.. _(Ziel, 2021): https://doi.org/10.1098/rsta.2019.0431
