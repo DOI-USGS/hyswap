@@ -149,8 +149,9 @@ def calculate_fixed_percentile_thresholds(
     else:
         pct = np.percentile(data, percentiles, method=method, **kwargs)
 
-    # round values smaller than three decimal places to zero
-    pct = np.round(pct, 3)
+    # round values smaller than three decimal places to zero to avoid extremely
+    # small threshold values being returned.
+    pct[(pct > 0) & (pct < 0.001)] = 0
 
     df_out = pd.DataFrame(data={"values": pct}, index=percentiles)
 
