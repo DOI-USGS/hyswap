@@ -53,103 +53,6 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     return mmf
 
 
-def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
-    """Convert streamflow to runoff for a given drainage area.
-
-    For a given gage/dataframe, convert streamflow to runoff using the
-    drainage area and the convert_cfs_to_runoff function.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        DataFrame containing streamflow data.
-
-    data_col : str
-        Column name containing streamflow data, assumed to be in cfs.
-
-    drainage_area : float
-        Drainage area in km2.
-
-    frequency : str, optional
-        Frequency of runoff values to return. Options are 'annual',
-        'monthly', and 'daily'. Default is 'annual'.
-
-    Returns
-    -------
-    pandas.DataFrame
-        DataFrame containing runoff data in a column named 'runoff'.
-
-    Examples
-    --------
-    Convert streamflow to runoff for a given drainage area.
-
-    .. doctest::
-
-        >>> df = pd.DataFrame({'streamflow': [14, 15, 16]})
-        >>> runoff_df = runoff.streamflow_to_runoff(df, 'streamflow', 250)
-        >>> print(runoff_df['runoff'].round(1))
-        0    50.0
-        1    53.6
-        2    57.2
-        Name: runoff, dtype: float64
-    """
-    df['runoff'] = df[data_col].apply(
-        lambda x: convert_cfs_to_runoff(x, drainage_area, frequency=frequency)
-    )
-    return df
-
-
-def _get_date_range(df_list, start_date, end_date):
-    """Get date range for runoff calculation.
-
-    This is an internal function used by the :obj:`calculate_geometric_runoff`
-    function to get the date range for the runoff calculation. If no start or
-    end date is specified, the earliest/latest date in the df_list will be
-    used.
-
-    Parameters
-    ----------
-    df_list : list
-        List of dataframes containing runoff data for each site in the
-        geometry.
-
-    start_date : str, optional
-        Start date for the runoff calculation. If not specified, the earliest
-        date in the df_list will be used. Format is 'YYYY-MM-DD'.
-
-    end_date : str, optional
-        End date for the runoff calculation. If not specified, the latest
-        date in the df_list will be used. Format is 'YYYY-MM-DD'.
-
-    Returns
-    -------
-    pandas.DatetimeIndex
-        DatetimeIndex containing the date range for the runoff calculation.
-    """
-    if start_date is None:
-        # if no start date iterate through df_list to find earliest date
-        start_date = df_list[0].index[0]
-        for df in df_list:
-            if df.index[0] < start_date:
-                start_date = df.index[0]
-    else:
-        # make the string tz-aware
-        start_date = pd.to_datetime(start_date).tz_localize("UTC")
-    if end_date is None:
-        # if no end date iterate through df_list to find latest date
-        end_date = df_list[0].index[-1]
-        for df in df_list:
-            if df.index[-1] > end_date:
-                end_date = df.index[-1]
-    else:
-        # make the string tz-aware
-        end_date = pd.to_datetime(end_date).tz_localize("UTC")
-    # create range of dates from start to end
-    date_range = pd.date_range(start_date, end_date)
-
-    return date_range
-
-
 def identify_sites_from_geom_intersection(
         geom_id,
         geom_intersection_df,
@@ -324,6 +227,12 @@ def calculate_geometric_runoff(geom_id,
         as well as the number of sites used to generate the weight, the site
         ids, and the max weight for any site used in the weighting calculation.
     """
+    # check if weights are percentage values
+    if percentage is True:
+        multiplier = 0.01
+    else:
+        multiplier = 1
+
     # check whether runoff_df contains sites not in geom_df
     # this might indicate mismatched format in site ids between
     # runoff_df and geom_intersection df
@@ -378,14 +287,8 @@ def calculate_geometric_runoff(geom_id,
     if filtered_intersection_df.empty:
         print(('No runoff data available from intersecting sites to estimate '
                f'weighted runoff for {geom_id}. Check that your runoff '
-               'dictionary keys match site ids in your geom_intersection_df. '
+               'df site_nos match site ids in your geom_intersection_df. '
                'Returning empty series.'))
-
-    # check if weights are percentage values
-    if percentage is True:
-        multiplier = 0.01
-    else:
-        multiplier = 1
 
     # remove any nans
     filtered_intersection_df = filtered_intersection_df.dropna(axis='rows')
@@ -411,11 +314,12 @@ def calculate_geometric_runoff(geom_id,
         # create new df with additional info about runoff calculations
         geom_runoff = pd.DataFrame(geom_runoff_series)
         geom_runoff = geom_runoff.rename(columns={'runoff': 'estimated_runoff'})  # noqa: E501
+        geom_runoff['estimated_runoff'] = np.round(geom_runoff['estimated_runoff'], 5)  # noqa: E501
         geom_runoff['geom_id'] = geom_id
         geom_runoff['n_sites'] = 1
         geom_runoff['site_ids'] = geom_basin_overlap.iloc[0][site_col]
-        geom_runoff['max_weight'] = geom_basin_overlap['weight'].max()
-        geom_runoff['avg_weight'] = geom_basin_overlap['weight'].max()
+        geom_runoff['max_weight'] = np.round(geom_basin_overlap['weight'].max(), 4)  # noqa: E501
+        geom_runoff['avg_weight'] = np.round(geom_basin_overlap['weight'].max(), 4)  # noqa: E501
         geom_runoff['max_site'] = geom_basin_overlap.iloc[0][site_col]
         return geom_runoff
 
@@ -470,16 +374,16 @@ def calculate_geometric_runoff(geom_id,
     n_sites = basin_runoff_wide.shape[1]
     site_ids = ', '.join(basin_runoff_wide.columns)
     # calculate weighted runoff
-    basin_runoff_wide['estimated_runoff'] = np.average(basin_runoff_wide,
-                                                       weights=final_geom_intersection_df['weight'].to_numpy(),  # noqa: E501
-                                                       axis=1)
+    basin_runoff_wide['estimated_runoff'] = np.round(np.average(basin_runoff_wide,  # noqa: E501
+                                                                weights=final_geom_intersection_df['weight'].to_numpy(),  # noqa: E501
+                                                                axis=1), 5)
     basin_runoff = basin_runoff_wide.sort_index()
     # add geom_id, number of sites, site ids, and max weight to the output df
     basin_runoff['geom_id'] = geom_id
     basin_runoff['n_sites'] = n_sites
     basin_runoff['site_ids'] = site_ids
-    basin_runoff['max_weight'] = final_geom_intersection_df['weight'].max()
-    basin_runoff['avg_weight'] = final_geom_intersection_df['weight'].mean()
+    basin_runoff['max_weight'] = np.round(final_geom_intersection_df['weight'].max(), 4)  # noqa: E501
+    basin_runoff['avg_weight'] = np.round(final_geom_intersection_df['weight'].mean(), 4)  # noqa: E501
     basin_runoff['max_site'] = final_geom_intersection_df[site_col][final_geom_intersection_df['weight'].idxmax()]  # noqa: E501
     geom_runoff = basin_runoff[['geom_id', 'estimated_runoff', 'n_sites', 'site_ids', 'max_weight', 'avg_weight', 'max_site']]  # noqa: E501
     return geom_runoff
