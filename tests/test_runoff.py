@@ -140,7 +140,7 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin'
             )
         # should return runoff from site 01
-        assert testA['estimated_runoff'].tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
+        assert testA['estimated_runoff'].tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '01'].runoff, 5).tolist()  # noqa: E501
         # test with percentages rather than proportions
         testA_2 = runoff.calculate_geometric_runoff(
             geom_id="A",
@@ -153,7 +153,7 @@ class TestCalculateGeometricRunoff:
             percentage=True
             )
         # should return runoff from site 01
-        assert testA_2['estimated_runoff'].tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist(), 5)  # noqa: E501
+        assert testA_2['estimated_runoff'].tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '01'].runoff, 5).tolist()  # noqa: E501
 
     def test_calculate_geometric_runoff_within_contains_huc(self):
         """Test runoff function with huc that has a basin containing
@@ -173,7 +173,7 @@ class TestCalculateGeometricRunoff:
         check = check.pivot(columns='site_no', index='datetime', values='runoff').dropna(axis='columns')  # noqa: E501
         int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['04', '05'])]  # noqa: E501
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
-        weighted = np.round(np.average(check, weights=int['weight'], axis=1), 5)
+        weighted = np.round(np.average(check, weights=int['weight'], axis=1), 5)  # noqa: E501
         # should return weighted runoff from sites 04 and 05
         assert testB['estimated_runoff'].tolist() == weighted.tolist()
 
@@ -213,7 +213,7 @@ class TestCalculateGeometricRunoff:
         check = check.pivot(columns='site_no', index='datetime', values='runoff').dropna(axis='columns')  # noqa: E501
         int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['07', '08', '09'])]  # noqa: E501
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
-        weighted = np.round(np.average(check, weights=int['weight'], axis=1), 5)
+        weighted = np.round(np.average(check, weights=int['weight'], axis=1), 5)  # noqa: E501
         # should return weighted runoff from sites 07,08,09
         assert testC_2['estimated_runoff'].tolist() == weighted.tolist()
 

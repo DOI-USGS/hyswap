@@ -53,6 +53,52 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     return mmf
 
 
+def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
+    """Convert streamflow to runoff for a given drainage area.
+
+    For a given gage/dataframe, convert streamflow to runoff using the
+    drainage area and the convert_cfs_to_runoff function.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame containing streamflow data.
+
+    data_col : str
+        Column name containing streamflow data, assumed to be in cfs.
+
+    drainage_area : float
+        Drainage area in km2.
+
+    frequency : str, optional
+        Frequency of runoff values to return. Options are 'annual',
+        'monthly', and 'daily'. Default is 'annual'.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame containing runoff data in a column named 'runoff'.
+
+    Examples
+    --------
+    Convert streamflow to runoff for a given drainage area.
+
+    .. doctest::
+
+        >>> df = pd.DataFrame({'streamflow': [14, 15, 16]})
+        >>> runoff_df = runoff.streamflow_to_runoff(df, 'streamflow', 250)
+        >>> print(runoff_df['runoff'].round(1))
+        0    50.0
+        1    53.6
+        2    57.2
+        Name: runoff, dtype: float64
+    """
+    df['runoff'] = df[data_col].apply(
+        lambda x: convert_cfs_to_runoff(x, drainage_area, frequency=frequency)
+    )
+    return df
+
+
 def identify_sites_from_geom_intersection(
         geom_id,
         geom_intersection_df,
