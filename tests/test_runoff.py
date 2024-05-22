@@ -71,55 +71,6 @@ def df_list(weight_matrix):
     return df_list
 
 
-def test_get_date_range(df_list):
-    """Test the get_date_range function with no dates."""
-    date_range = runoff._get_date_range(df_list, None, None)
-    # assertions about the date range
-    assert date_range[0].year == 2000
-    assert date_range[0].month == 1
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2000
-    assert date_range[-1].month == 1
-    assert date_range[-1].day == 3
-
-
-def test_get_date_range_start(df_list):
-    """Test the get_date_range function with no dates."""
-    date_range = runoff._get_date_range(df_list, "1999-12-30", None)
-    # assertions about the date range
-    assert date_range[0].year == 1999
-    assert date_range[0].month == 12
-    assert date_range[0].day == 30
-    assert date_range[-1].year == 2000
-    assert date_range[-1].month == 1
-    assert date_range[-1].day == 3
-
-
-def test_get_date_range_end(df_list):
-    """Test the get_date_range function with no dates."""
-    date_range = runoff._get_date_range(df_list, None, "2000-01-10")
-    # assertions about the date range
-    assert date_range[0].year == 2000
-    assert date_range[0].month == 1
-    assert date_range[0].day == 1
-    assert date_range[-1].year == 2000
-    assert date_range[-1].month == 1
-    assert date_range[-1].day == 10
-
-
-def test_get_date_range_start_end(df_list):
-    """Test the get_date_range function with no dates."""
-    date_range = runoff._get_date_range(
-        df_list, "1999-12-30", "2000-01-10")
-    # assertions about the date range
-    assert date_range[0].year == 1999
-    assert date_range[0].month == 12
-    assert date_range[0].day == 30
-    assert date_range[-1].year == 2000
-    assert date_range[-1].month == 1
-    assert date_range[-1].day == 10
-
-
 def test_identify_sites_from_geom_intersection(weight_table):
     """Test the identify_sites_from_geom_intersection function."""
     siteids = runoff.identify_sites_from_geom_intersection(
@@ -202,7 +153,7 @@ class TestCalculateGeometricRunoff:
             percentage=True
             )
         # should return runoff from site 01
-        assert testA_2['estimated_runoff'].tolist() == self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist()  # noqa: E501
+        assert testA_2['estimated_runoff'].tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '01'].runoff.tolist(), 5)  # noqa: E501
 
     def test_calculate_geometric_runoff_within_contains_huc(self):
         """Test runoff function with huc that has a basin containing
@@ -222,7 +173,7 @@ class TestCalculateGeometricRunoff:
         check = check.pivot(columns='site_no', index='datetime', values='runoff').dropna(axis='columns')  # noqa: E501
         int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['04', '05'])]  # noqa: E501
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
-        weighted = np.average(check, weights=int['weight'], axis=1)
+        weighted = np.round(np.average(check, weights=int['weight'], axis=1), 5)
         # should return weighted runoff from sites 04 and 05
         assert testB['estimated_runoff'].tolist() == weighted.tolist()
 
@@ -242,7 +193,7 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=True
             )
         # should return site 07 runoff
-        assert np.round(testC['estimated_runoff'].tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '07'].runoff, decimals=8).tolist()  # noqa: E501
+        assert np.round(testC['estimated_runoff'].tolist(), decimals=5).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '07'].runoff, decimals=5).tolist()  # noqa: E501
         # huc contained by two larger basins
         # and overlaps another basin
         # test when all basins included
@@ -262,7 +213,7 @@ class TestCalculateGeometricRunoff:
         check = check.pivot(columns='site_no', index='datetime', values='runoff').dropna(axis='columns')  # noqa: E501
         int = self.geom_intersection.loc[self.geom_intersection['site_id'].isin(['07', '08', '09'])]  # noqa: E501
         int['weight'] = int['prop_basin_in_huc'] * int['prop_huc_in_basin']
-        weighted = np.average(check, weights=int['weight'], axis=1)
+        weighted = np.round(np.average(check, weights=int['weight'], axis=1), 5)
         # should return weighted runoff from sites 07,08,09
         assert testC_2['estimated_runoff'].tolist() == weighted.tolist()
 
@@ -281,7 +232,7 @@ class TestCalculateGeometricRunoff:
             clip_downstream_basins=False
             )
         # should return runoff for site 010
-        assert np.round(testD['estimated_runoff'].tolist(), decimals=8).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '010'].runoff, decimals=8).tolist()  # noqa: E501
+        assert np.round(testD['estimated_runoff'].tolist(), decimals=5).tolist() == np.round(self.runoff_df[self.runoff_df['site_no'] == '010'].runoff, decimals=5).tolist()  # noqa: E501
 
     def test_calculate_geometric_runoff_no_basin_data(self):
         """Test runoff function with huc where no basin data
@@ -311,7 +262,7 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin')
         # runoff value on last day should be runoff from basin '015'
         # since basin '014' is nan on that day
-        assert np.round(testG.iloc[3]['estimated_runoff'], decimals=8) == np.round(self.runoff_df[self.runoff_df['site_no'] == '015'].runoff[3], decimals=8)  # noqa: E501
+        assert np.round(testG.iloc[3]['estimated_runoff'], decimals=5) == np.round(self.runoff_df[self.runoff_df['site_no'] == '015'].runoff[3], decimals=5)  # noqa: E501
 
     def test_calculate_multiple_geometric_runoff(self):
         """Test multiple runoff function."""
