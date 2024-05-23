@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g7912e4a documentation</title>
+    <title>Module Dependency Graph &#8212; hyswap 0.1.dev1+g09afaaa documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=98f81e42" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=64800dce"></script>
+    <script src="../_static/documentation_options.js?v=68248c87"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g7912e4a documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g09afaaa documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>  
@@ -1842,49 +1842,25 @@ heatmap.</p>
 <span id="runoff-calculation-functions"></span><h2>Runoff Calculation Functions<a class="headerlink" href="#module-hyswap.runoff" title="Link to this heading">¶</a></h2>
 <p>Runoff functions for hyswap.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="hyswap.runoff._get_date_range">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">_get_date_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#_get_date_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff._get_date_range" title="Link to this definition">¶</a></dt>
-<dd><p>Get date range for runoff calculation.</p>
-<p>This is an internal function used by the <a class="reference internal" href="#hyswap.runoff.calculate_geometric_runoff" title="hyswap.runoff.calculate_geometric_runoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_geometric_runoff</span></code></a>
-function to get the date range for the runoff calculation. If no start or
-end date is specified, the earliest/latest date in the df_list will be
-used.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>df_list</strong> (<em>list</em>) – List of dataframes containing runoff data for each site in the
-geometry.</p></li>
-<li><p><strong>start_date</strong> (<em>str</em><em>, </em><em>optional</em>) – Start date for the runoff calculation. If not specified, the earliest
-date in the df_list will be used. Format is ‘YYYY-MM-DD’.</p></li>
-<li><p><strong>end_date</strong> (<em>str</em><em>, </em><em>optional</em>) – End date for the runoff calculation. If not specified, the latest
-date in the df_list will be used. Format is ‘YYYY-MM-DD’.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>DatetimeIndex containing the date range for the runoff calculation.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pandas.DatetimeIndex</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.calculate_geometric_runoff">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_geometric_runoff" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_geometric_runoff" title="Link to this definition">¶</a></dt>
 <dd><p>Function to calculate the runoff for a specified geometry. Uses
 tabular dataframe containing proportion of geometry in each
 intersecting basin and proportion of intersecting basins in the
-specified geometry, as well as a dictionary of basin runoff values.</p>
+specified geometry, as well as a dataframe of basin runoff values.
+Note that this function only calculates estimated runoff using
+intersecting basins with a complete runoff record over the
+entire date range of the dataframe. For this reason, the user
+may want to break up runoff calculations by month, year, or some
+other time step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geom_id</strong> (<em>str</em>) – Geometry ID for the geometry of interest.</p></li>
-<li><p><strong>runoff_dict</strong> (<em>dict</em>) – Dictionary of dataframes containing runoff data for each site in the
-geometry. Dictionary key is expected to be the name of the gage site.
-Each dictionary item is expected to have a date index entitled
-‘datetime’ and a data column entitled ‘runoff’ filled with runoff
-data.</p></li>
+<li><p><strong>runoff_df</strong> (<em>pandas.DataFrame</em>) – Dataframe containing runoff data for each site in the
+geometry. Dataframe is expected to have a date index entitled
+‘datetime’, a site id column entitled ‘site_no’, and a data
+column entitled ‘runoff’ filled with runoff data.</p></li>
 <li><p><strong>geom_intersection_df</strong> (<em>pandas.DataFrame</em>) – Tabular dataFrame containing columns indicating the site numbers,
 geometry ids, proportion of geometry in basin, and proportion
 of basin within geometry.</p></li>
@@ -1916,27 +1892,35 @@ Defaults to 0.98.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Series containing the area-weighted runoff values for the geometry.</p>
+<dd class="field-even"><p>Dataframe containing the area-weighted runoff values for the geometry,
+as well as the number of sites used to generate the weight, the site
+ids, and the max weight for any site used in the weighting calculation.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pandas.Series</p>
+<dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.calculate_multiple_geometric_runoff">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_multiple_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_multiple_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_multiple_geometric_runoff" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate runoff for multiple geometries at once.</p>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_multiple_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_multiple_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_multiple_geometric_runoff" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate runoff for multiple geometries at once using
+<cite>hyswap.calculate_geometric_runoff()</cite>.
+Note that this function only calculates estimated runoff using
+intersecting basins with a complete runoff record over the
+entire date range of the dataframe. For this reason, the user
+may want to break up runoff calculations by month, year, or some
+other time step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geom_id_list</strong> (<em>list</em>) – List of geometry ID strings for the geometries of interest.
 These should be columns in the weights matrix.</p></li>
-<li><p><strong>runoff_dict</strong> (<em>dict</em>) – Dictionary of dataframes containing runoff data for each site in the
-geometry. Dictionary key is expected to be the name of the gage site.
-Each dictionary entry is expected to have a date index and a data
-column filled with runoff data.</p></li>
+<li><p><strong>runoff_df</strong> (<em>pandas.DataFrame</em>) – Dataframe containing runoff data for each site in the
+geometry. Dataframe is expected to have a date index entitled
+‘datetime’, a site id column entitled ‘site_no’, and a data
+column entitled ‘runoff’ filled with runoff data.</p></li>
 <li><p><strong>geom_intersection_df</strong> (<em>pandas.DataFrame</em>) – Tabular dataFrame containing columns indicating the site numbers,
 geometry ids, proportion of geometry in basin, and proportion
 of basin within geometry.</p></li>
@@ -1969,7 +1953,9 @@ Defaults to 0.98.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>DataFrame containing the area-weighted runoff values for each
-geometry. Columns are geometry IDs, index is date range.</p>
+geometry, as well as the number of sites used to generate the
+weights, the site ids, and the max weight for any site used
+in the weighting calculation for each geometry.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
@@ -2312,7 +2298,6 @@ by df_names argument.</p></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-hyswap.runoff">Runoff Calculation Functions</a><ul>
-<li><a class="reference internal" href="#hyswap.runoff._get_date_range"><code class="docutils literal notranslate"><span class="pre">_get_date_range()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.runoff.calculate_geometric_runoff"><code class="docutils literal notranslate"><span class="pre">calculate_geometric_runoff()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.runoff.calculate_multiple_geometric_runoff"><code class="docutils literal notranslate"><span class="pre">calculate_multiple_geometric_runoff()</span></code></a></li>
 <li><a class="reference internal" href="#hyswap.runoff.convert_cfs_to_runoff"><code class="docutils literal notranslate"><span class="pre">convert_cfs_to_runoff()</span></code></a></li>
@@ -2370,7 +2355,7 @@ by df_names argument.</p></li>
         <li class="right" >
           <a href="../meta/disclaimer.html" title="Disclaimer"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g7912e4a documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g09afaaa documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Module Dependency Graph</a></li> 
       </ul>
     </div>

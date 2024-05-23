@@ -5,12 +5,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+g7912e4a documentation</title>
+    <title>hyswap.runoff &#8212; hyswap 0.1.dev1+g09afaaa documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css?v=98f81e42" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     
-    <script src="../../_static/documentation_options.js?v=64800dce"></script>
+    <script src="../../_static/documentation_options.js?v=68248c87"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/bizstyle.js"></script>
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g7912e4a documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g09afaaa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
@@ -149,60 +149,6 @@
 
 
 
-<div class="viewcode-block" id="_get_date_range">
-<a class="viewcode-back" href="../../reference/index.html#hyswap.runoff._get_date_range">[docs]</a>
-<span class="k">def</span> <span class="nf">_get_date_range</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get date range for runoff calculation.</span>
-
-<span class="sd">    This is an internal function used by the :obj:`calculate_geometric_runoff`</span>
-<span class="sd">    function to get the date range for the runoff calculation. If no start or</span>
-<span class="sd">    end date is specified, the earliest/latest date in the df_list will be</span>
-<span class="sd">    used.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    df_list : list</span>
-<span class="sd">        List of dataframes containing runoff data for each site in the</span>
-<span class="sd">        geometry.</span>
-
-<span class="sd">    start_date : str, optional</span>
-<span class="sd">        Start date for the runoff calculation. If not specified, the earliest</span>
-<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
-
-<span class="sd">    end_date : str, optional</span>
-<span class="sd">        End date for the runoff calculation. If not specified, the latest</span>
-<span class="sd">        date in the df_list will be used. Format is &#39;YYYY-MM-DD&#39;.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    pandas.DatetimeIndex</span>
-<span class="sd">        DatetimeIndex containing the date range for the runoff calculation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># if no start date iterate through df_list to find earliest date</span>
-        <span class="n">start_date</span> <span class="o">=</span> <span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">start_date</span><span class="p">:</span>
-                <span class="n">start_date</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># make the string tz-aware</span>
-        <span class="n">start_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># if no end date iterate through df_list to find latest date</span>
-        <span class="n">end_date</span> <span class="o">=</span> <span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">end_date</span><span class="p">:</span>
-                <span class="n">end_date</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># make the string tz-aware</span>
-        <span class="n">end_date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span>
-    <span class="c1"># create range of dates from start to end</span>
-    <span class="n">date_range</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">date_range</span></div>
-
-
-
 <div class="viewcode-block" id="identify_sites_from_geom_intersection">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.identify_sites_from_geom_intersection">[docs]</a>
 <span class="k">def</span> <span class="nf">identify_sites_from_geom_intersection</span><span class="p">(</span>
@@ -291,7 +237,7 @@
         <span class="n">site_col</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span>
 
     <span class="c1"># Retrieve all non-0 sites within the designated geometry (e.g. huc8)</span>
-    <span class="n">site_list</span> <span class="o">=</span> <span class="n">site_col</span><span class="p">[(</span><span class="n">filtered_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span>
+    <span class="n">site_list</span> <span class="o">=</span> <span class="n">site_col</span><span class="p">[(</span><span class="n">filtered_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
         <span class="n">filtered_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">site_list</span></div>
@@ -301,7 +247,7 @@
 <div class="viewcode-block" id="calculate_geometric_runoff">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_geometric_runoff">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_geometric_runoff</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span>
-                               <span class="n">runoff_dict</span><span class="p">,</span>
+                               <span class="n">runoff_df</span><span class="p">,</span>
                                <span class="n">geom_intersection_df</span><span class="p">,</span>
                                <span class="n">site_col</span><span class="p">,</span>
                                <span class="n">geom_id_col</span><span class="p">,</span>
@@ -313,19 +259,23 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to calculate the runoff for a specified geometry. Uses</span>
 <span class="sd">    tabular dataframe containing proportion of geometry in each</span>
 <span class="sd">    intersecting basin and proportion of intersecting basins in the</span>
-<span class="sd">    specified geometry, as well as a dictionary of basin runoff values.</span>
+<span class="sd">    specified geometry, as well as a dataframe of basin runoff values.</span>
+<span class="sd">    Note that this function only calculates estimated runoff using</span>
+<span class="sd">    intersecting basins with a complete runoff record over the</span>
+<span class="sd">    entire date range of the dataframe. For this reason, the user</span>
+<span class="sd">    may want to break up runoff calculations by month, year, or some</span>
+<span class="sd">    other time step.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    geom_id : str</span>
 <span class="sd">        Geometry ID for the geometry of interest.</span>
 
-<span class="sd">    runoff_dict : dict</span>
-<span class="sd">        Dictionary of dataframes containing runoff data for each site in the</span>
-<span class="sd">        geometry. Dictionary key is expected to be the name of the gage site.</span>
-<span class="sd">        Each dictionary item is expected to have a date index entitled</span>
-<span class="sd">        &#39;datetime&#39; and a data column entitled &#39;runoff&#39; filled with runoff</span>
-<span class="sd">        data.</span>
+<span class="sd">    runoff_df : pandas.DataFrame</span>
+<span class="sd">        Dataframe containing runoff data for each site in the</span>
+<span class="sd">        geometry. Dataframe is expected to have a date index entitled</span>
+<span class="sd">        &#39;datetime&#39;, a site id column entitled &#39;site_no&#39;, and a data</span>
+<span class="sd">        column entitled &#39;runoff&#39; filled with runoff data.</span>
 
 <span class="sd">    geom_intersection_df : pandas.DataFrame</span>
 <span class="sd">        Tabular dataFrame containing columns indicating the site numbers,</span>
@@ -373,74 +323,105 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pandas.Series</span>
-<span class="sd">        Series containing the area-weighted runoff values for the geometry.</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Dataframe containing the area-weighted runoff values for the geometry,</span>
+<span class="sd">        as well as the number of sites used to generate the weight, the site</span>
+<span class="sd">        ids, and the max weight for any site used in the weighting calculation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># check whether dictionary contains sites not in geom_df</span>
-    <span class="c1"># this might indicate mismatched format in site ids between</span>
-    <span class="c1"># dictionary and geom_intersection df</span>
-    <span class="n">check</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">runoff_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>  <span class="c1"># noqa: E501</span>
-    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;There are dictionary keys (site ids) that are not present &#39;</span>
-               <span class="sa">f</span><span class="s1">&#39;in the intersection df for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. This might indicate &#39;</span>
-               <span class="s1">&#39;a mismatch in site id formats, e.g. missing leading &#39;</span>
-               <span class="s1">&#39;zeroes if NWIS sites.&#39;</span><span class="p">))</span>
-    <span class="c1"># check whether sites is the df index or not</span>
-    <span class="k">if</span> <span class="n">site_col</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
-        <span class="n">geom_intersection_df</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-        <span class="n">site_col</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
-    <span class="c1"># assertion to check that site_col are not of type int</span>
-    <span class="k">assert</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;str&#39;</span> <span class="ow">or</span> \
-        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="s1">&#39;geom_intersection_df site_col should be a str or obj&#39;</span>  <span class="c1"># noqa: E501</span>
     <span class="c1"># check if weights are percentage values</span>
     <span class="k">if</span> <span class="n">percentage</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">multiplier</span> <span class="o">=</span> <span class="mf">0.01</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="c1"># filtering with copy</span>
+
+    <span class="c1"># check whether runoff_df contains sites not in geom_df</span>
+    <span class="c1"># this might indicate mismatched format in site ids between</span>
+    <span class="c1"># runoff_df and geom_intersection df</span>
+    <span class="n">check</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;There are site ids in the runoff df that are not present &#39;</span>
+               <span class="sa">f</span><span class="s1">&#39;in the intersection df for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. This might indicate &#39;</span>
+               <span class="s1">&#39;a mismatch in site id formats, e.g. missing leading &#39;</span>
+               <span class="s1">&#39;zeroes if NWIS sites.&#39;</span><span class="p">))</span>
+
+    <span class="c1"># check whether sites is the df index or not</span>
+    <span class="k">if</span> <span class="n">site_col</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
+        <span class="n">geom_intersection_df</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="n">site_col</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="c1"># assertion to check that site_col are not of type int</span>
+    <span class="k">assert</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;str&#39;</span> <span class="ow">or</span> \
+        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="s1">&#39;geom_intersection_df site_col should be a str or obj&#39;</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="c1"># filter intersction table to basins that overlap geom id</span>
     <span class="n">filtered_intersection_df</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="p">[</span>
         <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">geom_id_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_id</span>
         <span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="c1"># filter weights df to sites with data in runoff_dict</span>
+
+    <span class="c1"># filter weights df to sites with data in runoff_df</span>
     <span class="n">sites</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span>
-    <span class="c1"># check to see which sites are in dictionary</span>
-    <span class="n">sites_w_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span> <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">sites</span> <span class="k">if</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">runoff_dict</span><span class="p">]</span>
+
+    <span class="c1"># get all site ids in runoff df</span>
+    <span class="n">ro_sites</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># grab sites that overlap between the intersection table</span>
+    <span class="c1"># and runoff_df and filter runoff_df to those</span>
+    <span class="n">ro_sites</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sites</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">ro_sites</span><span class="p">))</span>
+    <span class="n">runoff_df</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="p">[</span><span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ro_sites</span><span class="p">)]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+    <span class="c1"># pivot runoff_df to wide where each column represents</span>
+    <span class="c1"># a site&#39;s runoff data and each row a datetime</span>
+    <span class="c1"># and drop sites with incomplete data</span>
+    <span class="n">basin_runoff_wide</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;site_no&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;datetime&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;runoff&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="k">if</span> <span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No basins intersecting huc </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s2"> have a complete record in the dataset. Returning empty dataframe.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">geom_runoff</span>
+
     <span class="c1"># filter weights df to sites with data</span>
     <span class="n">filtered_intersection_df</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[</span>
-        <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">sites_w_data</span><span class="p">)</span>
+        <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># noqa: E501</span>
         <span class="p">]</span>
     <span class="c1"># check to see if empty</span>
     <span class="k">if</span> <span class="n">filtered_intersection_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;No runoff data available from intersecting sites to estimate &#39;</span>
                <span class="sa">f</span><span class="s1">&#39;weighted runoff for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. Check that your runoff &#39;</span>
-               <span class="s1">&#39;dictionary keys match site ids in your geom_intersection_df. &#39;</span>
+               <span class="s1">&#39;df site_nos match site ids in your geom_intersection_df. &#39;</span>
                <span class="s1">&#39;Returning empty series.&#39;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="c1"># remove any nans</span>
+    <span class="n">filtered_intersection_df</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;rows&#39;</span><span class="p">)</span>
+
     <span class="c1"># converting proportions to decimals if applicable</span>
     <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
     <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+    <span class="c1"># calculate weight</span>
+    <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">*</span> <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
+
     <span class="c1"># check to see if there is overlap between geom and</span>
-    <span class="c1"># basin(s) that is mutually &gt; 0.9</span>
-    <span class="n">geom_basin_overlap</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[(</span><span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)</span> <span class="o">&amp;</span>  <span class="c1"># noqa: E501</span>
-                                                  <span class="p">(</span><span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># noqa: E501</span>
+    <span class="c1"># basin(s) that is mutually &gt; 0.9 * 0.9 (weight)</span>
+    <span class="n">geom_basin_overlap</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">filtered_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="mf">0.9</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># noqa: E501</span>
+
     <span class="c1"># if geom_basin_overlap is not empty, then the runoff is simply</span>
     <span class="c1"># the runoff from the basin with proportion overlap of &gt; 0.9 AND</span>
     <span class="c1"># the highest weight.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-        <span class="c1"># calculate weight(s) - need weights to determine which</span>
-        <span class="c1"># basin should be used to represent geom&#39;s runoff</span>
-        <span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="p">[</span>
-            <span class="n">prop_basin_in_geom_col</span>
-            <span class="p">]</span> <span class="o">*</span> <span class="n">geom_basin_overlap</span><span class="p">[</span>
-                <span class="n">prop_geom_in_basin_col</span>
-                <span class="p">]</span>
+        <span class="n">geom_basin_overlap</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="p">[</span><span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">geom_basin_overlap</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># pick basin that has the highest weight: tightest overlap</span>
-        <span class="n">site</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-            <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">weight</span> <span class="o">==</span>
-            <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">site_col</span><span class="p">]</span>
-        <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">runoff_dict</span><span class="p">[</span><span class="n">site</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">runoff</span>
-        <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">geom_runoff</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;geom_runoff&#39;</span><span class="p">)</span>
+        <span class="n">geom_runoff_series</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="p">[</span><span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_col</span><span class="p">]]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">runoff</span>  <span class="c1"># noqa: E501</span>
+        <span class="c1"># create new df with additional info about runoff calculations</span>
+        <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">geom_runoff_series</span><span class="p">)</span>
+        <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">geom_runoff</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;runoff&#39;</span><span class="p">:</span> <span class="s1">&#39;estimated_runoff&#39;</span><span class="p">})</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;estimated_runoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;estimated_runoff&#39;</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;geom_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_id</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;n_sites&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;site_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_col</span><span class="p">]</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;max_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;avg_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;max_site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_col</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">geom_runoff</span>
 
     <span class="k">if</span> <span class="n">clip_downstream_basins</span><span class="p">:</span>
@@ -455,15 +436,14 @@
         <span class="k">if</span> <span class="n">geom_in_basin</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No runoff data associated with any basins containing the geometry object </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s2"> for the time period selected.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># calculate their weights</span>
-            <span class="n">geom_in_basin</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_in_basin</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">*</span> \
-                <span class="n">geom_in_basin</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span>
             <span class="c1"># grab basin with greatest weight value: this means it fully</span>
             <span class="c1"># contains the geom and closest in size to geom (a larger</span>
             <span class="c1"># basin would result in a smaller overall weight since the</span>
             <span class="c1"># proportion of the basin in geom would be smaller with a</span>
             <span class="c1"># bigger basin)</span>
             <span class="n">geom_in_basin</span> <span class="o">=</span> <span class="n">geom_in_basin</span><span class="p">[</span><span class="n">geom_in_basin</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_in_basin</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+            <span class="c1"># in case there are two or more basins with the same weight</span>
+            <span class="n">geom_in_basin</span> <span class="o">=</span> <span class="n">geom_in_basin</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="c1"># make sure returns one value</span>
             <span class="k">assert</span> <span class="n">geom_in_basin</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="c1"># grab all basins fully contained within the geom</span>
@@ -471,10 +451,6 @@
         <span class="c1"># if there are no basins with runoff data, let user know.</span>
         <span class="k">if</span> <span class="n">basin_in_geom</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No runoff data associated with any basins contained within the geometry object </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s2"> for the time period selected.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># calculate their weights</span>
-            <span class="n">basin_in_geom</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">basin_in_geom</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">*</span> \
-                <span class="n">basin_in_geom</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span>
         <span class="c1"># if both geom_in_basin and basin_in_geom are empty, meaning</span>
         <span class="c1"># no basins fully contain the huc and the huc doesn&#39;t fully</span>
         <span class="c1"># contain any basins, return empty series.</span>
@@ -489,29 +465,28 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Use all intersections to calculate a weighted average</span>
         <span class="n">final_geom_intersection_df</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">*</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span>  <span class="c1"># noqa: E501</span>
-    <span class="c1"># check if any weights are NaN</span>
-    <span class="k">if</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;One or more geometry-basin weights are null. &#39;</span>
-               <span class="sa">f</span><span class="s1">&#39;Cannot estimate runoff values for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. &#39;</span>
-               <span class="s1">&#39;Returning nan values.&#39;</span><span class="p">))</span>
-    <span class="c1"># grab applicable basin runoff from dictionary</span>
+
+    <span class="c1"># subset to applicable basin runoff</span>
     <span class="n">basins</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="c1"># create df of applicable basin runoffs, where columns</span>
-    <span class="c1"># refer to basins and rows refer to runoff using a</span>
-    <span class="c1"># datetime index</span>
-    <span class="n">basin_runoff</span> <span class="o">=</span> <span class="n">runoff_dict</span><span class="p">[</span><span class="n">basins</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">runoff</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">basins</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>  <span class="c1"># noqa: E501</span>
-    <span class="k">for</span> <span class="n">basin</span> <span class="ow">in</span> <span class="n">basins</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-        <span class="n">basin_runoff</span> <span class="o">=</span> <span class="n">basin_runoff</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">runoff_dict</span><span class="p">[</span><span class="n">basin</span><span class="p">]</span><span class="o">.</span><span class="n">runoff</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">basin</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(),</span>  <span class="c1"># noqa: E501</span>
-                                          <span class="n">on</span><span class="o">=</span><span class="s1">&#39;datetime&#39;</span><span class="p">)</span>
-    <span class="c1"># create masked array so that numpy can calculate weighted avg</span>
-    <span class="c1"># while ignoring nans</span>
-    <span class="n">masked_basin_runoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">basin_runoff</span><span class="p">[</span><span class="n">basins</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">basin_runoff</span><span class="p">))</span>  <span class="c1"># noqa: E501</span>
-    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;geom_runoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">masked_basin_runoff</span><span class="p">,</span>
-                                                <span class="n">weights</span><span class="o">=</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>  <span class="c1"># noqa: E501</span>
-                                                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">basin_runoff</span> <span class="o">=</span> <span class="n">basin_runoff</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
-    <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;geom_runoff&#39;</span><span class="p">]</span>
+    <span class="c1"># ensure data df only has selected intersecting basins</span>
+    <span class="c1"># and they are in the right order to apply weights</span>
+    <span class="n">basin_runoff_wide</span> <span class="o">=</span> <span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">basins</span><span class="p">)[</span><span class="n">basins</span><span class="p">]</span>
+    <span class="c1"># get number of sites and site id stats</span>
+    <span class="n">n_sites</span> <span class="o">=</span> <span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">site_ids</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="c1"># calculate weighted runoff</span>
+    <span class="n">basin_runoff_wide</span><span class="p">[</span><span class="s1">&#39;estimated_runoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">basin_runoff_wide</span><span class="p">,</span>  <span class="c1"># noqa: E501</span>
+                                                                <span class="n">weights</span><span class="o">=</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>  <span class="c1"># noqa: E501</span>
+                                                                <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">basin_runoff</span> <span class="o">=</span> <span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+    <span class="c1"># add geom_id, number of sites, site ids, and max weight to the output df</span>
+    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;geom_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_id</span>
+    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;n_sites&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_sites</span>
+    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;site_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site_ids</span>
+    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;max_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;avg_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;max_site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">][</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">basin_runoff</span><span class="p">[[</span><span class="s1">&#39;geom_id&#39;</span><span class="p">,</span> <span class="s1">&#39;estimated_runoff&#39;</span><span class="p">,</span> <span class="s1">&#39;n_sites&#39;</span><span class="p">,</span> <span class="s1">&#39;site_ids&#39;</span><span class="p">,</span> <span class="s1">&#39;max_weight&#39;</span><span class="p">,</span> <span class="s1">&#39;avg_weight&#39;</span><span class="p">,</span> <span class="s1">&#39;max_site&#39;</span><span class="p">]]</span>  <span class="c1"># noqa: E501</span>
     <span class="k">return</span> <span class="n">geom_runoff</span></div>
 
 
@@ -520,7 +495,7 @@
 <a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.calculate_multiple_geometric_runoff">[docs]</a>
 <span class="k">def</span> <span class="nf">calculate_multiple_geometric_runoff</span><span class="p">(</span>
         <span class="n">geom_id_list</span><span class="p">,</span>
-        <span class="n">runoff_dict</span><span class="p">,</span>
+        <span class="n">runoff_df</span><span class="p">,</span>
         <span class="n">geom_intersection_df</span><span class="p">,</span>
         <span class="n">site_col</span><span class="p">,</span>
         <span class="n">geom_id_col</span><span class="p">,</span>
@@ -530,7 +505,13 @@
         <span class="n">clip_downstream_basins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">full_overlap_threshold</span><span class="o">=</span><span class="mf">0.98</span>
         <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate runoff for multiple geometries at once.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate runoff for multiple geometries at once using</span>
+<span class="sd">    `hyswap.calculate_geometric_runoff()`.</span>
+<span class="sd">    Note that this function only calculates estimated runoff using</span>
+<span class="sd">    intersecting basins with a complete runoff record over the</span>
+<span class="sd">    entire date range of the dataframe. For this reason, the user</span>
+<span class="sd">    may want to break up runoff calculations by month, year, or some</span>
+<span class="sd">    other time step.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -538,11 +519,11 @@
 <span class="sd">        List of geometry ID strings for the geometries of interest.</span>
 <span class="sd">        These should be columns in the weights matrix.</span>
 
-<span class="sd">    runoff_dict : dict</span>
-<span class="sd">        Dictionary of dataframes containing runoff data for each site in the</span>
-<span class="sd">        geometry. Dictionary key is expected to be the name of the gage site.</span>
-<span class="sd">        Each dictionary entry is expected to have a date index and a data</span>
-<span class="sd">        column filled with runoff data.</span>
+<span class="sd">    runoff_df : pandas.DataFrame</span>
+<span class="sd">        Dataframe containing runoff data for each site in the</span>
+<span class="sd">        geometry. Dataframe is expected to have a date index entitled</span>
+<span class="sd">        &#39;datetime&#39;, a site id column entitled &#39;site_no&#39;, and a data</span>
+<span class="sd">        column entitled &#39;runoff&#39; filled with runoff data.</span>
 
 <span class="sd">    geom_intersection_df : pandas.DataFrame</span>
 <span class="sd">        Tabular dataFrame containing columns indicating the site numbers,</span>
@@ -592,7 +573,9 @@
 <span class="sd">    -------</span>
 <span class="sd">    pandas.DataFrame</span>
 <span class="sd">        DataFrame containing the area-weighted runoff values for each</span>
-<span class="sd">        geometry. Columns are geometry IDs, index is date range.</span>
+<span class="sd">        geometry, as well as the number of sites used to generate the</span>
+<span class="sd">        weights, the site ids, and the max weight for any site used</span>
+<span class="sd">        in the weighting calculation for each geometry.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># create empty dataframe to store results</span>
     <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
@@ -606,16 +589,16 @@
             <span class="n">prop_geom_in_basin_col</span><span class="o">=</span><span class="n">prop_geom_in_basin_col</span><span class="p">,</span>
             <span class="n">prop_basin_in_geom_col</span><span class="o">=</span><span class="n">prop_basin_in_geom_col</span>
             <span class="p">)</span>
-        <span class="c1"># subset dictionary to sites with drainage areas that</span>
+        <span class="c1"># subset df to sites with drainage areas that</span>
         <span class="c1"># intersect the geom_id</span>
-        <span class="n">site_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">site_no</span><span class="p">:</span> <span class="n">runoff_dict</span><span class="p">[</span><span class="n">site_no</span><span class="p">]</span> <span class="k">for</span> <span class="n">site_no</span> <span class="ow">in</span> <span class="n">runoff_sites</span> <span class="k">if</span> <span class="n">site_no</span> <span class="ow">in</span> <span class="n">runoff_dict</span>  <span class="c1"># noqa: E501</span>
-            <span class="p">}</span>
-        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">site_dict</span><span class="p">):</span>
+        <span class="n">geom_df</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">geom_df</span> <span class="o">=</span> <span class="n">geom_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">geom_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">runoff_sites</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">geom_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">geom_id</span><span class="p">)</span>
             <span class="c1"># calculate runoff for geometry</span>
             <span class="n">runoff</span> <span class="o">=</span> <span class="n">calculate_geometric_runoff</span><span class="p">(</span>
                 <span class="n">geom_id</span><span class="o">=</span><span class="n">geom_id</span><span class="p">,</span>
-                <span class="n">runoff_dict</span><span class="o">=</span><span class="n">site_dict</span><span class="p">,</span>
+                <span class="n">runoff_df</span><span class="o">=</span><span class="n">geom_df</span><span class="p">,</span>
                 <span class="n">geom_intersection_df</span><span class="o">=</span><span class="n">geom_intersection_df</span><span class="p">,</span>
                 <span class="n">site_col</span><span class="o">=</span><span class="n">site_col</span><span class="p">,</span>
                 <span class="n">geom_id_col</span><span class="o">=</span><span class="n">geom_id_col</span><span class="p">,</span>
@@ -625,10 +608,10 @@
                 <span class="n">clip_downstream_basins</span><span class="o">=</span><span class="n">clip_downstream_basins</span><span class="p">,</span>
                 <span class="n">full_overlap_threshold</span><span class="o">=</span><span class="n">full_overlap_threshold</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">runoff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+            <span class="n">runoff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
         <span class="c1"># add runoff to results_df</span>
-        <span class="n">results_df</span><span class="p">[</span><span class="n">geom_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">runoff</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>
+        <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">results_df</span><span class="p">,</span> <span class="n">runoff</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">results_df</span></div>
 
 </pre></div>
@@ -662,7 +645,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g7912e4a documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">hyswap 0.1.dev1+g09afaaa documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">hyswap.runoff</a></li> 
       </ul>
