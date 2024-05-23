@@ -174,7 +174,7 @@ Identifying streamgages that are most similar or correlated is a common task whe
 |                           | log-transformed daily streamflow records  |
 |                           | is often used to identify potential       |
 |                           | index or reference streamgages            |
-|                           | `(Yuan, 2013)_.`                          |
+|                           | `(Yuan, 2013)`_.                          |
 +---------------------------+-------------------------------------------+
 | Wasserstein Distance      | A metric that measures the distance       |
 |                           | between two distributions and in a        |
