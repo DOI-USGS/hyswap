@@ -216,7 +216,7 @@ Ziel, F., 2021. The energy distance for ensemble and scenario reduction, Phil, T
 
 .. _(Brakebill and others, 2011): https://doi.org/10.1111/j.1752-1688.2011.00578.x
 .. _(Helsel and others, 2020): https://doi.org/10.3133/tm4A3
-.. _(Jones and others, 2022): <https://pubs.usgs.gov/tm/11/a3/>
+.. _(Jones and others, 2022): https://pubs.usgs.gov/tm/11/a3/
 .. _(Magyar & Sambridge, 2023): https://doi.org/10.5194/hess-27-991-2023
 .. _(U.S. Geological Survey, 2011): https://water.usgs.gov/lookup/getspatial?streamgagebasins
 .. _(U.S. Geological Survey, 2023): http://dx.doi.org/10.5066/F7P55KJN
