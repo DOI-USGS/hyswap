@@ -877,6 +877,7 @@ def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='inferno',
     # set tick labels
     ax.set_xticklabels(sim_matrix.columns)
     ax.set_yticklabels(sim_matrix.index)
+    plt.xticks(rotation=45, ha='right')
     # add colorbar
     plt.colorbar(im, ax=ax)
     # return
