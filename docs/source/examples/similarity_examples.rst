@@ -82,11 +82,9 @@ If we'd like, we can display the specific values of the correlations by setting 
 Wasserstein Distances Between 5 Stations
 ****************************************
 
-In this example we compare the same 5 time-series as the previous example, but instead of calculating correlations, we calculate the `Wasserstein Distance <wasserstein_doc>`_ between each pairing of time-series.
+In this example we compare the same 5 time-series as the previous example, but instead of calculating correlations, we calculate the `Wasserstein Distance <https://en.wikipedia.org/wiki/Wasserstein_metric>`_ between each pairing of time-series.
 The Wasserstein Distance is a measure of the distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
 Specifically in `hyswap`, we utilize the `scipy.stats.wasserstein_distance()` function, and are therefore specifically calculating the "first" Wasserstein Distance between two time-series.
-
-.. _wasserstein_doc: https://en.wikipedia.org/wiki/Wasserstein_metric
 
 .. plot::
     :context: reset
@@ -121,11 +119,9 @@ Specifically in `hyswap`, we utilize the `scipy.stats.wasserstein_distance()` fu
 Energy Distances Between 5 Stations
 ***********************************
 
-In this example we compare the same 5 time-series as the previous example, but this time using another distance measure, the so-called "Energy Distance" between two time-series.
-The `Energy Distance <energy_dist>`_ is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
+In this example we compare the same 5 time-series as the previous example, but this time using another distance measure, the so-called `Energy Distance <https://en.wikipedia.org/wiki/Energy_distance>`_ between two time-series.
+The `energy_dist`_ is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
 Specifically in `hyswap`, we utilize the `scipy.stats.energy_distance()` function.
-
-.. _energy_dist: https://en.wikipedia.org/wiki/Energy_distance
 
 .. plot::
     :context: reset
