@@ -174,7 +174,7 @@ Identifying streamgages that are most similar or correlated is a common task whe
 |                           | log-transformed daily streamflow records  |
 |                           | is often used to identify potential       |
 |                           | index or reference streamgages            |
-|                           | `(Yuan, 2013)_.`                          |
+|                           | `(Yuan, 2013)`_.                          |
 +---------------------------+-------------------------------------------+
 | Wasserstein Distance      | A metric that measures the distance       |
 |                           | between two distributions and in a        |
@@ -198,25 +198,25 @@ References
 
 Brakebill, J.W., D.M. Wolock, and S.E. Terziotti, 2011. Digital Hydrologic Networks Supporting Applications Related to Spatially Referenced Regression Modeling. Journal of the American Water Resources Association (JAWRA) 47(5):916-932. 
 
-Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020. Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, book 4, chap. A3, 458 p., `doi.org/10.3133/tm4a3 <https://doi.org/10.3133/tm4a3>`_. [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
+Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 2020. Statistical methods in water resources: U.S. Geological Survey Techniques and Methods, book 4, chap. A3, 458 p., https://doi.org/10.3133/tm4a3. [Supersedes USGS Techniques of Water-Resources Investigations, book 4, chap. A3, version 1.1.]
 
-Jones, K.A., Niknami, L.S., Buto, S.G., and Decker, D., 2022. Federal standards and procedures for the national Watershed Boundary Dataset (WBD) (5 ed.): U.S. Geological Survey Techniques and Methods 11-A3, 54 p., `doi.org/10.3133/tm11A3 <https://doi.org/10.3133/tm11A3>`_.
+Jones, K.A., Niknami, L.S., Buto, S.G., and Decker, D., 2022. Federal standards and procedures for the national Watershed Boundary Dataset (WBD) (5 ed.): U.S. Geological Survey Techniques and Methods 11-A3, 54 p., https://pubs.usgs.gov/tm/11/a3/.
 
-Magyar, J.C. & Sambridge, M., 2023. Hydrological objective functions and ensemble averaging with the Wasserstein distance, Hydrol. Earth Syst. Sci., 27, 991–1010, `doi.org/10.5194/hess-27-991-2023 <https://doi.org/10.5194/hess-27-991-2023>`_.
+Magyar, J.C. & Sambridge, M., 2023. Hydrological objective functions and ensemble averaging with the Wasserstein distance, Hydrol. Earth Syst. Sci., 27, 991–1010, https://doi.org/10.5194/hess-27-991-2023.
 
 U.S. Geological Survey, 2011. USGS Streamgage NHDPlus Version 1 Basins 2011. Data Series [DS-719] `water.usgs.gov/lookup/getspatial?streamgagebasins <https://water.usgs.gov/lookup/getspatial?streamgagebasins>`_
 
-U.S. Geological Survey, 2023. USGS water data for the Nation: U.S. Geological Survey National Water Information System database, accessed at `doi.org/10.5066/F7P55KJN <http://dx.doi.org/10.5066/F7P55KJN>`_
+U.S. Geological Survey, 2023. USGS water data for the Nation: U.S. Geological Survey National Water Information System database, accessed at https://dx.doi.org/10.5066/F7P55KJN.
 
 Weibull, W., 1939. A statistical theory of strength of materials, Ingeniors Vetenskaps Akademien Handlinga, no. 153, 9. 17
 
-Yuan, L.L., 2013. Using correlation of daily flows to identify index gauges for ungauged streams, Water Resour. Res., 49, `doi:10.1002/wrcr.20070 <https://doi.org/10.1002/wrcr.20070>`_.
+Yuan, L.L., 2013. Using correlation of daily flows to identify index gauges for ungauged streams, Water Resour. Res., 49, https://doi.org/10.1002/wrcr.20070.
 
-Ziel, F., 2021. The energy distance for ensemble and scenario reduction, Phil, Trans. R. Soc. A. 379: 20190431, `doi.org/10.1098/rsta.2019.0431<http://doi.org/10.1098/rsta.2019.0431>`_.
+Ziel, F., 2021. The energy distance for ensemble and scenario reduction, Phil, Trans. R. Soc. A. 379: 20190431, https://doi.org/10.1098/rsta.2019.0431.
 
 .. _(Brakebill and others, 2011): https://doi.org/10.1111/j.1752-1688.2011.00578.x
 .. _(Helsel and others, 2020): https://doi.org/10.3133/tm4A3
-.. _(Jones and others, 2022): https://pubs.usgs.gov/tm/11/a3/
+.. _(Jones and others, 2022): https://doi.org/10.3133/tm11A3
 .. _(Magyar & Sambridge, 2023): https://doi.org/10.5194/hess-27-991-2023
 .. _(U.S. Geological Survey, 2011): https://water.usgs.gov/lookup/getspatial?streamgagebasins
 .. _(U.S. Geological Survey, 2023): http://dx.doi.org/10.5066/F7P55KJN

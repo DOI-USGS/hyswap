@@ -6,12 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Similarity Measures &#8212; hyswap 0.1.dev1+gd165042 documentation</title>
+    <title>Similarity Measures &#8212; hyswap 0.1.dev1+g0388dd3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
     <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=98f81e42" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <script src="../_static/documentation_options.js?v=30c2048e"></script>
+    <script src="../_static/documentation_options.js?v=de04ba8f"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/bizstyle.js"></script>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="percentile_calculation_examples.html" title="Percentile Calculation Examples"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gd165042 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g0388dd3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Similarity Measures</a></li> 
       </ul>
@@ -123,7 +123,7 @@ First we have to fetch the streamflow data for these stations, to do this we wil
 </section>
 <section id="wasserstein-distances-between-5-stations">
 <h2>Wasserstein Distances Between 5 Stations<a class="headerlink" href="#wasserstein-distances-between-5-stations" title="Link to this heading">¶</a></h2>
-<p>In this example we compare the same 5 time-series as the previous example, but instead of calculating correlations, we calculate the <a class="reference external" href="wasserstein_doc">Wasserstein Distance</a> between each pairing of time-series.
+<p>In this example we compare the same 5 time-series as the previous example, but instead of calculating correlations, we calculate the <a class="reference external" href="https://en.wikipedia.org/wiki/Wasserstein_metric">Wasserstein Distance</a> between each pairing of time-series.
 The Wasserstein Distance is a measure of the distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
 Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.wasserstein_distance()</cite> function, and are therefore specifically calculating the “first” Wasserstein Distance between two time-series.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
@@ -159,8 +159,8 @@ Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.wasserstei
 </section>
 <section id="energy-distances-between-5-stations">
 <h2>Energy Distances Between 5 Stations<a class="headerlink" href="#energy-distances-between-5-stations" title="Link to this heading">¶</a></h2>
-<p>In this example we compare the same 5 time-series as the previous example, but this time using another distance measure, the so-called “Energy Distance” between two time-series.
-The <a class="reference external" href="energy_dist">Energy Distance</a> is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
+<p>In this example we compare the same 5 time-series as the previous example, but this time using another distance measure, the so-called <a class="reference external" href="https://en.wikipedia.org/wiki/Energy_distance">Energy Distance</a> between two time-series.
+The <a href="#id1"><span class="problematic" id="id2">`energy_dist`_</span></a> is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
 Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_distance()</cite> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
 <span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;07024175&quot;</span><span class="p">]</span>
@@ -260,7 +260,7 @@ Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_dis
         <li class="right" >
           <a href="percentile_calculation_examples.html" title="Percentile Calculation Examples"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gd165042 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+g0388dd3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Similarity Measures</a></li> 
       </ul>
