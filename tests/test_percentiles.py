@@ -231,7 +231,7 @@ class TestCalculateVariablePercentileThresholdsByDay:
         # calculation
         percentiles_filter_ = percentiles_.filter(items = ['04-01'], axis = 0).iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df['date'].dt.month==4) & (self.bigger_df['date'].dt.day==1)] # noqa
-        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'].round(2), np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
         assert (percentiles_filter_ == filter_df_perc).all()
 
     def test_longer_dummy_set(self):
@@ -279,8 +279,8 @@ class TestCalculateVariablePercentileThresholdsByDay:
         # check that 7 day rolling average calculated and handled
         # correctly
         self.bigger_df = self.bigger_df.set_index('date')
-        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean()
-        percentiles_7day_filter_ = percentiles_7day.filter(items=['04-01'], axis=0).iloc[0] # noqa 
+        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean().round(2) # noqa
+        percentiles_7day_filter_ = percentiles_7day.filter(items=['04-01'], axis=0).iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df.index.month == 4) & (self.bigger_df.index.day == 1)] # noqa
         filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
         assert (percentiles_7day_filter_ == filter_df_perc).all()
@@ -445,7 +445,7 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         # calculation
         percentiles_filter_ = percentiles_[percentiles_.index.get_level_values(0) == 133].iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df['date'].dt.day_of_year==133)] # noqa
-        filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
+        filter_df_perc = np.nanpercentile(filter_df['data'].round(2), np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
         assert (percentiles_filter_ == filter_df_perc).all()
 
     def test_longer_dummy_set(self):
@@ -493,7 +493,7 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         # check that 7 day rolling average calculated and handled
         # correctly
         self.bigger_df = self.bigger_df.set_index('date')
-        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean()
+        self.bigger_df['data'] = self.bigger_df['data'].rolling('7D', 7).mean().round(2) # noqa
         percentiles_7day_filter_ = percentiles_7day[percentiles_7day.index.get_level_values(0) == 133].iloc[0] # noqa
         filter_df = self.bigger_df.loc[(self.bigger_df.index.day_of_year==133)] # noqa
         filter_df_perc = np.nanpercentile(filter_df['data'], np.array((5, 10, 25, 50, 75, 90, 95)), method='weibull') # noqa
@@ -590,3 +590,118 @@ class TestCalculateFixedPercentilesFromValue:
         with pytest.raises(AttributeError):
             percentiles.calculate_fixed_percentile_from_value(
                 self.low_val, [1, 2, 3])
+
+
+class TestCalculateVariablePercentileFromValue_s:
+    # Test percentile and df
+    pct_df = pd.DataFrame(
+        np.array(
+            [[1, 2, 3, 4, 5],
+             [5, np.nan, 6, 7, 8],
+             [7, 8, 9, 10, 11],
+             [np.nan, np.nan, np.nan, np.nan, np.nan]]
+            ),
+        columns=['min', 'p25', 'p50', 'p75', 'max'],
+        index=['01-01', '01-02', '01-03', '01-04']
+        )
+    pct_df.index.names = ["month_day"]
+    df = pd.DataFrame(
+        pd.Series(
+            [3.7, 4.1, 9.8, 7.2],
+            index=pd.date_range('2024-01-01', '2024-01-04')
+            ),
+        columns=['00060_Mean']
+        )
+    df.index.name = 'datetime'
+    # easier to define thresholds here that match
+    # pct_df col names
+    thresholds = np.array([0, 25, 50, 75, 100], dtype=np.float32)
+
+    def test_calculate_variable_percentile_from_value_simple(self):
+        """Test with a single value and no np.nans."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            3.5,
+            self.pct_df,
+            month_day='01-01'
+            )
+        percentile_values = np.array(self.pct_df.loc[self.pct_df.index == "01-01"].values.flatten().tolist(), dtype=np.float32) # noqa
+        pct_np = np.interp(3.5, percentile_values,self.thresholds, left=0, right=100).round(2) # noqa
+        assert pct_out == pct_np
+
+    def test_calculate_variable_percentile_from_value_nan(self):
+        """Test with a single value and an np.nan."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            5.5,
+            self.pct_df,
+            month_day='01-02'
+            )
+        percentile_values = np.array(self.pct_df.loc[self.pct_df.index == "01-02"].values.flatten().tolist(), dtype=np.float32) # noqa
+        na_mask = ~np.isnan(percentile_values)
+        percentile_values = percentile_values[na_mask]
+        thresholds = self.thresholds[na_mask]
+        pct_np = np.interp(5.5, percentile_values,thresholds, left=0, right=100).round(2) # noqa
+        assert pct_out == pct_np
+
+    def test_calculate_variable_percentile_from_value_min(self):
+        """Test with a single value below the minimum percentile."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            0.5,
+            self.pct_df,
+            month_day='01-01'
+            )
+        percentile_values = np.array(self.pct_df.loc[self.pct_df.index == "01-01"].values.flatten().tolist(), dtype=np.float32) # noqa
+        na_mask = ~np.isnan(percentile_values)
+        percentile_values = percentile_values[na_mask]
+        thresholds = self.thresholds[na_mask]
+        pct_np = np.interp(0.5, percentile_values,thresholds, left=0, right=100).round(2) # noqa
+        assert pct_out == pct_np
+        assert pct_out == 0.0
+
+    def test_calculate_variable_percentile_from_value_max(self):
+        """Test with a single value above the maximum percentile."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            15,
+            self.pct_df,
+            month_day='01-03'
+            )
+        percentile_values = np.array(self.pct_df.loc[self.pct_df.index == "01-03"].values.flatten().tolist(), dtype=np.float32) # noqa
+        na_mask = ~np.isnan(percentile_values)
+        percentile_values = percentile_values[na_mask]
+        thresholds = self.thresholds[na_mask]
+        pct_np = np.interp(15, percentile_values,thresholds, left=0, right=100).round(2) # noqa
+        assert pct_out == pct_np
+        assert pct_out == 100.0
+
+    def test_calculate_variable_percentile_from_value_percentiles_nan(self):
+        """Test with a single value above the maximum percentile."""
+        pct_out = percentiles.calculate_variable_percentile_from_value(
+            5,
+            self.pct_df,
+            month_day='01-04'
+            )
+        assert np.isnan(pct_out)
+
+    def test_calculate_multiple_variable_percentiles_from_values_basic(self): # noqa
+        """Test with multiple values from a df"""
+        pct_df_out = percentiles.calculate_multiple_variable_percentiles_from_values( # noqa
+            self.df,
+            '00060_Mean',
+            self.pct_df
+            )
+        est_pct1 = np.interp(
+            self.df.iloc[0]['00060_Mean'],
+            np.array(self.pct_df.loc[self.pct_df.index == "01-01"].values.flatten().tolist(), dtype=np.float32), # noqa
+            self.thresholds,
+            left=0,
+            right=100).round(2)
+        est_pct3 = np.interp(
+            self.df.iloc[2]['00060_Mean'],
+            np.array(self.pct_df.loc[self.pct_df.index == "01-03"].values.flatten().tolist(), dtype=np.float32), # noqa
+            self.thresholds,
+            left=0,
+            right=100).round(2)
+        assert pct_df_out.shape == (4, 2)
+        assert np.all(pct_df_out.index == self.df.index)
+        assert pct_df_out.iloc[0]['est_pct'] == est_pct1
+        assert pct_df_out.iloc[2]['est_pct'] == est_pct3
+        assert np.isnan(pct_df_out.iloc[3]['est_pct'])

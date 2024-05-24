@@ -148,7 +148,14 @@ linkcheck_ignore = [
     r'https://doi.org/10.3133/wsp1542A',
     r'https://doi.org/10.1029/2022WR031930',
     r'https://pypi.org/project/hyswap/',
+<<<<<<< HEAD
     r'https://github.com/DOI-USGS/hyswap/tree/main/example_notebooks'
+=======
+    r'https://doi.org/10.1098/rsta.2019.0431',
+    r'https://doi.org/10.1111/j.1752-1688.2011.00578.x',
+    r'https://doi.org/10.3133/tm11A3',
+    r'https://doi.org/10.1002/wrcr.20070'
+>>>>>>> main
 ]
 
 linkcheck_exclude_documents = [

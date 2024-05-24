@@ -8,10 +8,11 @@ from hyswap import utils
 class TestDataFilters:
     def test_filter_approved_data(self):
         """Test the filter_approved_data function."""
-        data = {"a": ["A", "A", "P", "P"], "b": [1, 2, 3, 4]}
+        data = {"a": ["A", "A, e", "A, R", np.nan, "A, [4]", "P", "P"],
+                "b": [1, 2, 3, np.nan, 5, 6, 7]}
         data_df = pd.DataFrame(data)
         df = utils.filter_approved_data(data_df, filter_column="a")
-        assert df["b"].tolist() == [1, 2]
+        assert df["b"].tolist() == [1, 2, 3, 5]
 
     def test_filter_approved_data_error(self):
         """Test the filter_approved_data function."""
