@@ -224,7 +224,8 @@ class TestCalculateVariablePercentileThresholdsByDay:
         # test the function and check that the percentiles are not NaN
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            include_metadata=False, include_min_max=False)
+            include_metadata=False, include_min_max=False,
+            mask_out_of_range=False)
         assert not percentiles_.isna().all().all()
         # test that the function is calculating percentiles for a given
         # day correctly by comparing output to base percentile function
@@ -261,10 +262,12 @@ class TestCalculateVariablePercentileThresholdsByDay:
         # function w/ daily percentiles
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            include_metadata=False, include_min_max=False)
+            include_metadata=False, include_min_max=False,
+            mask_out_of_range=False)
         percentiles_7day = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            data_type='7-day', include_metadata=False, include_min_max=False)
+            data_type='7-day', include_metadata=False, include_min_max=False,
+            mask_out_of_range=False)
         assert percentiles_.shape == (366, 7)
         assert percentiles_7day.shape == (366, 7)
         assert percentiles_.columns.tolist() == [
@@ -438,7 +441,8 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         # test the function and check that the percentiles are not NaN
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            include_metadata=False, include_min_max=False)
+            include_metadata=False, include_min_max=False,
+            mask_out_of_range=False)
         assert not percentiles_.isna().all().all()
         # test that the function is calculating percentiles for a given
         # day correctly by comparing output to base percentile function
@@ -475,10 +479,12 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
         # function w/ daily percentiles
         percentiles_ = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            include_metadata=False, include_min_max=False)
+            include_metadata=False, include_min_max=False,
+            mask_out_of_range=False)
         percentiles_7day = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            data_type='7-day', include_metadata=False, include_min_max=False)
+            data_type='7-day', include_metadata=False, include_min_max=False,
+            mask_out_of_range=False)
         assert percentiles_.shape == (366, 7)
         assert percentiles_7day.shape == (366, 7)
         assert percentiles_.columns.tolist() == [
