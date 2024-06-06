@@ -10,6 +10,7 @@ folium
 mapclassify
 pynhd
 datetime
+zoneinfo
 tqdm
 pydeps==1.12.3
 nbsphinx
