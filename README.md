@@ -77,7 +77,7 @@ pydocstringformatter .
 ```
 ### Running the Example Workflow Notebooks
 
-The example workflow notebooks are extended example use cases of `hyswap` functions. Download the jupyter notebooks from the 'example_notebooks' folder in the `hyswap` repository. The notebooks sometimes utilize additional packages that are not required to run `hyswap`. You can use the developer installation instructions to ensure you have all of the required packages to run the notebooks. 
+The example workflow notebooks are extended example use cases of `hyswap` functions. Open the jupyter notebooks from the 'example_notebooks' folder in the `hyswap` repository. The notebooks sometimes utilize additional packages that are not required to run `hyswap`. You can use the developer installation instructions to ensure you have all of the required packages to run the notebooks. 
 
 ## Contributing
 
