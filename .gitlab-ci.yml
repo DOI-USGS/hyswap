@@ -72,8 +72,8 @@ Validate Inventory:
         --project "${CI_PROJECT_PATH}"
         --ref "${CI_COMMIT_BRANCH}"
         --type "provisional"
-        --token "${GIT_TOKEN_CUSTOM}"
+        --token "${GITLAB_PAT}"
     tags:
         - chs-shared
     rules:
-      - if: '$CI_COMMIT_BRANCH == "main" && $GIT_TOKEN_CUSTOM != null'
+      - if: '$CI_COMMIT_BRANCH == "main" && $GITLAB_PAT != null'
