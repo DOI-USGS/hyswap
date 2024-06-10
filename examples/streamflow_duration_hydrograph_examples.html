@@ -1,60 +1,118 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html lang="en" data-content_root="../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streamflow Duration Hydrographs &mdash; hyswap 0.1.dev1+gfc756e4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
-    <title>Streamflow Duration Hydrographs &#8212; hyswap 0.1.dev1+gcc08a56 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=98f81e42" />
-    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    
-    <script src="../_static/documentation_options.js?v=19f80206"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/bizstyle.js"></script>
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=c9778fe8"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Cumulative Streamflow Hydrographs" href="cumulative_hydrograph_examples.html" />
-    <link rel="prev" title="Raster Hydrographs" href="raster_hydrograph_examples.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <!--[if lt IE 9]>
-    <script src="_static/css3-mediaqueries.js"></script>
-    <![endif]-->
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="cumulative_hydrograph_examples.html" title="Cumulative Streamflow Hydrographs"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="raster_hydrograph_examples.html" title="Raster Hydrographs"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gcc08a56 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Streamflow Duration Hydrographs</a></li> 
-      </ul>
-    </div>  
+    <link rel="prev" title="Raster Hydrographs" href="raster_hydrograph_examples.html" /> 
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            hyswap
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../meta/installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Simple Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#flow-duration-curve-examples">Flow Duration Curve Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#raster-hydrograph-examples">Raster Hydrograph Examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#streamflow-duration-hydrograph-examples">Streamflow Duration Hydrograph Examples</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Streamflow Duration Hydrographs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#calculating-percentiles-using-hyswap">Calculating Percentiles Using <cite>hyswap</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fetching-percentiles-from-the-nwis-statistics-service">Fetching Percentiles from the NWIS Statistics Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plotting-by-water-year">Plotting by Water Year</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plotting-by-climate-year">Plotting by Climate Year</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plotting-custom-set-of-percentile-thresholds">Plotting Custom Set of Percentile Thresholds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#n-day-moving-windows-for-historical-daily-percentile-calculations">N-day Moving Windows for Historical Daily Percentile Calculations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rolling-averages-for-historical-daily-percentile-calculations">Rolling Averages for Historical Daily Percentile Calculations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#customizing-fill-areas">Customizing Fill Areas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cumulative-hydrograph-examples">Cumulative Hydrograph Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#percentile-calculation-examples">Percentile Calculation Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#similarity-examples">Similarity Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#example-workflow-notebooks">Example Workflow Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/calculations.html">Calculations Quick-Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/contributing.html">Contributing Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/disclaimer.html">Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/disclaimer.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Module Dependency Graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html#api-reference">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyswap</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Simple Examples</a></li>
+      <li class="breadcrumb-item active">Streamflow Duration Hydrographs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/streamflow_duration_hydrograph_examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="streamflow-duration-hydrographs">
-<h1>Streamflow Duration Hydrographs<a class="headerlink" href="#streamflow-duration-hydrographs" title="Link to this heading">¶</a></h1>
+<h1>Streamflow Duration Hydrographs<a class="headerlink" href="#streamflow-duration-hydrographs" title="Link to this heading"></a></h1>
 <p>These examples show how a streamflow hydrograph can be constructed by fetching historical streamflow data from a single NWIS gage using <cite>dataretrieval</cite>, calculating daily percentiles of streamflow for each day of the year for the year 2022, and plotting these data using the <cite>hyswap</cite> function <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_duration_hydrograph" title="hyswap.plots.plot_duration_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_duration_hydrograph</span></code></a>.</p>
 <section id="calculating-percentiles-using-hyswap">
-<h2>Calculating Percentiles Using <cite>hyswap</cite><a class="headerlink" href="#calculating-percentiles-using-hyswap" title="Link to this heading">¶</a></h2>
+<h2>Calculating Percentiles Using <cite>hyswap</cite><a class="headerlink" href="#calculating-percentiles-using-hyswap" title="Link to this heading"></a></h2>
 <p>First, we will fetch streamflow data for a single gage from NWIS using the <cite>dataretrieval</cite> package.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
                                   <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
@@ -94,7 +152,7 @@
 </figure>
 </section>
 <section id="fetching-percentiles-from-the-nwis-statistics-service">
-<h2>Fetching Percentiles from the NWIS Statistics Service<a class="headerlink" href="#fetching-percentiles-from-the-nwis-statistics-service" title="Link to this heading">¶</a></h2>
+<h2>Fetching Percentiles from the NWIS Statistics Service<a class="headerlink" href="#fetching-percentiles-from-the-nwis-statistics-service" title="Link to this heading"></a></h2>
 <p>You don’t have to compute the percentiles using <cite>hyswap</cite>.
 If you’d rather use the NWIS web service daily percentiles, you can use those values instead.
 We provide a convenience utility function to help make this possible, <a class="reference internal" href="../reference/index.html#hyswap.utils.munge_nwis_stats" title="hyswap.utils.munge_nwis_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.utils.munge_nwis_stats</span></code></a>.
@@ -139,7 +197,7 @@ as well as streamflow data from the year 2022.</p>
 </figure>
 </section>
 <section id="plotting-by-water-year">
-<h2>Plotting by Water Year<a class="headerlink" href="#plotting-by-water-year" title="Link to this heading">¶</a></h2>
+<h2>Plotting by Water Year<a class="headerlink" href="#plotting-by-water-year" title="Link to this heading"></a></h2>
 <p>The examples above show how to plot the percentiles by day of year using the calendar year.
 In this example, we will plot the percentiles by day of <a class="reference internal" href="../meta/glossary.html#wylabel"><span class="std std-ref">water year</span></a>, as water years are commonly used by hydrologists.
 The only change this requires from above is specifying the type of year we are planning to use when calculating the daily percentile thresholds.</p>
@@ -182,7 +240,7 @@ The only change this requires from above is specifying the type of year we are p
 </figure>
 </section>
 <section id="plotting-by-climate-year">
-<h2>Plotting by Climate Year<a class="headerlink" href="#plotting-by-climate-year" title="Link to this heading">¶</a></h2>
+<h2>Plotting by Climate Year<a class="headerlink" href="#plotting-by-climate-year" title="Link to this heading"></a></h2>
 <p>In this example, we will plot the percentiles by day of <a class="reference internal" href="../meta/glossary.html#cllabel"><span class="std std-ref">climate year</span></a>.
 The only change this requires from above is specifying the type of year we are planning to use when calculating the daily percentile thresholds.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch historic data from NWIS</span>
@@ -224,7 +282,7 @@ The only change this requires from above is specifying the type of year we are p
 </figure>
 </section>
 <section id="plotting-custom-set-of-percentile-thresholds">
-<h2>Plotting Custom Set of Percentile Thresholds<a class="headerlink" href="#plotting-custom-set-of-percentile-thresholds" title="Link to this heading">¶</a></h2>
+<h2>Plotting Custom Set of Percentile Thresholds<a class="headerlink" href="#plotting-custom-set-of-percentile-thresholds" title="Link to this heading"></a></h2>
 <p>In this example we will calculate and plot a unique set of daily percentile thresholds.
 We will also specify the colors to be used for the percentile envelopes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch historic data from NWIS</span>
@@ -268,7 +326,7 @@ We will also specify the colors to be used for the percentile envelopes.</p>
 </figure>
 </section>
 <section id="n-day-moving-windows-for-historical-daily-percentile-calculations">
-<h2>N-day Moving Windows for Historical Daily Percentile Calculations<a class="headerlink" href="#n-day-moving-windows-for-historical-daily-percentile-calculations" title="Link to this heading">¶</a></h2>
+<h2>N-day Moving Windows for Historical Daily Percentile Calculations<a class="headerlink" href="#n-day-moving-windows-for-historical-daily-percentile-calculations" title="Link to this heading"></a></h2>
 <p>In this example, we will calculate historical daily percentiles using n-day moving windows that can be compared to daily streamflow in the focal year of interest.
 N-day moving windows are specified using the <cite>leading_values</cite> and <cite>trailing_values</cite> arguments in <code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></code>.
 We will use a leading value of 15 days and a trailing value of 14 days to show how to use a 30-day moving window to calculate percentiles for each day.
@@ -316,7 +374,7 @@ What this means is that the set of historical percentiles calculated for each da
 </figure>
 </section>
 <section id="rolling-averages-for-historical-daily-percentile-calculations">
-<h2>Rolling Averages for Historical Daily Percentile Calculations<a class="headerlink" href="#rolling-averages-for-historical-daily-percentile-calculations" title="Link to this heading">¶</a></h2>
+<h2>Rolling Averages for Historical Daily Percentile Calculations<a class="headerlink" href="#rolling-averages-for-historical-daily-percentile-calculations" title="Link to this heading"></a></h2>
 <p>In this example, rather than calculating historic daily percentile values based solely on the past values from that day of the year (or moving n-day windows around that day of the year), we will calculate the historic daily percentile values based on rolling averages of the past values around that day.
 Under the hood this uses the <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.DataFrame.rolling()</span></code> method to calculate the rolling average, with the default parameters.
 To show the effect of this, we will plot the historic daily percentile values for the daily (default) rolling average, 7-day rolling average, and the 28-day rolling average.</p>
@@ -387,7 +445,7 @@ To show the effect of this, we will plot the historic daily percentile values fo
 </figure>
 </section>
 <section id="customizing-fill-areas">
-<h2>Customizing Fill Areas<a class="headerlink" href="#customizing-fill-areas" title="Link to this heading">¶</a></h2>
+<h2>Customizing Fill Areas<a class="headerlink" href="#customizing-fill-areas" title="Link to this heading"></a></h2>
 <p>In this example we will customize the fill areas between the percentile thresholds by passing keyword arguments to the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_duration_hydrograph" title="hyswap.plots.plot_duration_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_duration_hydrograph</span></code></a> function that are then passed through to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.fill_between()</span></code> function.
 Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill areas opaque (the default value is 0.5 for some transparency).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch historic data from NWIS</span>
@@ -432,83 +490,34 @@ Specifically we will set the <cite>alpha</cite> argument to 1.0 to make the fill
 </section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">Streamflow Duration Hydrographs</a><ul>
-<li><a class="reference internal" href="#calculating-percentiles-using-hyswap">Calculating Percentiles Using <cite>hyswap</cite></a></li>
-<li><a class="reference internal" href="#fetching-percentiles-from-the-nwis-statistics-service">Fetching Percentiles from the NWIS Statistics Service</a></li>
-<li><a class="reference internal" href="#plotting-by-water-year">Plotting by Water Year</a></li>
-<li><a class="reference internal" href="#plotting-by-climate-year">Plotting by Climate Year</a></li>
-<li><a class="reference internal" href="#plotting-custom-set-of-percentile-thresholds">Plotting Custom Set of Percentile Thresholds</a></li>
-<li><a class="reference internal" href="#n-day-moving-windows-for-historical-daily-percentile-calculations">N-day Moving Windows for Historical Daily Percentile Calculations</a></li>
-<li><a class="reference internal" href="#rolling-averages-for-historical-daily-percentile-calculations">Rolling Averages for Historical Daily Percentile Calculations</a></li>
-<li><a class="reference internal" href="#customizing-fill-areas">Customizing Fill Areas</a></li>
-</ul>
-</li>
-</ul>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="raster_hydrograph_examples.html" class="btn btn-neutral float-left" title="Raster Hydrographs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cumulative_hydrograph_examples.html" class="btn btn-neutral float-right" title="Cumulative Streamflow Hydrographs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
   </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="raster_hydrograph_examples.html"
-                          title="previous chapter">Raster Hydrographs</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="cumulative_hydrograph_examples.html"
-                          title="next chapter">Cumulative Streamflow Hydrographs</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/examples/streamflow_duration_hydrograph_examples.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="cumulative_hydrograph_examples.html" title="Cumulative Streamflow Hydrographs"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="raster_hydrograph_examples.html" title="Raster Hydrographs"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gcc08a56 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Streamflow Duration Hydrographs</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-    &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

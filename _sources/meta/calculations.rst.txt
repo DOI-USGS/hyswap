@@ -148,7 +148,7 @@ After obtaining a table of intersecting HUC8s and streamgage basins, the next st
   (a) all streamgage basins *contained* by the HUC8, and 
   (b) the smallest streamgage basin that *contains* the HUC8 
 
-  Note that in cases where there is near perfect overlap for multiple streamgage basins and a HUC8, the streamgage basin-HUC8 intersection with the *highest* weight is used to estimate runoff. This is the same method used to determine the smallest streamgage basin that contains the HUC8: among all the streamgage basins that contain the HUC8 (in other words, the proportion of the HUC8's area in the streamgage basins is roughly 1), find the HUC8-streamgage basin intersection with the highest weight (which means the proportion of the streamgage basin's area in the HUC8 is the largest). See Figure 1 for an example of this workflow. Note that in Figure 1, 'Fraction#' is analogous to 'proportion of shape X's area in shape Y'.
+Note that in cases where there is near perfect overlap for multiple streamgage basins and a HUC8, the streamgage basin-HUC8 intersection with the *highest* weight is used to estimate runoff. This is the same method used to determine the smallest streamgage basin that contains the HUC8: among all the streamgage basins that contain the HUC8 (in other words, the proportion of the HUC8's area in the streamgage basins is roughly 1), find the HUC8-streamgage basin intersection with the highest weight (which means the proportion of the streamgage basin's area in the HUC8 is the largest). See Figure 1 for an example of this workflow. Note that in Figure 1, 'Fraction#' is analogous to 'proportion of shape X's area in shape Y'.
 
 .. image:: ../reference/huc8_runoff_example.gif
   :width: 600

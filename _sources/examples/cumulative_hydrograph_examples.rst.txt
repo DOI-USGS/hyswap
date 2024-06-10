@@ -148,7 +148,7 @@ We provide an example of doing this by filling between the 10th and 90th percent
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        df, data_column_name='00060_Mean',
-        2021, envelope_pct=[10, 90], color='red', alpha=0.25,
+        df, 2021, data_column_name='00060_Mean',
+        envelope_pct=[10, 90], color='red', alpha=0.25,
         ax=ax, title='Cumulative Streamflow Hydrograph')
     plt.show()

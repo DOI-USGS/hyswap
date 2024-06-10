@@ -1,61 +1,115 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html lang="en" data-content_root="../">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Percentile Calculation Examples &mdash; hyswap 0.1.dev1+gfc756e4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
-    <title>Percentile Calculation Examples &#8212; hyswap 0.1.dev1+gcc08a56 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-    <link rel="stylesheet" type="text/css" href="../_static/bizstyle.css?v=98f81e42" />
-    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-    
-    <script src="../_static/documentation_options.js?v=19f80206"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/bizstyle.js"></script>
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=c9778fe8"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Similarity Measures" href="similarity_examples.html" />
-    <link rel="prev" title="Cumulative Streamflow Hydrographs" href="cumulative_hydrograph_examples.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <!--[if lt IE 9]>
-    <script src="_static/css3-mediaqueries.js"></script>
-    <![endif]-->
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="similarity_examples.html" title="Similarity Measures"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="cumulative_hydrograph_examples.html" title="Cumulative Streamflow Hydrographs"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gcc08a56 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Percentile Calculation Examples</a></li> 
-      </ul>
-    </div>  
+    <link rel="prev" title="Cumulative Streamflow Hydrographs" href="cumulative_hydrograph_examples.html" /> 
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            hyswap
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../meta/installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Simple Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#flow-duration-curve-examples">Flow Duration Curve Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#raster-hydrograph-examples">Raster Hydrograph Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#streamflow-duration-hydrograph-examples">Streamflow Duration Hydrograph Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#cumulative-hydrograph-examples">Cumulative Hydrograph Examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#percentile-calculation-examples">Percentile Calculation Examples</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Percentile Calculation Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#calculating-historic-percentiles-for-one-site">Calculating Historic Percentiles for One Site</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#calculating-historic-variable-percentiles-for-the-full-year">Calculating Historic Variable Percentiles for the Full Year</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interpolating-new-percentiles-using-previously-calculated-percentiles">Interpolating New Percentiles Using Previously Calculated Percentiles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#categorizing-streamflow-conditions-based-on-estimated-percentiles">Categorizing Streamflow Conditions Based on Estimated Percentiles</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#similarity-examples">Similarity Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#example-workflow-notebooks">Example Workflow Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/calculations.html">Calculations Quick-Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/contributing.html">Contributing Guidelines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/disclaimer.html">Disclaimer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta/disclaimer.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Module Dependency Graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html#api-reference">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">hyswap</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Simple Examples</a></li>
+      <li class="breadcrumb-item active">Percentile Calculation Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/percentile_calculation_examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="percentile-calculation-examples">
-<h1>Percentile Calculation Examples<a class="headerlink" href="#percentile-calculation-examples" title="Link to this heading">¶</a></h1>
+<h1>Percentile Calculation Examples<a class="headerlink" href="#percentile-calculation-examples" title="Link to this heading"></a></h1>
 <p>Here we showcase the percentile calculation functionality available in the
 <a class="reference internal" href="../reference/index.html#module-hyswap.percentiles" title="hyswap.percentiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles</span></code></a> module.</p>
 <section id="calculating-historic-percentiles-for-one-site">
-<h2>Calculating Historic Percentiles for One Site<a class="headerlink" href="#calculating-historic-percentiles-for-one-site" title="Link to this heading">¶</a></h2>
+<h2>Calculating Historic Percentiles for One Site<a class="headerlink" href="#calculating-historic-percentiles-for-one-site" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="hyswap.percentiles.calculate_fixed_percentile_thresholds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_thresholds</span></code></a> function
 is used to calculate a set of percentile thresholds given a set of data.
 This function simply calculates one set of fixed percentile thresholds using all available data,
@@ -87,7 +141,7 @@ desired by specifying a keyword parameter <cite>method</cite>. See the <a class=
 documentation for more information on the available methods.</p>
 </section>
 <section id="calculating-historic-variable-percentiles-for-the-full-year">
-<h2>Calculating Historic Variable Percentiles for the Full Year<a class="headerlink" href="#calculating-historic-variable-percentiles-for-the-full-year" title="Link to this heading">¶</a></h2>
+<h2>Calculating Historic Variable Percentiles for the Full Year<a class="headerlink" href="#calculating-historic-variable-percentiles-for-the-full-year" title="Link to this heading"></a></h2>
 <p>The <a class="reference internal" href="../reference/index.html#module-hyswap.percentiles" title="hyswap.percentiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles</span></code></a> module also contains functionality to calculate
 percentile thresholds for each day of the year (variable threshold) using historical values.
 This is done using the
@@ -131,7 +185,7 @@ for additional details about the parameters
 and options for this function.</p>
 </section>
 <section id="interpolating-new-percentiles-using-previously-calculated-percentiles">
-<h2>Interpolating New Percentiles Using Previously Calculated Percentiles<a class="headerlink" href="#interpolating-new-percentiles-using-previously-calculated-percentiles" title="Link to this heading">¶</a></h2>
+<h2>Interpolating New Percentiles Using Previously Calculated Percentiles<a class="headerlink" href="#interpolating-new-percentiles-using-previously-calculated-percentiles" title="Link to this heading"></a></h2>
 <p>To support faster calculations of percentiles without the need to repeatedly
 fetch all historic data from NWIS, the
 <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_from_value" title="hyswap.percentiles.calculate_fixed_percentile_from_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_from_value</span></code></a> and
@@ -241,7 +295,7 @@ calculating a new variable-threshold percentile value for a measurement of 100.0
 </div>
 </section>
 <section id="categorizing-streamflow-conditions-based-on-estimated-percentiles">
-<h2>Categorizing Streamflow Conditions Based on Estimated Percentiles<a class="headerlink" href="#categorizing-streamflow-conditions-based-on-estimated-percentiles" title="Link to this heading">¶</a></h2>
+<h2>Categorizing Streamflow Conditions Based on Estimated Percentiles<a class="headerlink" href="#categorizing-streamflow-conditions-based-on-estimated-percentiles" title="Link to this heading"></a></h2>
 <p>To support generation of tables, figures and maps of current and past streamflow
 conditions, the category of a given streamflow can be determined using
 <a class="reference internal" href="../reference/index.html#hyswap.utils.categorize_flows" title="hyswap.utils.categorize_flows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.utils.categorize_flows</span></code></a>. The function assigns a category to a given
@@ -289,79 +343,34 @@ from a recent month and flow categories assigned.</p>
 </section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <div>
-    <h3><a href="../index.html">Table of Contents</a></h3>
-    <ul>
-<li><a class="reference internal" href="#">Percentile Calculation Examples</a><ul>
-<li><a class="reference internal" href="#calculating-historic-percentiles-for-one-site">Calculating Historic Percentiles for One Site</a></li>
-<li><a class="reference internal" href="#calculating-historic-variable-percentiles-for-the-full-year">Calculating Historic Variable Percentiles for the Full Year</a></li>
-<li><a class="reference internal" href="#interpolating-new-percentiles-using-previously-calculated-percentiles">Interpolating New Percentiles Using Previously Calculated Percentiles</a></li>
-<li><a class="reference internal" href="#categorizing-streamflow-conditions-based-on-estimated-percentiles">Categorizing Streamflow Conditions Based on Estimated Percentiles</a></li>
-</ul>
-</li>
-</ul>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cumulative_hydrograph_examples.html" class="btn btn-neutral float-left" title="Cumulative Streamflow Hydrographs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="similarity_examples.html" class="btn btn-neutral float-right" title="Similarity Measures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
   </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="cumulative_hydrograph_examples.html"
-                          title="previous chapter">Cumulative Streamflow Hydrographs</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="similarity_examples.html"
-                          title="next chapter">Similarity Measures</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/examples/percentile_calculation_examples.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="similarity_examples.html" title="Similarity Measures"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="cumulative_hydrograph_examples.html" title="Cumulative Streamflow Hydrographs"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">hyswap 0.1.dev1+gcc08a56 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >Examples</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Percentile Calculation Examples</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-    &#169; Copyright .
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>
