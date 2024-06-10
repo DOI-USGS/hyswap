@@ -5,4 +5,14 @@ flake8
 pylint
 pydocstringformatter
 dataretrieval
+matplotlib
+folium
+mapclassify
+pynhd
+datetime
+tqdm
 pydeps==1.12.3
+nbsphinx
+nbsphinx_link
+sphinx-rtd-theme
+ipykernel

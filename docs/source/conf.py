@@ -31,8 +31,13 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     'matplotlib.sphinxext.plot_directive',
-    'sphinx.ext.githubpages'
+    'sphinx.ext.githubpages',
+    'nbsphinx',
+    'nbsphinx_link'
 ]
+
+# allow errors to occur in notebooks
+# nbsphinx_allow_errors = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -96,8 +101,13 @@ from hyswap import similarity
 from hyswap import runoff
 import numpy as np
 import pandas as pd
+import geopandas
 import matplotlib.pyplot as plt
 import dataretrieval
+from pynhd import WaterData
+import warnings
+from datetime import datetime, timedelta
+from tqdm import tqdm
 '''
 
 # mpl plots - metadata for the documentation plots
@@ -117,7 +127,7 @@ import dataretrieval
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 
-html_theme = 'bizstyle'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -136,10 +146,12 @@ html_static_path = ['_static']
 
 # Links to not "check" because they are problematic for the link checker
 # typically DOI links don't work
+# Last one does not yet exist
 linkcheck_ignore = [
     r'https://doi.org/10.3133/wsp1542A',
     r'https://doi.org/10.1029/2022WR031930',
     r'https://pypi.org/project/hyswap/',
+    r'https://github.com/DOI-USGS/hyswap/tree/main/example_notebooks',
     r'https://doi.org/10.1098/rsta.2019.0431',
     r'https://doi.org/10.1111/j.1752-1688.2011.00578.x',
     r'https://doi.org/10.3133/tm11A3',

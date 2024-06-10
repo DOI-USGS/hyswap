@@ -120,7 +120,7 @@ Energy Distances Between 5 Stations
 ***********************************
 
 In this example we compare the same 5 time-series as the previous example, but this time using another distance measure, the so-called `Energy Distance <https://en.wikipedia.org/wiki/Energy_distance>`_ between two time-series.
-The `energy_dist`_ is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
+The `energy_dist` is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
 Specifically in `hyswap`, we utilize the `scipy.stats.energy_distance()` function.
 
 .. plot::

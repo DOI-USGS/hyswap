@@ -25,6 +25,7 @@ Test and Lint:
     - apt-get install -y xdg-utils
     - apt-get install -y lynx
     - apt-get install -y graphviz
+    - apt-get install -y pandoc
     - python -m pip install --upgrade pip
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt

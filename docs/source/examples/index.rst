@@ -1,8 +1,8 @@
 .. examples:
 
-========
-Examples
-========
+===============
+Simple Examples
+===============
 
 Flow Duration Curve Examples
 ----------------------------
@@ -51,3 +51,15 @@ Similarity Examples
     :maxdepth: 2
 
     similarity_examples
+
+==========================
+Example Workflow Notebooks
+==========================
+
+.. toctree::
+    :maxdepth: 1
+
+    single_gage_analysis
+    single_gage_n_day_flows_analysis
+    site_conditions_examples
+    regional_runoff_calculations
