@@ -41,7 +41,7 @@ def calculate_exceedance_probability_from_distribution(x, dist,
     .. doctest::
 
         >>> exceedance.calculate_exceedance_probability_from_distribution(
-        ...     1, 'lognormal', 1, 0.25)
+        ...     1, 'lognormal', 1, 0.25).astype(np.int64)
         0.6132049428659028
 
     Calculating the exceedance probability of a value of 1 from a normal
@@ -50,7 +50,7 @@ def calculate_exceedance_probability_from_distribution(x, dist,
     .. doctest::
 
         >>> exceedance.calculate_exceedance_probability_from_distribution(
-        ...     1, 'normal', 1, 0.25)
+        ...     1, 'normal', 1, 0.25).astype(np.int64)
         0.5
     """
     # type check
@@ -119,7 +119,7 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
     .. doctest::
 
         >>> exceedance.calculate_exceedance_probability_from_values(
-        ...     1, [1, 2, 3, 4], method='linear')
+        ...     1, [1, 2, 3, 4], method='linear').astype(np.int64)
         1.0
 
     Calculating the exceedance probability of a value of 5 from a set of values
@@ -128,7 +128,7 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
     .. doctest::
 
         >>> exceedance.calculate_exceedance_probability_from_values(
-        ...     5, [1, 2, 3, 4])
+        ...     5, [1, 2, 3, 4]).astype(np.int64)
         0.0
 
     Fetch some data from NWIS and calculate the exceedance probability

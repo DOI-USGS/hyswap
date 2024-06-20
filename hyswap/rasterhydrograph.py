@@ -66,7 +66,7 @@ def format_data(df, data_column_name, date_column_name=None,
         >>> df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2010'),
         ...                    'data': np.random.rand(365)})
         >>> df_formatted = rasterhydrograph.format_data(df, 'data', 'date')
-        >>> df_formatted.index[0]
+        >>> df_formatted.index[0].astype(np.int64)
         2010
         >>> len(df_formatted.columns)
         365

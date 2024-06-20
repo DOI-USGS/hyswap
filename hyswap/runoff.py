@@ -30,7 +30,7 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     .. doctest::
 
         >>> mmyr = runoff.convert_cfs_to_runoff(14, 250)
-        >>> np.round(mmyr)
+        >>> np.round(mmyr).astype(np.int64)
         50.0
     """
     # convert frequency string to value
