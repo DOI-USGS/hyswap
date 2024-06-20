@@ -42,7 +42,7 @@ def calculate_exceedance_probability_from_distribution(x, dist,
         :skipif: True  # docstrings test fails with np.float64
 
         >>> exceedance.calculate_exceedance_probability_from_distribution(
-        ...     1, 'lognormal', 1, 0.25).astype(np.int64)
+        ...     1, 'lognormal', 1, 0.25)
         0.6132049428659028
 
     Calculating the exceedance probability of a value of 1 from a normal
