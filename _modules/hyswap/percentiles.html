@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.percentiles &mdash; hyswap 0.1.dev1+gfc756e4 documentation</title>
+  <title>hyswap.percentiles &mdash; hyswap 0.1.dev1+g2530dee documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=c9778fe8"></script>
+        <script src="../../_static/documentation_options.js?v=4c86c415"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -708,6 +708,7 @@
 <span class="sd">    Calculate the percentile associated with a value from some synthetic data.</span>
 
 <span class="sd">    .. doctest::</span>
+<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
 <span class="sd">        &gt;&gt;&gt; data = pd.DataFrame({&#39;values&#39;: np.arange(1001),</span>
 <span class="sd">        ...                      &#39;date&#39;: pd.date_range(&#39;2020-01-01&#39;, &#39;2022-09-27&#39;)}).set_index(&#39;date&#39;)  # noqa: E501</span>
