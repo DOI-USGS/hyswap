@@ -2,8 +2,8 @@ image: ${ARTIFACTORY_URL}/docker-official-mirror/python:3.11
 
 stages:
   - build
-  - test_package
-  - test_docs
+  - test-package
+  - test-docs
   - deploy
   - validate
 
