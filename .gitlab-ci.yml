@@ -2,8 +2,7 @@ image: ${ARTIFACTORY_URL}/docker-official-mirror/python:3.11
 
 stages:
   - build
-  - test-package
-  - test-docs
+  - test
   - deploy
   - validate
 
@@ -18,7 +17,7 @@ Build Package:
     - pip install .
 
 Test and Lint:
-  stage: test-package
+  stage: test
   script:
     # Install dependencies
     - apt-get update -y
@@ -47,7 +46,7 @@ Test and Lint:
   coverage: '/TOTAL.*\s+(\d+\%)/'
 
 Test Documentation:
-  stage: test-docs
+  stage: test
   script:
     # Install dependencies
     - apt-get update -y
