@@ -2,7 +2,8 @@ image: ${ARTIFACTORY_URL}/docker-official-mirror/python:3.11
 
 stages:
   - build
-  - test
+  - test-package
+  - test-docs
   - deploy
   - validate
 
@@ -17,7 +18,7 @@ Build Package:
     - pip install .
 
 Test and Lint:
-  stage: test
+  stage: test-package
   script:
     # Install dependencies
     - apt-get update -y
@@ -25,7 +26,6 @@ Test and Lint:
     - apt-get install -y xdg-utils
     - apt-get install -y lynx
     - apt-get install -y graphviz
-    - apt-get install -y pandoc
     - python -m pip install --upgrade pip
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
@@ -40,14 +40,34 @@ Test and Lint:
     # Run pydeps
     - pydeps hyswap -T png --max-bacon=3 --cluster
     - mv hyswap.png docs/source/reference/hyswap.png  # move pydeps graph to docs
-    # Test and build documentation
-    - cd docs
-    - make docs
   artifacts:
     paths:
       - htmlcov/
       - docs/build/
   coverage: '/TOTAL.*\s+(\d+\%)/'
+
+Test Documentation:
+  stage: test-docs
+  script:
+    # Install dependencies
+    - apt-get update -y
+    - apt-get upgrade -y
+    - apt-get install -y xdg-utils
+    - apt-get install -y lynx
+    - apt-get install -y graphviz
+    - apt-get install -y pandoc
+    - python -m pip install --upgrade pip
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
+    - pip install .
+    # Test and build documentation
+    - cd docs
+    - make docs
+  artifacts:
+    paths:
+      - docs/build/
+  rules:
+    -  if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
 
 Deploy Documentation:
   image: ${ARTIFACTORY_URL}/docker-official-mirror/rocker/shiny-verse:4.1.2
@@ -63,7 +83,6 @@ Deploy Documentation:
     - Rscript -e "task <- connectapi::deploy(connectapi::connect(), connectapi::bundle_dir('$CI_PROJECT_DIR/docs/build'), name='hyswap-docs') |> connectapi::set_vanity_url(url = 'hyswap-docs') |> connectapi::content_update_access_type('all')"
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" && $CONNECT_API_KEY != null && $CONNECT_SERVER != null'
-
 
 Validate Inventory:
     stage: validate
