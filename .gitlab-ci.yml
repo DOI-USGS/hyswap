@@ -3,7 +3,7 @@ image: ${ARTIFACTORY_URL}/docker-official-mirror/python:3.11
 stages:
   - build
   - test-package
-  - test-docs
+  - build-docs
   - deploy
   - validate
 
@@ -46,8 +46,8 @@ Test and Lint:
       - docs/build/
   coverage: '/TOTAL.*\s+(\d+\%)/'
 
-Test Documentation:
-  stage: test-docs
+Build Documentation:
+  stage: build-docs
   script:
     # Install dependencies
     - apt-get update -y
@@ -67,7 +67,7 @@ Test Documentation:
     paths:
       - docs/build/
   rules:
-    -  if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+    -  if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_BRANCH == "main"'
 
 Deploy Documentation:
   image: ${ARTIFACTORY_URL}/docker-official-mirror/rocker/shiny-verse:4.1.2
