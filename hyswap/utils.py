@@ -53,7 +53,7 @@ def rolling_average(df, data_column_name, data_type,
     and uses the data_type argument ('1D', '7D', '14D', '28D') to set the
     `min_periods` argument in `pandas.DataFrame.rolling`. The function
     returns NaN values if any of the values in the window are NaN or if the
-    `mind_periods` argument is not satisifed. Properties of the windowing
+    `min_periods` argument is not satisifed. Properties of the windowing
     can be changed by passing additional keyword arguments which are fed
     to `pandas.DataFrame.rolling`.
 
