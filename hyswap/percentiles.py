@@ -611,14 +611,13 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
     Calculate the percentile associated with a value from some synthetic data.
 
     .. doctest::
-        :skipif: True  # docstrings test fails with np.float64
 
         >>> data = pd.DataFrame({'values': np.arange(1001),
         ...                      'date': pd.date_range('2020-01-01', '2022-09-27')}).set_index('date')  # noqa: E501
         >>> pcts_df = percentiles.calculate_fixed_percentile_thresholds(
         ...     data, 'values', percentiles=[5, 10, 25, 50, 75, 90, 95])
         >>> new_percentile = percentiles.calculate_fixed_percentile_from_value(
-        ...     500, pcts_df)
+        ...     500, pcts_df).item()
         >>> new_percentile
         50.0
 

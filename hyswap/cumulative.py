@@ -69,7 +69,7 @@ def calculate_daily_cumulative_values(df, data_column_name,
     years = df['index_year'].unique()
 
     # make an empty dataframe to hold cumulative values for each year
-    cdf = pd.DataFrame([])
+    cdf = pd.DataFrame()
     selected_columns = [
         data_column_name,
         'index_month_day',
@@ -100,50 +100,3 @@ def calculate_daily_cumulative_values(df, data_column_name,
     cdf = cdf[['index_month_day', 'index_year', 'index_doy', 'cumulative']]
     return cdf
 
-
-def _tidy_cumulative_dataframe(cdf, year_type):
-    """Tidy a cumulative dataframe.
-
-    Parameters
-    ----------
-    cdf : pandas.DataFrame
-        DataFrame containing cumulative values, rows are years, columns are
-        days of year.
-    year_type : str
-        The type of year to use. Must be one of 'calendar', 'water', or
-        'climate'. Default is 'calendar' which starts the year on January 1
-        and ends on December 31. 'water' starts the year on October 1 and
-        ends on September 30 of the following year which is the "water year".
-        For example, October 1, 2010 to September 30, 2011 is "water year
-        2011". 'climate' years begin on April 1 and end on March 31 of the
-        following year, they are numbered by the ending year. For example,
-        April 1, 2010 to March 31, 2011 is "climate year 2011".
-
-    Returns
-    -------
-    cdf : pandas.DataFrame
-        DataFrame containing cumulative values, rows are dates, columns include
-        years, day of year (doy), and cumulative values.
-    """
-    # convert cdf to dataframe organized with full dates on the index
-    cdf2 = cdf.stack().reset_index()
-    cdf2.columns = ["index_year", "index_doy", "cumulative"]
-    # create date column
-    if year_type == "calendar":
-        cdf2["date"] = pd.to_datetime(
-            cdf2["index_year"].astype(str) + "-" +
-            cdf2["index_doy"].astype(str),
-            format="%Y-%j")
-    elif year_type == "water":
-        cdf2["date"] = pd.to_datetime(
-            cdf2["index_year"].astype(str) + "-" +
-            cdf2["index_doy"].astype(str),
-            format="%Y-%j") + pd.DateOffset(days=273)
-    elif year_type == "climate":
-        cdf2["date"] = pd.to_datetime(
-            cdf2["index_year"].astype(str) + "-" +
-            cdf2["index_doy"].astype(str),
-            format="%Y-%j") + pd.DateOffset(days=90)
-    # set date to index
-    cdf2 = cdf2.set_index("date")
-    return cdf2
