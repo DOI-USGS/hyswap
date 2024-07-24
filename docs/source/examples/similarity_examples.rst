@@ -4,7 +4,7 @@ Similarity Measures
 
 Sometimes it is helpful to compare the relationships between a set of streamgaging stations and their respective measurements. These examples showcase the usage of the functions in the `similarity` module to quantify how similar streamflow records are across multiple streamgages. Matrices of similarity measures (e.g., correlations) are calculated and visualized by generating heatmap visualizations via the :obj:`hyswap.plots.plot_similarity_heatmap` function.
 
-The `similarity` functions packaged in `hyswap` handle some of the data clean-up for you by ensuring the time-series of observations being compared acros the same dates, and by removing any missing data. This ensures that your results are not skewed by missing data or gaps in one of the time-series.
+The `similarity` functions packaged in `hyswap` handle some of the data clean-up for you by ensuring the time-series observations are compared across the same dates, and by removing any missing data. This ensures that your results are not skewed by missing data or gaps in one of the time-series.
 
 
 Pearson's *r* Correlations Between 5 Stations
