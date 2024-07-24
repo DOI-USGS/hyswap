@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from hyswap import cumulative
 
+
 class TestDailyCumulativeValues:
 
     def test_calculate_daily_cumulative_values(self):

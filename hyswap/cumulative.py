@@ -99,4 +99,3 @@ def calculate_daily_cumulative_values(df, data_column_name,
         cdf = pd.concat([cdf, year_data])
     cdf = cdf[['index_month_day', 'index_year', 'index_doy', 'cumulative']]
     return cdf
-

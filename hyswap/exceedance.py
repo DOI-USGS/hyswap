@@ -40,7 +40,7 @@ def calculate_exceedance_probability_from_distribution(x, dist,
 
     .. doctest::
 
-        >>> np.round(exceedance.calculate_exceedance_probability_from_distribution(
+        >>> np.round(exceedance.calculate_exceedance_probability_from_distribution(  # noqa: E501
         ...     1, 'lognormal', 1, 0.25), 3).item()
         0.613
 
