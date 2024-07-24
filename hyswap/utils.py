@@ -3,20 +3,21 @@ import pandas as pd
 import numpy as np
 
 
-def filter_approved_data(data, filter_column=None):
+def filter_approved_data(df, filter_column_name=None):
     """Filter a dataframe to only return approved "A" (or "A, e") data.
 
     Parameters
     ----------
-    data : pandas.DataFrame
-        The data to filter.
-    filter_column : string
+    df : pandas.DataFrame
+        Dataframe containing the data to filter.
+    filter_column_name : string
         The column upon which to filter. If None, an error will be raised.
 
     Returns
     -------
     pandas.DataFrame
-        The filtered data.
+        A filtered dataframe containing only approved data, denoted by an
+        "A" in the filter column.
 
     Examples
     --------
@@ -26,7 +27,7 @@ def filter_approved_data(data, filter_column=None):
     .. doctest::
 
         >>> df = pd.DataFrame({
-        ...     'data': [1, 2, 3, 4, 5],
+        ...     'df': [1, 2, 3, 4, 5],
         ...     'approved': ['A', 'A, e', 'A', 'P', 'P']})
         >>> df.shape
         (5, 2)
@@ -35,13 +36,13 @@ def filter_approved_data(data, filter_column=None):
 
     .. doctest::
 
-        >>> df = utils.filter_approved_data(df, filter_column='approved')
+        >>> df = utils.filter_approved_data(df, filter_column_name='approved')
         >>> df.shape
         (3, 2)
     """
-    if filter_column is None:
-        raise ValueError("filter_column must be specified.")
-    return data[data[filter_column].str.contains("A", na=False)]
+    if filter_column_name is None:
+        raise ValueError("Filter_column must be specified.")
+    return df[df[filter_column_name].str.contains("A", na=False)]
 
 
 def rolling_average(df, data_column_name, data_type,
@@ -60,9 +61,10 @@ def rolling_average(df, data_column_name, data_type,
     Parameters
     ----------
     df : pandas.DataFrame
-        The dataframe to calculate the rolling average for.
+        Dataframe containing data to calculate the rolling average for.
     data_column_name : string
-        The name of the column to calculate the rolling average for.
+        Name of the column containing data for calculating the rolling
+        average.
     data_type : string
         The formatted frequency string to be used with
         pandas.DataFrame.rolling to calculate the average over the correct
@@ -594,7 +596,7 @@ def munge_nwis_stats(df, include_metadata=True):
     return df
 
 
-def calculate_summary_statistics(df, data_col="00060_Mean"):
+def calculate_summary_statistics(df, data_column_name="00060_Mean"):
     """
     Calculate summary statistics for a site.
 
@@ -604,7 +606,7 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
         DataFrame containing daily values for the site. Expected to be from
         `dataretrieval.nwis.get_dv()`, or similar.
 
-    data_col : str, optional
+    data_column_name : str, optional
         Name of the column in the dv_df DataFrame that contains the data of
         interest. Default is "00060_Mean" which is the mean daily discharge
         column.
@@ -647,15 +649,15 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
     summary_dict['Begin date'] = df.index.min().strftime('%Y-%m-%d')
     summary_dict['End date'] = df.index.max().strftime('%Y-%m-%d')
     # count
-    summary_dict['Count'] = df[data_col].count()
+    summary_dict['Count'] = df[data_column_name].count()
     # minimum
-    summary_dict['Minimum'] = df[data_col].min()
+    summary_dict['Minimum'] = df[data_column_name].min()
     # mean
-    summary_dict['Mean'] = df[data_col].mean().round(2)
+    summary_dict['Mean'] = df[data_column_name].mean().round(2)
     # median
-    summary_dict['Median'] = df[data_col].median()
+    summary_dict['Median'] = df[data_column_name].median()
     # maximum
-    summary_dict['Maximum'] = df[data_col].max()
+    summary_dict['Maximum'] = df[data_column_name].max()
 
     # make dataframe
     summary_df = pd.DataFrame(summary_dict, index=[0])

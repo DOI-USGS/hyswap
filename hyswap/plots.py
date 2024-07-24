@@ -267,7 +267,7 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     return ax
 
 
-def plot_duration_hydrograph(percentiles_by_day, df, data_col,
+def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
                              date_column_name=None,
                              pct_list=[5, 10, 25, 75, 90, 95],
                              data_label=None, ax=None,
@@ -300,11 +300,11 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
         with percentiles calculated by day-of-year.
     df : pandas.DataFrame
         Dataframe containing the data to plot.
-    data_col : str
-        Column name of the data to plot.
+    data_column_name : str
+        Name of column containing data to plot.
     date_column_name : str, optional
-        Defaults to None. If None, index is assumed to contain datetime
-        information.
+        Name of column containing date information. If None, the index of
+        `df` will be used. Defaults to None.
     pct_list : list, optional
         List of integers corresponding to the percentile values to be
         plotted. Values of 0 and 100 are ignored as unbiased plotting position
@@ -381,7 +381,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
     alpha = kwargs.pop('alpha', 0.5)
     zorder = kwargs.pop('zorder', -20)
     if data_label is None:
-        label = df[data_col].name
+        label = df[data_column_name].name
     else:
         label = data_label
     # Add disclaimer if True
@@ -400,7 +400,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_col,
     # Join percentiles with data
     df_combined = pd.merge(df, percentiles_by_day, left_on=df['month_day'], right_index=True, how='left')  # noqa: E501
     # plot the latest data -1 to 0-index day of year
-    ax.plot(df_combined.index.values, df[data_col], color='k', zorder=10, label=label)  # noqa: E501
+    ax.plot(df_combined.index.values, df[data_column_name], color='k', zorder=10, label=label)  # noqa: E501
     # sort the list in ascending order
     pct_list.sort()
     # plot the historic percentiles filling between each pair
@@ -499,7 +499,7 @@ def plot_cumulative_hydrograph(df,
         Discharge data assumed to be in unit of ft3/s.
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
-        `df` will be used.
+        `df` will be used. Defaults to None.
     unit : str, optional
         The unit the user wants to use to report cumulative flow. One of
         'acre-feet', 'cfs', 'cubic-meters', 'cubic-feet'. Assumes input
@@ -677,8 +677,8 @@ def plot_cumulative_hydrograph(df,
     return ax
 
 
-def plot_hydrograph(df, data_col,
-                    date_col=None,
+def plot_hydrograph(df, data_column_name,
+                    date_column_name=None,
                     start_date=None,
                     end_date=None,
                     ax=None,
@@ -696,12 +696,12 @@ def plot_hydrograph(df, data_col,
     df : pandas.DataFrame
         DataFrame containing the data to plot.
 
-    data_col : str
-        Name of the column containing the data to plot.
+    data_column_name : str
+        Name of column containing data to plot.
 
-    date_col : str, optional
-        Name of the column containing the dates. If not provided, the index
-        will be used.
+    date_column_name : str, optional
+        Name of column containing date information. If None, the index of
+        `df` will be used. Defaults to None.
 
     start_date : str, optional
         Start date for the plot. If not provided, the minimum date in the
@@ -748,7 +748,7 @@ def plot_hydrograph(df, data_col,
         ...                                   start='2019-01-01',
         ...                                   end='2020-01-01')
         >>> ax = hyswap.plots.plot_hydrograph(
-        ...     df, data_col='00060_Mean',
+        ...     df, data_column_name='00060_Mean',
         ...     title=f'2019 Hydrograph for Station {siteno}',
         ...     ylab='Discharge, ft3/s',
         ...     xlab='Date', yscale='log')
@@ -758,9 +758,9 @@ def plot_hydrograph(df, data_col,
     # check if ax provided
     if ax is None:
         _, ax = plt.subplots()
-    # check if date_col provided
-    if date_col is not None:
-        df = df.set_index(date_col)
+    # check if date_column_name provided
+    if date_column_name is not None:
+        df = df.set_index(date_column_name)
     # sort by date
     df = df.sort_index()
     # check if start_date provided
@@ -770,7 +770,7 @@ def plot_hydrograph(df, data_col,
     if end_date is not None:
         df = df.loc[:end_date]
     # plot
-    ax.plot(df.index, df[data_col], **kwargs)
+    ax.plot(df.index, df[data_column_name], **kwargs)
     # set labels
     ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)

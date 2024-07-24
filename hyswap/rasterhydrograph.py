@@ -19,10 +19,10 @@ def format_data(df, data_column_name, date_column_name=None,
         The data to format. Must have a date column or the index must be the
         date values.
     data_column_name : str
-        The name of the column containing the data.
+        Name of column containing data to analyze.
     date_column_name : str, optional
-        The name of the column containing the date. Default is None which
-        assumes the index is the date.
+        Name of column containing date information. If None, the index of
+        `df` will be used. Defaults to None.
     data_type : str, optional
         The type of data. Must be one of 'daily', '7-day', '14-day', and
         '28-day'. Default is 'daily'. If '7-day', '14-day', or '28-day' is
@@ -159,10 +159,10 @@ def _check_inputs(df, data_column_name, date_column_name,
         The data to format. Must have a date column or the index must be the
         date values.
     data_column_name : str
-        The name of the column containing the data.
+        Name of column containing data to analyze.
     date_column_name : str, None
-        The name of the column containing the date or None if the index is
-        the date.
+        Name of column containing date information. If None, the index of
+        `df` will be used. Defaults to None.
     data_type : str
         The type of data. Must be one of 'daily', '7-day', '14-day', and
         '28-day'. If '7-day', '14-day', or '28-day' is

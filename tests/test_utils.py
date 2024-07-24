@@ -11,7 +11,7 @@ class TestDataFilters:
         data = {"a": ["A", "A, e", "A, R", np.nan, "A, [4]", "P", "P"],
                 "b": [1, 2, 3, np.nan, 5, 6, 7]}
         data_df = pd.DataFrame(data)
-        df = utils.filter_approved_data(data_df, filter_column="a")
+        df = utils.filter_approved_data(data_df, filter_column_name="a")
         assert df["b"].tolist() == [1, 2, 3, 5]
 
     def test_filter_approved_data_error(self):
@@ -19,7 +19,7 @@ class TestDataFilters:
         data = {"a": ["A", "A", "P", "P"], "b": [1, 2, 3, 4]}
         data_df = pd.DataFrame(data)
         with pytest.raises(ValueError):
-            utils.filter_approved_data(data_df, filter_column=None)
+            utils.filter_approved_data(data_df, filter_column_name=None)
 
 
 class TestRollingAverage:
