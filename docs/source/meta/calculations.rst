@@ -7,11 +7,11 @@ Assumptions and Caveats
 -----------------------
 The ``hyswap`` package functions assume that provided streamflow data are quality controlled. No checks on incorrect, missing, or negative values are performed. Users should perform any necessary QA/QC checks on the data prior to using ``hyswap`` functions. Additionally, ``hyswap`` does not detect artifacts or shifts in streamflow data that potentially violate statistical methods, such as:
 
-- negative flows associated with tidal-influenced locations or other phenomena
-- regulated flows or transitions from regulated to unregulated flows (or vice versa)
-- major watershed changes
+* negative flows associated with tidal-influenced locations or other phenomena
+* regulated flows or transitions from regulated to unregulated flows (or vice versa)
+* major watershed changes
 
-For users who are applying ``hyswap`` functions directly to data retrieved from USGS NWIS, please be aware that non-standard parameter names occasionally occur. Reasons for this could be to indicate that a site has an upstream and downstream sensor, a sensor was moved in the water column, or a site was measured multiple times. This package treats sites with non-standard parameter names as outliers and skips those sites. Users should take appropriate steps to check for non-standard parameter names and determine appropriate data handling steps based on their needs.
+For users who are applying ``hyswap`` functions directly to data retrieved from USGS NWIS, please be aware that non-standard parameter names occasionally occur (e.g. `00060_2_Mean` or `00060_incorrect_Mean` instead of simply `00060_Mean`). Reasons for this could be to indicate that a site has an upstream and downstream sensor, a sensor was moved in the water column, or a site was measured multiple times. This package treats sites with non-standard parameter names as outliers and skips those sites. Users should take appropriate steps to check for non-standard parameter names and determine appropriate data handling steps based on their needs.
 
 Streamflow Percentiles
 ----------------------
@@ -133,11 +133,11 @@ The calculation of area-based runoff in ``hyswap`` involves the steps described 
 Workflow for Associating Streamgages with HUC8s for Area-Based Runoff Calculations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Spatial datasets describing the respective drainage basin boundaries of the streamgages and the boundaries of hydrologic cataloging units must be obtained that cover all areas of interest (e.g. CONUS). Geospatial boundaries of streamgages may be based on delineated gage drainage areas calculated using NHDPlus Version 1 data `(U.S. Geological Survey, 2011)`_ or determined via other watershed delineation approaches. HUC8 boundaries are contained within the `USGS Watershed Boundary Dataset (WBD) <https://www.usgs.gov/national-hydrography/watershed-boundary-dataset>`_. 
+Spatial datasets describing the respective drainage basin boundaries of the streamgages and the boundaries of hydrologic cataloging units must be obtained that cover all areas of interest (e.g. CONUS). Geospatial boundaries of streamgages may be based on delineated gage drainage areas calculated using NHDPlus Version 1 data `(U.S. Geological Survey, 2011)`_ or determined via other watershed delineation approaches. HUC8 boundaries are contained within the `USGS Watershed Boundary Dataset (WBD) <https://www.usgs.gov/national-hydrography/watershed-boundary-dataset>`_. Check out the `HyRiver <https://docs.hyriver.io/index.html>`_ software stack for APIs to access NHDPlus and WBD data products. 
 
 Each geospatial streamgage drainage basin boundary is overlain on a geospatial dataset of HUC8s (the polygons outlined in thick gray-brown lines in Figure 1 example) to determine the area of intersection within the two datasets. For each overlapping area of HUC8s and streamgage drainage basin boundaries, the fraction of the basin in the HUC8 and the fraction of the HUC8 in the basin are calculated. These fractions are then multiplied by each other to compute a weighting factor for each basin in the runoff calculation.
 
-You can find an example intersection dataset between CONUS HUC8s and streamgage basins in the `hyswap-example-notebooks repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_. This intersection dataset was created using the `surface water geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/surface-water-geospatial-data-assembly>`_.
+You can find an example intersection dataset between CONUS HUC8s and streamgage basins in the `example_data <https://github.com/DOI-USGS/hyswap/tree/main/example_notebooks/example_data>`_ folder within the `example_notebooks` folder of this repository. This intersection dataset was created using the `hyswap geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-geospatial-data-assembly>`_.
 
 Workflow for Estimating Area-Based Runoff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -151,6 +151,8 @@ After obtaining a table of intersecting HUC8s and streamgage basins, the next st
   (b) the smallest streamgage basin that *contains* the HUC8 
 
 Note that in cases where there is near perfect overlap for multiple streamgage basins and a HUC8, the streamgage basin-HUC8 intersection with the *highest* weight is used to estimate runoff. This is the same method used to determine the smallest streamgage basin that contains the HUC8: among all the streamgage basins that contain the HUC8 (in other words, the proportion of the HUC8's area in the streamgage basins is roughly 1), find the HUC8-streamgage basin intersection with the highest weight (which means the proportion of the streamgage basin's area in the HUC8 is the largest). See Figure 1 for an example of this workflow. Note that in Figure 1, 'Fraction#' is analogous to 'proportion of shape X's area in shape Y'.
+
+An example Jupyter notebook exemplifying this workflow is available for `download <https://github.com/DOI-USGS/hyswap/blob/main/example_notebooks/regional_runoff_calculations.ipynb>`_ from the hyswap repository and can be viewed within the ``hyswap`` `documentation <https://doi-usgs.github.io/hyswap/examples/regional_runoff_calculations.html>`_.
 
 .. image:: ../reference/huc8_runoff_example.gif
   :width: 600
