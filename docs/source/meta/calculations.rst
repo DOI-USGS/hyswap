@@ -5,7 +5,7 @@ A quick-reference guide to the common types of calculations performed within the
 
 Assumptions and Caveats
 -----------------------
-The ``hyswap`` package functions assume that provided streamflow data has been quality controlled. No checks on incorrect, missing, or negative values are performed. Users should perform any necessary QA/QC checks on the data prior to using ``hyswap`` functions. Additionally, ``hyswap`` does not detect artifacts or shifts in streamflow data that potentially violate statistical methods, such as:
+The ``hyswap`` package functions assume that provided streamflow data are quality controlled. No checks on incorrect, missing, or negative values are performed. Users should perform any necessary QA/QC checks on the data prior to using ``hyswap`` functions. Additionally, ``hyswap`` does not detect artifacts or shifts in streamflow data that potentially violate statistical methods, such as:
 
 - negative flows associated with tidal-influenced locations or other phenomena
 - regulated flows or transitions from regulated to unregulated flows (or vice versa)

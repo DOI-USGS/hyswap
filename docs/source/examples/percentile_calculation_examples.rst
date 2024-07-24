@@ -12,7 +12,7 @@ Calculating Historic Percentiles for One Site
 The :obj:`hyswap.percentiles.calculate_fixed_percentile_thresholds` function
 is used to calculate a set of percentile thresholds given a set of data.
 This function simply calculates one set of fixed percentile thresholds using all available data, 
-and is not intended to be used for calculating percentile thresholds separatly for individual days of the year.
+and is not intended to be used for calculating percentile thresholds separately for individual days of the year.
 
 By default this method calculates percentiles using the Weibull distribution
 with an alpha parameter of 0 and a beta parameter of 0. The Weibull
