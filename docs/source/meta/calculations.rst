@@ -6,6 +6,7 @@ A quick-reference guide to the common types of calculations performed within the
 Assumptions and Caveats
 -----------------------
 The ``hyswap`` package functions assume that provided streamflow data has been quality controlled. No checks on incorrect, missing, or negative values are performed. Users should perform any necessary QA/QC checks on the data prior to using ``hyswap`` functions. Additionally, ``hyswap`` does not detect artifacts or shifts in streamflow data that potentially violate statistical methods, such as:
+
 - negative flows associated with tidal-influenced locations or other phenomena
 - regulated flows or transitions from regulated to unregulated flows (or vice versa)
 - major watershed changes
@@ -58,7 +59,7 @@ Streamflow percentiles are a core calculation of ``hyswap`` that are used to det
 |                           | the year.                                 |
 +---------------------------+-------------------------------------------+
 
-By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibull plotting position formula, :math:`i/(n+1)`, where *i* is the rank of an observation and *n* is the sample size (Weibull, 1939). The Weibull formula has been the standard approach used by hydrologists for generating flow-duration and flood-frequency curves `(Helsel and others, 2020)`_. Weibull plotting position does not set values to either 0 or 100, recognizing the existence of a non-zero probablity of exceeding the maximum or minimum observed value. For further discussion of plotting positions refer to `(Helsel and others, 2020)`_.
+By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibull plotting position expression, :math:`i/(n+1)`, where *i* is the rank of an observation and *n* is the sample size (Weibull, 1939). The Weibull formula has been the standard approach used by hydrologists for generating flow-duration and flood-frequency curves `(Helsel and others, 2020)`_. Weibull plotting position does not set values to either 0 or 100, recognizing the existence of a non-zero probablity of exceeding the maximum or minimum observed value. For further discussion of plotting positions refer to `(Helsel and others, 2020)`_.
 
 ``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles. Additional methods of computing percentiles that exist in the ``numpy.percentile()`` function can be used in ``hyswap``. Users can refer to the `numpy function documentation <https://numpy.org/doc/stable/reference/generated/numpy.percentile.html>`_ for additional details.
 
@@ -75,42 +76,42 @@ Flow Categorization
 ^^^^^^^^^^^^^^^^^^^
 Streamflow observations at a streamgage can be assigned a flow condition category using ``hyswap`` by use of the `hyswap` :obj:`hyswap.utils.categorize_flows` function. Streamflow percentiles or interpolated estimated streamflow percentiles are compared to a categorization schema. Multiple categorization schema are available in ``hyswap`` with the default being flow categories similar to those displayed on the USGS National Water Dashboard. Categorization schema are applicable to both variable and fixed percentile types. Available schema are described below:
 
-* "NWD" -- Categorization schema similar to the USGS National Water Dashboard, *default*
+"NWD" -- Categorization schema similar to the USGS National Water Dashboard, *default*
   Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
 
   .. image:: ../reference/nwd.png
     :width: 800
     :alt: Categorization schema of percentile ranges, labels, and color palette similar to the National Water Dashboard. 
 
-* "WaterWatch" -- Categorization schema similar to the USGS WaterWatch website
+"WaterWatch" -- Categorization schema similar to the USGS WaterWatch website
   Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
 
   .. image:: ../reference/waterwatch.png
     :width: 800
     :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch.
 
-* "NIDIS_Drought" -- Categorization schema similar to the NIDIS U.S. Drought Monitor
+"NIDIS_Drought" -- Categorization schema similar to the NIDIS U.S. Drought Monitor
   Categorizes streamflow across only low-flow conditions.
 
   .. image:: ../reference/nidis_drought.png
     :width: 800
     :alt: Categorization schema of percentile ranges, labels, and color palette similar to NIDIS U.S. Drought Monitor.
 
-* "WaterWatch_Drought" -- Categorization schema similar to the USGS WaterWatch Drought Conditions
+"WaterWatch_Drought" -- Categorization schema similar to the USGS WaterWatch Drought Conditions
   Categorizes streamflow across only low-flow conditions. Typically used with variable percentiles
 
   .. image:: ../reference/waterwatch_drought.png
     :width: 800
     :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Drought Conditions.
 
-* "WaterWatch_Flood" -- Categorization schema similar to the USGS WaterWatch Flood Conditions
+"WaterWatch_Flood" -- Categorization schema similar to the USGS WaterWatch Flood Conditions
   Categorizes streamflow across only high-flow conditions. Typically used with fixed percentiles
 
   .. image:: ../reference/waterwatch_flood.png
     :width: 800
     :alt: Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Flood Conditions.
 
-* "WaterWatch_BrownBlue" -- Categorization schema similar to the USGS WaterWatch categories but with an alternative color palette
+"WaterWatch_BrownBlue" -- Categorization schema similar to the USGS WaterWatch categories but with an alternative color palette
   Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
   
   .. image:: ../reference/waterwatch_brownblue.png
@@ -145,6 +146,7 @@ After obtaining a table of intersecting HUC8s and streamgage basins, the next st
 
 1. For each unit of time with runoff data at one or more streamgages whose basins intersect the HUC8, obtain a weighted average of all runoff values. 
 2. If a HUC8 and a streamgage basin have near perfect overlap (e.g. the proportion of the HUC8's area in the basin is greater than 0.9 and the proportion of the basin's area in the HUC8 is greater than 0.9), simply use the runoff values from that streamgage basin. If perfect overlap does not exist, use a weighted average of runoff values from:
+
   (a) all streamgage basins *contained* by the HUC8, and 
   (b) the smallest streamgage basin that *contains* the HUC8 
 

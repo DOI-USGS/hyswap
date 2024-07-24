@@ -3,7 +3,7 @@ Flow Duration Curves
 --------------------
 
 These examples show how flow duration curves can be constructed by fetching data from NWIS using `dataretrieval`, analyzing that data using functions provided by `hyswap` (:obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`), and then plotted using another `hyswap` function (:obj:`hyswap.plots.plot_flow_duration_curve`).
-For more information on flow duration curves, see the USGS report titled "Flow-duration curves" by James K. Searcy and published in 1959 (https://doi.org/10.3133/wsp1542A).
+For more information on flow duration curves, see the 1959 USGS report by James K. Searcy, titled ["Flow-duration curves"](https://doi.org/10.3133/wsp1542A).
 
 
 Creating a Flow Duration Curve for Site 01646500
