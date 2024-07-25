@@ -62,12 +62,11 @@ def format_data(df, data_column_name, date_column_name=None,
     Formatting synthetic daily data for a raster hydrograph.
 
     .. doctest::
-        :skipif: True  # docstrings test fails with np.float64
 
         >>> df = pd.DataFrame({'date': pd.date_range('1/1/2010', '12/31/2010'),
         ...                    'data': np.random.rand(365)})
         >>> df_formatted = rasterhydrograph.format_data(df, 'data', 'date')
-        >>> df_formatted.index[0]
+        >>> df_formatted.index[0].item()
         2010
         >>> len(df_formatted.columns)
         365
