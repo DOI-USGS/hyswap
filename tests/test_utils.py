@@ -495,11 +495,11 @@ def test_filter_to_common_time():
 
 
 def test_set_data_type():
-    """Test the function set_data_type."""
-    assert utils.set_data_type('daily') == '1D'
-    assert utils.set_data_type('7-day') == '7D'
-    assert utils.set_data_type('14-day') == '14D'
-    assert utils.set_data_type('28-day') == '28D'
+    """Test the function set_window_width."""
+    assert utils.set_window_width('daily') == '1D'
+    assert utils.set_window_width('7-day') == '7D'
+    assert utils.set_window_width('14-day') == '14D'
+    assert utils.set_window_width('28-day') == '28D'
 
 
 class TestSummaryStatistics:
@@ -530,20 +530,20 @@ class TestSummaryStatistics:
 
 class TestSetDataType:
     def test_set_data_type_daily(self):
-        """Test the function set_data_type."""
-        assert utils.set_data_type('daily') == '1D'
+        """Test the function set_window_width."""
+        assert utils.set_window_width('daily') == '1D'
 
     def test_set_data_type_week(self):
-        """Test the function set_data_type."""
-        assert utils.set_data_type('7-day') == '7D'
+        """Test the function set_window_width."""
+        assert utils.set_window_width('7-day') == '7D'
 
     def test_set_data_type_two_week(self):
-        """Test the function set_data_type."""
-        assert utils.set_data_type('14-day') == '14D'
+        """Test the function set_window_width."""
+        assert utils.set_window_width('14-day') == '14D'
 
     def test_set_data_type_twenty_eight_day(self):
-        """Test the function set_data_type."""
-        assert utils.set_data_type('28-day') == '28D'
+        """Test the function set_window_width."""
+        assert utils.set_window_width('28-day') == '28D'
 
 
 class TestCategorizationSchema:

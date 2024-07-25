@@ -258,7 +258,7 @@ What this means is that the set of historical percentiles calculated for each da
     percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
         df,
         "00060_Mean",
-        data_type='daily',
+        window_width='daily',
         leading_values=15,
         trailing_values=14
     )
@@ -303,13 +303,13 @@ To show the effect of this, we will plot the historic daily percentile values fo
 
     # calculate specific historic daily percentile thresholds for water years
     percentiles_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", data_type='daily'
+        df, "00060_Mean", window_width='daily'
     )
     percentiles_by_7day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", data_type='7-day'
+        df, "00060_Mean", window_width='7-day'
     )
     percentiles_by_28day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
-        df, "00060_Mean", data_type='28-day'
+        df, "00060_Mean", window_width='28-day'
     )
 
     # get year/doy information

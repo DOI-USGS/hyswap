@@ -85,7 +85,7 @@ calculating the 10th, 50th, and 90th percentiles for each day of the year.
 By default, percentiles are only computed for days which have at least 10
 years of data available, however this parameter can be altered by setting the
 `min_years` parameter to a different value. 
-Multi-day averaging can also be performed by setting the `data_type` parameter
+Multi-day averaging can also be performed by setting the `window_width` parameter
 to a value like `7-day`, `14-day`, or `28-day`, the default value is `daily`
 which is no temporal averaging.
 See the function documentation

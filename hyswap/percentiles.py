@@ -7,7 +7,7 @@ from datetime import datetime
 from hyswap.utils import filter_data_by_month_day
 from hyswap.utils import filter_data_by_time
 from hyswap.utils import define_year_doy_columns
-from hyswap.utils import set_data_type
+from hyswap.utils import set_window_width
 from hyswap.utils import rolling_average
 from hyswap.exceedance import calculate_exceedance_probability_from_values
 
@@ -195,7 +195,7 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         percentiles=[5, 10, 25, 50, 75, 90, 95],
         method='weibull',
         date_column_name=None,
-        data_type='daily',
+        window_width='daily',
         year_type='calendar',
         leading_values=0,
         trailing_values=0,
@@ -231,12 +231,13 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         Name of column containing date information. If None, the index of
         `df` is used.
 
-    data_type : str, optional
-        The type of data. Must be one of 'daily', '7-day', '14-day', and
-        '28-day'. Default is 'daily'. If '7-day', '14-day', or '28-day' is
-        specified, the data will be averaged over the specified period. NaN
-        values will be used for any days that do not have data. If present,
-        NaN values will result in NaN values for the entire period.
+    window_width : str, optional
+        The window width of the data in days. Must be one of 'daily',
+        '7-day', '14-day', and '28-day'. If '7-day', '14-day', or
+        '28-day' is specified, the data will be averaged over the
+        specified period. NaN values will be used for any days that
+        do not have data. If present, NaN values will result in NaN
+        values for the entire period.
 
     year_type : str, optional
         The type of year to use. Must be one of 'calendar', 'water', or
@@ -329,8 +330,8 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
                                  year_type=year_type,
                                  clip_leap_day=clip_leap_day)
     # do rolling average for time as needed
-    data_type = set_data_type(data_type)
-    df = rolling_average(df, data_column_name, data_type)
+    window = set_window_width(window_width)
+    df = rolling_average(df, data_column_name, window)
 
     # create an empty dataframe to hold percentiles based on day-of-year
     # ignore 0 and 100 percentiles if passed in
@@ -407,7 +408,7 @@ def calculate_variable_percentile_thresholds_by_day(
         percentiles=[5, 10, 25, 50, 75, 90, 95],
         method='weibull',
         date_column_name=None,
-        data_type='daily',
+        window_width='daily',
         leading_values=0,
         trailing_values=0,
         clip_leap_day=False,
@@ -442,12 +443,13 @@ def calculate_variable_percentile_thresholds_by_day(
         Name of column containing date information. If None, the index of
         `df` is used.
 
-    data_type : str, optional
-        The type of data. Must be one of 'daily', '7-day', '14-day', and
-        '28-day'. Default is 'daily'. If '7-day', '14-day', or '28-day' is
-        specified, the data will be averaged over the specified period. NaN
-        values will be used for any days that do not have data. If present,
-        NaN values will result in NaN values for the entire period.
+    window_width : str, optional
+        The window width of the data in days. Must be one of 'daily',
+        '7-day', '14-day', and '28-day'. If '7-day', '14-day', or
+        '28-day' is specified, the data will be averaged over the
+        specified period. NaN values will be used for any days that
+        do not have data. If present, NaN values will result in NaN
+        values for the entire period.
 
     leading_values : int, optional
         For the temporal filtering, this is an argument setting the
@@ -528,8 +530,8 @@ def calculate_variable_percentile_thresholds_by_day(
         df = df.set_index(date_column_name)
 
     # do rolling average for time as needed
-    data_type = set_data_type(data_type)
-    df = rolling_average(df, data_column_name, data_type)
+    window = set_window_width(window_width)
+    df = rolling_average(df, data_column_name, window)
 
     # create an empty dataframe to hold percentiles based on month-day
     # ignore 0 and 100 percentiles if passed in

@@ -3,11 +3,11 @@
 import pandas as pd
 from hyswap.utils import rolling_average
 from hyswap.utils import define_year_doy_columns
-from hyswap.utils import set_data_type
+from hyswap.utils import set_window_width
 
 
 def format_data(df, data_column_name, date_column_name=None,
-                data_type='daily', year_type='calendar',
+                window_width='daily', year_type='calendar',
                 begin_year=None, end_year=None,
                 clip_leap_day=False, **kwargs):
     """
@@ -23,12 +23,13 @@ def format_data(df, data_column_name, date_column_name=None,
     date_column_name : str, optional
         Name of column containing date information. If None, the index of
         `df` will be used. Defaults to None.
-    data_type : str, optional
-        The type of data. Must be one of 'daily', '7-day', '14-day', and
-        '28-day'. Default is 'daily'. If '7-day', '14-day', or '28-day' is
-        specified, the data will be averaged over the specified period. NaN
-        values will be used for any days that do not have data. If present,
-        NaN values will result in NaN values for the entire period.
+    window_width : str, optional
+        The window width of the data in days. Must be one of 'daily',
+        '7-day', '14-day', and '28-day'. If '7-day', '14-day', or
+        '28-day' is specified, the data will be averaged over the
+        specified period. NaN values will be used for any days that
+        do not have data. If present, NaN values will result in NaN
+        values for the entire period.
     year_type : str, optional
         The type of year to use. Must be one of 'calendar', 'water', or
         'climate'. Default is 'calendar' which starts the year on January 1
@@ -88,7 +89,7 @@ def format_data(df, data_column_name, date_column_name=None,
     """
     # check inputs, set date to index, define year/doy columns
     df_out = _check_inputs(df, data_column_name, date_column_name,
-                           data_type, year_type, begin_year, end_year,
+                           window_width, year_type, begin_year, end_year,
                            clip_leap_day=clip_leap_day)
 
     # calculate the date range
@@ -97,12 +98,12 @@ def format_data(df, data_column_name, date_column_name=None,
     # format date_range as YYYY-MM-DD
     date_range = date_range.strftime('%Y-%m-%d')
 
-    # set data type
-    data_type = set_data_type(data_type)
+    # set window
+    window = set_window_width(window_width)
 
     # make output data frame
     # calculation of rolling mean is done on the data column
-    df_out = rolling_average(df_out, data_column_name, data_type, **kwargs)
+    df_out = rolling_average(df_out, data_column_name, window, **kwargs)
 
     # convert date index to YYYY-MM-DD format
     df_out.index = df_out.index.strftime('%Y-%m-%d')
@@ -149,7 +150,7 @@ def format_data(df, data_column_name, date_column_name=None,
 
 
 def _check_inputs(df, data_column_name, date_column_name,
-                  data_type, year_type, begin_year, end_year,
+                  window_width, year_type, begin_year, end_year,
                   clip_leap_day):
     """Private function to check inputs for the format_data function.
 
@@ -163,12 +164,13 @@ def _check_inputs(df, data_column_name, date_column_name,
     date_column_name : str, None
         Name of column containing date information. If None, the index of
         `df` will be used. Defaults to None.
-    data_type : str
-        The type of data. Must be one of 'daily', '7-day', '14-day', and
-        '28-day'. If '7-day', '14-day', or '28-day' is
-        specified, the data will be averaged over the specified period. NaN
-        values will be used for any days that do not have data. If present,
-        NaN values will result in NaN values for the entire period.
+    window_width : str
+        The window width of the data in days. Must be one of 'daily',
+        '7-day', '14-day', and '28-day'. If '7-day', '14-day', or
+        '28-day' is specified, the data will be averaged over the
+        specified period. NaN values will be used for any days that
+        do not have data. If present, NaN values will result in NaN
+        values for the entire period.
     year_type : str
         The type of year to use. Must be one of 'calendar' or 'water'.
         'calendar' starts the year on January 1 and ends on
@@ -197,10 +199,10 @@ def _check_inputs(df, data_column_name, date_column_name,
         raise TypeError('df must be a pandas.DataFrame')
 
     # check data type
-    if not isinstance(data_type, str):
-        raise TypeError('data_type must be a string')
-    if data_type not in ['daily', '7-day', '14-day', '28-day']:
-        raise ValueError('data_type must be one of "daily", "7-day", '
+    if not isinstance(window_width, str):
+        raise TypeError('window_width must be a string')
+    if window_width not in ['daily', '7-day', '14-day', '28-day']:
+        raise ValueError('window_width must be one of "daily", "7-day", '
                          '"14-day", and "28-day"')
 
     # check data column name

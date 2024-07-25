@@ -266,8 +266,8 @@ class TestCalculateVariablePercentileThresholdsByDay:
             mask_out_of_range=False)
         percentiles_7day = percentiles.calculate_variable_percentile_thresholds_by_day( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            data_type='7-day', include_metadata=False, include_min_max=False,
-            mask_out_of_range=False)
+            window_width='7-day', include_metadata=False,
+            include_min_max=False, mask_out_of_range=False)
         assert percentiles_.shape == (366, 7)
         assert percentiles_7day.shape == (366, 7)
         assert percentiles_.columns.tolist() == [
@@ -483,8 +483,8 @@ class TestCalculateVariablePercentileThresholdsByDayOfYear:
             mask_out_of_range=False)
         percentiles_7day = percentiles.calculate_variable_percentile_thresholds_by_day_of_year( # noqa
             self.bigger_df, 'data', date_column_name='date',
-            data_type='7-day', include_metadata=False, include_min_max=False,
-            mask_out_of_range=False)
+            window_width='7-day', include_metadata=False,
+            include_min_max=False, mask_out_of_range=False)
         assert percentiles_.shape == (366, 7)
         assert percentiles_7day.shape == (366, 7)
         assert percentiles_.columns.tolist() == [
