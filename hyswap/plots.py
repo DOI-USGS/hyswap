@@ -785,7 +785,7 @@ def plot_hydrograph(df, data_column_name,
     return ax
 
 
-def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='inferno',
+def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='cividis',
                             show_values=False, ax=None,
                             title='Similarity Matrix'):
     """Plot a similarity matrix heatmap.
@@ -805,7 +805,7 @@ def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='inferno',
         square matrix represented as a pandas DataFrame.
 
     cmap : str, optional
-        Colormap to use. Default is 'inferno'.
+        Colormap to use. Default is 'cividis'.
 
     show_values : bool, optional
         Whether to show the values of the matrix on the plot. Default is False.
