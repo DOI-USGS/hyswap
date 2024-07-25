@@ -51,7 +51,7 @@ def rolling_average(df, data_column_name, window,
     """Calculate a rolling average for a dataframe.
 
     Default behavior right-aligns the window used for the rolling average
-    and uses the window_width argument ('1D', '7D', '14D', '28D') to set the
+    and uses the window argument ('1D', '7D', '14D', '28D') to set the
     `min_periods` argument in `pandas.DataFrame.rolling`. The function
     returns NaN values if any of the values in the window are NaN or if the
     `min_periods` argument is not satisifed. Properties of the windowing

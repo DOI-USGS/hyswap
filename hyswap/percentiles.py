@@ -68,10 +68,10 @@ def calculate_fixed_percentile_thresholds(
         date_column_name.
 
     mask_out_of_range :  bool, optional
-        When set to True, percentiles that are beyond the min/max percentile
-        ranks of the observed data to be NA. Effect of this being enables is
-        that high or low percentiles may not be calculated when few data points
-        are available. Default is True.
+        When set to True, percentiles that are beyond the min/max value
+        of the observed data are set to NA. When enabled, high or low
+        percentiles may not be calculated when few data points are
+        available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -274,10 +274,10 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         including count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
-        When set to True, percentiles that are beyond the min/max percentile
-        ranks of the observed data to be NA. Effect of this being enables is
-        that high or low percentiles may not be calculated when few data points
-        are available. Default is True.
+        When set to True, percentiles that are beyond the min/max value
+        of the observed data are set to NA. When enabled, high or low
+        percentiles may not be calculated when few data points are
+        available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
@@ -476,10 +476,10 @@ def calculate_variable_percentile_thresholds_by_day(
         including count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
-        When set to True, percentiles that are beyond the min/max percentile
-        ranks of the observed data to be NA. Effect of this being enables is
-        that high or low percentiles may not be calculated when few data points
-        are available. Default is True.
+        When set to True, percentiles that are beyond the min/max value
+        of the observed data are set to NA. When enabled, high or low
+        percentiles may not be calculated when few data points are
+        available. Default is True.
 
     **kwargs : dict, optional
         Additional keyword arguments to pass to `numpy.percentile`.
