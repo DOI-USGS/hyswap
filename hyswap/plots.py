@@ -274,7 +274,10 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
                              disclaimer=False,
                              title="Duration Hydrograph",
                              ylab="Discharge, ft3/s",
-                             xlab="Month-Year", colors=None, **kwargs):
+                             xlab="Month-Year",
+                             colors=None,
+                             color_blind_friendly=True,
+                             **kwargs):
     """Plot a duration hydrograph.
 
     The duration hydrograph is a graphical presentation of recent daily
@@ -334,6 +337,10 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
         List of colors to use for the lines. If not provided, a default
         list of colors will be used. The max number of colors in this
         list is seven.
+    color_blind_friendly : bool, optional
+        If colors is set to None, this option determines whether the
+        default colors should be color blind friendly. Defaults to
+        True.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
 
@@ -391,8 +398,12 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
         txt = ''
     # get colors
     if colors is None:
-        colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
-                  "#7bdbd2", "#7587bf", "#ad63ba"]
+        if color_blind_friendly is True:
+            colors = ['#8f4f1f', '#dcb668', '#ebd6ab', '#e9e9e9', '#aacee0',
+                      '#5699c0', '#292f6b']
+        else:
+            colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
+                      "#7bdbd2", "#7587bf", "#ad63ba"]
     # set the df index
     if date_column_name is not None:
         df = df.set_index(date_column_name)
