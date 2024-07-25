@@ -72,7 +72,7 @@ def rolling_average(df, data_column_name, window,
     auto_min_periods : bool
         Defaults to True. When True, the `min_periods` argument in
         `pandas.DataFrame.rolling` is set using the `window_width` argument.
-        For example, if the `window_width` = '7D', the `min_periods`
+        For example, if the `window` = '7D', the `min_periods`
         argument is 7. When False, the `min_periods` argument is set
         using the `custom_min_periods` input.
     custom_min_periods : int, optional
