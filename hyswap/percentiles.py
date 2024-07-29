@@ -25,7 +25,8 @@ def calculate_fixed_percentile_thresholds(
         **kwargs):
     """Calculate fixed percentile thresholds using historical data.
     Fixed percentiles are calculated using all data in the period of
-    record. See :doc:`..\docs\source\meta\calculations.rst#streamflow-percentiles` # noqa
+    record. See
+    :doc:`../docs/source/meta/calculations.rst#streamflow-percentiles`
     for details.
 
     Parameters
