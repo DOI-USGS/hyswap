@@ -52,7 +52,6 @@ Similarity Examples
 
     similarity_examples
 
-.. _examples:
 ==========================
 Example Workflow Notebooks
 ==========================

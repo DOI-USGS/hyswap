@@ -1,0 +1,28 @@
+name: hyswap-dev-environment
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - scipy
+  - sphinx
+  - pytest
+  - coverage
+  - flake8
+  - pylint
+  - dataretrieval
+  - matplotlib
+  - folium
+  - mapclassify
+  - pynhd
+  - tqdm
+  - pydeps==1.12.3
+  - pip
+  - nbsphinx
+  - sphinx-rtd-theme
+  - ipykernel
+  - jupyter
+  - pip:
+    - datetime
+    - nbsphinx_link
+    - pydocstringformatter
