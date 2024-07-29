@@ -77,7 +77,7 @@ pydocstringformatter .
 ```
 ### Running the Example Workflow Notebooks
 
-The example Jupyter (.ipynb) notebooks contain extended use cases of `hyswap` functions. They are displayed in the [documentation pages](#examples), or you may download the notebooks from the 'example_notebooks' folder in this repository. The notebooks sometimes utilize additional packages that are not required to run the `hyswap` functions in isolation. You can use the developer installation instructions to create an environment containing all of the required packages to run the notebooks. Don't forget to also ``pip install hyswap`` into your working environment! 
+The example Jupyter (.ipynb) notebooks contain extended use cases of `hyswap` functions. They are displayed in the [documentation pages](https://doi-usgs.github.io/hyswap/examples/index.html#example-workflow-notebooks), or you may download the notebooks from the 'example_notebooks' folder in this repository. The notebooks sometimes utilize additional packages that are not required to run the `hyswap` functions in isolation. You can use the developer installation instructions to create an environment containing all of the required packages to run the notebooks. Don't forget to also ``pip install hyswap`` into your working environment! 
 
 ## Contributing
 
@@ -85,9 +85,11 @@ See the [contributing guidelines](CONTRIBUTING.md) for more information.
 
 ## Citation
 
-Please use the following when citing the package:
-
 Hamshaw, S.D., Hariharan, J., Hinman, E.D., Sleckman, M.J., Stanish, L.F., 2024, hyswap: A USGS software package for hydrologic data analysis, DOI: https://doi.org/10.5066/P13SKXA2
+
+## Questions?
+
+Please send an email to comptools@usgs.gov with 'hyswap' noted somewhere in the subject line.
 
 ## License
 
