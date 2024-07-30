@@ -63,7 +63,7 @@ By default, ``hyswap`` computes streamflow percentiles using the unbiased Weibul
 
 ``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles. Additional methods of computing percentiles that exist in the ``numpy.percentile()`` function can be used in ``hyswap``. Users can refer to the `numpy function documentation <https://numpy.org/doc/stable/reference/generated/numpy.percentile.html>`_ for additional details.
 
-Other default settings for percentile calculations are that NA values are dropped, a minimum of 10 years of record length is available for a given day of year, and percentile levels of 0, 5, 10, 25, 50, 75, 90, 95, 100 are calculated.
+Other default settings for percentile calculations are that NA values are dropped and  percentile levels of 5, 10, 25, 50, 75, 90, and 95 are calculated. Additionally, percentile levels that are beyond the min/max percentile ranks of the observed data are by default set to NA; the effect of this being that high or low percentiles (e.g., 1, 99) will not be able to be calculated when few data points are available.
 
 ``hyswap`` uses the ``numpy.percentile()`` implementation of the Weibull method (Type 6) for calculating percentiles
 
