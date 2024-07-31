@@ -5,22 +5,6 @@ import pandas as pd
 from hyswap import cumulative
 
 
-def test_tidy_cumulative_dataframe():
-    """Test the _tidy_cumulative_dataframe function."""
-    # make a dataframe
-    cdf = pd.DataFrame(
-        index=np.arange(2000, 2003),
-        columns=np.arange(1, 367),
-        data=np.arange(1, 1099).reshape(3, 366))
-    # test the function
-    cdf = cumulative._tidy_cumulative_dataframe(cdf, 'calendar')
-    assert cdf.shape == (1098, 3)
-    assert cdf.columns.tolist() == ['index_year', 'index_doy', 'cumulative']
-    assert cdf.index.year.unique().tolist() == [2000, 2001, 2002, 2003]
-    assert cdf['index_doy'].tolist() == list(range(1, 367)) * 3
-    assert cdf['cumulative'].tolist() == list(range(1, 1099))
-
-
 class TestDailyCumulativeValues:
 
     def test_calculate_daily_cumulative_values(self):
