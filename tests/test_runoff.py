@@ -13,26 +13,26 @@ def test_convert_cfs_to_runoff():
 
 def test_convert_cfs_to_runoff_annual():
     """Test the convert_cfs_to_runoff function with annual kwarg."""
-    mmyr = runoff.convert_cfs_to_runoff(14, 250, frequency='annual')
+    mmyr = runoff.convert_cfs_to_runoff(14, 250, time_unit='year')
     assert pytest.approx(mmyr, 0.1) == 50.0
 
 
 def test_convert_cfs_to_runoff_monthly():
     """Test the convert_cfs_to_runoff function with monthly kwarg."""
-    mmyr = runoff.convert_cfs_to_runoff(14, 250, frequency='monthly')
+    mmyr = runoff.convert_cfs_to_runoff(14, 250, time_unit='month')
     assert pytest.approx(mmyr, 0.1) == 4.2
 
 
 def test_convert_cfs_to_runoff_daily():
     """Test the convert_cfs_to_runoff function with daily kwarg."""
-    mmyr = runoff.convert_cfs_to_runoff(14, 250, frequency='daily')
+    mmyr = runoff.convert_cfs_to_runoff(14, 250, time_unit='day')
     assert pytest.approx(mmyr, 0.1) == 0.14
 
 
 def test_convert_cfs_to_runoff_invalid():
     """Test the convert_cfs_to_runoff function with invalid kwarg."""
     with pytest.raises(ValueError):
-        runoff.convert_cfs_to_runoff(14, 250, frequency='invalid')
+        runoff.convert_cfs_to_runoff(14, 250, time_unit='invalid')
 
 
 def test_streamflow_to_runoff():

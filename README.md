@@ -31,7 +31,7 @@ pip install hyswap
 ### User Installation From Source
 
 To install `hyswap` from source, first you will need to clone the repository.
-Next, from the root of the repository, run the following commands:
+Next, from the root of the repository, run the following commands in your non-base environment:
 
 ```bash
 pip install -r requirements.txt
@@ -42,12 +42,25 @@ pip install .
 
 Developer installation should be performed from source.
 First you will need to clone the repository.
-Next, from the root of the repository, run the following commands:
+Next, from the root of the repository, you have two options:
+
+**Option 1: Initiate your own python environment and then `pip install` the required packages**
+
+In a non-base environment, use the `pip` command to install both the `requirements.txt` and the `requirements-dev.txt`. Then run `pip install .` to obtain the source version of `hyswap`.
 
 ```bash
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
-pip install -e .
+pip install .
+```
+**Option 2: Use the `environment-dev.yml` to initiate a conda/mamba environment and download required packages from `conda-forge` and `pypi`**
+
+If you are a `conda` or `mamba` user, the shell code below will create a development environment called `hyswap-dev-environment`, activate it, and then install `hyswap` into the environment from source. Replace `conda` with `mamba` where appropriate for `mamba` users.
+
+```bash
+conda env create -f environment-dev.yml
+conda activate hyswap-dev-environment
+pip install .
 ```
 
 ### Testing and Building Documentation Locally
@@ -77,11 +90,19 @@ pydocstringformatter .
 ```
 ### Running the Example Workflow Notebooks
 
-The example workflow notebooks are extended example use cases of `hyswap` functions. Open the jupyter notebooks from the 'example_notebooks' folder in the `hyswap` repository. The notebooks sometimes utilize additional packages that are not required to run `hyswap`. You can use the developer installation instructions to ensure you have all of the required packages to run the notebooks. 
+The example Jupyter (.ipynb) notebooks contain extended use cases of `hyswap` functions. They are displayed in the [documentation pages](https://doi-usgs.github.io/hyswap/examples/index.html#example-workflow-notebooks), or you may download the notebooks from the 'example_notebooks' folder in this repository. The notebooks sometimes utilize additional packages that are not required to run the `hyswap` functions in isolation. You can use the developer installation instructions to create an environment containing all of the required packages to run the notebooks. Don't forget to also ``pip install hyswap`` into your working environment! 
 
 ## Contributing
 
 See the [contributing guidelines](CONTRIBUTING.md) for more information.
+
+## Citation
+
+Hamshaw, S.D., Hariharan, J., Hinman, E.D., Sleckman, M.J., Stanish, L.F., 2024, hyswap: A USGS software package for hydrologic data analysis, DOI: https://doi.org/10.5066/P13SKXA2
+
+## Questions?
+
+Please send an email to comptools@usgs.gov with 'hyswap' noted somewhere in the subject line.
 
 ## License
 

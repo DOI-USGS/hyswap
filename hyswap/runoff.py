@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
+def convert_cfs_to_runoff(cfs, drainage_area, time_unit="year"):
     """Convert cfs to runoff values for some drainage area.
 
     Parameters
@@ -14,14 +14,16 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     drainage_area : float
         Drainage area in km2.
 
-    frequency : str, optional
-        Frequency of runoff values to return. Options are 'annual',
-        'monthly', and 'daily'. Default is 'annual'.
+    time_unit : str, optional
+        Determines the unit of time to use in the returned
+        values with the format mm/<time_unit>.
+        Options are 'year', 'month', and 'day'.
+        Default is 'year'.
 
     Returns
     -------
     float
-        Runoff in mm/<frequency>.
+        Runoff in mm/<time_unit>.
 
     Examples
     --------
@@ -33,15 +35,15 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
         >>> np.round(mmyr).item()
         50.0
     """
-    # convert frequency string to value
-    if frequency == "annual":
+    # convert time_unit string to value
+    if time_unit == "year":
         freq = 365.25
-    elif frequency == "monthly":
+    elif time_unit == "month":
         freq = 365.25 / 12
-    elif frequency == "daily":
+    elif time_unit == "day":
         freq = 1
     else:
-        raise ValueError("Invalid frequency: {}".format(frequency))
+        raise ValueError("Invalid time unit: {}".format(time_unit))
     # convert cfs to cubic feet per frequency
     cpf = cfs * 60 * 60 * 24 * freq
     # convert cubic feet per freq to cubic meters per freq
@@ -56,7 +58,7 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
 def streamflow_to_runoff(df,
                          data_column_name,
                          drainage_area,
-                         frequency="annual"):
+                         time_unit="year"):
     """Convert streamflow to runoff for a given drainage area.
 
     For a given gage/dataframe, convert streamflow to runoff using the
@@ -73,9 +75,11 @@ def streamflow_to_runoff(df,
     drainage_area : float
         Drainage area in km2.
 
-    frequency : str, optional
-        Frequency of runoff values to return. Options are 'annual',
-        'monthly', and 'daily'. Default is 'annual'.
+    time_unit : str, optional
+        Determines the unit of time to use in the returned
+        values with the format mm/<time_unit>.
+        Options are 'year', 'month', and 'day'.
+        Default is 'year'.
 
     Returns
     -------
@@ -97,7 +101,7 @@ def streamflow_to_runoff(df,
         Name: runoff, dtype: float64
     """
     df['runoff'] = df[data_column_name].apply(
-        lambda x: convert_cfs_to_runoff(x, drainage_area, frequency=frequency)
+        lambda x: convert_cfs_to_runoff(x, drainage_area, time_unit=time_unit)
     )
     return df
 

@@ -16,3 +16,4 @@ nbsphinx
 nbsphinx_link
 sphinx-rtd-theme
 ipykernel
+jupyter
