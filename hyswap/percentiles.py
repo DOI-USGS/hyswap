@@ -24,6 +24,9 @@ def calculate_fixed_percentile_thresholds(
         mask_out_of_range=True,
         **kwargs):
     """Calculate fixed percentile thresholds using historical data.
+    Fixed percentiles are calculated using all data in the period of
+    record. See the `Calculations Quick-Reference <https://doi-usgs.github.io/hyswap/meta/calculations.html#streamflow-percentiles>`
+    for more information.
 
     Parameters
     ----------
@@ -206,6 +209,9 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         mask_out_of_range=True,
         **kwargs):
     """Calculate variable percentile thresholds of data by day of year.
+    Variable percentiles are calculated using flow observations for
+    each day from all years on record. See the `Calculations Quick-Reference <https://doi-usgs.github.io/hyswap/meta/calculations.html#streamflow-percentiles>`
+    for more information.
 
     Parameters
     ----------

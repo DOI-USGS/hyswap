@@ -97,8 +97,7 @@ and options for this function.
 Interpolating New Percentiles Using Previously Calculated Percentiles
 *********************************************************************
 
-To support faster calculations of percentiles without the need to repeatedly
-fetch all historic data from NWIS, the
+To support faster calculations of percentiles without the need to repeatedly fetch all historic data from NWIS, the
 :obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` and 
 :obj:`hyswap.percentiles.calculate_variable_percentile_from_value`functions support the
 interpolation of a new percentile value for a measurement given a previously
