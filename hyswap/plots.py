@@ -275,8 +275,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
                              title="Duration Hydrograph",
                              ylab="Discharge, ft3/s",
                              xlab="Month-Year",
-                             colors=None,
-                             color_blind_friendly=True,
+                             color_palette=None,
                              **kwargs):
     """Plot a duration hydrograph.
 
@@ -333,14 +332,11 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
     xlab : str, optional
         Label for the x-axis. If not provided, the default label will be
         'Month'.
-    colors : list, optional
-        List of colors to use for the lines. If not provided, a default
-        list of colors will be used. The max number of colors in this
-        list is seven.
-    color_blind_friendly : bool, optional
-        If colors is set to None, this option determines whether the
-        default colors should be color blind friendly. Defaults to
-        True.
+    color_palette : list, optional
+        List of colors to use for the lines or a string describing one of
+        two built-in palettes: 'BrownBlue' or 'Rainbow'. If not provided,
+        the 'BrownBlue' palette will be used. The max number of colors
+        in this list is seven.
     **kwargs
         Keyword arguments passed to :meth:`matplotlib.axes.Axes.fill_between`.
 
@@ -397,13 +393,12 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
     else:
         txt = ''
     # get colors
-    if colors is None:
-        if color_blind_friendly is True:
-            colors = ['#8f4f1f', '#dcb668', '#ebd6ab', '#e9e9e9', '#aacee0',
-                      '#5699c0', '#292f6b']
-        else:
-            colors = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
-                      "#7bdbd2", "#7587bf", "#ad63ba"]
+    if color_palette is None or color_palette == 'BrownBlue':
+        color_palette = ['#8f4f1f', '#dcb668', '#ebd6ab', '#e9e9e9', '#aacee0',
+                         '#5699c0', '#292f6b']
+    if color_palette == 'Rainbow':
+        color_palette = ["#e37676", "#e8c285", "#dbf595", "#a1cc9f",
+                         "#7bdbd2", "#7587bf", "#ad63ba"]
     # set the df index
     if date_column_name is not None:
         df = df.set_index(date_column_name)
@@ -419,7 +414,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
             df_combined.index.values,
             df_combined['min'].tolist(),
             df_combined['p' + str(pct_list[0]).zfill(2)].tolist(),
-            color=colors[0],
+            color=color_palette[0],
             alpha=alpha,
             linewidth=0,
             label="Min. - {}th Percentile".format(pct_list[0]),
@@ -430,7 +425,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
             df_combined.index.values,
             df_combined['p' + str(pct_list[i-1]).zfill(2)].tolist(),
             df_combined['p' + str(pct_list[i]).zfill(2)].tolist(),
-            color=colors[i],
+            color=color_palette[i],
             alpha=alpha,
             linewidth=0,
             label="{}th - {}th Percentile".format(
@@ -441,7 +436,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
         df_combined.index.values,
         df_combined['p' + str(pct_list[-1]).zfill(2)].tolist(),
         df_combined['max'].tolist(),
-        color=colors[-1],
+        color=color_palette[-1],
         alpha=alpha,
         linewidth=0,
         label="{}th Percentile - Max.".format(pct_list[-1]),

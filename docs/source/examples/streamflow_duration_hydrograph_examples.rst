@@ -83,6 +83,8 @@ as well as streamflow data from the year 2022.
     )
 
 Now that we've retrieved our web data, we will apply some `hyswap` functions to make a duration hydrograph plot.
+Let's also try using the built-in 'Rainbow' color palette, which matches the original WaterWatch color scheme,
+but is not as colorblind-friendly as the default 'BrownBlue' palette.
 
 .. plot::
     :context:
@@ -99,7 +101,8 @@ Now that we've retrieved our web data, we will apply some `hyswap` functions to 
         "00060_Mean",
         ax=ax,
         data_label="2022",
-        title="Percentiles of Streamflow by Day of Year - Site 03586500"
+        title="Percentiles of Streamflow by Day of Year - Site 03586500",
+        color_palette="Rainbow"
     )
     plt.tight_layout()
     plt.show()
@@ -196,7 +199,7 @@ Plotting Custom Set of Percentile Thresholds
 *********************************************
 
 In this example we will calculate and plot a unique set of daily percentile thresholds.
-We will also specify the colors to be used for the percentile envelopes.
+We will also specify the color palette to be used for the percentile envelopes.
 
 .. plot::
     :context: reset
@@ -231,7 +234,7 @@ We will also specify the colors to be used for the percentile envelopes.
         ax=ax,
         data_label="Water Year 2022",
         title="Percentiles of Streamflow by Day of Year - Site 03586500",
-        colors=['r', 'm', 'c', 'b']
+        color_palette=['r', 'm', 'c', 'b']
     )
     plt.tight_layout()
     plt.show()
