@@ -3,20 +3,21 @@ import pandas as pd
 import numpy as np
 
 
-def filter_approved_data(data, filter_column=None):
+def filter_approved_data(df, filter_column_name=None):
     """Filter a dataframe to only return approved "A" (or "A, e") data.
 
     Parameters
     ----------
-    data : pandas.DataFrame
-        The data to filter.
-    filter_column : string
+    df : pandas.DataFrame
+        Dataframe containing the data to filter.
+    filter_column_name : string
         The column upon which to filter. If None, an error will be raised.
 
     Returns
     -------
     pandas.DataFrame
-        The filtered data.
+        A filtered dataframe containing only approved data, denoted by an
+        "A" in the filter column.
 
     Examples
     --------
@@ -26,7 +27,7 @@ def filter_approved_data(data, filter_column=None):
     .. doctest::
 
         >>> df = pd.DataFrame({
-        ...     'data': [1, 2, 3, 4, 5],
+        ...     'df': [1, 2, 3, 4, 5],
         ...     'approved': ['A', 'A, e', 'A', 'P', 'P']})
         >>> df.shape
         (5, 2)
@@ -35,22 +36,22 @@ def filter_approved_data(data, filter_column=None):
 
     .. doctest::
 
-        >>> df = utils.filter_approved_data(df, filter_column='approved')
+        >>> df = utils.filter_approved_data(df, filter_column_name='approved')
         >>> df.shape
         (3, 2)
     """
-    if filter_column is None:
-        raise ValueError("filter_column must be specified.")
-    return data[data[filter_column].str.contains("A", na=False)]
+    if filter_column_name is None:
+        raise ValueError("Filter_column must be specified.")
+    return df[df[filter_column_name].str.contains("A", na=False)]
 
 
-def rolling_average(df, data_column_name, data_type,
+def rolling_average(df, data_column_name, window,
                     auto_min_periods=True, custom_min_periods=None,
                     **kwargs):
     """Calculate a rolling average for a dataframe.
 
     Default behavior right-aligns the window used for the rolling average
-    and uses the data_type argument ('1D', '7D', '14D', '28D') to set the
+    and uses the window argument ('1D', '7D', '14D', '28D') to set the
     `min_periods` argument in `pandas.DataFrame.rolling`. The function
     returns NaN values if any of the values in the window are NaN or if the
     `min_periods` argument is not satisifed. Properties of the windowing
@@ -60,17 +61,18 @@ def rolling_average(df, data_column_name, data_type,
     Parameters
     ----------
     df : pandas.DataFrame
-        The dataframe to calculate the rolling average for.
+        Dataframe containing data to calculate the rolling average for.
     data_column_name : string
-        The name of the column to calculate the rolling average for.
-    data_type : string
+        Name of the column containing data for calculating the rolling
+        average.
+    window : string
         The formatted frequency string to be used with
         pandas.DataFrame.rolling to calculate the average over the correct
-        temporal period.
+        temporal period. Should take the format 'numberD'.
     auto_min_periods : bool
         Defaults to True. When True, the `min_periods` argument in
-        `pandas.DataFrame.rolling` is set using the `data_type` argument.
-        For example, if the `data_type` = '7D', the `min_periods`
+        `pandas.DataFrame.rolling` is set using the `window_width` argument.
+        For example, if the `window` = '7D', the `min_periods`
         argument is 7. When False, the `min_periods` argument is set
         using the `custom_min_periods` input.
     custom_min_periods : int, optional
@@ -88,12 +90,12 @@ def rolling_average(df, data_column_name, data_type,
         The output dataframe with the rolling average values.
     """
     if auto_min_periods is True:
-        min_periods = pd.to_timedelta(data_type).days
+        min_periods = pd.to_timedelta(window).days
     else:
         min_periods = custom_min_periods
     df_out = df.copy(deep=True)
     df_out[data_column_name] = df_out[data_column_name].rolling(
-        data_type,
+        window,
         min_periods, **kwargs).mean().round(2)
     return df_out
 
@@ -594,7 +596,7 @@ def munge_nwis_stats(df, include_metadata=True):
     return df
 
 
-def calculate_summary_statistics(df, data_col="00060_Mean"):
+def calculate_summary_statistics(df, data_column_name="00060_Mean"):
     """
     Calculate summary statistics for a site.
 
@@ -604,7 +606,7 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
         DataFrame containing daily values for the site. Expected to be from
         `dataretrieval.nwis.get_dv()`, or similar.
 
-    data_col : str, optional
+    data_column_name : str, optional
         Name of the column in the dv_df DataFrame that contains the data of
         interest. Default is "00060_Mean" which is the mean daily discharge
         column.
@@ -647,15 +649,15 @@ def calculate_summary_statistics(df, data_col="00060_Mean"):
     summary_dict['Begin date'] = df.index.min().strftime('%Y-%m-%d')
     summary_dict['End date'] = df.index.max().strftime('%Y-%m-%d')
     # count
-    summary_dict['Count'] = df[data_col].count()
+    summary_dict['Count'] = df[data_column_name].count()
     # minimum
-    summary_dict['Minimum'] = df[data_col].min()
+    summary_dict['Minimum'] = df[data_column_name].min()
     # mean
-    summary_dict['Mean'] = df[data_col].mean().round(2)
+    summary_dict['Mean'] = df[data_column_name].mean().round(2)
     # median
-    summary_dict['Median'] = df[data_col].median()
+    summary_dict['Median'] = df[data_column_name].median()
     # maximum
-    summary_dict['Maximum'] = df[data_col].max()
+    summary_dict['Maximum'] = df[data_column_name].max()
 
     # make dataframe
     summary_df = pd.DataFrame(summary_dict, index=[0])
@@ -731,35 +733,37 @@ def filter_to_common_time(df_list):
     return df_list, n_obs
 
 
-def set_data_type(data_type):
-    """Function to set the data type for rolling averages.
+def set_window_width(window_width):
+    """Function to set the number of days (window width) used
+    to calculate a set of rolling averages.
 
     Parameters
     ----------
-    data_type : str
-        The type of data. Must be one of 'daily', '7-day', '14-day', and
-        '28-day'. If '7-day', '14-day', or '28-day' is
-        specified, the data will be averaged over the specified period. NaN
-        values will be used for any days that do not have data. If present,
-        NaN values will result in NaN values for the entire period.
+    window_width : str
+        The window width of the data in days. Must be one of 'daily',
+        '7-day', '14-day', and '28-day'. If '7-day', '14-day', or
+        '28-day' is specified, the data will be averaged over the
+        specified period. NaN values will be used for any days that
+        do not have data. If present, NaN values will result in NaN
+        values for the entire period.
 
     Returns
     -------
-    data_type : str
+    window : str
         The formatted frequency string to be used with
         pandas.DataFrame.rolling to calculate the average over the correct
         temporal period.
     """
-    if data_type == 'daily':
-        data_type = '1D'
-    elif data_type == '7-day':
-        data_type = '7D'
-    elif data_type == '14-day':
-        data_type = '14D'
-    elif data_type == '28-day':
-        data_type = '28D'
+    if window_width == 'daily':
+        window = '1D'
+    elif window_width == '7-day':
+        window = '7D'
+    elif window_width == '14-day':
+        window = '14D'
+    elif window_width == '28-day':
+        window = '28D'
 
-    return data_type
+    return window
 
 
 def categorize_flows(df,

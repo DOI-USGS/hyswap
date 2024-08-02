@@ -312,7 +312,7 @@ class TestFormatData:
         # test the function with a dataframe and a date index and a different
         # data averaging scheme
         df_7out = rasterhydrograph.format_data(df_date, 'value',
-                                               data_type='7-day')
+                                               window_width='7-day')
         assert len(df_7out.index) == 5
         assert len(df_7out.columns) == 365
         # assert day 1 of 2018 has no data, is NaN
@@ -356,11 +356,11 @@ class TestFormatData:
         # test the function with a dataframe and a date index and a different
         # data averaging scheme and a water year
         df_7out_water = rasterhydrograph.format_data(df_date, 'value',
-                                                     data_type='7-day',
+                                                     window_width='7-day',
                                                      year_type='water',
                                                      clip_leap_day=True)
         df_7out = rasterhydrograph.format_data(df_date, 'value',
-                                               data_type='7-day',
+                                               window_width='7-day',
                                                clip_leap_day=True)
         assert len(df_7out_water.index) == 5
         assert len(df_7out_water.columns) == 365
@@ -406,7 +406,7 @@ class TestFormatData:
         # test the function with a dataframe and a date index and a different
         # data averaging scheme via kwargs and a climate year
         df_7out_climate = rasterhydrograph.format_data(df_date, 'value',
-                                                       data_type='7-day',
+                                                       window_width='7-day',
                                                        year_type='climate',
                                                        center=True)
         assert len(df_7out_climate.index) == 4
