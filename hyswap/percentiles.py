@@ -71,8 +71,8 @@ def calculate_fixed_percentile_thresholds(
         date_column_name.
 
     mask_out_of_range :  bool, optional
-        When set to True, percentiles that are beyond the min/max value
-        of the observed data are set to NA. When enabled, high or low
+        When set to True, percentiles that are beyond the min/max percentile
+        rank of the observed data are set to NA. When enabled, high or low
         percentiles may not be calculated when few data points are
         available. Default is True.
 
@@ -280,8 +280,8 @@ def calculate_variable_percentile_thresholds_by_day_of_year(
         including count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
-        When set to True, percentiles that are beyond the min/max value
-        of the observed data are set to NA. When enabled, high or low
+        When set to True, percentiles that are beyond the min/max percentile
+        rank of the observed data are set to NA. When enabled, high or low
         percentiles may not be calculated when few data points are
         available. Default is True.
 
@@ -482,8 +482,8 @@ def calculate_variable_percentile_thresholds_by_day(
         including count, mean, start_yr, end_yr. Default is True
 
     mask_out_of_range :  bool, optional
-        When set to True, percentiles that are beyond the min/max value
-        of the observed data are set to NA. When enabled, high or low
+        When set to True, percentiles that are beyond the min/max percentile
+        rank of the observed data are set to NA. When enabled, high or low
         percentiles may not be calculated when few data points are
         available. Default is True.
 
