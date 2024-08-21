@@ -19,9 +19,9 @@ jobs:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@0ebf233433c08fb9061af664d501c3f3ff0e9e20
       with:
         python-version: '3.x'
     - name: Install dependencies
@@ -33,4 +33,4 @@ jobs:
     - name: Build package
       run: python -m build
     - name: Publish package distributions to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+      uses: pypa/gh-action-pypi-publish@ec4db0b4ddc65acdf4bff5fa45ac92d78b56bdf0
