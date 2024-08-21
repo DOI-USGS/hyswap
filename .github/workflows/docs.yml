@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       with:
         persist-credentials: false
     - name: Install hyswap, dependencies, and Sphinx then build docs
@@ -39,7 +39,7 @@ jobs:
         echo ${{ github.ref == 'refs/heads/main' }}
         echo ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.4.2
+      uses: JamesIves/github-pages-deploy-action@22a6ee251d6f13c6ab1ecb200d974f1a6feb1b8d
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
