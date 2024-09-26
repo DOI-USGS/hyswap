@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.runoff &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>hyswap.runoff &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -91,7 +91,7 @@
 
 <div class="viewcode-block" id="convert_cfs_to_runoff">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.convert_cfs_to_runoff">[docs]</a>
-<span class="k">def</span> <span class="nf">convert_cfs_to_runoff</span><span class="p">(</span><span class="n">cfs</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">convert_cfs_to_runoff</span><span class="p">(</span><span class="n">cfs</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">time_unit</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert cfs to runoff values for some drainage area.</span>
 
 <span class="sd">    Parameters</span>
@@ -102,35 +102,36 @@
 <span class="sd">    drainage_area : float</span>
 <span class="sd">        Drainage area in km2.</span>
 
-<span class="sd">    frequency : str, optional</span>
-<span class="sd">        Frequency of runoff values to return. Options are &#39;annual&#39;,</span>
-<span class="sd">        &#39;monthly&#39;, and &#39;daily&#39;. Default is &#39;annual&#39;.</span>
+<span class="sd">    time_unit : str, optional</span>
+<span class="sd">        Determines the unit of time to use in the returned</span>
+<span class="sd">        values with the format mm/&lt;time_unit&gt;.</span>
+<span class="sd">        Options are &#39;year&#39;, &#39;month&#39;, and &#39;day&#39;.</span>
+<span class="sd">        Default is &#39;year&#39;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
-<span class="sd">        Runoff in mm/&lt;frequency&gt;.</span>
+<span class="sd">        Runoff in mm/&lt;time_unit&gt;.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Convert 14 cfs to mm/yr for a 250 km2 drainage area.</span>
 
 <span class="sd">    .. doctest::</span>
-<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
 <span class="sd">        &gt;&gt;&gt; mmyr = runoff.convert_cfs_to_runoff(14, 250)</span>
-<span class="sd">        &gt;&gt;&gt; np.round(mmyr)</span>
+<span class="sd">        &gt;&gt;&gt; np.round(mmyr).item()</span>
 <span class="sd">        50.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># convert frequency string to value</span>
-    <span class="k">if</span> <span class="n">frequency</span> <span class="o">==</span> <span class="s2">&quot;annual&quot;</span><span class="p">:</span>
+    <span class="c1"># convert time_unit string to value</span>
+    <span class="k">if</span> <span class="n">time_unit</span> <span class="o">==</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span>
         <span class="n">freq</span> <span class="o">=</span> <span class="mf">365.25</span>
-    <span class="k">elif</span> <span class="n">frequency</span> <span class="o">==</span> <span class="s2">&quot;monthly&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">time_unit</span> <span class="o">==</span> <span class="s2">&quot;month&quot;</span><span class="p">:</span>
         <span class="n">freq</span> <span class="o">=</span> <span class="mf">365.25</span> <span class="o">/</span> <span class="mi">12</span>
-    <span class="k">elif</span> <span class="n">frequency</span> <span class="o">==</span> <span class="s2">&quot;daily&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">time_unit</span> <span class="o">==</span> <span class="s2">&quot;day&quot;</span><span class="p">:</span>
         <span class="n">freq</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid frequency: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frequency</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid time unit: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time_unit</span><span class="p">))</span>
     <span class="c1"># convert cfs to cubic feet per frequency</span>
     <span class="n">cpf</span> <span class="o">=</span> <span class="n">cfs</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="n">freq</span>
     <span class="c1"># convert cubic feet per freq to cubic meters per freq</span>
@@ -145,7 +146,10 @@
 
 <div class="viewcode-block" id="streamflow_to_runoff">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.runoff.streamflow_to_runoff">[docs]</a>
-<span class="k">def</span> <span class="nf">streamflow_to_runoff</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s2">&quot;annual&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">streamflow_to_runoff</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                         <span class="n">data_column_name</span><span class="p">,</span>
+                         <span class="n">drainage_area</span><span class="p">,</span>
+                         <span class="n">time_unit</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert streamflow to runoff for a given drainage area.</span>
 
 <span class="sd">    For a given gage/dataframe, convert streamflow to runoff using the</span>
@@ -156,15 +160,17 @@
 <span class="sd">    df : pandas.DataFrame</span>
 <span class="sd">        DataFrame containing streamflow data.</span>
 
-<span class="sd">    data_col : str</span>
-<span class="sd">        Column name containing streamflow data, assumed to be in cfs.</span>
+<span class="sd">    data_column_name : str</span>
+<span class="sd">        Name of column containing data to analyze.</span>
 
 <span class="sd">    drainage_area : float</span>
 <span class="sd">        Drainage area in km2.</span>
 
-<span class="sd">    frequency : str, optional</span>
-<span class="sd">        Frequency of runoff values to return. Options are &#39;annual&#39;,</span>
-<span class="sd">        &#39;monthly&#39;, and &#39;daily&#39;. Default is &#39;annual&#39;.</span>
+<span class="sd">    time_unit : str, optional</span>
+<span class="sd">        Determines the unit of time to use in the returned</span>
+<span class="sd">        values with the format mm/&lt;time_unit&gt;.</span>
+<span class="sd">        Options are &#39;year&#39;, &#39;month&#39;, and &#39;day&#39;.</span>
+<span class="sd">        Default is &#39;year&#39;.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -185,8 +191,8 @@
 <span class="sd">        2    57.2</span>
 <span class="sd">        Name: runoff, dtype: float64</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;runoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">convert_cfs_to_runoff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;runoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">convert_cfs_to_runoff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">drainage_area</span><span class="p">,</span> <span class="n">time_unit</span><span class="o">=</span><span class="n">time_unit</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">df</span></div>
 
@@ -197,8 +203,8 @@
 <span class="k">def</span> <span class="nf">identify_sites_from_geom_intersection</span><span class="p">(</span>
         <span class="n">geom_id</span><span class="p">,</span>
         <span class="n">geom_intersection_df</span><span class="p">,</span>
-        <span class="n">geom_id_col</span><span class="p">,</span>
-        <span class="n">site_col</span><span class="p">,</span>
+        <span class="n">geom_id_column_name</span><span class="p">,</span>
+        <span class="n">site_column_name</span><span class="p">,</span>
         <span class="n">prop_geom_in_basin_col</span><span class="o">=</span><span class="s1">&#39;prop_huc_in_basin&#39;</span><span class="p">,</span>
         <span class="n">prop_basin_in_geom_col</span><span class="o">=</span><span class="s1">&#39;prop_basin_in_huc&#39;</span><span class="p">):</span>
 
@@ -223,14 +229,14 @@
 <span class="sd">        geometry ids, proportion of geometry in basin, and proportion</span>
 <span class="sd">        of basin within geometry.</span>
 
-<span class="sd">    geom_id_col : str</span>
+<span class="sd">    geom_id_column_name : str</span>
 <span class="sd">        Column in geom_intersection_df with geometry ids.</span>
 
-<span class="sd">    site_col : str</span>
+<span class="sd">    site_column_name : str</span>
 <span class="sd">        Column in geom_intersection_df with drainage area site numbers.</span>
 <span class="sd">        Please make sure ids have the correct number of digits and have</span>
 <span class="sd">        not lost leading 0s when read in. If the site numbers are the</span>
-<span class="sd">        geom_intersection_df index col, site_col = &#39;index&#39;.</span>
+<span class="sd">        geom_intersection_df index col, site_column_name = &#39;index&#39;.</span>
 
 <span class="sd">    prop_geom_in_basin_col : str, optional</span>
 <span class="sd">        Name of column with values (type:float) representing the proportion</span>
@@ -261,7 +267,7 @@
 <span class="sd">        ... &#39;prop_basin_in_huc&#39;])</span>
 <span class="sd">        &gt;&gt;&gt; sites_lst = runoff.identify_sites_from_geom_intersection(</span>
 <span class="sd">        ... geom_intersection_df=df, geom_id=&#39;01010002&#39;,</span>
-<span class="sd">        ... geom_id_col=&#39;geom_id&#39;, site_col=&#39;site_no&#39;,</span>
+<span class="sd">        ... geom_id_column_name=&#39;geom_id&#39;, site_column_name=&#39;site_no&#39;,</span>
 <span class="sd">        ... prop_geom_in_basin_col=&#39;prop_huc_in_basin&#39;,</span>
 <span class="sd">        ... prop_basin_in_geom_col=&#39;prop_basin_in_huc&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(sites_lst)</span>
@@ -270,17 +276,17 @@
 
     <span class="c1"># Filter df to designated geometry (e.g. huc8)</span>
     <span class="n">filtered_df</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="p">[</span>
-        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">geom_id_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_id</span>
+        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">geom_id_column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_id</span>
         <span class="p">]</span>
 
     <span class="c1"># Check whether sites is the df index or not</span>
-    <span class="k">if</span> <span class="n">site_col</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
-        <span class="n">site_col</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="o">.</span><span class="n">index</span>
+    <span class="k">if</span> <span class="n">site_column_name</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
+        <span class="n">site_column_name</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="o">.</span><span class="n">index</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">site_col</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span>
+        <span class="n">site_column_name</span> <span class="o">=</span> <span class="n">filtered_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span>
 
     <span class="c1"># Retrieve all non-0 sites within the designated geometry (e.g. huc8)</span>
-    <span class="n">site_list</span> <span class="o">=</span> <span class="n">site_col</span><span class="p">[(</span><span class="n">filtered_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+    <span class="n">site_list</span> <span class="o">=</span> <span class="n">site_column_name</span><span class="p">[(</span><span class="n">filtered_df</span><span class="p">[</span><span class="n">prop_geom_in_basin_col</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
         <span class="n">filtered_df</span><span class="p">[</span><span class="n">prop_basin_in_geom_col</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">site_list</span></div>
@@ -292,8 +298,8 @@
 <span class="k">def</span> <span class="nf">calculate_geometric_runoff</span><span class="p">(</span><span class="n">geom_id</span><span class="p">,</span>
                                <span class="n">runoff_df</span><span class="p">,</span>
                                <span class="n">geom_intersection_df</span><span class="p">,</span>
-                               <span class="n">site_col</span><span class="p">,</span>
-                               <span class="n">geom_id_col</span><span class="p">,</span>
+                               <span class="n">site_column_name</span><span class="p">,</span>
+                               <span class="n">geom_id_column_name</span><span class="p">,</span>
                                <span class="n">prop_geom_in_basin_col</span><span class="o">=</span><span class="s1">&#39;prop_huc_in_basin&#39;</span><span class="p">,</span>
                                <span class="n">prop_basin_in_geom_col</span><span class="o">=</span><span class="s1">&#39;prop_basin_in_huc&#39;</span><span class="p">,</span>
                                <span class="n">percentage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -325,13 +331,13 @@
 <span class="sd">        geometry ids, proportion of geometry in basin, and proportion</span>
 <span class="sd">        of basin within geometry.</span>
 
-<span class="sd">    site_col : str</span>
+<span class="sd">    site_column_name : str</span>
 <span class="sd">        Column in geom_intersection_df with drainage area site numbers.</span>
 <span class="sd">        Please make sure ids have the correct number of digits and have</span>
 <span class="sd">        not lost leading 0s when read in. If the site numbers are the</span>
-<span class="sd">        geom_intersection_df index col, site_col = &#39;index&#39;.</span>
+<span class="sd">        geom_intersection_df index col, site_column_name = &#39;index&#39;.</span>
 
-<span class="sd">    geom_id_col : str</span>
+<span class="sd">    geom_id_column_name : str</span>
 <span class="sd">        Column in geom_intersection_df with geometry ids.</span>
 
 <span class="sd">    prop_geom_in_basin_col : str</span>
@@ -380,7 +386,7 @@
     <span class="c1"># check whether runoff_df contains sites not in geom_df</span>
     <span class="c1"># this might indicate mismatched format in site ids between</span>
     <span class="c1"># runoff_df and geom_intersection df</span>
-    <span class="n">check</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">check</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;There are site ids in the runoff df that are not present &#39;</span>
                <span class="sa">f</span><span class="s1">&#39;in the intersection df for </span><span class="si">{</span><span class="n">geom_id</span><span class="si">}</span><span class="s1">. This might indicate &#39;</span>
@@ -388,22 +394,22 @@
                <span class="s1">&#39;zeroes if NWIS sites.&#39;</span><span class="p">))</span>
 
     <span class="c1"># check whether sites is the df index or not</span>
-    <span class="k">if</span> <span class="n">site_col</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">site_column_name</span> <span class="o">==</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span>
         <span class="n">geom_intersection_df</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-        <span class="n">site_col</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">site_column_name</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
 
-    <span class="c1"># assertion to check that site_col are not of type int</span>
-    <span class="k">assert</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;str&#39;</span> <span class="ow">or</span> \
-        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="s1">&#39;geom_intersection_df site_col should be a str or obj&#39;</span>  <span class="c1"># noqa: E501</span>
+    <span class="c1"># assertion to check that site_column_name are not of type int</span>
+    <span class="k">assert</span> <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;str&#39;</span> <span class="ow">or</span> \
+        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span> <span class="o">==</span> <span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="s1">&#39;geom_intersection_df site_column_name should be a str or obj&#39;</span>  <span class="c1"># noqa: E501</span>
 
     <span class="c1"># filter intersction table to basins that overlap geom id</span>
     <span class="n">filtered_intersection_df</span> <span class="o">=</span> <span class="n">geom_intersection_df</span><span class="p">[</span>
-        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">geom_id_col</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_id</span>
+        <span class="n">geom_intersection_df</span><span class="p">[</span><span class="n">geom_id_column_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_id</span>
         <span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="c1"># filter weights df to sites with data in runoff_df</span>
-    <span class="n">sites</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span>
+    <span class="n">sites</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span>
 
     <span class="c1"># get all site ids in runoff df</span>
     <span class="n">ro_sites</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -425,7 +431,7 @@
 
     <span class="c1"># filter weights df to sites with data</span>
     <span class="n">filtered_intersection_df</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="p">[</span>
-        <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">filtered_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>  <span class="c1"># noqa: E501</span>
         <span class="p">]</span>
     <span class="c1"># check to see if empty</span>
     <span class="k">if</span> <span class="n">filtered_intersection_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
@@ -454,17 +460,17 @@
         <span class="n">geom_basin_overlap</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="p">[</span><span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
         <span class="n">geom_basin_overlap</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># pick basin that has the highest weight: tightest overlap</span>
-        <span class="n">geom_runoff_series</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="p">[</span><span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_col</span><span class="p">]]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">runoff</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">geom_runoff_series</span> <span class="o">=</span> <span class="n">runoff_df</span><span class="p">[</span><span class="n">runoff_df</span><span class="p">[</span><span class="s1">&#39;site_no&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_column_name</span><span class="p">]]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;datetime&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">runoff</span>  <span class="c1"># noqa: E501</span>
         <span class="c1"># create new df with additional info about runoff calculations</span>
         <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">geom_runoff_series</span><span class="p">)</span>
         <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">geom_runoff</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;runoff&#39;</span><span class="p">:</span> <span class="s1">&#39;estimated_runoff&#39;</span><span class="p">})</span>  <span class="c1"># noqa: E501</span>
         <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;estimated_runoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;estimated_runoff&#39;</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
         <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;geom_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_id</span>
         <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;n_sites&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;site_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_col</span><span class="p">]</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;site_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_column_name</span><span class="p">]</span>
         <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;max_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
         <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;avg_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">geom_basin_overlap</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
-        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;max_site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_col</span><span class="p">]</span>
+        <span class="n">geom_runoff</span><span class="p">[</span><span class="s1">&#39;max_site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom_basin_overlap</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">site_column_name</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">geom_runoff</span>
 
     <span class="k">if</span> <span class="n">clip_downstream_basins</span><span class="p">:</span>
@@ -510,7 +516,7 @@
         <span class="n">final_geom_intersection_df</span> <span class="o">=</span> <span class="n">filtered_intersection_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="c1"># subset to applicable basin runoff</span>
-    <span class="n">basins</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">basins</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="c1"># ensure data df only has selected intersecting basins</span>
     <span class="c1"># and they are in the right order to apply weights</span>
     <span class="n">basin_runoff_wide</span> <span class="o">=</span> <span class="n">basin_runoff_wide</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">basins</span><span class="p">)[</span><span class="n">basins</span><span class="p">]</span>
@@ -528,7 +534,7 @@
     <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;site_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site_ids</span>
     <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;max_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
     <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;avg_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
-    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;max_site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">site_col</span><span class="p">][</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">basin_runoff</span><span class="p">[</span><span class="s1">&#39;max_site&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="n">site_column_name</span><span class="p">][</span><span class="n">final_geom_intersection_df</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()]</span>  <span class="c1"># noqa: E501</span>
     <span class="n">geom_runoff</span> <span class="o">=</span> <span class="n">basin_runoff</span><span class="p">[[</span><span class="s1">&#39;geom_id&#39;</span><span class="p">,</span> <span class="s1">&#39;estimated_runoff&#39;</span><span class="p">,</span> <span class="s1">&#39;n_sites&#39;</span><span class="p">,</span> <span class="s1">&#39;site_ids&#39;</span><span class="p">,</span> <span class="s1">&#39;max_weight&#39;</span><span class="p">,</span> <span class="s1">&#39;avg_weight&#39;</span><span class="p">,</span> <span class="s1">&#39;max_site&#39;</span><span class="p">]]</span>  <span class="c1"># noqa: E501</span>
     <span class="k">return</span> <span class="n">geom_runoff</span></div>
 
@@ -540,8 +546,8 @@
         <span class="n">geom_id_list</span><span class="p">,</span>
         <span class="n">runoff_df</span><span class="p">,</span>
         <span class="n">geom_intersection_df</span><span class="p">,</span>
-        <span class="n">site_col</span><span class="p">,</span>
-        <span class="n">geom_id_col</span><span class="p">,</span>
+        <span class="n">site_column_name</span><span class="p">,</span>
+        <span class="n">geom_id_column_name</span><span class="p">,</span>
         <span class="n">prop_geom_in_basin_col</span><span class="o">=</span><span class="s1">&#39;prop_huc_in_basin&#39;</span><span class="p">,</span>
         <span class="n">prop_basin_in_geom_col</span><span class="o">=</span><span class="s1">&#39;prop_basin_in_huc&#39;</span><span class="p">,</span>
         <span class="n">percentage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -573,13 +579,14 @@
 <span class="sd">        geometry ids, proportion of geometry in basin, and proportion</span>
 <span class="sd">        of basin within geometry.</span>
 
-<span class="sd">    site_col : str</span>
+<span class="sd">    site_column_name : str</span>
 <span class="sd">        Column in geom_intersection_df with drainage area site numbers.</span>
 <span class="sd">        Please make sure ids have the correct number of digits</span>
 <span class="sd">        and have not lost leading 0s when read in. If the site</span>
-<span class="sd">        numbers are the geom_intersection_df index col, site_col = &#39;index&#39;.</span>
+<span class="sd">        numbers are the geom_intersection_df index col,</span>
+<span class="sd">        site_column_name = &#39;index&#39;.</span>
 
-<span class="sd">    geom_id_col : str</span>
+<span class="sd">    geom_id_column_name : str</span>
 <span class="sd">        Column in geom_intersection_df with geometry ids.</span>
 
 <span class="sd">    prop_geom_in_basin_col : str</span>
@@ -627,8 +634,8 @@
         <span class="n">runoff_sites</span> <span class="o">=</span> <span class="n">identify_sites_from_geom_intersection</span><span class="p">(</span>
             <span class="n">geom_id</span><span class="o">=</span><span class="n">geom_id</span><span class="p">,</span>
             <span class="n">geom_intersection_df</span><span class="o">=</span><span class="n">geom_intersection_df</span><span class="p">,</span>
-            <span class="n">geom_id_col</span><span class="o">=</span><span class="n">geom_id_col</span><span class="p">,</span>
-            <span class="n">site_col</span><span class="o">=</span><span class="n">site_col</span><span class="p">,</span>
+            <span class="n">geom_id_column_name</span><span class="o">=</span><span class="n">geom_id_column_name</span><span class="p">,</span>
+            <span class="n">site_column_name</span><span class="o">=</span><span class="n">site_column_name</span><span class="p">,</span>
             <span class="n">prop_geom_in_basin_col</span><span class="o">=</span><span class="n">prop_geom_in_basin_col</span><span class="p">,</span>
             <span class="n">prop_basin_in_geom_col</span><span class="o">=</span><span class="n">prop_basin_in_geom_col</span>
             <span class="p">)</span>
@@ -643,8 +650,8 @@
                 <span class="n">geom_id</span><span class="o">=</span><span class="n">geom_id</span><span class="p">,</span>
                 <span class="n">runoff_df</span><span class="o">=</span><span class="n">geom_df</span><span class="p">,</span>
                 <span class="n">geom_intersection_df</span><span class="o">=</span><span class="n">geom_intersection_df</span><span class="p">,</span>
-                <span class="n">site_col</span><span class="o">=</span><span class="n">site_col</span><span class="p">,</span>
-                <span class="n">geom_id_col</span><span class="o">=</span><span class="n">geom_id_col</span><span class="p">,</span>
+                <span class="n">site_column_name</span><span class="o">=</span><span class="n">site_column_name</span><span class="p">,</span>
+                <span class="n">geom_id_column_name</span><span class="o">=</span><span class="n">geom_id_column_name</span><span class="p">,</span>
                 <span class="n">prop_basin_in_geom_col</span><span class="o">=</span><span class="n">prop_basin_in_geom_col</span><span class="p">,</span>
                 <span class="n">prop_geom_in_basin_col</span><span class="o">=</span><span class="n">prop_geom_in_basin_col</span><span class="p">,</span>
                 <span class="n">percentage</span><span class="o">=</span><span class="n">percentage</span><span class="p">,</span>

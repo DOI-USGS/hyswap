@@ -19,10 +19,6 @@ In this example we will fetch 20 years of data from a single site and then use t
     df, md = dataretrieval.nwis.get_dv(
         '06803495', start='2001-01-01', end='2021-12-31')
 
-.. plot::
-    :context:
-    :include-source:
-
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.exceedance &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>hyswap.exceedance &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -127,20 +127,18 @@
 <span class="sd">    distribution with a mean of 1 and a standard deviation of 0.25.</span>
 
 <span class="sd">    .. doctest::</span>
-<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
-<span class="sd">        &gt;&gt;&gt; exceedance.calculate_exceedance_probability_from_distribution(</span>
-<span class="sd">        ...     1, &#39;lognormal&#39;, 1, 0.25)</span>
-<span class="sd">        0.6132049428659028</span>
+<span class="sd">        &gt;&gt;&gt; np.round(exceedance.calculate_exceedance_probability_from_distribution(  # noqa: E501</span>
+<span class="sd">        ...     1, &#39;lognormal&#39;, 1, 0.25), 3).item()</span>
+<span class="sd">        0.613</span>
 
 <span class="sd">    Calculating the exceedance probability of a value of 1 from a normal</span>
 <span class="sd">    distribution with a mean of 1 and a standard deviation of 0.25.</span>
 
 <span class="sd">    .. doctest::</span>
-<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
 <span class="sd">        &gt;&gt;&gt; exceedance.calculate_exceedance_probability_from_distribution(</span>
-<span class="sd">        ...     1, &#39;normal&#39;, 1, 0.25)</span>
+<span class="sd">        ...     1, &#39;normal&#39;, 1, 0.25).item()</span>
 <span class="sd">        0.5</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># type check</span>
@@ -210,20 +208,18 @@
 <span class="sd">    of 1, 2, 3, and 4.</span>
 
 <span class="sd">    .. doctest::</span>
-<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
 <span class="sd">        &gt;&gt;&gt; exceedance.calculate_exceedance_probability_from_values(</span>
-<span class="sd">        ...     1, [1, 2, 3, 4], method=&#39;linear&#39;)</span>
+<span class="sd">        ...     1, [1, 2, 3, 4], method=&#39;linear&#39;).item()</span>
 <span class="sd">        1.0</span>
 
 <span class="sd">    Calculating the exceedance probability of a value of 5 from a set of values</span>
 <span class="sd">    of 1, 2, 3, and 4.</span>
 
 <span class="sd">    .. doctest::</span>
-<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
 <span class="sd">        &gt;&gt;&gt; exceedance.calculate_exceedance_probability_from_values(</span>
-<span class="sd">        ...     5, [1, 2, 3, 4])</span>
+<span class="sd">        ...     5, [1, 2, 3, 4]).item()</span>
 <span class="sd">        0.0</span>
 
 <span class="sd">    Fetch some data from NWIS and calculate the exceedance probability</span>

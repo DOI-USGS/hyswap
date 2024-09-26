@@ -4,11 +4,11 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analysis of Streamflow Conditions and Historical Streamflows at a Single Gage &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>Analysis of Streamflow Conditions and Historical Streamflows at a Single Gage &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
-      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
 
   
   <!--[if lt IE 9]>
@@ -17,7 +17,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -26,7 +26,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Analysis of N-Day Streamflows for a Single Gage" href="single_gage_n_day_flows_analysis.html" />
+    <link rel="next" title="Analysis of Streamflow N-Day Averages for a Single Gage" href="single_gage_n_day_flows_analysis.html" />
     <link rel="prev" title="Similarity Measures" href="similarity_examples.html" /> 
 </head>
 
@@ -63,7 +63,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#Analyze-annual-streamflow-through-cumulative-flow-and-flow-duration-curves">Analyze annual streamflow through cumulative flow and flow duration curves</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="single_gage_n_day_flows_analysis.html">Analysis of N-Day Streamflows for a Single Gage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="single_gage_n_day_flows_analysis.html">Analysis of Streamflow N-Day Averages for a Single Gage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="site_conditions_examples.html">Visualization of Streamflow Conditions at Streamgages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="regional_runoff_calculations.html">Using hyswap to estimate runoff for one and multiple HUC08s</a></li>
 </ul>
@@ -104,7 +104,7 @@
              
   <section id="Analysis-of-Streamflow-Conditions-and-Historical-Streamflows-at-a-Single-Gage">
 <h1>Analysis of Streamflow Conditions and Historical Streamflows at a Single Gage<a class="headerlink" href="#Analysis-of-Streamflow-Conditions-and-Historical-Streamflows-at-a-Single-Gage" title="Link to this heading"></a></h1>
-<p>This notebook provides a demonstration of the use of <a class="reference external" href="https://doi-usgs.github.io/hyswap/">hywsap</a> python package for analyzing streamflow conditions at a single streamgage including plotting of flow duration curves, duration hydrographs, and cumulative streamflow.</p>
+<p>This notebook provides a demonstration of the use of <a class="reference external" href="https://doi-usgs.github.io/hyswap/">hyswap</a> python package for analyzing streamflow conditions at a single streamgage including plotting of flow duration curves, duration hydrographs, and cumulative streamflow.</p>
 <p>This example notebook relies on use of the <a class="reference external" href="https://github.com/DOI-USGS/dataRetrieval">dataretrieval</a> package for downloading streamflow information from USGS NWIS</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -239,7 +239,7 @@
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plot_hydrograph</span><span class="p">(</span><span class="n">flow_data</span><span class="p">,</span>
-                            <span class="n">data_col</span> <span class="o">=</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
+                            <span class="n">data_column_name</span> <span class="o">=</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
                             <span class="n">start_date</span> <span class="o">=</span> <span class="n">plot_start</span><span class="p">,</span>
                             <span class="n">end_date</span> <span class="o">=</span> <span class="n">plot_end</span><span class="p">,</span>
                             <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hydrograph for </span><span class="si">{</span><span class="n">StaID</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">station_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -263,7 +263,7 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#| fig-cap: Sample HySwap hydrograph plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">hyswap</span><span class="o">.</span><span class="n">plot_hydrograph</span><span class="p">(</span><span class="n">flow_data</span><span class="p">,</span>
-                       <span class="n">data_col</span> <span class="o">=</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
+                       <span class="n">data_column_name</span> <span class="o">=</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
                        <span class="n">start_date</span><span class="o">=</span><span class="n">plot_start</span><span class="p">,</span>
                        <span class="n">end_date</span><span class="o">=</span><span class="n">plot_end</span><span class="p">,</span>
                        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Hydrograph for </span><span class="si">{</span><span class="n">StaID</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">station_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
@@ -289,7 +289,7 @@
 <span class="n">plot_start</span> <span class="o">=</span> <span class="s2">&quot;2021-10-01&quot;</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plot_hydrograph</span><span class="p">(</span><span class="n">flow_data</span><span class="p">,</span>
-                       <span class="n">data_col</span> <span class="o">=</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
+                       <span class="n">data_column_name</span> <span class="o">=</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">,</span>
                        <span class="n">start_date</span><span class="o">=</span><span class="n">plot_start</span><span class="p">,</span>
                        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Hydrograph for </span><span class="si">{</span><span class="n">StaID</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">station_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                        <span class="n">yscale</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
@@ -319,7 +319,7 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># calcualte summary statistics on only approved data (quality-assured data that may be published and used in statistical analsysis)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculate summary statistics on only approved data (quality-assured data that may be published and used in statistical analsysis)</span>
 <span class="n">summary_stats</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">calculate_summary_statistics</span><span class="p">(</span><span class="n">approved_flow_data</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -396,7 +396,7 @@
 </table>
 </div></div>
 </div>
-<p>To view long-term patterns and trends in streamflow, raster hydrographs can be plotted using <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> Here, let’s utilize a raster hydrograph to see the historical flow at the site from the pst 50 years (1973-2023)</p>
+<p>To view long-term patterns and trends in streamflow, raster hydrographs can be plotted using <code class="docutils literal notranslate"><span class="pre">hyswap</span></code>. Here, let’s utilize a raster hydrograph to see the historical flow at the site from the past 50 years (1973-2023)</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -469,7 +469,7 @@
 <section id="Analyze-annual-streamflow-through-cumulative-flow-and-flow-duration-curves">
 <h2>Analyze annual streamflow through cumulative flow and flow duration curves<a class="headerlink" href="#Analyze-annual-streamflow-through-cumulative-flow-and-flow-duration-curves" title="Link to this heading"></a></h2>
 <p>Use calculations of streamflow percentiles (variable by day) to analyze annual patterns in streamflow</p>
-<p>Let’s look at the last four years (2020-2023) of cumulative streamflow by plotting a cumulative hydrographs of different water years along with the envelope that 90% of annual cumulative streamflow is expected to be within, and the years with the minimum and maximum annual cumulative streamflows.</p>
+<p>Let’s look at the last four years (2020-2023) of cumulative streamflow by plotting cumulative hydrographs of different water years along with the envelope that 90% of annual cumulative streamflow is expected to be within, and the years with the minimum and maximum annual cumulative streamflows.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -741,7 +741,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="similarity_examples.html" class="btn btn-neutral float-left" title="Similarity Measures" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="single_gage_n_day_flows_analysis.html" class="btn btn-neutral float-right" title="Analysis of N-Day Streamflows for a Single Gage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="single_gage_n_day_flows_analysis.html" class="btn btn-neutral float-right" title="Analysis of Streamflow N-Day Averages for a Single Gage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

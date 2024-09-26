@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Percentile Calculation Examples &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>Percentile Calculation Examples &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -113,7 +113,7 @@
 <p>The <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="hyswap.percentiles.calculate_fixed_percentile_thresholds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_thresholds</span></code></a> function
 is used to calculate a set of percentile thresholds given a set of data.
 This function simply calculates one set of fixed percentile thresholds using all available data,
-and is not intended to be used for calculating percentile thresholds separatly for individual days of the year.</p>
+and is not intended to be used for calculating percentile thresholds separately for individual days of the year.</p>
 <p>By default this method calculates percentiles using the Weibull distribution
 with an alpha parameter of 0 and a beta parameter of 0. The Weibull
 distribution is set as the default for percentile calculations after the USGS
@@ -176,7 +176,7 @@ calculating the 10th, 50th, and 90th percentiles for each day of the year.</p>
 <p>By default, percentiles are only computed for days which have at least 10
 years of data available, however this parameter can be altered by setting the
 <cite>min_years</cite> parameter to a different value.
-Multi-day averaging can also be performed by setting the <cite>data_type</cite> parameter
+Multi-day averaging can also be performed by setting the <cite>window_width</cite> parameter
 to a value like <cite>7-day</cite>, <cite>14-day</cite>, or <cite>28-day</cite>, the default value is <cite>daily</cite>
 which is no temporal averaging.
 See the function documentation
@@ -186,8 +186,7 @@ and options for this function.</p>
 </section>
 <section id="interpolating-new-percentiles-using-previously-calculated-percentiles">
 <h2>Interpolating New Percentiles Using Previously Calculated Percentiles<a class="headerlink" href="#interpolating-new-percentiles-using-previously-calculated-percentiles" title="Link to this heading"></a></h2>
-<p>To support faster calculations of percentiles without the need to repeatedly
-fetch all historic data from NWIS, the
+<p>To support faster calculations of percentiles without the need to repeatedly fetch all historic data from NWIS, the
 <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_from_value" title="hyswap.percentiles.calculate_fixed_percentile_from_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_from_value</span></code></a> and
 :obj:<a href="#id1"><span class="problematic" id="id2">`</span></a>hyswap.percentiles.calculate_variable_percentile_from_value`functions support the
 interpolation of a new percentile value for a measurement given a previously

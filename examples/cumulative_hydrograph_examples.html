@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cumulative Streamflow Hydrographs &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>Cumulative Streamflow Hydrographs &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -116,9 +116,8 @@ In this example we will fetch 20 years of data from a single site and then use t
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
 <span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
     <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-12-31&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot the cumulative streamflow hydrograph</span>
+
+<span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
     <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span><span class="n">target_years</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
@@ -127,9 +126,9 @@ In this example we will fetch 20 years of data from a single site and then use t
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/a346b095a2748c5d23dbadf61e4d54ac/cumulative_hydrograph_examples-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/32ee113d52b759b64d1dc7606202cea8/cumulative_hydrograph_examples-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/33354380372d8684a7056062e0ba7124/cumulative_hydrograph_examples-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/83d54b1f5bdebfd438ec97537888e5fd/cumulative_hydrograph_examples-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/cumulative_hydrograph_examples-2.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-2.png" />
+<img alt="../_images/cumulative_hydrograph_examples-1.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-1.png" />
 </figure>
 </section>
 <section id="cumulative-streamflow-over-the-2021-calendar-year">
@@ -149,9 +148,9 @@ The code is very similar, we simply do not specify the <cite>year_type</cite> ar
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/fe8745dbb581a9faaa773cc3a47f27a3/cumulative_hydrograph_examples-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f876865936b8bb8ca6b00ad9db8e399c/cumulative_hydrograph_examples-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/a346b095a2748c5d23dbadf61e4d54ac/cumulative_hydrograph_examples-2.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/32ee113d52b759b64d1dc7606202cea8/cumulative_hydrograph_examples-2.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/cumulative_hydrograph_examples-3.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-3.png" />
+<img alt="../_images/cumulative_hydrograph_examples-2.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-2.png" />
 </figure>
 </section>
 <section id="cumulative-streamflow-over-the-2021-climate-year">
@@ -172,9 +171,9 @@ The code is very similar, we simply specify the <cite>year_type</cite> argument 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/82485fcdd6878a6fa5f2f0dbf73e722d/cumulative_hydrograph_examples-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/b2704f868ccaca73eea4cc4c50a39253/cumulative_hydrograph_examples-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/fe8745dbb581a9faaa773cc3a47f27a3/cumulative_hydrograph_examples-3.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f876865936b8bb8ca6b00ad9db8e399c/cumulative_hydrograph_examples-3.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/cumulative_hydrograph_examples-4.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-4.png" />
+<img alt="../_images/cumulative_hydrograph_examples-3.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-3.png" />
 </figure>
 </section>
 <section id="visualizing-the-minimum-and-maximum-cumulative-percentile-values">
@@ -197,9 +196,9 @@ We will use the calendar year example to showcase this functionality.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/3275920d3d15a7112a99aae1f32ae126/cumulative_hydrograph_examples-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/2f6eea78a95eb37d3ffa6eb6c5205161/cumulative_hydrograph_examples-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/82485fcdd6878a6fa5f2f0dbf73e722d/cumulative_hydrograph_examples-4.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/b2704f868ccaca73eea4cc4c50a39253/cumulative_hydrograph_examples-4.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/cumulative_hydrograph_examples-5.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-5.png" />
+<img alt="../_images/cumulative_hydrograph_examples-4.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-4.png" />
 </figure>
 </section>
 <section id="visualizing-multiple-years-of-data">
@@ -220,9 +219,9 @@ Below is an example of this functionality wherein we plot the cumulative dischar
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/b633a5cc98dd530663b0ef35d417b202/cumulative_hydrograph_examples-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/a62c0be1f5b2af241479893bd9f2880d/cumulative_hydrograph_examples-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/3275920d3d15a7112a99aae1f32ae126/cumulative_hydrograph_examples-5.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/2f6eea78a95eb37d3ffa6eb6c5205161/cumulative_hydrograph_examples-5.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/cumulative_hydrograph_examples-6.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-6.png" />
+<img alt="../_images/cumulative_hydrograph_examples-5.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-5.png" />
 </figure>
 </section>
 <section id="customizing-the-filled-envelope">
@@ -244,9 +243,9 @@ We provide an example of doing this by filling between the 10th and 90th percent
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/2f440a274d1d16adf488eeea47275fb7/cumulative_hydrograph_examples-7.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/1a5dbba4097dca7f9964b9e52be1fefa/cumulative_hydrograph_examples-7.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/b633a5cc98dd530663b0ef35d417b202/cumulative_hydrograph_examples-6.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/a62c0be1f5b2af241479893bd9f2880d/cumulative_hydrograph_examples-6.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>)</p>
 <figure class="align-default">
-<img alt="../_images/cumulative_hydrograph_examples-7.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-7.png" />
+<img alt="../_images/cumulative_hydrograph_examples-6.png" class="plot-directive" src="../_images/cumulative_hydrograph_examples-6.png" />
 </figure>
 </section>
 </section>

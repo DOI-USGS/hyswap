@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Similarity Measures &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>Similarity Measures &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -106,7 +106,7 @@
   <section id="similarity-measures">
 <h1>Similarity Measures<a class="headerlink" href="#similarity-measures" title="Link to this heading"></a></h1>
 <p>Sometimes it is helpful to compare the relationships between a set of streamgaging stations and their respective measurements. These examples showcase the usage of the functions in the <cite>similarity</cite> module to quantify how similar streamflow records are across multiple streamgages. Matrices of similarity measures (e.g., correlations) are calculated and visualized by generating heatmap visualizations via the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_similarity_heatmap" title="hyswap.plots.plot_similarity_heatmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_similarity_heatmap</span></code></a> function.</p>
-<p>The <cite>similarity</cite> functions packaged in <cite>hyswap</cite> handle some of the data clean-up for you by ensuring the time-series of observations being compared acros the same dates, and by removing any missing data. This ensures that your results are not skewed by missing data or gaps in one of the time-series.</p>
+<p>The <cite>similarity</cite> functions packaged in <cite>hyswap</cite> handle some of the data clean-up for you by ensuring the time-series observations are compared across the same dates, and by removing any missing data. This ensures that your results are not skewed by missing data or gaps in one of the time-series.</p>
 <section id="pearson-s-r-correlations-between-5-stations">
 <h2>Pearson’s <em>r</em> Correlations Between 5 Stations<a class="headerlink" href="#pearson-s-r-correlations-between-5-stations" title="Link to this heading"></a></h2>
 <p>The following example shows the correlations between streamflow at 5 stations (07374525, 07374000, 07289000, 07032000, 07024175) along the Mississippi River, listed from downstream to upstream.
@@ -130,6 +130,7 @@ First we have to fetch the streamflow data for these stations, to do this we wil
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span><span class="o">=</span><span class="n">n_obs</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cividis&#39;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pearson Correlation Coefficients for Streamflow</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
           <span class="s2">&quot;Between 5 Sites Along the Mississippi River&quot;</span><span class="p">)</span>
 
@@ -160,6 +161,7 @@ First we have to fetch the streamflow data for these stations, to do this we wil
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span><span class="o">=</span><span class="n">n_obs</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cividis&#39;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Pearson Correlation Coefficients for Streamflow</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
           <span class="s2">&quot;Between 5 Sites Along the Mississippi River&quot;</span><span class="p">,</span>
     <span class="n">show_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -178,7 +180,8 @@ First we have to fetch the streamflow data for these stations, to do this we wil
 <h2>Wasserstein Distances Between 5 Stations<a class="headerlink" href="#wasserstein-distances-between-5-stations" title="Link to this heading"></a></h2>
 <p>In this example we compare the same 5 time-series as the previous example, but instead of calculating correlations, we calculate the <a class="reference external" href="https://en.wikipedia.org/wiki/Wasserstein_metric">Wasserstein Distance</a> between each pairing of time-series.
 The Wasserstein Distance is a measure of the distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
-Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.wasserstein_distance()</cite> function, and are therefore specifically calculating the “first” Wasserstein Distance between two time-series.</p>
+Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.wasserstein_distance()</cite> function, and are therefore specifically calculating the “first” Wasserstein Distance between two time-series.
+Note that we are using the reverse default colormap so that the distance information aligns with the similarity plots above, where more similar = yellow and less similar = blue.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
 <span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;07024175&quot;</span><span class="p">]</span>
 
@@ -196,6 +199,7 @@ Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.wasserstei
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span><span class="o">=</span><span class="n">n_obs</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cividis_r&#39;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Wasserstein Distances for Streamflow</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
           <span class="s2">&quot;Between 5 Sites Along the Mississippi River&quot;</span><span class="p">,</span>
     <span class="n">show_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -214,7 +218,8 @@ Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.wasserstei
 <h2>Energy Distances Between 5 Stations<a class="headerlink" href="#energy-distances-between-5-stations" title="Link to this heading"></a></h2>
 <p>In this example we compare the same 5 time-series as the previous example, but this time using another distance measure, the so-called <a class="reference external" href="https://en.wikipedia.org/wiki/Energy_distance">Energy Distance</a> between two time-series.
 The <cite>energy_dist</cite> is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
-Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_distance()</cite> function.</p>
+Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_distance()</cite> function.
+Note that we are using the reverse default colormap so that the distance information aligns with the similarity plots above, where more similar = yellow and less similar = blue.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
 <span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;07024175&quot;</span><span class="p">]</span>
 
@@ -232,6 +237,7 @@ Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_dis
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>
     <span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span><span class="o">=</span><span class="n">n_obs</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cividis_r&#39;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Energy Distances for Streamflow</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
           <span class="s2">&quot;Between 5 Sites Along the Mississippi River&quot;</span><span class="p">,</span>
     <span class="n">show_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

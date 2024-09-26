@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.rasterhydrograph &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>hyswap.rasterhydrograph &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -89,13 +89,13 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">rolling_average</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
-<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_data_type</span>
+<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_window_width</span>
 
 
 <div class="viewcode-block" id="format_data">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph.format_data">[docs]</a>
 <span class="k">def</span> <span class="nf">format_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
+                <span class="n">window_width</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
                 <span class="n">begin_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -107,16 +107,17 @@
 <span class="sd">        The data to format. Must have a date column or the index must be the</span>
 <span class="sd">        date values.</span>
 <span class="sd">    data_column_name : str</span>
-<span class="sd">        The name of the column containing the data.</span>
+<span class="sd">        Name of column containing data to analyze.</span>
 <span class="sd">    date_column_name : str, optional</span>
-<span class="sd">        The name of the column containing the date. Default is None which</span>
-<span class="sd">        assumes the index is the date.</span>
-<span class="sd">    data_type : str, optional</span>
-<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
-<span class="sd">        &#39;28-day&#39;. Default is &#39;daily&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
-<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
-<span class="sd">        values will be used for any days that do not have data. If present,</span>
-<span class="sd">        NaN values will result in NaN values for the entire period.</span>
+<span class="sd">        Name of column containing date information. If None, the index of</span>
+<span class="sd">        `df` will be used. Defaults to None.</span>
+<span class="sd">    window_width : str, optional</span>
+<span class="sd">        The window width of the data in days. Must be one of &#39;daily&#39;,</span>
+<span class="sd">        &#39;7-day&#39;, &#39;14-day&#39;, and &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or</span>
+<span class="sd">        &#39;28-day&#39; is specified, the data will be averaged over the</span>
+<span class="sd">        specified period. NaN values will be used for any days that</span>
+<span class="sd">        do not have data. If present, NaN values will result in NaN</span>
+<span class="sd">        values for the entire period.</span>
 <span class="sd">    year_type : str, optional</span>
 <span class="sd">        The type of year to use. Must be one of &#39;calendar&#39;, &#39;water&#39;, or</span>
 <span class="sd">        &#39;climate&#39;. Default is &#39;calendar&#39; which starts the year on January 1</span>
@@ -150,12 +151,11 @@
 <span class="sd">    Formatting synthetic daily data for a raster hydrograph.</span>
 
 <span class="sd">    .. doctest::</span>
-<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
 <span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&#39;date&#39;: pd.date_range(&#39;1/1/2010&#39;, &#39;12/31/2010&#39;),</span>
 <span class="sd">        ...                    &#39;data&#39;: np.random.rand(365)})</span>
 <span class="sd">        &gt;&gt;&gt; df_formatted = rasterhydrograph.format_data(df, &#39;data&#39;, &#39;date&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; df_formatted.index[0]</span>
+<span class="sd">        &gt;&gt;&gt; df_formatted.index[0].item()</span>
 <span class="sd">        2010</span>
 <span class="sd">        &gt;&gt;&gt; len(df_formatted.columns)</span>
 <span class="sd">        365</span>
@@ -176,7 +176,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check inputs, set date to index, define year/doy columns</span>
     <span class="n">df_out</span> <span class="o">=</span> <span class="n">_check_inputs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="p">,</span>
-                           <span class="n">data_type</span><span class="p">,</span> <span class="n">year_type</span><span class="p">,</span> <span class="n">begin_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">,</span>
+                           <span class="n">window_width</span><span class="p">,</span> <span class="n">year_type</span><span class="p">,</span> <span class="n">begin_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">,</span>
                            <span class="n">clip_leap_day</span><span class="o">=</span><span class="n">clip_leap_day</span><span class="p">)</span>
 
     <span class="c1"># calculate the date range</span>
@@ -185,12 +185,12 @@
     <span class="c1"># format date_range as YYYY-MM-DD</span>
     <span class="n">date_range</span> <span class="o">=</span> <span class="n">date_range</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="c1"># set data type</span>
-    <span class="n">data_type</span> <span class="o">=</span> <span class="n">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="c1"># set window</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">set_window_width</span><span class="p">(</span><span class="n">window_width</span><span class="p">)</span>
 
     <span class="c1"># make output data frame</span>
     <span class="c1"># calculation of rolling mean is done on the data column</span>
-    <span class="n">df_out</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df_out</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">df_out</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df_out</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># convert date index to YYYY-MM-DD format</span>
     <span class="n">df_out</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df_out</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -240,7 +240,7 @@
 <div class="viewcode-block" id="_check_inputs">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.rasterhydrograph._check_inputs">[docs]</a>
 <span class="k">def</span> <span class="nf">_check_inputs</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">date_column_name</span><span class="p">,</span>
-                  <span class="n">data_type</span><span class="p">,</span> <span class="n">year_type</span><span class="p">,</span> <span class="n">begin_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">,</span>
+                  <span class="n">window_width</span><span class="p">,</span> <span class="n">year_type</span><span class="p">,</span> <span class="n">begin_year</span><span class="p">,</span> <span class="n">end_year</span><span class="p">,</span>
                   <span class="n">clip_leap_day</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Private function to check inputs for the format_data function.</span>
 
@@ -250,16 +250,17 @@
 <span class="sd">        The data to format. Must have a date column or the index must be the</span>
 <span class="sd">        date values.</span>
 <span class="sd">    data_column_name : str</span>
-<span class="sd">        The name of the column containing the data.</span>
+<span class="sd">        Name of column containing data to analyze.</span>
 <span class="sd">    date_column_name : str, None</span>
-<span class="sd">        The name of the column containing the date or None if the index is</span>
-<span class="sd">        the date.</span>
-<span class="sd">    data_type : str</span>
-<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
-<span class="sd">        &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
-<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
-<span class="sd">        values will be used for any days that do not have data. If present,</span>
-<span class="sd">        NaN values will result in NaN values for the entire period.</span>
+<span class="sd">        Name of column containing date information. If None, the index of</span>
+<span class="sd">        `df` will be used. Defaults to None.</span>
+<span class="sd">    window_width : str</span>
+<span class="sd">        The window width of the data in days. Must be one of &#39;daily&#39;,</span>
+<span class="sd">        &#39;7-day&#39;, &#39;14-day&#39;, and &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or</span>
+<span class="sd">        &#39;28-day&#39; is specified, the data will be averaged over the</span>
+<span class="sd">        specified period. NaN values will be used for any days that</span>
+<span class="sd">        do not have data. If present, NaN values will result in NaN</span>
+<span class="sd">        values for the entire period.</span>
 <span class="sd">    year_type : str</span>
 <span class="sd">        The type of year to use. Must be one of &#39;calendar&#39; or &#39;water&#39;.</span>
 <span class="sd">        &#39;calendar&#39; starts the year on January 1 and ends on</span>
@@ -288,10 +289,10 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;df must be a pandas.DataFrame&#39;</span><span class="p">)</span>
 
     <span class="c1"># check data type</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;data_type must be a string&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="s1">&#39;7-day&#39;</span><span class="p">,</span> <span class="s1">&#39;14-day&#39;</span><span class="p">,</span> <span class="s1">&#39;28-day&#39;</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;data_type must be one of &quot;daily&quot;, &quot;7-day&quot;, &#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">window_width</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;window_width must be a string&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window_width</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span> <span class="s1">&#39;7-day&#39;</span><span class="p">,</span> <span class="s1">&#39;14-day&#39;</span><span class="p">,</span> <span class="s1">&#39;28-day&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;window_width must be one of &quot;daily&quot;, &quot;7-day&quot;, &#39;</span>
                          <span class="s1">&#39;&quot;14-day&quot;, and &quot;28-day&quot;&#39;</span><span class="p">)</span>
 
     <span class="c1"># check data column name</span>

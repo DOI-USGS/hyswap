@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Module Dependency Graph &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>Module Dependency Graph &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -72,7 +72,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#hyswap.utils.munge_nwis_stats"><code class="docutils literal notranslate"><span class="pre">munge_nwis_stats()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hyswap.utils.retrieve_schema"><code class="docutils literal notranslate"><span class="pre">retrieve_schema()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hyswap.utils.rolling_average"><code class="docutils literal notranslate"><span class="pre">rolling_average()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#hyswap.utils.set_data_type"><code class="docutils literal notranslate"><span class="pre">set_data_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hyswap.utils.set_window_width"><code class="docutils literal notranslate"><span class="pre">set_window_width()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-hyswap.exceedance">Exceedance Probability Functions</a><ul>
@@ -98,7 +98,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-hyswap.cumulative">Cumulative Calculation Functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hyswap.cumulative._tidy_cumulative_dataframe"><code class="docutils literal notranslate"><span class="pre">_tidy_cumulative_dataframe()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hyswap.cumulative.calculate_daily_cumulative_values"><code class="docutils literal notranslate"><span class="pre">calculate_daily_cumulative_values()</span></code></a></li>
 </ul>
 </li>
@@ -189,14 +188,14 @@ as well as the number of low (typically low flow &lt;= 0.01) values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.utils.calculate_summary_statistics">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_summary_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'00060_Mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#calculate_summary_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.calculate_summary_statistics" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">calculate_summary_statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'00060_Mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#calculate_summary_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.calculate_summary_statistics" title="Link to this definition"></a></dt>
 <dd><p>Calculate summary statistics for a site.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing daily values for the site. Expected to be from
 <cite>dataretrieval.nwis.get_dv()</cite>, or similar.</p></li>
-<li><p><strong>data_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the column in the dv_df DataFrame that contains the data of
+<li><p><strong>data_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the column in the dv_df DataFrame that contains the data of
 interest. Default is “00060_Mean” which is the mean daily discharge
 column.</p></li>
 </ul>
@@ -338,17 +337,18 @@ makes the date_column_name the index of the DataFrame.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.utils.filter_approved_data">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">filter_approved_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#filter_approved_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.filter_approved_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">filter_approved_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#filter_approved_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.filter_approved_data" title="Link to this definition"></a></dt>
 <dd><p>Filter a dataframe to only return approved “A” (or “A, e”) data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – The data to filter.</p></li>
-<li><p><strong>filter_column</strong> (<em>string</em>) – The column upon which to filter. If None, an error will be raised.</p></li>
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Dataframe containing the data to filter.</p></li>
+<li><p><strong>filter_column_name</strong> (<em>string</em>) – The column upon which to filter. If None, an error will be raised.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The filtered data.</p>
+<dd class="field-even"><p>A filtered dataframe containing only approved data, denoted by an
+“A” in the filter column.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
@@ -358,14 +358,14 @@ makes the date_column_name the index of the DataFrame.</p>
 <p>Filter synthetic data to only return approved data. First make some
 synthetic data.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-<span class="gp">... </span>    <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="s1">&#39;df&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="s1">&#39;approved&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A, e&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(5, 2)</span>
 </pre></div>
 </div>
 <p>Then filter the data to only return approved data.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">filter_approved_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">filter_column</span><span class="o">=</span><span class="s1">&#39;approved&#39;</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">filter_approved_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">filter_column_name</span><span class="o">=</span><span class="s1">&#39;approved&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(3, 2)</span>
 </pre></div>
@@ -650,26 +650,27 @@ the USGS National Water Dashboard</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.utils.rolling_average">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">rolling_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#rolling_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.rolling_average" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">rolling_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#rolling_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.rolling_average" title="Link to this definition"></a></dt>
 <dd><p>Calculate a rolling average for a dataframe.</p>
 <p>Default behavior right-aligns the window used for the rolling average
-and uses the data_type argument (‘1D’, ‘7D’, ‘14D’, ‘28D’) to set the
+and uses the window argument (‘1D’, ‘7D’, ‘14D’, ‘28D’) to set the
 <cite>min_periods</cite> argument in <cite>pandas.DataFrame.rolling</cite>. The function
 returns NaN values if any of the values in the window are NaN or if the
-<cite>mind_periods</cite> argument is not satisifed. Properties of the windowing
+<cite>min_periods</cite> argument is not satisifed. Properties of the windowing
 can be changed by passing additional keyword arguments which are fed
 to <cite>pandas.DataFrame.rolling</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – The dataframe to calculate the rolling average for.</p></li>
-<li><p><strong>data_column_name</strong> (<em>string</em>) – The name of the column to calculate the rolling average for.</p></li>
-<li><p><strong>data_type</strong> (<em>string</em>) – The formatted frequency string to be used with
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Dataframe containing data to calculate the rolling average for.</p></li>
+<li><p><strong>data_column_name</strong> (<em>string</em>) – Name of the column containing data for calculating the rolling
+average.</p></li>
+<li><p><strong>window</strong> (<em>string</em>) – The formatted frequency string to be used with
 pandas.DataFrame.rolling to calculate the average over the correct
-temporal period.</p></li>
+temporal period. Should take the format ‘numberD’.</p></li>
 <li><p><strong>auto_min_periods</strong> (<em>bool</em>) – Defaults to True. When True, the <cite>min_periods</cite> argument in
-<cite>pandas.DataFrame.rolling</cite> is set using the <cite>data_type</cite> argument.
-For example, if the <cite>data_type</cite> = ‘7D’, the <cite>min_periods</cite>
+<cite>pandas.DataFrame.rolling</cite> is set using the <cite>window_width</cite> argument.
+For example, if the <cite>window</cite> = ‘7D’, the <cite>min_periods</cite>
 argument is 7. When False, the <cite>min_periods</cite> argument is set
 using the <cite>custom_min_periods</cite> input.</p></li>
 <li><p><strong>custom_min_periods</strong> (<em>int</em><em>, </em><em>optional</em>) – Defaults to None. Only used if <cite>auto_min_periods</cite> is False.
@@ -690,19 +691,21 @@ in <cite>pandas.DataFrame.rolling</cite>.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="hyswap.utils.set_data_type">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">set_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#set_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.set_data_type" title="Link to this definition"></a></dt>
-<dd><p>Function to set the data type for rolling averages.</p>
+<dt class="sig sig-object py" id="hyswap.utils.set_window_width">
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">set_window_width</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#set_window_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.set_window_width" title="Link to this definition"></a></dt>
+<dd><p>Function to set the number of days (window width) used
+to calculate a set of rolling averages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data_type</strong> (<em>str</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
-‘28-day’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
-specified, the data will be averaged over the specified period. NaN
-values will be used for any days that do not have data. If present,
-NaN values will result in NaN values for the entire period.</p>
+<dd class="field-odd"><p><strong>window_width</strong> (<em>str</em>) – The window width of the data in days. Must be one of ‘daily’,
+‘7-day’, ‘14-day’, and ‘28-day’. If ‘7-day’, ‘14-day’, or
+‘28-day’ is specified, the data will be averaged over the
+specified period. NaN values will be used for any days that
+do not have data. If present, NaN values will result in NaN
+values for the entire period.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>data_type</strong> – The formatted frequency string to be used with
+<dd class="field-even"><p><strong>window</strong> – The formatted frequency string to be used with
 pandas.DataFrame.rolling to calculate the average over the correct
 temporal period.</p>
 </dd>
@@ -746,15 +749,15 @@ information about these arguments.</p></li>
 <p class="rubric">Examples</p>
 <p>Calculating the exceedance probability of a value of 1 from a lognormal
 distribution with a mean of 1 and a standard deviation of 0.25.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_distribution</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;lognormal&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
-<span class="go">0.6132049428659028</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_distribution</span><span class="p">(</span>  <span class="c1"># noqa: E501</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;lognormal&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="go">0.613</span>
 </pre></div>
 </div>
 <p>Calculating the exceedance probability of a value of 1 from a normal
 distribution with a mean of 1 and a standard deviation of 0.25.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_distribution</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;normal&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 <span class="go">0.5</span>
 </pre></div>
 </div>
@@ -847,14 +850,14 @@ Default is ‘weibull’ (Type 6). Additional available methods are
 <p>Calculating the exceedance probability of a value of 1 from a set of values
 of 1, 2, 3, and 4.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_values</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 <span class="go">1.0</span>
 </pre></div>
 </div>
 <p>Calculating the exceedance probability of a value of 5 from a set of values
 of 1, 2, 3, and 4.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exceedance</span><span class="o">.</span><span class="n">calculate_exceedance_probability_from_values</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 <span class="go">0.0</span>
 </pre></div>
 </div>
@@ -954,21 +957,22 @@ data will be used.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.rasterhydrograph._check_inputs">
-<span class="sig-prename descclassname"><span class="pre">hyswap.rasterhydrograph.</span></span><span class="sig-name descname"><span class="pre">_check_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/rasterhydrograph.html#_check_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.rasterhydrograph._check_inputs" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.rasterhydrograph.</span></span><span class="sig-name descname"><span class="pre">_check_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/rasterhydrograph.html#_check_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.rasterhydrograph._check_inputs" title="Link to this definition"></a></dt>
 <dd><p>Private function to check inputs for the format_data function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – The data to format. Must have a date column or the index must be the
 date values.</p></li>
-<li><p><strong>data_column_name</strong> (<em>str</em>) – The name of the column containing the data.</p></li>
-<li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>None</em>) – The name of the column containing the date or None if the index is
-the date.</p></li>
-<li><p><strong>data_type</strong> (<em>str</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
-‘28-day’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
-specified, the data will be averaged over the specified period. NaN
-values will be used for any days that do not have data. If present,
-NaN values will result in NaN values for the entire period.</p></li>
+<li><p><strong>data_column_name</strong> (<em>str</em>) – Name of column containing data to analyze.</p></li>
+<li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>None</em>) – Name of column containing date information. If None, the index of
+<cite>df</cite> will be used. Defaults to None.</p></li>
+<li><p><strong>window_width</strong> (<em>str</em>) – The window width of the data in days. Must be one of ‘daily’,
+‘7-day’, ‘14-day’, and ‘28-day’. If ‘7-day’, ‘14-day’, or
+‘28-day’ is specified, the data will be averaged over the
+specified period. NaN values will be used for any days that
+do not have data. If present, NaN values will result in NaN
+values for the entire period.</p></li>
 <li><p><strong>year_type</strong> (<em>str</em>) – The type of year to use. Must be one of ‘calendar’ or ‘water’.
 ‘calendar’ starts the year on January 1 and ends on
 December 31. ‘water’ starts the year on October 1 and ends on
@@ -995,21 +999,22 @@ dataframe if it exists.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.rasterhydrograph.format_data">
-<span class="sig-prename descclassname"><span class="pre">hyswap.rasterhydrograph.</span></span><span class="sig-name descname"><span class="pre">format_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/rasterhydrograph.html#format_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.rasterhydrograph.format_data" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.rasterhydrograph.</span></span><span class="sig-name descname"><span class="pre">format_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/rasterhydrograph.html#format_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.rasterhydrograph.format_data" title="Link to this definition"></a></dt>
 <dd><p>Format data for raster hydrograph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – The data to format. Must have a date column or the index must be the
 date values.</p></li>
-<li><p><strong>data_column_name</strong> (<em>str</em>) – The name of the column containing the data.</p></li>
-<li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the column containing the date. Default is None which
-assumes the index is the date.</p></li>
-<li><p><strong>data_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
-‘28-day’. Default is ‘daily’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
-specified, the data will be averaged over the specified period. NaN
-values will be used for any days that do not have data. If present,
-NaN values will result in NaN values for the entire period.</p></li>
+<li><p><strong>data_column_name</strong> (<em>str</em>) – Name of column containing data to analyze.</p></li>
+<li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column containing date information. If None, the index of
+<cite>df</cite> will be used. Defaults to None.</p></li>
+<li><p><strong>window_width</strong> (<em>str</em><em>, </em><em>optional</em>) – The window width of the data in days. Must be one of ‘daily’,
+‘7-day’, ‘14-day’, and ‘28-day’. If ‘7-day’, ‘14-day’, or
+‘28-day’ is specified, the data will be averaged over the
+specified period. NaN values will be used for any days that
+do not have data. If present, NaN values will result in NaN
+values for the entire period.</p></li>
 <li><p><strong>year_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of year to use. Must be one of ‘calendar’, ‘water’, or
 ‘climate’. Default is ‘calendar’ which starts the year on January 1
 and ends on December 31. ‘water’ starts the year on October 1 and
@@ -1041,7 +1046,7 @@ and year type.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">&#39;1/1/2010&#39;</span><span class="p">,</span> <span class="s1">&#39;12/31/2010&#39;</span><span class="p">),</span>
 <span class="gp">... </span>                   <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">365</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df_formatted</span> <span class="o">=</span> <span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_formatted</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 <span class="go">2010</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">df_formatted</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 <span class="go">365</span>
@@ -1100,7 +1105,7 @@ provided manually or from data pulled from the NWIS stats service.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pcts_df</span> <span class="o">=</span> <span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">data</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_percentile</span> <span class="o">=</span> <span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_from_value</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="mi">500</span><span class="p">,</span> <span class="n">pcts_df</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="mi">500</span><span class="p">,</span> <span class="n">pcts_df</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_percentile</span>
 <span class="go">50.0</span>
 </pre></div>
@@ -1128,7 +1133,10 @@ downloaded from NWIS.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.percentiles.calculate_fixed_percentile_thresholds">
 <span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_fixed_percentile_thresholds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">50,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_min_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_out_of_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_fixed_percentile_thresholds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="Link to this definition"></a></dt>
-<dd><p>Calculate fixed percentile thresholds using historical data.</p>
+<dd><p>Calculate fixed percentile thresholds using historical data.
+Fixed percentiles are calculated using all data in the period of
+record. See the <cite>Calculations Quick-Reference &lt;https://doi-usgs.github.io/hyswap/meta/calculations.html#streamflow-percentiles&gt;</cite>
+for more information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1157,9 +1165,9 @@ including count, mean, start_yr, end_yr. Default is True. Input data
 must include a datetime column as either index or specified by
 date_column_name.</p></li>
 <li><p><strong>mask_out_of_range</strong> (<em>bool</em><em>, </em><em>optional</em>) – When set to True, percentiles that are beyond the min/max percentile
-ranks of the observed data to be NA. Effect of this being enables is
-that high or low percentiles may not be calculated when few data points
-are available. Default is True.</p></li>
+rank of the observed data are set to NA. When enabled, high or low
+percentiles may not be calculated when few data points are
+available. Default is True.</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional keyword arguments to pass to <cite>numpy.percentile</cite>.</p></li>
 </ul>
 </dd>
@@ -1321,7 +1329,7 @@ downloaded from NWIS.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.percentiles.calculate_variable_percentile_thresholds_by_day">
-<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">50,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_min_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_out_of_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">50,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_min_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_out_of_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day" title="Link to this definition"></a></dt>
 <dd><p>Calculate variable percentile thresholds of data by day</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1338,11 +1346,12 @@ Additional available methods are ‘interpolated_inverted_cdf’ (Type 4),
 and ‘normal_unbiased’ (Type 9).</p></li>
 <li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column containing date information. If None, the index of
 <cite>df</cite> is used.</p></li>
-<li><p><strong>data_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
-‘28-day’. Default is ‘daily’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
-specified, the data will be averaged over the specified period. NaN
-values will be used for any days that do not have data. If present,
-NaN values will result in NaN values for the entire period.</p></li>
+<li><p><strong>window_width</strong> (<em>str</em><em>, </em><em>optional</em>) – The window width of the data in days. Must be one of ‘daily’,
+‘7-day’, ‘14-day’, and ‘28-day’. If ‘7-day’, ‘14-day’, or
+‘28-day’ is specified, the data will be averaged over the
+specified period. NaN values will be used for any days that
+do not have data. If present, NaN values will result in NaN
+values for the entire period.</p></li>
 <li><p><strong>leading_values</strong> (<em>int</em><em>, </em><em>optional</em>) – For the temporal filtering, this is an argument setting the
 number of leading values to include in the output, inclusive.
 Default is 0, and parameter only applies to ‘day’ time_interval.</p></li>
@@ -1356,9 +1365,9 @@ streamflow values for percentile levels. Default is True.</p></li>
 <li><p><strong>include_metadata</strong> (<em>bool</em><em>, </em><em>optional</em>) – When set to True, return additional columns describing the data
 including count, mean, start_yr, end_yr. Default is True</p></li>
 <li><p><strong>mask_out_of_range</strong> (<em>bool</em><em>, </em><em>optional</em>) – When set to True, percentiles that are beyond the min/max percentile
-ranks of the observed data to be NA. Effect of this being enables is
-that high or low percentiles may not be calculated when few data points
-are available. Default is True.</p></li>
+rank of the observed data are set to NA. When enabled, high or low
+percentiles may not be calculated when few data points are
+available. Default is True.</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional keyword arguments to pass to <cite>numpy.percentile</cite>.</p></li>
 </ul>
 </dd>
@@ -1387,8 +1396,11 @@ preparation for plotting.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.percentiles.calculate_variable_percentile_thresholds_by_day_of_year">
-<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day_of_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">50,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_min_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_out_of_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day_of_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day_of_year" title="Link to this definition"></a></dt>
-<dd><p>Calculate variable percentile thresholds of data by day of year.</p>
+<span class="sig-prename descclassname"><span class="pre">hyswap.percentiles.</span></span><span class="sig-name descname"><span class="pre">calculate_variable_percentile_thresholds_by_day_of_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">50,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weibull'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'daily'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leading_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_na</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_min_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_out_of_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/percentiles.html#calculate_variable_percentile_thresholds_by_day_of_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.percentiles.calculate_variable_percentile_thresholds_by_day_of_year" title="Link to this definition"></a></dt>
+<dd><p>Calculate variable percentile thresholds of data by day of year.
+Variable percentiles are calculated using flow observations for
+each day from all years on record. See the <cite>Calculations Quick-Reference &lt;https://doi-usgs.github.io/hyswap/meta/calculations.html#streamflow-percentiles&gt;</cite>
+for more information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1404,11 +1416,12 @@ Additional available methods are ‘interpolated_inverted_cdf’ (Type 4),
 and ‘normal_unbiased’ (Type 9).</p></li>
 <li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column containing date information. If None, the index of
 <cite>df</cite> is used.</p></li>
-<li><p><strong>data_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of data. Must be one of ‘daily’, ‘7-day’, ‘14-day’, and
-‘28-day’. Default is ‘daily’. If ‘7-day’, ‘14-day’, or ‘28-day’ is
-specified, the data will be averaged over the specified period. NaN
-values will be used for any days that do not have data. If present,
-NaN values will result in NaN values for the entire period.</p></li>
+<li><p><strong>window_width</strong> (<em>str</em><em>, </em><em>optional</em>) – The window width of the data in days. Must be one of ‘daily’,
+‘7-day’, ‘14-day’, and ‘28-day’. If ‘7-day’, ‘14-day’, or
+‘28-day’ is specified, the data will be averaged over the
+specified period. NaN values will be used for any days that
+do not have data. If present, NaN values will result in NaN
+values for the entire period.</p></li>
 <li><p><strong>year_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of year to use. Must be one of ‘calendar’, ‘water’, or
 ‘climate’. Default is ‘calendar’ which starts the year on January 1
 and ends on December 31. ‘water’ starts the year on October 1 and
@@ -1430,9 +1443,9 @@ streamflow values for percentile levels. Default is True.</p></li>
 <li><p><strong>include_metadata</strong> (<em>bool</em><em>, </em><em>optional</em>) – When set to True, return additional columns describing the data
 including count, mean, start_yr, end_yr. Default is True</p></li>
 <li><p><strong>mask_out_of_range</strong> (<em>bool</em><em>, </em><em>optional</em>) – When set to True, percentiles that are beyond the min/max percentile
-ranks of the observed data to be NA. Effect of this being enables is
-that high or low percentiles may not be calculated when few data points
-are available. Default is True.</p></li>
+rank of the observed data are set to NA. When enabled, high or low
+percentiles may not be calculated when few data points are
+available. Default is True.</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Additional keyword arguments to pass to <cite>numpy.percentile</cite>.</p></li>
 </ul>
 </dd>
@@ -1464,35 +1477,6 @@ preparation for plotting.</p>
 <section id="module-hyswap.cumulative">
 <span id="cumulative-calculation-functions"></span><h2>Cumulative Calculation Functions<a class="headerlink" href="#module-hyswap.cumulative" title="Link to this heading"></a></h2>
 <p>Cumulative calculation functions.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="hyswap.cumulative._tidy_cumulative_dataframe">
-<span class="sig-prename descclassname"><span class="pre">hyswap.cumulative.</span></span><span class="sig-name descname"><span class="pre">_tidy_cumulative_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/cumulative.html#_tidy_cumulative_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.cumulative._tidy_cumulative_dataframe" title="Link to this definition"></a></dt>
-<dd><p>Tidy a cumulative dataframe.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cdf</strong> (<em>pandas.DataFrame</em>) – DataFrame containing cumulative values, rows are years, columns are
-days of year.</p></li>
-<li><p><strong>year_type</strong> (<em>str</em>) – The type of year to use. Must be one of ‘calendar’, ‘water’, or
-‘climate’. Default is ‘calendar’ which starts the year on January 1
-and ends on December 31. ‘water’ starts the year on October 1 and
-ends on September 30 of the following year which is the “water year”.
-For example, October 1, 2010 to September 30, 2011 is “water year
-2011”. ‘climate’ years begin on April 1 and end on March 31 of the
-following year, they are numbered by the ending year. For example,
-April 1, 2010 to March 31, 2011 is “climate year 2011”.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>cdf</strong> – DataFrame containing cumulative values, rows are dates, columns include
-years, day of year (doy), and cumulative values.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pandas.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.cumulative.calculate_daily_cumulative_values">
 <span class="sig-prename descclassname"><span class="pre">hyswap.cumulative.</span></span><span class="sig-name descname"><span class="pre">calculate_daily_cumulative_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calendar'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'acre-feet'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_leap_day</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/cumulative.html#calculate_daily_cumulative_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.cumulative.calculate_daily_cumulative_values" title="Link to this definition"></a></dt>
@@ -1568,7 +1552,7 @@ as an integer, or a list of years.</p></li>
 <li><p><strong>data_column_name</strong> (<em>str</em>) – Name of column containing data to calculate cumulative values for.
 Discharge data assumed to be in unit of ft3/s.</p></li>
 <li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column containing date information. If None, the index of
-<cite>df</cite> will be used.</p></li>
+<cite>df</cite> will be used. Defaults to None.</p></li>
 <li><p><strong>unit</strong> (<em>str</em><em>, </em><em>optional</em>) – The unit the user wants to use to report cumulative flow. One of
 ‘acre-feet’, ‘cfs’, ‘cubic-meters’, ‘cubic-feet’. Assumes input
 data are in cubic feet per second (cfs).</p></li>
@@ -1626,7 +1610,7 @@ used to create the plot. Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.plots.plot_duration_hydrograph">
-<span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_duration_hydrograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentiles_by_day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disclaimer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Duration</span> <span class="pre">Hydrograph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Discharge,</span> <span class="pre">ft3/s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Month-Year'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_duration_hydrograph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_duration_hydrograph" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_duration_hydrograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentiles_by_day</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">25,</span> <span class="pre">75,</span> <span class="pre">90,</span> <span class="pre">95]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disclaimer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Duration</span> <span class="pre">Hydrograph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Discharge,</span> <span class="pre">ft3/s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Month-Year'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_palette</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_duration_hydrograph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_duration_hydrograph" title="Link to this definition"></a></dt>
 <dd><p>Plot a duration hydrograph.</p>
 <p>The duration hydrograph is a graphical presentation of recent daily
 streamflow (discharge) observed at an individual USGS streamgage,
@@ -1648,9 +1632,9 @@ of flow conditions.</p>
 Note that this plotting function is incompatible
 with percentiles calculated by day-of-year.</p></li>
 <li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Dataframe containing the data to plot.</p></li>
-<li><p><strong>data_col</strong> (<em>str</em>) – Column name of the data to plot.</p></li>
-<li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. If None, index is assumed to contain datetime
-information.</p></li>
+<li><p><strong>data_column_name</strong> (<em>str</em>) – Name of column containing data to plot.</p></li>
+<li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column containing date information. If None, the index of
+<cite>df</cite> will be used. Defaults to None.</p></li>
 <li><p><strong>pct_list</strong> (<em>list</em><em>, </em><em>optional</em>) – List of integers corresponding to the percentile values to be
 plotted. Values of 0 and 100 are ignored as unbiased plotting position
 formulas do not assign values to 0 or 100th percentile.
@@ -1669,9 +1653,10 @@ conditions.’ below the x-axis.</p></li>
 ‘Discharge, ft3/s’.</p></li>
 <li><p><strong>xlab</strong> (<em>str</em><em>, </em><em>optional</em>) – Label for the x-axis. If not provided, the default label will be
 ‘Month’.</p></li>
-<li><p><strong>colors</strong> (<em>list</em><em>, </em><em>optional</em>) – List of colors to use for the lines. If not provided, a default
-list of colors will be used. The max number of colors in this
-list is seven.</p></li>
+<li><p><strong>color_palette</strong> (<em>list</em><em>, </em><em>optional</em>) – List of colors to use for the lines or a string describing one of
+two built-in palettes: ‘BrownBlue’ or ‘Rainbow’. If not provided,
+the ‘BrownBlue’ palette will be used. The max number of colors
+in this list is seven.</p></li>
 <li><p><strong>**kwargs</strong> – Keyword arguments passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.fill_between()</span></code>.</p></li>
 </ul>
 </dd>
@@ -1770,16 +1755,16 @@ make the flow duration curve.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.plots.plot_hydrograph">
-<span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_hydrograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Streamflow</span> <span class="pre">Hydrograph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Discharge,</span> <span class="pre">ft3/s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Date'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_hydrograph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_hydrograph" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_hydrograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Streamflow</span> <span class="pre">Hydrograph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Discharge,</span> <span class="pre">ft3/s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlab</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Date'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_hydrograph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_hydrograph" title="Link to this definition"></a></dt>
 <dd><p>Plot a simple hydrograph.</p>
 <p>Hydrographs show the streamflow discharge over time at a single station.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing the data to plot.</p></li>
-<li><p><strong>data_col</strong> (<em>str</em>) – Name of the column containing the data to plot.</p></li>
-<li><p><strong>date_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the column containing the dates. If not provided, the index
-will be used.</p></li>
+<li><p><strong>data_column_name</strong> (<em>str</em>) – Name of column containing data to plot.</p></li>
+<li><p><strong>date_column_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column containing date information. If None, the index of
+<cite>df</cite> will be used. Defaults to None.</p></li>
 <li><p><strong>start_date</strong> (<em>str</em><em>, </em><em>optional</em>) – Start date for the plot. If not provided, the minimum date in the
 DataFrame will be used.</p></li>
 <li><p><strong>end_date</strong> (<em>str</em><em>, </em><em>optional</em>) – End date for the plot. If not provided, the maximum date in the
@@ -1808,7 +1793,7 @@ created.</p></li>
 <span class="gp">... </span>                                  <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2019-01-01&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                                  <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2020-01-01&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_hydrograph</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;2019 Hydrograph for Station </span><span class="si">{</span><span class="n">siteno</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">ylab</span><span class="o">=</span><span class="s1">&#39;Discharge, ft3/s&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">xlab</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">yscale</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
@@ -1893,7 +1878,7 @@ make the raster hydrograph plot.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.plots.plot_similarity_heatmap">
-<span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_similarity_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'inferno'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Similarity</span> <span class="pre">Matrix'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_similarity_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_similarity_heatmap" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.plots.</span></span><span class="sig-name descname"><span class="pre">plot_similarity_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cividis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Similarity</span> <span class="pre">Matrix'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/plots.html#plot_similarity_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.plots.plot_similarity_heatmap" title="Link to this definition"></a></dt>
 <dd><p>Plot a similarity matrix heatmap.</p>
 <p>The heatmap shows the results of a correlation matrix between
 measurements at two or more sites. Lighter, warmer colors denote
@@ -1907,7 +1892,7 @@ similarity between two sites.</p>
 <a class="reference internal" href="#hyswap.similarity.calculate_wasserstein_distance" title="hyswap.similarity.calculate_wasserstein_distance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hyswap.similarity.calculate_wasserstein_distance()</span></code></a>,
 <a class="reference internal" href="#hyswap.similarity.calculate_energy_distance" title="hyswap.similarity.calculate_energy_distance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hyswap.similarity.calculate_energy_distance()</span></code></a>, or any other
 square matrix represented as a pandas DataFrame.</p></li>
-<li><p><strong>cmap</strong> (<em>str</em><em>, </em><em>optional</em>) – Colormap to use. Default is ‘inferno’.</p></li>
+<li><p><strong>cmap</strong> (<em>str</em><em>, </em><em>optional</em>) – Colormap to use. Default is ‘cividis’.</p></li>
 <li><p><strong>show_values</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to show the values of the matrix on the plot. Default is False.</p></li>
 <li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em>, </em><em>optional</em>) – Axes object to plot on. If not provided, a new figure and axes will be
 created.</p></li>
@@ -1951,7 +1936,7 @@ heatmap.</p>
 <p>Runoff functions for hyswap.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.calculate_geometric_runoff">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_geometric_runoff" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_geometric_runoff" title="Link to this definition"></a></dt>
 <dd><p>Function to calculate the runoff for a specified geometry. Uses
 tabular dataframe containing proportion of geometry in each
 intersecting basin and proportion of intersecting basins in the
@@ -1972,11 +1957,11 @@ column entitled ‘runoff’ filled with runoff data.</p></li>
 <li><p><strong>geom_intersection_df</strong> (<em>pandas.DataFrame</em>) – Tabular dataFrame containing columns indicating the site numbers,
 geometry ids, proportion of geometry in basin, and proportion
 of basin within geometry.</p></li>
-<li><p><strong>site_col</strong> (<em>str</em>) – Column in geom_intersection_df with drainage area site numbers.
+<li><p><strong>site_column_name</strong> (<em>str</em>) – Column in geom_intersection_df with drainage area site numbers.
 Please make sure ids have the correct number of digits and have
 not lost leading 0s when read in. If the site numbers are the
-geom_intersection_df index col, site_col = ‘index’.</p></li>
-<li><p><strong>geom_id_col</strong> (<em>str</em>) – Column in geom_intersection_df with geometry ids.</p></li>
+geom_intersection_df index col, site_column_name = ‘index’.</p></li>
+<li><p><strong>geom_id_column_name</strong> (<em>str</em>) – Column in geom_intersection_df with geometry ids.</p></li>
 <li><p><strong>prop_geom_in_basin_col</strong> (<em>str</em>) – Name of column with values (type:float) representing the proportion
 (0 to 1) of the spatial geometry occurring in the corresponding
 drainage area. Default name: ‘prop_in_basin’</p></li>
@@ -2012,7 +1997,7 @@ ids, and the max weight for any site used in the weighting calculation.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.calculate_multiple_geometric_runoff">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_multiple_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_multiple_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_multiple_geometric_runoff" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">calculate_multiple_geometric_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runoff_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_downstream_basins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_overlap_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.98</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#calculate_multiple_geometric_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.calculate_multiple_geometric_runoff" title="Link to this definition"></a></dt>
 <dd><p>Calculate runoff for multiple geometries at once using
 <cite>hyswap.calculate_geometric_runoff()</cite>.
 Note that this function only calculates estimated runoff using
@@ -2032,11 +2017,12 @@ column entitled ‘runoff’ filled with runoff data.</p></li>
 <li><p><strong>geom_intersection_df</strong> (<em>pandas.DataFrame</em>) – Tabular dataFrame containing columns indicating the site numbers,
 geometry ids, proportion of geometry in basin, and proportion
 of basin within geometry.</p></li>
-<li><p><strong>site_col</strong> (<em>str</em>) – Column in geom_intersection_df with drainage area site numbers.
+<li><p><strong>site_column_name</strong> (<em>str</em>) – Column in geom_intersection_df with drainage area site numbers.
 Please make sure ids have the correct number of digits
 and have not lost leading 0s when read in. If the site
-numbers are the geom_intersection_df index col, site_col = ‘index’.</p></li>
-<li><p><strong>geom_id_col</strong> (<em>str</em>) – Column in geom_intersection_df with geometry ids.</p></li>
+numbers are the geom_intersection_df index col,
+site_column_name = ‘index’.</p></li>
+<li><p><strong>geom_id_column_name</strong> (<em>str</em>) – Column in geom_intersection_df with geometry ids.</p></li>
 <li><p><strong>prop_geom_in_basin_col</strong> (<em>str</em>) – Name of column with values (type:float) representing the proportion
 (0 to 1) of the spatial geometry occurring in the corresponding
 drainage area. Default name: ‘pct_in_basin’</p></li>
@@ -2073,19 +2059,21 @@ in the weighting calculation for each geometry.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.convert_cfs_to_runoff">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">convert_cfs_to_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drainage_area</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'annual'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#convert_cfs_to_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.convert_cfs_to_runoff" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">convert_cfs_to_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drainage_area</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'year'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#convert_cfs_to_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.convert_cfs_to_runoff" title="Link to this definition"></a></dt>
 <dd><p>Convert cfs to runoff values for some drainage area.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cfs</strong> (<em>float</em>) – Flow in cubic feet per second.</p></li>
 <li><p><strong>drainage_area</strong> (<em>float</em>) – Drainage area in km2.</p></li>
-<li><p><strong>frequency</strong> (<em>str</em><em>, </em><em>optional</em>) – Frequency of runoff values to return. Options are ‘annual’,
-‘monthly’, and ‘daily’. Default is ‘annual’.</p></li>
+<li><p><strong>time_unit</strong> (<em>str</em><em>, </em><em>optional</em>) – Determines the unit of time to use in the returned
+values with the format mm/&lt;time_unit&gt;.
+Options are ‘year’, ‘month’, and ‘day’.
+Default is ‘year’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Runoff in mm/&lt;frequency&gt;.</p>
+<dd class="field-even"><p>Runoff in mm/&lt;time_unit&gt;.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -2094,7 +2082,7 @@ in the weighting calculation for each geometry.</p>
 <p class="rubric">Examples</p>
 <p>Convert 14 cfs to mm/yr for a 250 km2 drainage area.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mmyr</span> <span class="o">=</span> <span class="n">runoff</span><span class="o">.</span><span class="n">convert_cfs_to_runoff</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">mmyr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">mmyr</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
 <span class="go">50.0</span>
 </pre></div>
 </div>
@@ -2102,7 +2090,7 @@ in the weighting calculation for each geometry.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.identify_sites_from_geom_intersection">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">identify_sites_from_geom_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#identify_sites_from_geom_intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.identify_sites_from_geom_intersection" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">identify_sites_from_geom_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_intersection_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_id_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_geom_in_basin_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_huc_in_basin'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_basin_in_geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prop_basin_in_huc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#identify_sites_from_geom_intersection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.identify_sites_from_geom_intersection" title="Link to this definition"></a></dt>
 <dd><p>Identify sites for a specified geometry.</p>
 <p>Function to identify streamgage sites that have drainage areas
 intersecting a given spatial geometry (e.g. HUC8) from the
@@ -2119,11 +2107,11 @@ Ids range from 8 to 10 digits and sometime involve a leading 0.</p></li>
 <li><p><strong>geom_intersection_df</strong> (<em>pandas.DataFrame</em>) – Tabular dataFrame containing columns indicating the site numbers,
 geometry ids, proportion of geometry in basin, and proportion
 of basin within geometry.</p></li>
-<li><p><strong>geom_id_col</strong> (<em>str</em>) – Column in geom_intersection_df with geometry ids.</p></li>
-<li><p><strong>site_col</strong> (<em>str</em>) – Column in geom_intersection_df with drainage area site numbers.
+<li><p><strong>geom_id_column_name</strong> (<em>str</em>) – Column in geom_intersection_df with geometry ids.</p></li>
+<li><p><strong>site_column_name</strong> (<em>str</em>) – Column in geom_intersection_df with drainage area site numbers.
 Please make sure ids have the correct number of digits and have
 not lost leading 0s when read in. If the site numbers are the
-geom_intersection_df index col, site_col = ‘index’.</p></li>
+geom_intersection_df index col, site_column_name = ‘index’.</p></li>
 <li><p><strong>prop_geom_in_basin_col</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of column with values (type:float) representing the proportion
 (0 to 1) of the spatial geometry occurring in the corresponding
 drainage area. Default name: ‘prop_huc_in_basin’</p></li>
@@ -2149,7 +2137,7 @@ spatial geometry. Default name: ‘prop_basin_in_huc’</p></li>
 <span class="gp">... </span><span class="s1">&#39;prop_basin_in_huc&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sites_lst</span> <span class="o">=</span> <span class="n">runoff</span><span class="o">.</span><span class="n">identify_sites_from_geom_intersection</span><span class="p">(</span>
 <span class="gp">... </span><span class="n">geom_intersection_df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">geom_id</span><span class="o">=</span><span class="s1">&#39;01010002&#39;</span><span class="p">,</span>
-<span class="gp">... </span><span class="n">geom_id_col</span><span class="o">=</span><span class="s1">&#39;geom_id&#39;</span><span class="p">,</span> <span class="n">site_col</span><span class="o">=</span><span class="s1">&#39;site_no&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="n">geom_id_column_name</span><span class="o">=</span><span class="s1">&#39;geom_id&#39;</span><span class="p">,</span> <span class="n">site_column_name</span><span class="o">=</span><span class="s1">&#39;site_no&#39;</span><span class="p">,</span>
 <span class="gp">... </span><span class="n">prop_geom_in_basin_col</span><span class="o">=</span><span class="s1">&#39;prop_huc_in_basin&#39;</span><span class="p">,</span>
 <span class="gp">... </span><span class="n">prop_basin_in_geom_col</span><span class="o">=</span><span class="s1">&#39;prop_basin_in_huc&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sites_lst</span><span class="p">)</span>
@@ -2160,7 +2148,7 @@ spatial geometry. Default name: ‘prop_basin_in_huc’</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.runoff.streamflow_to_runoff">
-<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">streamflow_to_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drainage_area</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'annual'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#streamflow_to_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.streamflow_to_runoff" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.runoff.</span></span><span class="sig-name descname"><span class="pre">streamflow_to_runoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drainage_area</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'year'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/runoff.html#streamflow_to_runoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.runoff.streamflow_to_runoff" title="Link to this definition"></a></dt>
 <dd><p>Convert streamflow to runoff for a given drainage area.</p>
 <p>For a given gage/dataframe, convert streamflow to runoff using the
 drainage area and the convert_cfs_to_runoff function.</p>
@@ -2168,10 +2156,12 @@ drainage area and the convert_cfs_to_runoff function.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing streamflow data.</p></li>
-<li><p><strong>data_col</strong> (<em>str</em>) – Column name containing streamflow data, assumed to be in cfs.</p></li>
+<li><p><strong>data_column_name</strong> (<em>str</em>) – Name of column containing data to analyze.</p></li>
 <li><p><strong>drainage_area</strong> (<em>float</em>) – Drainage area in km2.</p></li>
-<li><p><strong>frequency</strong> (<em>str</em><em>, </em><em>optional</em>) – Frequency of runoff values to return. Options are ‘annual’,
-‘monthly’, and ‘daily’. Default is ‘annual’.</p></li>
+<li><p><strong>time_unit</strong> (<em>str</em><em>, </em><em>optional</em>) – Determines the unit of time to use in the returned
+values with the format mm/&lt;time_unit&gt;.
+Options are ‘year’, ‘month’, and ‘day’.
+Default is ‘year’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2218,7 +2208,8 @@ calculated using the <cite>numpy.corrcoeff</cite> function.</p>
 <li><p><strong>df_list</strong> (<em>list</em>) – List of dataframes. The dataframes are expected to have the same
 columns. Likely inputs are the output of a function like
 dataretrieval.nwis.get_dv() or similar</p></li>
-<li><p><strong>data_column_name</strong> (<em>str</em>) – Name of the column to use for the correlation calculation.</p></li>
+<li><p><strong>data_column_name</strong> (<em>str</em>) – Name of the column containing data to use for the correlation
+calculation.</p></li>
 <li><p><strong>df_names</strong> (<em>list</em><em>, </em><em>optional</em>) – List of names for the dataframes in df_list. If provided, the names
 will be used to label the rows and columns of the output array. If
 not provided, the column “site_no” will be used if available, if it is

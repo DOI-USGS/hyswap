@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.utils &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>hyswap.utils &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -91,20 +91,21 @@
 
 <div class="viewcode-block" id="filter_approved_data">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_approved_data">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_approved_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filter_column</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">filter_approved_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">filter_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a dataframe to only return approved &quot;A&quot; (or &quot;A, e&quot;) data.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data : pandas.DataFrame</span>
-<span class="sd">        The data to filter.</span>
-<span class="sd">    filter_column : string</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        Dataframe containing the data to filter.</span>
+<span class="sd">    filter_column_name : string</span>
 <span class="sd">        The column upon which to filter. If None, an error will be raised.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pandas.DataFrame</span>
-<span class="sd">        The filtered data.</span>
+<span class="sd">        A filtered dataframe containing only approved data, denoted by an</span>
+<span class="sd">        &quot;A&quot; in the filter column.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -114,7 +115,7 @@
 <span class="sd">    .. doctest::</span>
 
 <span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({</span>
-<span class="sd">        ...     &#39;data&#39;: [1, 2, 3, 4, 5],</span>
+<span class="sd">        ...     &#39;df&#39;: [1, 2, 3, 4, 5],</span>
 <span class="sd">        ...     &#39;approved&#39;: [&#39;A&#39;, &#39;A, e&#39;, &#39;A&#39;, &#39;P&#39;, &#39;P&#39;]})</span>
 <span class="sd">        &gt;&gt;&gt; df.shape</span>
 <span class="sd">        (5, 2)</span>
@@ -123,45 +124,46 @@
 
 <span class="sd">    .. doctest::</span>
 
-<span class="sd">        &gt;&gt;&gt; df = utils.filter_approved_data(df, filter_column=&#39;approved&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df = utils.filter_approved_data(df, filter_column_name=&#39;approved&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; df.shape</span>
 <span class="sd">        (3, 2)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">filter_column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;filter_column must be specified.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">filter_column</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span></div>
+    <span class="k">if</span> <span class="n">filter_column_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Filter_column must be specified.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">filter_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span></div>
 
 
 
 <div class="viewcode-block" id="rolling_average">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.rolling_average">[docs]</a>
-<span class="k">def</span> <span class="nf">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span>
                     <span class="n">auto_min_periods</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">custom_min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate a rolling average for a dataframe.</span>
 
 <span class="sd">    Default behavior right-aligns the window used for the rolling average</span>
-<span class="sd">    and uses the data_type argument (&#39;1D&#39;, &#39;7D&#39;, &#39;14D&#39;, &#39;28D&#39;) to set the</span>
+<span class="sd">    and uses the window argument (&#39;1D&#39;, &#39;7D&#39;, &#39;14D&#39;, &#39;28D&#39;) to set the</span>
 <span class="sd">    `min_periods` argument in `pandas.DataFrame.rolling`. The function</span>
 <span class="sd">    returns NaN values if any of the values in the window are NaN or if the</span>
-<span class="sd">    `mind_periods` argument is not satisifed. Properties of the windowing</span>
+<span class="sd">    `min_periods` argument is not satisifed. Properties of the windowing</span>
 <span class="sd">    can be changed by passing additional keyword arguments which are fed</span>
 <span class="sd">    to `pandas.DataFrame.rolling`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    df : pandas.DataFrame</span>
-<span class="sd">        The dataframe to calculate the rolling average for.</span>
+<span class="sd">        Dataframe containing data to calculate the rolling average for.</span>
 <span class="sd">    data_column_name : string</span>
-<span class="sd">        The name of the column to calculate the rolling average for.</span>
-<span class="sd">    data_type : string</span>
+<span class="sd">        Name of the column containing data for calculating the rolling</span>
+<span class="sd">        average.</span>
+<span class="sd">    window : string</span>
 <span class="sd">        The formatted frequency string to be used with</span>
 <span class="sd">        pandas.DataFrame.rolling to calculate the average over the correct</span>
-<span class="sd">        temporal period.</span>
+<span class="sd">        temporal period. Should take the format &#39;numberD&#39;.</span>
 <span class="sd">    auto_min_periods : bool</span>
 <span class="sd">        Defaults to True. When True, the `min_periods` argument in</span>
-<span class="sd">        `pandas.DataFrame.rolling` is set using the `data_type` argument.</span>
-<span class="sd">        For example, if the `data_type` = &#39;7D&#39;, the `min_periods`</span>
+<span class="sd">        `pandas.DataFrame.rolling` is set using the `window_width` argument.</span>
+<span class="sd">        For example, if the `window` = &#39;7D&#39;, the `min_periods`</span>
 <span class="sd">        argument is 7. When False, the `min_periods` argument is set</span>
 <span class="sd">        using the `custom_min_periods` input.</span>
 <span class="sd">    custom_min_periods : int, optional</span>
@@ -179,12 +181,12 @@
 <span class="sd">        The output dataframe with the rolling average values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">auto_min_periods</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">min_periods</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+        <span class="n">min_periods</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">window</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">min_periods</span> <span class="o">=</span> <span class="n">custom_min_periods</span>
     <span class="n">df_out</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">df_out</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_out</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span>
-        <span class="n">data_type</span><span class="p">,</span>
+        <span class="n">window</span><span class="p">,</span>
         <span class="n">min_periods</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df_out</span></div>
 
@@ -706,7 +708,7 @@
 
 <div class="viewcode-block" id="calculate_summary_statistics">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.calculate_summary_statistics">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_col</span><span class="o">=</span><span class="s2">&quot;00060_Mean&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s2">&quot;00060_Mean&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate summary statistics for a site.</span>
 
@@ -716,7 +718,7 @@
 <span class="sd">        DataFrame containing daily values for the site. Expected to be from</span>
 <span class="sd">        `dataretrieval.nwis.get_dv()`, or similar.</span>
 
-<span class="sd">    data_col : str, optional</span>
+<span class="sd">    data_column_name : str, optional</span>
 <span class="sd">        Name of the column in the dv_df DataFrame that contains the data of</span>
 <span class="sd">        interest. Default is &quot;00060_Mean&quot; which is the mean daily discharge</span>
 <span class="sd">        column.</span>
@@ -759,15 +761,15 @@
     <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Begin date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;End date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="c1"># count</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
     <span class="c1"># minimum</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Minimum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Minimum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
     <span class="c1"># mean</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="c1"># median</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Median&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Median&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
     <span class="c1"># maximum</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
     <span class="c1"># make dataframe</span>
     <span class="n">summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">summary_dict</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -847,37 +849,39 @@
 
 
 
-<div class="viewcode-block" id="set_data_type">
-<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.set_data_type">[docs]</a>
-<span class="k">def</span> <span class="nf">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to set the data type for rolling averages.</span>
+<div class="viewcode-block" id="set_window_width">
+<a class="viewcode-back" href="../../reference/index.html#hyswap.utils.set_window_width">[docs]</a>
+<span class="k">def</span> <span class="nf">set_window_width</span><span class="p">(</span><span class="n">window_width</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to set the number of days (window width) used</span>
+<span class="sd">    to calculate a set of rolling averages.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data_type : str</span>
-<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
-<span class="sd">        &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
-<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
-<span class="sd">        values will be used for any days that do not have data. If present,</span>
-<span class="sd">        NaN values will result in NaN values for the entire period.</span>
+<span class="sd">    window_width : str</span>
+<span class="sd">        The window width of the data in days. Must be one of &#39;daily&#39;,</span>
+<span class="sd">        &#39;7-day&#39;, &#39;14-day&#39;, and &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or</span>
+<span class="sd">        &#39;28-day&#39; is specified, the data will be averaged over the</span>
+<span class="sd">        specified period. NaN values will be used for any days that</span>
+<span class="sd">        do not have data. If present, NaN values will result in NaN</span>
+<span class="sd">        values for the entire period.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    data_type : str</span>
+<span class="sd">    window : str</span>
 <span class="sd">        The formatted frequency string to be used with</span>
 <span class="sd">        pandas.DataFrame.rolling to calculate the average over the correct</span>
 <span class="sd">        temporal period.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;daily&#39;</span><span class="p">:</span>
-        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;1D&#39;</span>
-    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;7-day&#39;</span><span class="p">:</span>
-        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;7D&#39;</span>
-    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;14-day&#39;</span><span class="p">:</span>
-        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;14D&#39;</span>
-    <span class="k">elif</span> <span class="n">data_type</span> <span class="o">==</span> <span class="s1">&#39;28-day&#39;</span><span class="p">:</span>
-        <span class="n">data_type</span> <span class="o">=</span> <span class="s1">&#39;28D&#39;</span>
+    <span class="k">if</span> <span class="n">window_width</span> <span class="o">==</span> <span class="s1">&#39;daily&#39;</span><span class="p">:</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;1D&#39;</span>
+    <span class="k">elif</span> <span class="n">window_width</span> <span class="o">==</span> <span class="s1">&#39;7-day&#39;</span><span class="p">:</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;7D&#39;</span>
+    <span class="k">elif</span> <span class="n">window_width</span> <span class="o">==</span> <span class="s1">&#39;14-day&#39;</span><span class="p">:</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;14D&#39;</span>
+    <span class="k">elif</span> <span class="n">window_width</span> <span class="o">==</span> <span class="s1">&#39;28-day&#39;</span><span class="p">:</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="s1">&#39;28D&#39;</span>
 
-    <span class="k">return</span> <span class="n">data_type</span></div>
+    <span class="k">return</span> <span class="n">window</span></div>
 
 
 

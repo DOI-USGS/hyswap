@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.percentiles &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>hyswap.percentiles &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -15,7 +15,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -93,7 +93,7 @@
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_month_day</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">filter_data_by_time</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">define_year_doy_columns</span>
-<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_data_type</span>
+<span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">set_window_width</span>
 <span class="kn">from</span> <span class="nn">hyswap.utils</span> <span class="kn">import</span> <span class="n">rolling_average</span>
 <span class="kn">from</span> <span class="nn">hyswap.exceedance</span> <span class="kn">import</span> <span class="n">calculate_exceedance_probability_from_values</span>
 
@@ -112,6 +112,9 @@
         <span class="n">mask_out_of_range</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate fixed percentile thresholds using historical data.</span>
+<span class="sd">    Fixed percentiles are calculated using all data in the period of</span>
+<span class="sd">    record. See the `Calculations Quick-Reference &lt;https://doi-usgs.github.io/hyswap/meta/calculations.html#streamflow-percentiles&gt;`</span>
+<span class="sd">    for more information.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -157,9 +160,9 @@
 
 <span class="sd">    mask_out_of_range :  bool, optional</span>
 <span class="sd">        When set to True, percentiles that are beyond the min/max percentile</span>
-<span class="sd">        ranks of the observed data to be NA. Effect of this being enables is</span>
-<span class="sd">        that high or low percentiles may not be calculated when few data points</span>
-<span class="sd">        are available. Default is True.</span>
+<span class="sd">        rank of the observed data are set to NA. When enabled, high or low</span>
+<span class="sd">        percentiles may not be calculated when few data points are</span>
+<span class="sd">        available. Default is True.</span>
 
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
@@ -286,7 +289,7 @@
         <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
         <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
+        <span class="n">window_width</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
         <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;calendar&#39;</span><span class="p">,</span>
         <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -297,6 +300,9 @@
         <span class="n">mask_out_of_range</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate variable percentile thresholds of data by day of year.</span>
+<span class="sd">    Variable percentiles are calculated using flow observations for</span>
+<span class="sd">    each day from all years on record. See the `Calculations Quick-Reference &lt;https://doi-usgs.github.io/hyswap/meta/calculations.html#streamflow-percentiles&gt;`</span>
+<span class="sd">    for more information.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -322,12 +328,13 @@
 <span class="sd">        Name of column containing date information. If None, the index of</span>
 <span class="sd">        `df` is used.</span>
 
-<span class="sd">    data_type : str, optional</span>
-<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
-<span class="sd">        &#39;28-day&#39;. Default is &#39;daily&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
-<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
-<span class="sd">        values will be used for any days that do not have data. If present,</span>
-<span class="sd">        NaN values will result in NaN values for the entire period.</span>
+<span class="sd">    window_width : str, optional</span>
+<span class="sd">        The window width of the data in days. Must be one of &#39;daily&#39;,</span>
+<span class="sd">        &#39;7-day&#39;, &#39;14-day&#39;, and &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or</span>
+<span class="sd">        &#39;28-day&#39; is specified, the data will be averaged over the</span>
+<span class="sd">        specified period. NaN values will be used for any days that</span>
+<span class="sd">        do not have data. If present, NaN values will result in NaN</span>
+<span class="sd">        values for the entire period.</span>
 
 <span class="sd">    year_type : str, optional</span>
 <span class="sd">        The type of year to use. Must be one of &#39;calendar&#39;, &#39;water&#39;, or</span>
@@ -365,9 +372,9 @@
 
 <span class="sd">    mask_out_of_range :  bool, optional</span>
 <span class="sd">        When set to True, percentiles that are beyond the min/max percentile</span>
-<span class="sd">        ranks of the observed data to be NA. Effect of this being enables is</span>
-<span class="sd">        that high or low percentiles may not be calculated when few data points</span>
-<span class="sd">        are available. Default is True.</span>
+<span class="sd">        rank of the observed data are set to NA. When enabled, high or low</span>
+<span class="sd">        percentiles may not be calculated when few data points are</span>
+<span class="sd">        available. Default is True.</span>
 
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
@@ -420,8 +427,8 @@
                                  <span class="n">year_type</span><span class="o">=</span><span class="n">year_type</span><span class="p">,</span>
                                  <span class="n">clip_leap_day</span><span class="o">=</span><span class="n">clip_leap_day</span><span class="p">)</span>
     <span class="c1"># do rolling average for time as needed</span>
-    <span class="n">data_type</span> <span class="o">=</span> <span class="n">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">set_window_width</span><span class="p">(</span><span class="n">window_width</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
 
     <span class="c1"># create an empty dataframe to hold percentiles based on day-of-year</span>
     <span class="c1"># ignore 0 and 100 percentiles if passed in</span>
@@ -501,7 +508,7 @@
         <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span>
         <span class="n">method</span><span class="o">=</span><span class="s1">&#39;weibull&#39;</span><span class="p">,</span>
         <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
+        <span class="n">window_width</span><span class="o">=</span><span class="s1">&#39;daily&#39;</span><span class="p">,</span>
         <span class="n">leading_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">trailing_values</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">clip_leap_day</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -536,12 +543,13 @@
 <span class="sd">        Name of column containing date information. If None, the index of</span>
 <span class="sd">        `df` is used.</span>
 
-<span class="sd">    data_type : str, optional</span>
-<span class="sd">        The type of data. Must be one of &#39;daily&#39;, &#39;7-day&#39;, &#39;14-day&#39;, and</span>
-<span class="sd">        &#39;28-day&#39;. Default is &#39;daily&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or &#39;28-day&#39; is</span>
-<span class="sd">        specified, the data will be averaged over the specified period. NaN</span>
-<span class="sd">        values will be used for any days that do not have data. If present,</span>
-<span class="sd">        NaN values will result in NaN values for the entire period.</span>
+<span class="sd">    window_width : str, optional</span>
+<span class="sd">        The window width of the data in days. Must be one of &#39;daily&#39;,</span>
+<span class="sd">        &#39;7-day&#39;, &#39;14-day&#39;, and &#39;28-day&#39;. If &#39;7-day&#39;, &#39;14-day&#39;, or</span>
+<span class="sd">        &#39;28-day&#39; is specified, the data will be averaged over the</span>
+<span class="sd">        specified period. NaN values will be used for any days that</span>
+<span class="sd">        do not have data. If present, NaN values will result in NaN</span>
+<span class="sd">        values for the entire period.</span>
 
 <span class="sd">    leading_values : int, optional</span>
 <span class="sd">        For the temporal filtering, this is an argument setting the</span>
@@ -569,9 +577,9 @@
 
 <span class="sd">    mask_out_of_range :  bool, optional</span>
 <span class="sd">        When set to True, percentiles that are beyond the min/max percentile</span>
-<span class="sd">        ranks of the observed data to be NA. Effect of this being enables is</span>
-<span class="sd">        that high or low percentiles may not be calculated when few data points</span>
-<span class="sd">        are available. Default is True.</span>
+<span class="sd">        rank of the observed data are set to NA. When enabled, high or low</span>
+<span class="sd">        percentiles may not be calculated when few data points are</span>
+<span class="sd">        available. Default is True.</span>
 
 <span class="sd">    **kwargs : dict, optional</span>
 <span class="sd">        Additional keyword arguments to pass to `numpy.percentile`.</span>
@@ -622,8 +630,8 @@
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span>
 
     <span class="c1"># do rolling average for time as needed</span>
-    <span class="n">data_type</span> <span class="o">=</span> <span class="n">set_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">data_type</span><span class="p">)</span>
+    <span class="n">window</span> <span class="o">=</span> <span class="n">set_window_width</span><span class="p">(</span><span class="n">window_width</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">rolling_average</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="p">,</span> <span class="n">window</span><span class="p">)</span>
 
     <span class="c1"># create an empty dataframe to hold percentiles based on month-day</span>
     <span class="c1"># ignore 0 and 100 percentiles if passed in</span>
@@ -708,14 +716,13 @@
 <span class="sd">    Calculate the percentile associated with a value from some synthetic data.</span>
 
 <span class="sd">    .. doctest::</span>
-<span class="sd">        :skipif: True  # docstrings test fails with np.float64</span>
 
 <span class="sd">        &gt;&gt;&gt; data = pd.DataFrame({&#39;values&#39;: np.arange(1001),</span>
 <span class="sd">        ...                      &#39;date&#39;: pd.date_range(&#39;2020-01-01&#39;, &#39;2022-09-27&#39;)}).set_index(&#39;date&#39;)  # noqa: E501</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_fixed_percentile_thresholds(</span>
 <span class="sd">        ...     data, &#39;values&#39;, percentiles=[5, 10, 25, 50, 75, 90, 95])</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile = percentiles.calculate_fixed_percentile_from_value(</span>
-<span class="sd">        ...     500, pcts_df)</span>
+<span class="sd">        ...     500, pcts_df).item()</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile</span>
 <span class="sd">        50.0</span>
 

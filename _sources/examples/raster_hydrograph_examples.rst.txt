@@ -46,7 +46,7 @@ Now the data is arranged with years on the index (rows) and days of the year as 
 7-Day Average Raster Hydrograph Example (Site 03586500)
 *******************************************************
 
-The same data can be plotted as a 7-day average raster hydrograph by passing the `data_type` argument to :obj:`hyswap.rasterhydrograph.format_data` function.
+The same data can be plotted as a 7-day average raster hydrograph by passing the `window_width` argument to :obj:`hyswap.rasterhydrograph.format_data` function.
 
 .. plot::
     :context: reset
@@ -59,7 +59,7 @@ The same data can be plotted as a 7-day average raster hydrograph by passing the
 
     # format the data for a 7-day rolling average
     df_formatted = hyswap.rasterhydrograph.format_data(
-        df, '00060_Mean', data_type='7-day')
+        df, '00060_Mean', window_width='7-day')
 
     # plot
     fig, ax = plt.subplots()

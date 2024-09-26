@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raster Hydrographs &mdash; hyswap 0.1.dev1+g2f57764 documentation</title>
+  <title>Raster Hydrographs &mdash; hyswap 0.1.dev1+ga1c919e documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -16,7 +16,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=6fe04db9"></script>
+        <script src="../_static/documentation_options.js?v=ba94f617"></script>
         <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -139,7 +139,7 @@ raster hydrograph.</p>
 </section>
 <section id="day-average-raster-hydrograph-example-site-03586500">
 <h2>7-Day Average Raster Hydrograph Example (Site 03586500)<a class="headerlink" href="#day-average-raster-hydrograph-example-site-03586500" title="Link to this heading"></a></h2>
-<p>The same data can be plotted as a 7-day average raster hydrograph by passing the <cite>data_type</cite> argument to <a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a> function.</p>
+<p>The same data can be plotted as a 7-day average raster hydrograph by passing the <cite>window_width</cite> argument to <a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
 <span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;03586500&quot;</span>
 <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
@@ -147,7 +147,7 @@ raster hydrograph.</p>
 
 <span class="c1"># format the data for a 7-day rolling average</span>
 <span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="s1">&#39;7-day&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">window_width</span><span class="o">=</span><span class="s1">&#39;7-day&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
