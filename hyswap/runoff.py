@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
+def convert_cfs_to_runoff(cfs, drainage_area, time_unit="year"):
     """Convert cfs to runoff values for some drainage area.
 
     Parameters
@@ -14,35 +14,36 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     drainage_area : float
         Drainage area in km2.
 
-    frequency : str, optional
-        Frequency of runoff values to return. Options are 'annual',
-        'monthly', and 'daily'. Default is 'annual'.
+    time_unit : str, optional
+        Determines the unit of time to use in the returned
+        values with the format mm/<time_unit>.
+        Options are 'year', 'month', and 'day'.
+        Default is 'year'.
 
     Returns
     -------
     float
-        Runoff in mm/<frequency>.
+        Runoff in mm/<time_unit>.
 
     Examples
     --------
     Convert 14 cfs to mm/yr for a 250 km2 drainage area.
 
     .. doctest::
-        :skipif: True  # docstrings test fails with np.float64
 
         >>> mmyr = runoff.convert_cfs_to_runoff(14, 250)
-        >>> np.round(mmyr)
+        >>> np.round(mmyr).item()
         50.0
     """
-    # convert frequency string to value
-    if frequency == "annual":
+    # convert time_unit string to value
+    if time_unit == "year":
         freq = 365.25
-    elif frequency == "monthly":
+    elif time_unit == "month":
         freq = 365.25 / 12
-    elif frequency == "daily":
+    elif time_unit == "day":
         freq = 1
     else:
-        raise ValueError("Invalid frequency: {}".format(frequency))
+        raise ValueError("Invalid time unit: {}".format(time_unit))
     # convert cfs to cubic feet per frequency
     cpf = cfs * 60 * 60 * 24 * freq
     # convert cubic feet per freq to cubic meters per freq
@@ -54,7 +55,10 @@ def convert_cfs_to_runoff(cfs, drainage_area, frequency="annual"):
     return mmf
 
 
-def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
+def streamflow_to_runoff(df,
+                         data_column_name,
+                         drainage_area,
+                         time_unit="year"):
     """Convert streamflow to runoff for a given drainage area.
 
     For a given gage/dataframe, convert streamflow to runoff using the
@@ -65,15 +69,17 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
     df : pandas.DataFrame
         DataFrame containing streamflow data.
 
-    data_col : str
-        Column name containing streamflow data, assumed to be in cfs.
+    data_column_name : str
+        Name of column containing data to analyze.
 
     drainage_area : float
         Drainage area in km2.
 
-    frequency : str, optional
-        Frequency of runoff values to return. Options are 'annual',
-        'monthly', and 'daily'. Default is 'annual'.
+    time_unit : str, optional
+        Determines the unit of time to use in the returned
+        values with the format mm/<time_unit>.
+        Options are 'year', 'month', and 'day'.
+        Default is 'year'.
 
     Returns
     -------
@@ -94,8 +100,8 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
         2    57.2
         Name: runoff, dtype: float64
     """
-    df['runoff'] = df[data_col].apply(
-        lambda x: convert_cfs_to_runoff(x, drainage_area, frequency=frequency)
+    df['runoff'] = df[data_column_name].apply(
+        lambda x: convert_cfs_to_runoff(x, drainage_area, time_unit=time_unit)
     )
     return df
 
@@ -103,8 +109,8 @@ def streamflow_to_runoff(df, data_col, drainage_area, frequency="annual"):
 def identify_sites_from_geom_intersection(
         geom_id,
         geom_intersection_df,
-        geom_id_col,
-        site_col,
+        geom_id_column_name,
+        site_column_name,
         prop_geom_in_basin_col='prop_huc_in_basin',
         prop_basin_in_geom_col='prop_basin_in_huc'):
 
@@ -129,14 +135,14 @@ def identify_sites_from_geom_intersection(
         geometry ids, proportion of geometry in basin, and proportion
         of basin within geometry.
 
-    geom_id_col : str
+    geom_id_column_name : str
         Column in geom_intersection_df with geometry ids.
 
-    site_col : str
+    site_column_name : str
         Column in geom_intersection_df with drainage area site numbers.
         Please make sure ids have the correct number of digits and have
         not lost leading 0s when read in. If the site numbers are the
-        geom_intersection_df index col, site_col = 'index'.
+        geom_intersection_df index col, site_column_name = 'index'.
 
     prop_geom_in_basin_col : str, optional
         Name of column with values (type:float) representing the proportion
@@ -167,7 +173,7 @@ def identify_sites_from_geom_intersection(
         ... 'prop_basin_in_huc'])
         >>> sites_lst = runoff.identify_sites_from_geom_intersection(
         ... geom_intersection_df=df, geom_id='01010002',
-        ... geom_id_col='geom_id', site_col='site_no',
+        ... geom_id_column_name='geom_id', site_column_name='site_no',
         ... prop_geom_in_basin_col='prop_huc_in_basin',
         ... prop_basin_in_geom_col='prop_basin_in_huc')
         >>> print(sites_lst)
@@ -176,17 +182,17 @@ def identify_sites_from_geom_intersection(
 
     # Filter df to designated geometry (e.g. huc8)
     filtered_df = geom_intersection_df[
-        geom_intersection_df[geom_id_col] == geom_id
+        geom_intersection_df[geom_id_column_name] == geom_id
         ]
 
     # Check whether sites is the df index or not
-    if site_col == 'index':
-        site_col = filtered_df.index
+    if site_column_name == 'index':
+        site_column_name = filtered_df.index
     else:
-        site_col = filtered_df[site_col]
+        site_column_name = filtered_df[site_column_name]
 
     # Retrieve all non-0 sites within the designated geometry (e.g. huc8)
-    site_list = site_col[(filtered_df[prop_geom_in_basin_col] != 0) & (
+    site_list = site_column_name[(filtered_df[prop_geom_in_basin_col] != 0) & (
         filtered_df[prop_basin_in_geom_col] != 0)].to_list()
 
     return site_list
@@ -195,8 +201,8 @@ def identify_sites_from_geom_intersection(
 def calculate_geometric_runoff(geom_id,
                                runoff_df,
                                geom_intersection_df,
-                               site_col,
-                               geom_id_col,
+                               site_column_name,
+                               geom_id_column_name,
                                prop_geom_in_basin_col='prop_huc_in_basin',
                                prop_basin_in_geom_col='prop_basin_in_huc',
                                percentage=False,
@@ -228,13 +234,13 @@ def calculate_geometric_runoff(geom_id,
         geometry ids, proportion of geometry in basin, and proportion
         of basin within geometry.
 
-    site_col : str
+    site_column_name : str
         Column in geom_intersection_df with drainage area site numbers.
         Please make sure ids have the correct number of digits and have
         not lost leading 0s when read in. If the site numbers are the
-        geom_intersection_df index col, site_col = 'index'.
+        geom_intersection_df index col, site_column_name = 'index'.
 
-    geom_id_col : str
+    geom_id_column_name : str
         Column in geom_intersection_df with geometry ids.
 
     prop_geom_in_basin_col : str
@@ -283,7 +289,7 @@ def calculate_geometric_runoff(geom_id,
     # check whether runoff_df contains sites not in geom_df
     # this might indicate mismatched format in site ids between
     # runoff_df and geom_intersection df
-    check = list(set(runoff_df['site_no'].tolist()) - set(geom_intersection_df[site_col].tolist()))  # noqa: E501
+    check = list(set(runoff_df['site_no'].tolist()) - set(geom_intersection_df[site_column_name].tolist()))  # noqa: E501
     if check:
         print(('There are site ids in the runoff df that are not present '
                f'in the intersection df for {geom_id}. This might indicate '
@@ -291,22 +297,22 @@ def calculate_geometric_runoff(geom_id,
                'zeroes if NWIS sites.'))
 
     # check whether sites is the df index or not
-    if site_col == 'index':
+    if site_column_name == 'index':
         geom_intersection_df = geom_intersection_df.reset_index()
-        site_col = geom_intersection_df.columns[0]
-        geom_intersection_df[site_col] = geom_intersection_df[site_col].astype(str)  # noqa: E501
+        site_column_name = geom_intersection_df.columns[0]
+        geom_intersection_df[site_column_name] = geom_intersection_df[site_column_name].astype(str)  # noqa: E501
 
-    # assertion to check that site_col are not of type int
-    assert geom_intersection_df[site_col].dtypes == 'str' or \
-        geom_intersection_df[site_col].dtypes == 'object', 'geom_intersection_df site_col should be a str or obj'  # noqa: E501
+    # assertion to check that site_column_name are not of type int
+    assert geom_intersection_df[site_column_name].dtypes == 'str' or \
+        geom_intersection_df[site_column_name].dtypes == 'object', 'geom_intersection_df site_column_name should be a str or obj'  # noqa: E501
 
     # filter intersction table to basins that overlap geom id
     filtered_intersection_df = geom_intersection_df[
-        geom_intersection_df[geom_id_col] == geom_id
+        geom_intersection_df[geom_id_column_name] == geom_id
         ].copy()
 
     # filter weights df to sites with data in runoff_df
-    sites = filtered_intersection_df[site_col]
+    sites = filtered_intersection_df[site_column_name]
 
     # get all site ids in runoff df
     ro_sites = runoff_df['site_no'].tolist()
@@ -328,7 +334,7 @@ def calculate_geometric_runoff(geom_id,
 
     # filter weights df to sites with data
     filtered_intersection_df = filtered_intersection_df[
-        filtered_intersection_df[site_col].isin(basin_runoff_wide.columns.tolist())  # noqa: E501
+        filtered_intersection_df[site_column_name].isin(basin_runoff_wide.columns.tolist())  # noqa: E501
         ]
     # check to see if empty
     if filtered_intersection_df.empty:
@@ -357,17 +363,17 @@ def calculate_geometric_runoff(geom_id,
         geom_basin_overlap = geom_basin_overlap[geom_basin_overlap['weight'] == geom_basin_overlap['weight'].max()]  # noqa: E501
         geom_basin_overlap = geom_basin_overlap.head(1)
         # pick basin that has the highest weight: tightest overlap
-        geom_runoff_series = runoff_df[runoff_df['site_no'] == geom_basin_overlap.iloc[0][site_col]].set_index('datetime').runoff  # noqa: E501
+        geom_runoff_series = runoff_df[runoff_df['site_no'] == geom_basin_overlap.iloc[0][site_column_name]].set_index('datetime').runoff  # noqa: E501
         # create new df with additional info about runoff calculations
         geom_runoff = pd.DataFrame(geom_runoff_series)
         geom_runoff = geom_runoff.rename(columns={'runoff': 'estimated_runoff'})  # noqa: E501
         geom_runoff['estimated_runoff'] = np.round(geom_runoff['estimated_runoff'], 5)  # noqa: E501
         geom_runoff['geom_id'] = geom_id
         geom_runoff['n_sites'] = 1
-        geom_runoff['site_ids'] = geom_basin_overlap.iloc[0][site_col]
+        geom_runoff['site_ids'] = geom_basin_overlap.iloc[0][site_column_name]
         geom_runoff['max_weight'] = np.round(geom_basin_overlap['weight'].max(), 4)  # noqa: E501
         geom_runoff['avg_weight'] = np.round(geom_basin_overlap['weight'].max(), 4)  # noqa: E501
-        geom_runoff['max_site'] = geom_basin_overlap.iloc[0][site_col]
+        geom_runoff['max_site'] = geom_basin_overlap.iloc[0][site_column_name]
         return geom_runoff
 
     if clip_downstream_basins:
@@ -413,7 +419,7 @@ def calculate_geometric_runoff(geom_id,
         final_geom_intersection_df = filtered_intersection_df.copy()
 
     # subset to applicable basin runoff
-    basins = final_geom_intersection_df[site_col].tolist()
+    basins = final_geom_intersection_df[site_column_name].tolist()
     # ensure data df only has selected intersecting basins
     # and they are in the right order to apply weights
     basin_runoff_wide = basin_runoff_wide.filter(items=basins)[basins]
@@ -431,7 +437,7 @@ def calculate_geometric_runoff(geom_id,
     basin_runoff['site_ids'] = site_ids
     basin_runoff['max_weight'] = np.round(final_geom_intersection_df['weight'].max(), 4)  # noqa: E501
     basin_runoff['avg_weight'] = np.round(final_geom_intersection_df['weight'].mean(), 4)  # noqa: E501
-    basin_runoff['max_site'] = final_geom_intersection_df[site_col][final_geom_intersection_df['weight'].idxmax()]  # noqa: E501
+    basin_runoff['max_site'] = final_geom_intersection_df[site_column_name][final_geom_intersection_df['weight'].idxmax()]  # noqa: E501
     geom_runoff = basin_runoff[['geom_id', 'estimated_runoff', 'n_sites', 'site_ids', 'max_weight', 'avg_weight', 'max_site']]  # noqa: E501
     return geom_runoff
 
@@ -440,8 +446,8 @@ def calculate_multiple_geometric_runoff(
         geom_id_list,
         runoff_df,
         geom_intersection_df,
-        site_col,
-        geom_id_col,
+        site_column_name,
+        geom_id_column_name,
         prop_geom_in_basin_col='prop_huc_in_basin',
         prop_basin_in_geom_col='prop_basin_in_huc',
         percentage=False,
@@ -473,13 +479,14 @@ def calculate_multiple_geometric_runoff(
         geometry ids, proportion of geometry in basin, and proportion
         of basin within geometry.
 
-    site_col : str
+    site_column_name : str
         Column in geom_intersection_df with drainage area site numbers.
         Please make sure ids have the correct number of digits
         and have not lost leading 0s when read in. If the site
-        numbers are the geom_intersection_df index col, site_col = 'index'.
+        numbers are the geom_intersection_df index col,
+        site_column_name = 'index'.
 
-    geom_id_col : str
+    geom_id_column_name : str
         Column in geom_intersection_df with geometry ids.
 
     prop_geom_in_basin_col : str
@@ -527,8 +534,8 @@ def calculate_multiple_geometric_runoff(
         runoff_sites = identify_sites_from_geom_intersection(
             geom_id=geom_id,
             geom_intersection_df=geom_intersection_df,
-            geom_id_col=geom_id_col,
-            site_col=site_col,
+            geom_id_column_name=geom_id_column_name,
+            site_column_name=site_column_name,
             prop_geom_in_basin_col=prop_geom_in_basin_col,
             prop_basin_in_geom_col=prop_basin_in_geom_col
             )
@@ -543,8 +550,8 @@ def calculate_multiple_geometric_runoff(
                 geom_id=geom_id,
                 runoff_df=geom_df,
                 geom_intersection_df=geom_intersection_df,
-                site_col=site_col,
-                geom_id_col=geom_id_col,
+                site_column_name=site_column_name,
+                geom_id_column_name=geom_id_column_name,
                 prop_basin_in_geom_col=prop_basin_in_geom_col,
                 prop_geom_in_basin_col=prop_geom_in_basin_col,
                 percentage=percentage,

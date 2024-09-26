@@ -22,7 +22,8 @@ def calculate_correlations(df_list, data_column_name, df_names=None):
         dataretrieval.nwis.get_dv() or similar
 
     data_column_name : str
-        Name of the column to use for the correlation calculation.
+        Name of the column containing data to use for the correlation
+        calculation.
 
     df_names : list, optional
         List of names for the dataframes in df_list. If provided, the names

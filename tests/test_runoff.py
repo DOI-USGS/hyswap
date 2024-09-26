@@ -13,26 +13,26 @@ def test_convert_cfs_to_runoff():
 
 def test_convert_cfs_to_runoff_annual():
     """Test the convert_cfs_to_runoff function with annual kwarg."""
-    mmyr = runoff.convert_cfs_to_runoff(14, 250, frequency='annual')
+    mmyr = runoff.convert_cfs_to_runoff(14, 250, time_unit='year')
     assert pytest.approx(mmyr, 0.1) == 50.0
 
 
 def test_convert_cfs_to_runoff_monthly():
     """Test the convert_cfs_to_runoff function with monthly kwarg."""
-    mmyr = runoff.convert_cfs_to_runoff(14, 250, frequency='monthly')
+    mmyr = runoff.convert_cfs_to_runoff(14, 250, time_unit='month')
     assert pytest.approx(mmyr, 0.1) == 4.2
 
 
 def test_convert_cfs_to_runoff_daily():
     """Test the convert_cfs_to_runoff function with daily kwarg."""
-    mmyr = runoff.convert_cfs_to_runoff(14, 250, frequency='daily')
+    mmyr = runoff.convert_cfs_to_runoff(14, 250, time_unit='day')
     assert pytest.approx(mmyr, 0.1) == 0.14
 
 
 def test_convert_cfs_to_runoff_invalid():
     """Test the convert_cfs_to_runoff function with invalid kwarg."""
     with pytest.raises(ValueError):
-        runoff.convert_cfs_to_runoff(14, 250, frequency='invalid')
+        runoff.convert_cfs_to_runoff(14, 250, time_unit='invalid')
 
 
 def test_streamflow_to_runoff():
@@ -76,8 +76,8 @@ def test_identify_sites_from_geom_intersection(weight_table):
     siteids = runoff.identify_sites_from_geom_intersection(
         geom_id="05090201",
         geom_intersection_df=weight_table,
-        geom_id_col='huc_cd',
-        site_col='site_no',
+        geom_id_column_name='huc_cd',
+        site_column_name='site_no',
         prop_geom_in_basin_col='pct_in_basin',
         prop_basin_in_geom_col='pct_in_huc')
 
@@ -134,8 +134,8 @@ class TestCalculateGeometricRunoff:
             geom_id="A",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin'
             )
@@ -146,8 +146,8 @@ class TestCalculateGeometricRunoff:
             geom_id="A",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection_perc,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='perc_basin_in_huc',
             prop_geom_in_basin_col='perc_huc_in_basin',
             percentage=True
@@ -163,8 +163,8 @@ class TestCalculateGeometricRunoff:
             geom_id="B",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin'
             )
@@ -186,8 +186,8 @@ class TestCalculateGeometricRunoff:
             geom_id="C",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin',
             clip_downstream_basins=True
@@ -202,8 +202,8 @@ class TestCalculateGeometricRunoff:
             geom_id="C",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin',
             clip_downstream_basins=False
@@ -225,8 +225,8 @@ class TestCalculateGeometricRunoff:
             geom_id="D",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin',
             clip_downstream_basins=False
@@ -242,8 +242,8 @@ class TestCalculateGeometricRunoff:
             geom_id="E",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin',
             clip_downstream_basins=False)
@@ -256,8 +256,8 @@ class TestCalculateGeometricRunoff:
             geom_id="G",
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin')
         # runoff value on last day should be runoff from basin '015'
@@ -270,8 +270,8 @@ class TestCalculateGeometricRunoff:
             geom_id_list=['A', 'B', 'C', 'D'],
             runoff_df=self.runoff_df,
             geom_intersection_df=self.geom_intersection,
-            site_col='site_id',
-            geom_id_col='huc_id',
+            site_column_name='site_id',
+            geom_id_column_name='huc_id',
             prop_basin_in_geom_col='prop_basin_in_huc',
             prop_geom_in_basin_col='prop_huc_in_basin')
         assert test_mult.shape == (16, 7)

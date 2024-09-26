@@ -4,7 +4,7 @@ Similarity Measures
 
 Sometimes it is helpful to compare the relationships between a set of streamgaging stations and their respective measurements. These examples showcase the usage of the functions in the `similarity` module to quantify how similar streamflow records are across multiple streamgages. Matrices of similarity measures (e.g., correlations) are calculated and visualized by generating heatmap visualizations via the :obj:`hyswap.plots.plot_similarity_heatmap` function.
 
-The `similarity` functions packaged in `hyswap` handle some of the data clean-up for you by ensuring the time-series of observations being compared acros the same dates, and by removing any missing data. This ensures that your results are not skewed by missing data or gaps in one of the time-series.
+The `similarity` functions packaged in `hyswap` handle some of the data clean-up for you by ensuring the time-series observations are compared across the same dates, and by removing any missing data. This ensures that your results are not skewed by missing data or gaps in one of the time-series.
 
 
 Pearson's *r* Correlations Between 5 Stations
@@ -40,6 +40,7 @@ Once we've collected the streamflow data, we will calculate the pair-wise correl
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
         results, n_obs=n_obs,
+        cmap='cividis',
         title="Pearson Correlation Coefficients for Streamflow\n" +
               "Between 5 Sites Along the Mississippi River")
 
@@ -70,6 +71,7 @@ If we'd like, we can display the specific values of the correlations by setting 
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
         results, n_obs=n_obs,
+        cmap='cividis',
         title="Pearson Correlation Coefficients for Streamflow\n" +
               "Between 5 Sites Along the Mississippi River",
         show_values=True)
@@ -85,6 +87,7 @@ Wasserstein Distances Between 5 Stations
 In this example we compare the same 5 time-series as the previous example, but instead of calculating correlations, we calculate the `Wasserstein Distance <https://en.wikipedia.org/wiki/Wasserstein_metric>`_ between each pairing of time-series.
 The Wasserstein Distance is a measure of the distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
 Specifically in `hyswap`, we utilize the `scipy.stats.wasserstein_distance()` function, and are therefore specifically calculating the "first" Wasserstein Distance between two time-series.
+Note that we are using the reverse default colormap so that the distance information aligns with the similarity plots above, where more similar = yellow and less similar = blue.
 
 .. plot::
     :context: reset
@@ -107,6 +110,7 @@ Specifically in `hyswap`, we utilize the `scipy.stats.wasserstein_distance()` fu
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
         results, n_obs=n_obs,
+        cmap='cividis_r',
         title="Wasserstein Distances for Streamflow\n" +
               "Between 5 Sites Along the Mississippi River",
         show_values=True)
@@ -121,7 +125,8 @@ Energy Distances Between 5 Stations
 
 In this example we compare the same 5 time-series as the previous example, but this time using another distance measure, the so-called `Energy Distance <https://en.wikipedia.org/wiki/Energy_distance>`_ between two time-series.
 The `energy_dist` is a statistical distance between two probability distributions, in this case the probability distributions of the streamflow values at each station.
-Specifically in `hyswap`, we utilize the `scipy.stats.energy_distance()` function.
+Specifically in `hyswap`, we utilize the `scipy.stats.energy_distance()` function. 
+Note that we are using the reverse default colormap so that the distance information aligns with the similarity plots above, where more similar = yellow and less similar = blue.
 
 .. plot::
     :context: reset
@@ -144,6 +149,7 @@ Specifically in `hyswap`, we utilize the `scipy.stats.energy_distance()` functio
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
         results, n_obs=n_obs,
+        cmap='cividis_r',
         title="Energy Distances for Streamflow\n" +
               "Between 5 Sites Along the Mississippi River",
         show_values=True)

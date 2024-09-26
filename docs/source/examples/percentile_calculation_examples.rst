@@ -12,7 +12,7 @@ Calculating Historic Percentiles for One Site
 The :obj:`hyswap.percentiles.calculate_fixed_percentile_thresholds` function
 is used to calculate a set of percentile thresholds given a set of data.
 This function simply calculates one set of fixed percentile thresholds using all available data, 
-and is not intended to be used for calculating percentile thresholds separatly for individual days of the year.
+and is not intended to be used for calculating percentile thresholds separately for individual days of the year.
 
 By default this method calculates percentiles using the Weibull distribution
 with an alpha parameter of 0 and a beta parameter of 0. The Weibull
@@ -85,7 +85,7 @@ calculating the 10th, 50th, and 90th percentiles for each day of the year.
 By default, percentiles are only computed for days which have at least 10
 years of data available, however this parameter can be altered by setting the
 `min_years` parameter to a different value. 
-Multi-day averaging can also be performed by setting the `data_type` parameter
+Multi-day averaging can also be performed by setting the `window_width` parameter
 to a value like `7-day`, `14-day`, or `28-day`, the default value is `daily`
 which is no temporal averaging.
 See the function documentation
@@ -97,8 +97,7 @@ and options for this function.
 Interpolating New Percentiles Using Previously Calculated Percentiles
 *********************************************************************
 
-To support faster calculations of percentiles without the need to repeatedly
-fetch all historic data from NWIS, the
+To support faster calculations of percentiles without the need to repeatedly fetch all historic data from NWIS, the
 :obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` and 
 :obj:`hyswap.percentiles.calculate_variable_percentile_from_value`functions support the
 interpolation of a new percentile value for a measurement given a previously
