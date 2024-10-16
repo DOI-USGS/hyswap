@@ -1,27 +1,25 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculations Quick-Reference &mdash; hyswap 0.1.dev1+gfaa6328 documentation</title>
+  <title>Calculations Quick-Reference &mdash; hyswap 0.1.dev1+gb8cc398 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=b50ea131"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=02d317ae"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -40,9 +38,6 @@
           <a href="../index.html" class="icon icon-home">
             hyswap
           </a>
-              <div class="version">
-                0.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -182,22 +177,28 @@ the year.</p></td>
 <p>Streamflow observations at a streamgage can be assigned a flow condition category using <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> by use of the <cite>hyswap</cite> <a class="reference internal" href="../reference/index.html#hyswap.utils.categorize_flows" title="hyswap.utils.categorize_flows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.utils.categorize_flows</span></code></a> function. Streamflow percentiles or interpolated estimated streamflow percentiles are compared to a categorization schema. Multiple categorization schema are available in <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> with the default being flow categories similar to those displayed on the USGS National Water Dashboard. Categorization schema are applicable to both variable and fixed percentile types. Available schema are described below:</p>
 <dl>
 <dt>“NWD” – Categorization schema similar to the USGS National Water Dashboard, <em>default</em></dt><dd><p>Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles</p>
-<a class="reference internal image-reference" href="../_images/nwd.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to the National Water Dashboard." src="../_images/nwd.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/nwd.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to the National Water Dashboard." src="../_images/nwd.png" style="width: 800px;" />
+</a>
 </dd>
 <dt>“WaterWatch” – Categorization schema similar to the USGS WaterWatch website</dt><dd><p>Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles</p>
-<a class="reference internal image-reference" href="../_images/waterwatch.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch." src="../_images/waterwatch.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/waterwatch.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch." src="../_images/waterwatch.png" style="width: 800px;" />
+</a>
 </dd>
 <dt>“NIDIS_Drought” – Categorization schema similar to the NIDIS U.S. Drought Monitor</dt><dd><p>Categorizes streamflow across only low-flow conditions.</p>
-<a class="reference internal image-reference" href="../_images/nidis_drought.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to NIDIS U.S. Drought Monitor." src="../_images/nidis_drought.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/nidis_drought.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to NIDIS U.S. Drought Monitor." src="../_images/nidis_drought.png" style="width: 800px;" />
+</a>
 </dd>
 <dt>“WaterWatch_Drought” – Categorization schema similar to the USGS WaterWatch Drought Conditions</dt><dd><p>Categorizes streamflow across only low-flow conditions. Typically used with variable percentiles</p>
-<a class="reference internal image-reference" href="../_images/waterwatch_drought.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Drought Conditions." src="../_images/waterwatch_drought.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/waterwatch_drought.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Drought Conditions." src="../_images/waterwatch_drought.png" style="width: 800px;" />
+</a>
 </dd>
 <dt>“WaterWatch_Flood” – Categorization schema similar to the USGS WaterWatch Flood Conditions</dt><dd><p>Categorizes streamflow across only high-flow conditions. Typically used with fixed percentiles</p>
-<a class="reference internal image-reference" href="../_images/waterwatch_flood.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Flood Conditions." src="../_images/waterwatch_flood.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/waterwatch_flood.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to USGS WaterWatch Flood Conditions." src="../_images/waterwatch_flood.png" style="width: 800px;" />
+</a>
 </dd>
 <dt>“WaterWatch_BrownBlue” – Categorization schema similar to the USGS WaterWatch categories but with an alternative color palette</dt><dd><p>Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles</p>
-<a class="reference internal image-reference" href="../_images/waterwatch_brownblue.png"><img alt="Categorization schema of percentile ranges and labels similar to USGS WaterWatch but with a brown-blue color palette." src="../_images/waterwatch_brownblue.png" style="width: 800px;" /></a>
+<a class="reference internal image-reference" href="../_images/waterwatch_brownblue.png"><img alt="Categorization schema of percentile ranges and labels similar to USGS WaterWatch but with a brown-blue color palette." src="../_images/waterwatch_brownblue.png" style="width: 800px;" />
+</a>
 </dd>
 </dl>
 </section>
@@ -232,7 +233,8 @@ the year.</p></td>
 </div></blockquote>
 <p>Note that in cases where there is near perfect overlap for multiple streamgage basins and a hydrologic unit, the streamgage basin-hydrologic unit intersection with the <em>highest</em> weight is used to estimate runoff. This is the same method used to determine the smallest streamgage basin that contains the hydrologic unit: among all the streamgage basins that contain the hydrologic unit (in other words, the proportion of the hydrologic unit’s area in the streamgage basins is roughly 1), find the hydrologic unit-streamgage basin intersection with the highest weight (which means the proportion of the streamgage basin’s area in the hydrologic unit is the largest). See Figure 1 for an example of this workflow. Note that in Figure 1, ‘Fraction#’ is analogous to ‘proportion of shape X’s area in shape Y’.</p>
 <p>An example Jupyter notebook exemplifying this workflow is available for <a class="reference external" href="https://github.com/DOI-USGS/hyswap/blob/main/example_notebooks/regional_runoff_calculations.ipynb">download</a> from the hyswap repository and can be viewed within the <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> <a class="reference external" href="https://doi-usgs.github.io/hyswap/examples/regional_runoff_calculations.html">documentation</a>.</p>
-<a class="reference internal image-reference" href="../_images/huc8_runoff_example.gif"><img alt="Map and table that provide an example of the computation of area-based runoff for a given HUC." src="../_images/huc8_runoff_example.gif" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="../_images/huc8_runoff_example.gif"><img alt="Map and table that provide an example of the computation of area-based runoff for a given HUC." src="../_images/huc8_runoff_example.gif" style="width: 600px;" />
+</a>
 <p>Figure 1. Example computation for computation of runoff for a selected HUC unit. (The drainage area of basin A is shaded light gray and the drainage area of basin B is shaded pink. Note that drainage basin B is nested within drainage basin A). Figure from <a class="reference external" href="https://doi.org/10.1111/j.1752-1688.2011.00578.x">(Brakebill and others, 2011)</a> In this figure, ‘Fraction#’ is analogous to ‘proportion of shape X’s area in shape Y’.</p>
 <p><strong>Note:</strong> Description of methods for area-based runoff computation is adapted from <a class="reference external" href="https://pubs.usgs.gov/publication/fs20083031">USGS WaterWatch</a>.</p>
 </section>
