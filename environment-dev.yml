@@ -2,6 +2,7 @@ name: hyswap-dev-environment
 channels:
   - conda-forge
 dependencies:
+  - python<3.13
   - numpy
   - pandas
   - scipy
@@ -14,7 +15,7 @@ dependencies:
   - matplotlib
   - folium
   - mapclassify
-  - pynhd
+  - pynhd>=0.18.0
   - tqdm
   - pydeps==1.12.3
   - pip
