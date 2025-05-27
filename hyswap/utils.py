@@ -897,22 +897,6 @@ def categorize_flows(df,
         else:
             raise ValueError("Percentile threshold dataframe must be " +
                              "provided when using min_years setting")
-
-    if min_years is not None:
-        if percentile_df is not None:
-            # add month-day column
-            df['month_day'] = df.index.strftime('%m-%d')
-            # join count (num years column)
-            df = pd.merge(df, percentile_df['count'], how="left",
-                          left_on="month_day", right_index=True)
-            # set days where min_years is > count to "Not Ranked"
-            df['flow_cat'] = np.where(df['count'] < min_years,
-                                      "Not Ranked",
-                                      df['flow_cat'])
-            df = df.drop(['month_day', 'count'], axis=1)
-        else:
-            raise ValueError("Percentile threshold dataframe must be provided when using min_years setting")  # noqa: E501
-
     return df
 
 
