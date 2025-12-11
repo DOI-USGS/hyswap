@@ -77,10 +77,14 @@ def format_data(df, data_column_name, date_column_name=None,
     .. doctest::
         :skipif: True  # dataretrieval functions break CI pipeline
 
-        >>> df, _ = dataretrieval.nwis.get_dv(
-        ...     "03586500", parameterCd="00060",
-        ...     start="2000-01-01", end="2002-12-31")
-        >>> df_formatted = rasterhydrograph.format_data(df, '00060_Mean')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id="USGS-03586500",
+        ...     parameter_code="00060",
+        ...     time="2000-01-01/2002-12-31")
+        >>> df_formatted = rasterhydrograph.format_data(
+        ...     df=df,
+        ...     data_column_name='value',
+        ...     date_column_name='time')
         >>> df_formatted.index[0]
         2000
         >>> len(df_formatted.columns)
