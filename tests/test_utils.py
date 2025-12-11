@@ -507,18 +507,16 @@ class TestSummaryStatistics:
         """Test the calculate_summary_statistics function."""
         # make test dataframe
         df = pd.DataFrame({
-            'datetime': pd.date_range('2000-01-01', '2000-01-10'),
-            '00060_Mean': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            'site_no': np.ones(10) * 12345678
+            'time': pd.date_range('2000-01-01', '2000-01-10'),
+            'value': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'monitoring_location_id': ["USGS-12345678"] * 10
         })
-        # set datetime as index
-        df.set_index('datetime', inplace=True)
         # use function
-        df_stats = utils.calculate_summary_statistics(df, '00060_Mean')
+        df_stats = utils.calculate_summary_statistics(df, 'value', 'time')
         # check output
         assert df_stats.shape == (8, 1)
         assert df_stats.columns[0] == 'Summary Statistics'
-        assert df_stats.iloc[0, 0] == '12345678'
+        assert df_stats.iloc[0, 0] == 'USGS-12345678'
         assert df_stats.iloc[1, 0] == '2000-01-01'
         assert df_stats.iloc[2, 0] == '2000-01-10'
         assert df_stats.iloc[3, 0] == 10
