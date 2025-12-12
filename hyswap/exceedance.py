@@ -284,11 +284,11 @@ def calculate_exceedance_probability_from_values_multiple(values,
         :skipif: True  # skips this block of code as it broke CI pipeline
 
         >>> df, _ = dataretrieval.waterdata.get_field_measurements(
-        ...                                         monitoring_location_id='USGS-434400121275801',
-        ...                                         parameter_code="72019",
-        ...                                         time='2000-01-01/2020-01-01')
+        ...     monitoring_location_id='USGS-434400121275801',
+        ...     parameter_code="72019",
+        ...     time='2000-01-01/2020-01-01')
         >>> values = np.linspace(df['value'].min(),
-        ...                      df['value'].max(), 5)
+        ...     df['value'].max(), 5)
         >>> exceedance.calculate_exceedance_probability_from_values_multiple(
         ...     values, df['value'])
         array([0.98214286, 0.94642857, 0.82142857, 0.46428571, 0.01785714])

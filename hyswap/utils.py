@@ -665,7 +665,7 @@ def calculate_summary_statistics(df,
     # site number (assumes USGS site number format)
     summary_dict['Site number'] = df['monitoring_location_id'][0]
     # dates
-    summary_dict['Begin date'] = df[date_column_name].min().strftime('%Y-%m-%d')
+    summary_dict['Begin date'] = df[date_column_name].min().strftime('%Y-%m-%d')  # noqa: E501
     summary_dict['End date'] = df[date_column_name].max().strftime('%Y-%m-%d')
     # count
     summary_dict['Count'] = df[data_column_name].count()

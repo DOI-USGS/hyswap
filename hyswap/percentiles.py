@@ -645,7 +645,7 @@ def calculate_fixed_percentile_from_value(value, percentile_df):
         >>> pcts_df = percentiles.calculate_fixed_percentile_thresholds(
         ...     data=data,
         ...     data_column_name='value',
-        ...     date_column_name='time',    
+        ...     date_column_name='time',
         ...     percentiles=[5, 10, 25, 50, 75, 90, 95,],
         ...     method='linear')
         >>> new_data, _ = dataretrieval.waterdata.get_daily(
@@ -801,7 +801,7 @@ def calculate_multiple_variable_percentiles_from_values(df, data_column_name,
         ...     parameter_code="00060",
         ...     time="1900-01-01/2021-12-31")
         >>> pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
-        ...     df=data, 
+        ...     df=data,
         ...     data_column_name='value',
         ...     date_column_name='time',
         ...     percentiles=[5, 10, 25, 50, 75, 90, 95],
