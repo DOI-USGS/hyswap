@@ -16,8 +16,11 @@ def filter_approved_data(df, filter_column_name=None):
     Returns
     -------
     pandas.DataFrame
-        A filtered dataframe containing only approved data, denoted by an
-        "A" in the filter column.
+        A filtered dataframe containing only approved data, denoted by a
+        capital "A" in the filter column. This function works for legacy
+        Water Services data, that return only an "A" for approved, and
+        the modernized Water Data APIs, that return the full word,
+        "Approved".
 
     Examples
     --------
@@ -28,7 +31,7 @@ def filter_approved_data(df, filter_column_name=None):
 
         >>> df = pd.DataFrame({
         ...     'df': [1, 2, 3, 4, 5],
-        ...     'approved': ['A', 'A, e', 'A', 'P', 'P']})
+        ...     'approved': ['Approved', 'A, e', 'A', 'P', 'P']})
         >>> df.shape
         (5, 2)
 
