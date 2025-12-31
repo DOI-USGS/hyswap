@@ -782,6 +782,8 @@ def plot_hydrograph(df, data_column_name,
     # check if date_column_name provided
     if date_column_name is not None:
         df = df.set_index(date_column_name)
+    ##### test
+    df.index = pd.to_datetime(df.index, errors='raise')
     # sort by date
     df = df.sort_index()
     # check if start_date provided
