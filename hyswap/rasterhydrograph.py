@@ -222,6 +222,7 @@ def _check_inputs(df, data_column_name, date_column_name,
         if not isinstance(begin_year, int):
             raise TypeError('begin_year must be an integer')
         if date_column_name is not None:
+            df[date_column_name] = pd.to_datetime(df[date_column_name])
             if begin_year < df[date_column_name].dt.year.min():
                 raise ValueError('begin_year must be greater than or equal to '
                                  'the minimum year in the data')
@@ -235,6 +236,7 @@ def _check_inputs(df, data_column_name, date_column_name,
         if not isinstance(end_year, int):
             raise TypeError('end_year must be an integer')
         if date_column_name is not None:
+            df[date_column_name] = pd.to_datetime(df[date_column_name])
             if end_year > df[date_column_name].dt.year.max():
                 raise ValueError('end_year must be less than or equal to the '
                                  'maximum year in the data')
