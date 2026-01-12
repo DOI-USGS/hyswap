@@ -11,7 +11,7 @@ The ``hyswap`` package functions assume that provided streamflow data are qualit
 * regulated flows or transitions from regulated to unregulated flows (or vice versa)
 * major watershed changes
 
-For users who are applying ``hyswap`` functions directly to data retrieved from USGS NWIS, please be aware that non-standard parameter names occasionally occur (e.g. `00060_2_Mean` or `00060_incorrect_Mean` instead of simply `00060_Mean`). Reasons for this could be to indicate that a site has an upstream and downstream sensor, a sensor was moved in the water column, or a site was measured multiple times. This package treats sites with non-standard parameter names as outliers and skips those sites. Users should take appropriate steps to check for non-standard parameter names and determine appropriate data handling steps based on their needs.
+For users who are applying ``hyswap`` functions directly to data retrieved from USGS NWIS, please be aware that non-standard parameter names occasionally occur (e.g. `00060_2_Mean` or `00060_incorrect_Mean` instead of simply `value`). Reasons for this could be to indicate that a site has an upstream and downstream sensor, a sensor was moved in the water column, or a site was measured multiple times. This package treats sites with non-standard parameter names as outliers and skips those sites. Users should take appropriate steps to check for non-standard parameter names and determine appropriate data handling steps based on their needs.
 
 Streamflow Percentiles
 ----------------------
@@ -137,7 +137,7 @@ Spatial datasets describing the respective drainage basin boundaries of the stre
 
 Each geospatial streamgage drainage basin boundary is overlain on a geospatial dataset of hydrologic units (the polygons outlined in thick gray-brown lines in Figure 1 example) to determine the area of intersection within the two datasets. For each overlapping area of hydrologic units and streamgage drainage basin boundaries, the fraction of the basin in the hydrologic unit and the fraction of the hydrologic unit in the basin are calculated. These fractions are then multiplied by each other to compute a weighting factor for each basin in the runoff calculation.
 
-You can find an example intersection dataset between CONUS hydrologic units and streamgage basins in the `hyswap-example-notebooks repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_. This intersection dataset was created using the `surface water geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/surface-water-geospatial-data-assembly>`_.
+You can find an example intersection dataset between CONUS hydrologic units and streamgage basins in the `hyswap-example-notebooks repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_. This intersection dataset was created using the `hyswap water geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-geospatial-data-assembly>`_.
 
 Workflow for Estimating Area-Based Runoff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
