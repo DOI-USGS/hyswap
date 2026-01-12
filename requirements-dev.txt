@@ -4,7 +4,7 @@ coverage
 flake8
 pylint
 pydocstringformatter
-dataretrieval
+dataretrieval @ git+https://github.com/DOI-USGS/dataretrieval-python.git
 matplotlib
 folium
 mapclassify
