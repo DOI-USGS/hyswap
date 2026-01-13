@@ -8,21 +8,26 @@ The following examples show how to fetch data and calculate values for a cumulat
 Cumulative Streamflow Over The 2021 Water Year
 **********************************************
 
-First we will fetch some streamflow data from the NWIS service using the `dataretrieval` package.
+First we will fetch some streamflow data from the USGS Water Data service using the `dataretrieval` package.
 In this example we will fetch 20 years of data from a single site and then use the :obj:`hyswap.plot.plot_cumulative_hydrograph` function to calculate (via :obj:`hyswap.cumulative.calculate_daily_cumulative_values`) and plot cumulative flows.
 
 .. plot::
     :context: reset
     :include-source:
 
-    # get some data from the NWIS service
-    df, md = dataretrieval.nwis.get_dv(
-        '06803495', start='2001-01-01', end='2021-12-31')
+    # get some data from the USGS Water Data service
+    df, md = dataretrieval.waterdata.get_daily(
+        monitoring_location_id='USGS-06803495',
+        parameter_code='00060',
+        time='2001-01-01/2021-12-31')
 
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        df, data_column_name='00060_Mean',target_years=2021,
+        df, 
+        data_column_name='value',
+        date_column_name='time',
+        target_years=2021,
         ax=ax, year_type='water',
         title='Cumulative Streamflow Hydrograph')
     plt.show()
@@ -38,14 +43,18 @@ The code is very similar, we simply do not specify the `year_type` argument in t
     :context: reset
     :include-source:
 
-    # get some data from the NWIS service
-    df, md = dataretrieval.nwis.get_dv(
-        '06803495', start='2001-01-01', end='2021-12-31')
+    # get some data from the USGS Water Data service
+    df, md = dataretrieval.waterdata.get_daily(
+        monitoring_location_id='USGS-06803495',
+        parameter_code='00060',
+        time='2001-01-01/2021-12-31')
 
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        df, data_column_name='00060_Mean',
+        df,
+        data_column_name='value',
+        date_column_name='time',
         target_years=2021,ax=ax,
         title='Cumulative Streamflow Hydrograph')
     plt.show()
@@ -61,14 +70,18 @@ The code is very similar, we simply specify the `year_type` argument in the :obj
     :context: reset
     :include-source:
 
-    # get some data from the NWIS service
-    df, md = dataretrieval.nwis.get_dv(
-        '06803495', start='2001-01-01', end='2021-12-31')
+    # get some data from the USGS Water Data service
+    df, md = dataretrieval.waterdata.get_daily(
+        monitoring_location_id='USGS-06803495',
+        parameter_code='00060',
+        time='2001-01-01/2021-12-31')
 
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        df, data_column_name='00060_Mean',
+        df,
+        data_column_name='value',
+        date_column_name='time',
         target_years=2021,
         ax=ax, year_type='climate',
         title='Cumulative Streamflow Hydrograph')
@@ -85,15 +98,18 @@ We will use the calendar year example to showcase this functionality.
     :context: reset
     :include-source:
 
-    # get some data from the NWIS service
-    df, md = dataretrieval.nwis.get_dv(
-        '06803495', start='2001-01-01', end='2021-12-31')
+    # get some data from the USGS Water Data service
+    df, md = dataretrieval.waterdata.get_daily(
+        monitoring_location_id='USGS-06803495',
+        parameter_code='00060',
+        time='2001-01-01/2021-12-31')
 
-    # plot the cumulative streamflow hydrograph
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        df, data_column_name='00060_Mean',
+        df,
+        data_column_name='value',
+        date_column_name='time',
         target_years=2021,
         ax=ax,
         max_year=True, min_year=True,
@@ -112,14 +128,18 @@ Below is an example of this functionality wherein we plot the cumulative dischar
     :context: reset
     :include-source:
 
-    # get some data from the NWIS service
-    df, md = dataretrieval.nwis.get_dv(
-        '06803495', start='2001-01-01', end='2021-12-31')
+    # get some data from the USGS Water Data service
+    df, md = dataretrieval.waterdata.get_daily(
+        monitoring_location_id='USGS-06803495',
+        parameter_code='00060',
+        time='2001-01-01/2021-12-31')
 
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        df, data_column_name='00060_Mean',
+        df,
+        data_column_name='value',
+        date_column_name='time',
         target_years=[2010, 2015, 2020],
         ax=ax, title='Cumulative Streamflow Hydrograph')
     plt.show()
@@ -137,14 +157,19 @@ We provide an example of doing this by filling between the 10th and 90th percent
     :context: reset
     :include-source:
 
-    # get some data from the NWIS service
-    df, md = dataretrieval.nwis.get_dv(
-        '06803495', start='2001-01-01', end='2021-12-31')
+    # get some data from the USGS Water Data service
+    df, md = dataretrieval.waterdata.get_daily(
+        monitoring_location_id='USGS-06803495',
+        parameter_code='00060',
+        time='2001-01-01/2021-12-31')
 
     # plot the cumulative streamflow hydrograph
     fig, ax = plt.subplots(figsize=(8, 5))
     ax = hyswap.plots.plot_cumulative_hydrograph(
-        df, 2021, data_column_name='00060_Mean',
+        df, 
+        target_years=2021,
+        data_column_name='value',
+        date_column_name='time',
         envelope_pct=[10, 90], color='red', alpha=0.25,
         ax=ax, title='Cumulative Streamflow Hydrograph')
     plt.show()

@@ -2,22 +2,22 @@
 Raster Hydrographs
 ------------------
 
-These examples show how raster hydrographs can be constructed by fetching data from NWIS using `dataretrieval`, formatting that data using functions provided by `hyswap` (:obj:`hyswap.rasterhydrograph.format_data`), and then plotting using :obj:`hyswap.plots.plot_raster_hydrograph`.
+These examples show how raster hydrographs can be constructed by fetching data from USGS Water Data using `dataretrieval`, formatting that data using functions provided by `hyswap` (:obj:`hyswap.rasterhydrograph.format_data`), and then plotting using :obj:`hyswap.plots.plot_raster_hydrograph`.
 
 
-Daily Data Raster Hydrograph Example (Site 03586500)
-****************************************************
+Daily Data Raster Hydrograph Example (Site USGS-03586500)
+*********************************************************
 
-First we will fetch 20 years of streamflow data for a single site from NWIS using the `dataretrieval` package.
+First we will fetch 20 years of streamflow data for a single site from USGS Water Data using the `dataretrieval` package.
 
 .. plot::
     :context: reset
     :include-source:
 
     # get data from a single site
-    siteno = "03586500"
-    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd="00060",
-                                      start="2000-01-01", end="2020-12-31")
+    siteno = "USGS-03586500"
+    df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code="00060",
+                                      time="2000-01-01/2020-12-31")
 
 This data can be formatted using `hyswap` to prepare it for plotting as a
 raster hydrograph.
@@ -27,7 +27,7 @@ raster hydrograph.
     :include-source:
 
     # format the data
-    df_formatted = hyswap.rasterhydrograph.format_data(df, '00060_Mean')
+    df_formatted = hyswap.rasterhydrograph.format_data(df, data_column_name='value', date_column_name='time')
 
 Now the data is arranged with years on the index (rows) and days of the year as columns, this makes it easy to plot as a raster hydrograph with :obj:`hyswap.plots.plot_raster_hydrograph`.
 
@@ -43,8 +43,8 @@ Now the data is arranged with years on the index (rows) and days of the year as 
     plt.show()
 
 
-7-Day Average Raster Hydrograph Example (Site 03586500)
-*******************************************************
+7-Day Average Raster Hydrograph Example (Site USGS-03586500)
+************************************************************
 
 The same data can be plotted as a 7-day average raster hydrograph by passing the `window_width` argument to :obj:`hyswap.rasterhydrograph.format_data` function.
 
@@ -53,13 +53,13 @@ The same data can be plotted as a 7-day average raster hydrograph by passing the
     :include-source:
 
     # get data from a single site
-    siteno = "03586500"
-    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd="00060",
-                                      start="2000-01-01", end="2020-12-31")
+    siteno = "USGS-03586500"
+    df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code="00060",
+                                      time="2000-01-01/2020-12-31")
 
     # format the data for a 7-day rolling average
     df_formatted = hyswap.rasterhydrograph.format_data(
-        df, '00060_Mean', window_width='7-day')
+        df, data_column_name='value', date_column_name='time', window_width='7-day')
 
     # plot
     fig, ax = plt.subplots()
@@ -84,13 +84,13 @@ The ending year is the year that is displayed on the y-axis of the raster hydrog
     :include-source:
 
     # get data from a single site
-    siteno = "08110500"
-    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd="00060",
-                                      start="1975-01-01", end="1995-12-31")
+    siteno = "USGS-08110500"
+    df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code="00060",
+                                      time="1975-01-01/1995-12-31")
 
     # format the data
     df_formatted = hyswap.rasterhydrograph.format_data(
-        df, '00060_Mean', year_type='water')
+        df, data_column_name='value', date_column_name='time', year_type='water')
 
     # plot
     fig, ax = plt.subplots()
@@ -114,13 +114,13 @@ In this example, we will also change the color of the raster hydrograph to be sh
     :include-source:
 
     # get data from a single site
-    siteno = "12205000"
-    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd="00060",
-                                      start="1995-01-01", end="2015-12-31")
+    siteno = "USGS-12205000"
+    df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code="00060",
+                                      time="1995-01-01/2015-12-31")
 
     # format the data
     df_formatted = hyswap.rasterhydrograph.format_data(
-        df, '00060_Mean', year_type='climate')
+        df, data_column_name='value', date_column_name='time', year_type='climate')
 
     # plot
     fig, ax = plt.subplots()
@@ -139,13 +139,13 @@ We can also use just a subset of the available data if we wish by specifying sta
     :include-source:
 
     # get data from a single site
-    siteno = "12205000"
-    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd="00060",
-                                      start="1995-01-01", end="2015-12-31")
+    siteno = "USGS-12205000"
+    df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code="00060",
+                                      time="1995-01-01/2015-12-31")
 
     # format the data to years 2000-2010
     df_formatted = hyswap.rasterhydrograph.format_data(
-        df, '00060_Mean', year_type='climate',
+        df, data_column_name='value', date_column_name='time', year_type='climate',
         begin_year=2000, end_year=2010)
 
     # plot
@@ -163,21 +163,21 @@ Raster Hydrograph of Non-Streamflow Data
 
 The functions used above to generate raster hydrographs graphically depicting streamflow over time can also be used to visualize other types of data.
 For example, we can visualize a "raster hydrograph" of the water level at a station over time.
-We will use station 02311500 in Florida as an example.
+We will use station USGS-02311500 in Florida as an example.
 
 .. plot::
     :context: reset
     :include-source:
 
     # get stage data from a single site
-    siteno = "02311500"
-    parameterCd = "00065"  # code for gage height
-    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd=parameterCd,
-                                      start="2000-01-01", end="2020-12-31")
+    siteno = "USGS-02311500"
+    parameter_code = "00065"  # code for gage height
+    df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code=parameter_code,
+                                      time="2000-01-01/2020-12-31")
 
     # format the data
     df_formatted = hyswap.rasterhydrograph.format_data(
-        df, '00065_Mean')
+        df, data_column_name='value', date_column_name='time')
 
     # plot
     fig, ax = plt.subplots()
@@ -197,14 +197,14 @@ The default scheme is logarithmic because this is the most common way to visuali
     :include-source:
 
     # get stage data from a single site
-    siteno = "02311500"
-    parameterCd = "00065"  # code for gage height
-    df, _ = dataretrieval.nwis.get_dv(siteno, parameterCd=parameterCd,
-                                      start="2000-01-01", end="2020-12-31")
+    siteno = "USGS-02311500"
+    parameter_code = "00065"  # code for gage height
+    df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code=parameter_code,
+                                      time="2000-01-01/2020-12-31")
 
     # format the data
     df_formatted = hyswap.rasterhydrograph.format_data(
-        df, '00065_Mean')
+        df, data_column_name='value', date_column_name='time')
 
     # plot
     fig, ax = plt.subplots()

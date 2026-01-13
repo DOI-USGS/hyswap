@@ -653,7 +653,7 @@ def calculate_summary_statistics(df,
         (8, 1)
         >>> print(summary_df)
                     Summary Statistics
-        Site number           03586500
+        Site number      USGS-03586500
         Begin date          2010-01-01
         End date            2010-12-31
         Count                      365
@@ -736,9 +736,9 @@ def filter_to_common_time(df_list,
             ...     parameter_code="00060",
             ...     time="2019-01-01/2019-01-14")
             >>> type(df1)
-            <class 'pandas.core.frame.DataFrame'>
+            <class 'geopandas.geodataframe.GeoDataFrame'>
             >>> type(df2)
-            <class 'pandas.core.frame.DataFrame'>
+            <class 'geopandas.geodataframe.GeoDataFrame'>
 
     Filter the dataframes to common times.
 

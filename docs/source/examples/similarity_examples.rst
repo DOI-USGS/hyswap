@@ -11,21 +11,20 @@ Pearson's *r* Correlations Between 5 Stations
 *********************************************
 
 The following example shows the correlations between streamflow at 5 stations (07374525, 07374000, 07289000, 07032000, 07024175) along the Mississippi River, listed from downstream to upstream.
-First we have to fetch the streamflow data for these stations, to do this we will use the `dataretrieval` package to access the NWIS database.
+First we have to fetch the streamflow data for these stations, to do this we will use the `dataretrieval` package to access the USGS Water Data database.
 
 .. plot::
     :context: reset
     :include-source:
 
     # get the data from these 5 sites
-    site_list = ["07374525", "07374000", "07289000", "07032000", "07024175"]
+    site_list = ["USGS-07374525", "USGS-07374000", "USGS-07289000", "USGS-07032000", "USGS-07024175"]
 
-    # fetch some streamflow data from NWIS as a list of dataframes
+    # fetch some streamflow data from USGS Water Data as a list of dataframes
     df_list = []
     for site in site_list:
-        df, _ = dataretrieval.nwis.get_dv(site, start="2012-01-01",
-                                          end="2022-12-31",
-                                          parameterCd='00060')
+        df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=site, time="2012-01-01/2022-12-31",
+                                          parameter_code='00060')
         df_list.append(df)
 
 Once we've collected the streamflow data, we will calculate the pair-wise correlations between the stations using the :obj:`hyswap.similarity.calculate_correlations` function and then plot the results using :obj:`hyswap.plots.plot_similarity_heatmap`.
@@ -35,7 +34,7 @@ Once we've collected the streamflow data, we will calculate the pair-wise correl
     :include-source:
 
     # calculate correlations
-    results, n_obs = hyswap.similarity.calculate_correlations(df_list, "00060_Mean")
+    results, n_obs = hyswap.similarity.calculate_correlations(df_list, "value")
 
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
@@ -55,18 +54,17 @@ If we'd like, we can display the specific values of the correlations by setting 
     :include-source:
 
     # get the data from these 5 sites
-    site_list = ["07374525", "07374000", "07289000", "07032000", "07024175"]
+    site_list = ["USGS-07374525", "USGS-07374000", "USGS-07289000", "USGS-07032000", "USGS-07024175"]
 
-    # fetch some streamflow data from NWIS as a list of dataframes
+    # fetch some streamflow data from USGS Water Data as a list of dataframes
     df_list = []
     for site in site_list:
-        df, _ = dataretrieval.nwis.get_dv(site, start="2012-01-01",
-                                          end="2022-12-31",
-                                          parameterCd='00060')
+        df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=site, time="2012-01-01/2022-12-31",
+                                          parameter_code='00060')
         df_list.append(df)
 
     # calculate correlations
-    results, n_obs = hyswap.similarity.calculate_correlations(df_list, "00060_Mean")
+    results, n_obs = hyswap.similarity.calculate_correlations(df_list, "value")
 
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
@@ -94,18 +92,17 @@ Note that we are using the reverse default colormap so that the distance informa
     :include-source:
 
     # get the data from these 5 sites
-    site_list = ["07374525", "07374000", "07289000", "07032000", "07024175"]
+    site_list = ["USGS-07374525", "USGS-07374000", "USGS-07289000", "USGS-07032000", "USGS-07024175"]
 
-    # fetch some streamflow data from NWIS as a list of dataframes
+    # fetch some streamflow data from USGS Water Data as a list of dataframes
     df_list = []
     for site in site_list:
-        df, _ = dataretrieval.nwis.get_dv(site, start="2012-01-01",
-                                          end="2022-12-31",
-                                          parameterCd='00060')
+        df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=site, time="2012-01-01/2022-12-31",
+                                          parameter_code='00060')
         df_list.append(df)
 
     # calculate Wasserstein Distances
-    results, n_obs = hyswap.similarity.calculate_wasserstein_distance(df_list, "00060_Mean")
+    results, n_obs = hyswap.similarity.calculate_wasserstein_distance(df_list, "value")
 
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
@@ -133,18 +130,17 @@ Note that we are using the reverse default colormap so that the distance informa
     :include-source:
 
     # get the data from these 5 sites
-    site_list = ["07374525", "07374000", "07289000", "07032000", "07024175"]
+    site_list = ["USGS-07374525", "USGS-07374000", "USGS-07289000", "USGS-07032000", "USGS-07024175"]
 
-    # fetch some streamflow data from NWIS as a list of dataframes
+    # fetch some streamflow data from USGS Water Data as a list of dataframes
     df_list = []
     for site in site_list:
-        df, _ = dataretrieval.nwis.get_dv(site, start="2012-01-01",
-                                          end="2022-12-31",
-                                          parameterCd='00060')
+        df, _ = dataretrieval.waterdata.get_daily(monitoring_location_id=site, time="2012-01-01/2022-12-31",
+                                          parameter_code='00060')
         df_list.append(df)
 
     # calculate Wasserstein Distances
-    results, n_obs = hyswap.similarity.calculate_energy_distance(df_list, "00060_Mean")
+    results, n_obs = hyswap.similarity.calculate_energy_distance(df_list, "value")
 
     # make plot
     ax = hyswap.plots.plot_similarity_heatmap(
