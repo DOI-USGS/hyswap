@@ -9,7 +9,7 @@ stages:
 
 variables:
   R_PROFILE: "$R_HOME/etc/Rprofile.site"
-  API_USGS_PAT: "${API_USGS_PAT}"
+  API_USGS_PAT: ${API_USGS_PAT}
 
 
 Build Package:

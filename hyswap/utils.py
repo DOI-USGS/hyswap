@@ -864,7 +864,7 @@ def categorize_flows(df,
     Examples
     --------
     Categorize streamflow based on calculated percentiles for streamflow
-    records downloaded from NWIS.
+    records downloaded from USGS Water Data.
 
     .. doctest::
         :skipif: True  # dataretrieval functions break CI pipeline

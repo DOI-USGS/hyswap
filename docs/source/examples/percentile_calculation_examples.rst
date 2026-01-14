@@ -19,12 +19,12 @@ with an alpha parameter of 0 and a beta parameter of 0. The Weibull
 distribution is set as the default for percentile calculations after the USGS
 `Guidelines for determining flood flow frequency — Bulletin 17C`_, Appendix 5.
 
-Below is an example of fetching NWIS streamflow data for a USGS gage and then
+Below is an example of fetching streamflow data for a USGS gage and then
 calculating the 10th, 50th, and 90th percentiles for that data.
 
 .. code::
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     df, _ = dataretrieval.waterdata.get_daily(
         monitoring_location_id="USGS-03586500",
         parameter_code="00060",
@@ -56,12 +56,12 @@ This function also defaults to using the Weibull distribution to calculate
 percentiles, but can use other methods as well just like the
 :obj:`hyswap.percentiles.calculate_fixed_percentile_thresholds` function.
 
-Below is an example of fetching NWIS streamflow data for a USGS gage and then
+Below is an example of fetching streamflow data for a USGS gage and then
 calculating the 10th, 50th, and 90th percentiles for each day of the year.
 
 .. code::
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     df, _ = dataretrieval.waterdata.get_daily(
         monitoring_location_id="USGS-03586500",
         parameter_code="00060",
@@ -94,19 +94,19 @@ and options for this function.
 Interpolating New Percentiles Using Previously Calculated Percentiles
 *********************************************************************
 
-To support faster calculations of percentiles without the need to repeatedly fetch all historic data from NWIS, the
+To support faster calculations of percentiles without the need to repeatedly fetch all historic data from the USGS Water Data APIs, the
 :obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` and 
 :obj:`hyswap.percentiles.calculate_variable_percentile_from_value`functions support the
 interpolation of a new percentile value for a measurement given a previously
 calculated set of percentiles and their associated values.
 
-First is an example of fetching NWIS streamflow data for a USGS gage and then
+First is an example of fetching streamflow data for a USGS gage and then
 calculating the 10th, 50th, and 90th fixed-threshold percentiles using all of the data.
 Then, a new fixed-threshold percentile value is interpolated for a measurement of 100.0 cfs.
 
 .. code::
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     df, _ = dataretrieval.waterdata.get_daily(
         monitoring_location_id="USGS-03586500",
         parameter_code="00060",
@@ -124,14 +124,14 @@ Then, a new fixed-threshold percentile value is interpolated for a measurement o
     print(pct)
     51.74
 
-Next is an example of fetching NWIS streamflow data for a USGS gage and then
+Next is an example of fetching streamflow data for a USGS gage and then
 calculating the variable-threshold percentiles using all of the data.
 Then, a new variable-threshold percentile value is interpolated for a measurement
 of 100.0 cfs on September 1st.
 
 .. code::
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     df, _ = dataretrieval.waterdata.get_daily(
         monitoring_location_id="USGS-03586500",
         parameter_code="00060",
@@ -150,14 +150,14 @@ of 100.0 cfs on September 1st.
     90.03
 
 Percentiles can also be calculated for multiple streamflow values at once. Below
-is an example of fetching NWIS streamflow data for a USGS gage and then
+is an example of fetching streamflow data for a USGS gage and then
 calculating variable-threshold percentiles using all of the data.
 Then, new variable-threshold percentile values are interpolated for measurements
 from a recent month.
 
 .. code::
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     df, _ = dataretrieval.waterdata.get_daily(
         monitoring_location_id="USGS-03586500",
         parameter_code="00060",
@@ -167,7 +167,7 @@ from a recent month.
     pct_values = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
         df,'value')
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     new_df, _ = dataretrieval.waterdata.get_daily(
         monitoring_location_id="USGS-03586500",
         parameter_code="00060",
@@ -219,14 +219,14 @@ conditions, the category of a given streamflow can be determined using
 streamflow observation based on interpolated percentiles and a given categorization
 schema.
 
-Below is an example of fetching NWIS streamflow data for a USGS gage and then
+Below is an example of fetching streamflow data for a USGS gage and then
 calculating the variable-threshold percentiles using all of the data.
 Then, new variable-threshold percentile values are interpolated for measurements
 from a recent month and flow categories assigned.
 
 .. code::
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     df, _ = dataretrieval.waterdata.get_daily(
         monitoring_location_id="USGS-04288000",
                                       parameter_code="00060",
@@ -237,7 +237,7 @@ from a recent month and flow categories assigned.
     pct_values = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(
         df,'value')
 
-    # fetch data from NWIS using dataretrieval
+    # fetch data from USGS using dataretrieval
     new_df, _ = dataretrieval.waterdata.get_daily("03586500",
                                       parameter_code="00060",
                                       time="2023-01-01",

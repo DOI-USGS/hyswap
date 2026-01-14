@@ -131,10 +131,10 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         ...     5, [1, 2, 3, 4]).item()
         0.0
 
-    Fetch some data from NWIS and calculate the exceedance probability
-    for a value of 300 cfs. This is close to the maximum stream flow
-    value for this gage and date range, so the exceedance probability
-    is very small.
+    Fetch some data from USGS Water Data and calculate the exceedance
+    probability for a value of 300 cfs. This is close to the maximum
+    stream flow value for this gage and date range, so the exceedance
+    probability is very small.
 
     .. doctest::
         :skipif: True  # skips this block of code as it broke CI pipeline
@@ -277,8 +277,9 @@ def calculate_exceedance_probability_from_values_multiple(values,
         ...     [1, 1.25, 2.5], [1, 2, 3, 4], method='Type 4')
         array([1.  , 0.75, 0.5 ])
 
-    Fetch some data from NWIS and calculate the exceedance probability for a
-    set of 5 values spaced evenly between the minimum and maximum values.
+    Fetch some data from USGS Water Data and calculate the exceedance
+    probability for a set of 5 values spaced evenly between the minimum and
+    maximum values.
 
     .. doctest::
         :skipif: True  # skips this block of code as it broke CI pipeline

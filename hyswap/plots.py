@@ -62,8 +62,8 @@ def plot_flow_duration_curve(
 
     Examples
     --------
-    Fetch some data from NWIS, calculate the exceedance probabilities and then
-    make the flow duration curve.
+    Fetch some data from USGS Water Data, calculate the exceedance
+    probabilities and then make the flow duration curve.
 
     .. plot::
         :include-source:
@@ -185,8 +185,8 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 
     Examples
     --------
-    Fetch some data from NWIS, format it for a raster hydrograph plot and then
-    make the raster hydrograph plot.
+    Fetch some data from USGS Water Data, format it for a raster hydrograph
+    plot and then make the raster hydrograph plot.
 
     .. plot::
         :include-source:
@@ -560,7 +560,8 @@ def plot_cumulative_hydrograph(df,
 
     Examples
     --------
-    Fetch some data from NWIS and make a cumulative hydrograph plot.
+    Fetch some data from USGS Water Data and make a cumulative hydrograph
+    plot.
 
     .. plot::
         :include-source:

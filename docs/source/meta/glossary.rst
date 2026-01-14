@@ -98,7 +98,9 @@ Glossary
 |                   | information about other data.|                                       |
 +-------------------+------------------------------+---------------------------------------+
 | NWIS              | National Water Information   | `USGS NWIS`_                          |
-|                   | System                       |                                       |
+|                   | System, generally used to    |                                       |
+|                   | refer to the legacy Water    |                                       |     
+|                   | Services APIs.               |                                       |
 +-------------------+------------------------------+---------------------------------------+
 | Percentile        | The value below which a      | `USGS Water Science Glossary`_        |
 |                   | given percentage of          |                                       |
@@ -163,6 +165,11 @@ Glossary
 |                   | Typically, synonymous with   |                                       |
 |                   | discharge or flow.           |                                       |
 +-------------------+------------------------------+---------------------------------------+
+| Water Data APIs   | A set of API endpoints for   | `USGS Water Data APIs`_               |
+|                   | accessing USGS water data,   |                                       |
+|                   | including daily and          |                                       |
+|                   | instantaneous flow values.   |                                       |
++-------------------+------------------------------+---------------------------------------+
 | .. _wylabel:      | A continuous 12-month period | `USGS Water Science Glossary`_        |
 |                   | selected to present data     |                                       |
 | Water Year        | relative to hydrologic or    |                                       |
@@ -176,7 +183,6 @@ Glossary
 |                   | 30, and is designated by the |                                       |
 |                   | year in which it ends.       |                                       |
 +-------------------+------------------------------+---------------------------------------+
-
 
 .. _Hammond et al. (2022): https://doi.org/10.1029/2022WR031930
 
@@ -197,3 +203,5 @@ Glossary
 .. _USGS Water Science School (2019): https://www.usgs.gov/special-topics/water-science-school/science/streamflow-and-water-cycle
 
 .. _USGS Watershed Boundary Dataset: https://www.usgs.gov/national-hydrography/watershed-boundary-dataset
+
+.. _USGS Water Data APIs: https://api.waterdata.usgs.gov/
