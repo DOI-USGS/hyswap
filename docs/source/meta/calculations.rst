@@ -144,8 +144,9 @@ After obtaining a table of intersecting hydrologic units and streamgage basins, 
 
 1. For each unit of time with runoff data at one or more streamgages whose basins intersect the hydrologic unit, obtain a weighted average of all runoff values. 
 2. If a hydrologic unit and a streamgage basin have near perfect overlap (e.g. the proportion of the hydrologic unit's area in the basin is greater than 0.9 and the proportion of the basin's area in the hydrologic unit is greater than 0.9), simply use the runoff values from that streamgage basin. If perfect overlap does not exist, use a weighted average of runoff values from:
-  a. all streamgage basins *contained* by the hydrologic unit, and 
-  b. the smallest streamgage basin that *contains* the hydrologic unit 
+  a. all streamgage basins *contained* by the hydrologic unit, and
+  b. the smallest streamgage basin that *contains* the hydrologic unit
+  
 
 Note that in cases where there is near perfect overlap for multiple streamgage basins and a hydrologic unit, the streamgage basin-hydrologic unit intersection with the *highest* weight is used to estimate runoff. This is the same method used to determine the smallest streamgage basin that contains the hydrologic unit: among all the streamgage basins that contain the hydrologic unit (in other words, the proportion of the hydrologic unit's area in the streamgage basins is roughly 1), find the hydrologic unit-streamgage basin intersection with the highest weight (which means the proportion of the streamgage basin's area in the hydrologic unit is the largest). See Figure 1 for an example of this workflow. Note that in Figure 1, 'Fraction#' is analogous to 'proportion of shape X's area in shape Y'.
 
