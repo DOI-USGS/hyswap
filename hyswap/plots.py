@@ -152,9 +152,9 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     Koehler, R. 2004. Raster Based Analysis and Visualization of Hydrologic
     Time Series. Ph.D  dissertation, University of Arizona. Tucson, AZ, 189 p.
 
-    `Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the
+    Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the
     rivers: representing streamflow of the greater Yellowstone ecosystem.
-    Cartographic Perspectives, no. 55, 54-29.`__
+    Cartographic Perspectives, no. 55, 54-29.
 
     Parameters
     ----------
