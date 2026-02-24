@@ -120,7 +120,7 @@ def identify_sites_from_geom_intersection(
     intersecting a given spatial geometry (e.g. HUC8) from the
     output table of a previously computed spatial intersection
     of drainage areas and spatial geometries. This function is a
-    helper function that can be used to reduce the number of NWIS
+    helper function that can be used to reduce the number of USGS
     queries that are performed to construct the list of dataframes
     for a given geometry.
 
@@ -294,7 +294,7 @@ def calculate_geometric_runoff(geom_id,
         print(('There are site ids in the runoff df that are not present '
                f'in the intersection df for {geom_id}. This might indicate '
                'a mismatch in site id formats, e.g. missing leading '
-               'zeroes if NWIS sites.'))
+               'zeroes if USGS sites.'))
 
     # check whether sites is the df index or not
     if site_column_name == 'index':

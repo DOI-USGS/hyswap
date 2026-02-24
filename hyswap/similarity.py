@@ -19,7 +19,7 @@ def calculate_correlations(df_list, data_column_name, df_names=None):
     df_list : list
         List of dataframes. The dataframes are expected to have the same
         columns. Likely inputs are the output of a function like
-        dataretrieval.nwis.get_dv() or similar
+        dataretrieval.waterdata.get_daily() or similar
 
     data_column_name : str
         Name of the column containing data to use for the correlation
@@ -84,7 +84,7 @@ def calculate_wasserstein_distance(df_list, data_column_name, df_names=None):
     df_list : list
         List of dataframes. The dataframes are expected to have the same
         columns. Likely inputs are the output of a function like
-        dataretrieval.nwis.get_dv() or similar
+        dataretrieval.waterdata.get_daily() or similar
 
     data_column_name : str
         Name of the column to use for the Wasserstein distance calculation.
@@ -151,7 +151,7 @@ def calculate_energy_distance(df_list, data_column_name, df_names=None):
     df_list : list
         List of dataframes. The dataframes are expected to have the same
         columns. Likely inputs are the output of a function like
-        dataretrieval.nwis.get_dv() or similar
+        dataretrieval.waterdata.get_daily() or similar
 
     data_column_name : str
         Name of the column to use for the energy distance calculation.

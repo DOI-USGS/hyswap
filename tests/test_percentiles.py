@@ -616,7 +616,7 @@ class TestCalculateVariablePercentileFromValue_s:
             [3.7, 4.1, 9.8, 7.2],
             index=pd.date_range('2024-01-01', '2024-01-04')
             ),
-        columns=['00060_Mean']
+        columns=['value']
         )
     df.index.name = 'datetime'
     # easier to define thresholds here that match
@@ -691,17 +691,17 @@ class TestCalculateVariablePercentileFromValue_s:
         """Test with multiple values from a df"""
         pct_df_out = percentiles.calculate_multiple_variable_percentiles_from_values( # noqa
             self.df,
-            '00060_Mean',
+            'value',
             self.pct_df
             )
         est_pct1 = np.interp(
-            self.df.iloc[0]['00060_Mean'],
+            self.df.iloc[0]['value'],
             np.array(self.pct_df.loc[self.pct_df.index == "01-01"].values.flatten().tolist(), dtype=np.float32), # noqa
             self.thresholds,
             left=0,
             right=100).round(2)
         est_pct3 = np.interp(
-            self.df.iloc[2]['00060_Mean'],
+            self.df.iloc[2]['value'],
             np.array(self.pct_df.loc[self.pct_df.index == "01-03"].values.flatten().tolist(), dtype=np.float32), # noqa
             self.thresholds,
             left=0,

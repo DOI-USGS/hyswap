@@ -62,20 +62,20 @@ def plot_flow_duration_curve(
 
     Examples
     --------
-    Fetch some data from NWIS, calculate the exceedance probabilities and then
-    make the flow duration curve.
+    Fetch some data from USGS Water Data, calculate the exceedance
+    probabilities and then make the flow duration curve.
 
     .. plot::
         :include-source:
 
-        >>> df, _ = dataretrieval.nwis.get_dv(site='06892350',
-        ...                                   parameterCd='00060',
-        ...                                   start='1776-07-04',
-        ...                                   end='2020-01-01')
-        >>> values = np.linspace(df['00060_Mean'].min(),
-        ...                      df['00060_Mean'].max(), 10000)
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id='USGS-06892350',
+        ...     parameter_code='00060',
+        ...     time='1776-07-04/2020-01-01')
+        >>> values = np.linspace(df['value'].min(),
+        ...     df['value'].max(), 10000)
         >>> exceedance_probabilities = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(  # noqa
-        ...     values, df['00060_Mean'])
+        ...     values, df['value'])
         >>> ax = hyswap.plots.plot_flow_duration_curve(
         ...     values, exceedance_probabilities,
         ...     title='Flow Duration Curve for USGS Site 06892350')
@@ -152,9 +152,9 @@ def plot_raster_hydrograph(df_formatted, ax=None,
     Koehler, R. 2004. Raster Based Analysis and Visualization of Hydrologic
     Time Series. Ph.D  dissertation, University of Arizona. Tucson, AZ, 189 p.
 
-    `Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the
+    Strandhagen, E., Marcus, W.A., and Meacham, J.E. 2006. Views of the
     rivers: representing streamflow of the greater Yellowstone ecosystem.
-    Cartographic Perspectives, no. 55, 54-29.`__
+    Cartographic Perspectives, no. 55, 54-29.
 
     Parameters
     ----------
@@ -185,17 +185,20 @@ def plot_raster_hydrograph(df_formatted, ax=None,
 
     Examples
     --------
-    Fetch some data from NWIS, format it for a raster hydrograph plot and then
-    make the raster hydrograph plot.
+    Fetch some data from USGS Water Data, format it for a raster hydrograph
+    plot and then make the raster hydrograph plot.
 
     .. plot::
         :include-source:
 
-        >>> df, _ = dataretrieval.nwis.get_dv(site='09380000',
-        ...                                   parameterCd='00060',
-        ...                                   start='1960-01-01',
-        ...                                   end='1970-12-31')
-        >>> df_rh = hyswap.rasterhydrograph.format_data(df, '00060_Mean')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id='USGS-09380000',
+        ...     parameter_code='00060',
+        ...     time='1960-01-01/1970-12-31')
+        >>> df_rh = hyswap.rasterhydrograph.format_data(
+        ...     df=df,
+        ...     data_column_name='value',
+        ...     date_column_name='time')
         >>> fig, ax = plt.subplots(figsize=(6, 6))
         >>> ax = hyswap.plots.plot_raster_hydrograph(
         ...     df_rh, ax=ax, title='Raster Hydrograph for USGS Site 09380000')
@@ -347,23 +350,30 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
 
     Examples
     --------
-    Fetch some data from NWIS and make a streamflow duration hydrograph plot.
+    Fetch some data from the Water Data APIs and make a streamflow
+    duration hydrograph plot.
 
     .. plot::
         :include-source:
 
-        >>> df, _ = dataretrieval.nwis.get_dv(site='06892350',
-        ...                                   parameterCd='00060',
-        ...                                   start='1900-01-01',
-        ...                                   end='2022-12-31')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id='USGS-06892350',
+        ...     parameter_code='00060',
+        ...     time='1900-01-01/2022-12-31')
         >>> pct_by_day = hyswap.percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
-        ...     df, '00060_Mean')
-        >>> df_2022 = df[df.index.year == 2022]
+        ...     df=df,
+        ...     data_column_name='value',
+        ...     date_column_name='time')
+        >>> df_2022 = df[df['time'].dt.year == 2022]
         >>> fig, ax = plt.subplots(figsize=(12, 6))
         >>> ax = hyswap.plots.plot_duration_hydrograph(
-        ...     pct_by_day, df_2022, '00060_Mean',
+        ...     percentiles_by_day=pct_by_day,
+        ...     df=df_2022,
+        ...     data_column_name='value',
+        ...     date_column_name='time',
         ...     data_label='2022 Daily Mean Discharge',
-        ...     ax=ax, title='Duration Hydrograph for USGS Site 06892350')
+        ...     ax=ax,
+        ...     title='Duration Hydrograph for USGS Site 06892350')
         >>> plt.tight_layout()
         >>> plt.show()
     """
@@ -401,6 +411,7 @@ def plot_duration_hydrograph(percentiles_by_day, df, data_column_name,
                          "#7bdbd2", "#7587bf", "#ad63ba"]
     # set the df index
     if date_column_name is not None:
+        df = df.sort_values(by=date_column_name)
         df = df.set_index(date_column_name)
     df['month_day'] = df.index.strftime('%m-%d')
     # Join percentiles with data
@@ -549,20 +560,23 @@ def plot_cumulative_hydrograph(df,
 
     Examples
     --------
-    Fetch some data from NWIS and make a cumulative hydrograph plot.
+    Fetch some data from USGS Water Data and make a cumulative hydrograph
+    plot.
 
     .. plot::
         :include-source:
 
-        >>> df, _ = dataretrieval.nwis.get_dv(site='06892350',
-        ...                                   parameterCd='00060',
-        ...                                   start='1900-01-01',
-        ...                                   end='2021-12-31')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id='USGS-06892350',
+        ...     parameter_code='00060',
+        ...     time='1900-01-01/2021-12-31')
         >>> fig, ax = plt.subplots(figsize=(8, 5))
         >>> ax = hyswap.plots.plot_cumulative_hydrograph(
-        ...     df,
-        ...     data_column_name='00060_Mean',
-        ...     target_years=2020, ax=ax,
+        ...     df=df,
+        ...     data_column_name='value',
+        ...     date_column_name='time',
+        ...     target_years=2020,
+        ...     ax=ax,
         ...     title='2020 Cumulative Streamflow Hydrograph, site 06892350')
         >>> plt.tight_layout()
         >>> plt.show()
@@ -748,13 +762,15 @@ def plot_hydrograph(df, data_column_name,
     .. plot::
         :include-source:
 
-        >>> siteno = '06892350'
-        >>> df, _ = dataretrieval.nwis.get_dv(site=siteno,
-        ...                                   parameterCd='00060',
-        ...                                   start='2019-01-01',
-        ...                                   end='2020-01-01')
+        >>> siteno = 'USGS-06892350'
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id=siteno,
+        ...     parameter_code='00060',
+        ...     time='2019-01-01/2020-01-01')
         >>> ax = hyswap.plots.plot_hydrograph(
-        ...     df, data_column_name='00060_Mean',
+        ...     df=df,
+        ...     data_column_name='value',
+        ...     date_column_name='time',
         ...     title=f'2019 Hydrograph for Station {siteno}',
         ...     ylab='Discharge, ft3/s',
         ...     xlab='Date', yscale='log')
@@ -836,18 +852,20 @@ def plot_similarity_heatmap(sim_matrix, n_obs=None, cmap='cividis',
     .. plot::
         :include-source:
 
-        >>> df, _ = dataretrieval.nwis.get_dv(site='06892350',
-        ...                                   parameterCd='00060',
-        ...                                   start='2010-01-01',
-        ...                                   end='2021-12-31')
-        >>> df2, _ = dataretrieval.nwis.get_dv(site='06892000',
-        ...                                    parameterCd='00060',
-        ...                                    start='2010-01-01',
-        ...                                    end='2021-12-31')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id='USGS-06892350',
+        ...     parameter_code='00060',
+        ...     time='2010-01-01/2021-12-31')
+        >>> df2, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id='USGS-06892000',
+        ...     parameter_code='00060',
+        ...     time='2010-01-01/2021-12-31')
         >>> corr_matrix, n_obs = hyswap.similarity.calculate_correlations(
-        ...     [df, df2], '00060_Mean')
-        >>> ax = hyswap.plots.plot_similarity_heatmap(corr_matrix,
-        ...                                           show_values=True)
+        ...     df_list=[df, df2],
+        ...     data_column_name='value')
+        >>> ax = hyswap.plots.plot_similarity_heatmap(
+        ...     sim_matrix=corr_matrix,
+        ...     show_values=True)
         >>> plt.show()
     """
     # Create axes if not provided

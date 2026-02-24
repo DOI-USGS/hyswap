@@ -16,8 +16,11 @@ def filter_approved_data(df, filter_column_name=None):
     Returns
     -------
     pandas.DataFrame
-        A filtered dataframe containing only approved data, denoted by an
-        "A" in the filter column.
+        A filtered dataframe containing only approved data, denoted by a
+        capital "A" in the filter column. This function works for legacy
+        Water Services data, that return only an "A" for approved, and
+        the modernized Water Data APIs, that return the full word,
+        "Approved".
 
     Examples
     --------
@@ -28,7 +31,7 @@ def filter_approved_data(df, filter_column_name=None):
 
         >>> df = pd.DataFrame({
         ...     'df': [1, 2, 3, 4, 5],
-        ...     'approved': ['A', 'A, e', 'A', 'P', 'P']})
+        ...     'approved': ['Approved', 'A, e', 'A', 'P', 'P']})
         >>> df.shape
         (5, 2)
 
@@ -171,10 +174,15 @@ def filter_data_by_time(df, value, data_column_name, date_column_name=None,
     .. doctest::
         :skipif: True  # dataretrieval functions break CI pipeline
 
-        >>> df, _ = dataretrieval.nwis.get_dv(
-        ...     "03586500", parameterCd="00060",
-        ...     start="2000-01-01", end="2003-01-05")
-        >>> data = utils.filter_data_by_time(df, 1, '00060_Mean')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id="USGS-03586500",
+        ...     parameter_code="00060",
+        ...     time="2000-01-01/2003-01-05")
+        >>> data = utils.filter_data_by_time(
+        ...     df=df,
+        ...     value=1,
+        ...     data_column_name='value',
+        ...     date_column_name='time')
         >>> data.shape
         (4,)
     """
@@ -299,10 +307,15 @@ def filter_data_by_month_day(df,
     .. doctest::
         :skipif: True  # dataretrieval functions break CI pipeline
 
-        >>> df, _ = dataretrieval.nwis.get_dv(
-        ...     "03586500", parameterCd="00060",
-        ...     start="2000-01-01", end="2003-01-05")
-        >>> data = utils.filter_data_by_month_day(df, '01-01', '00060_Mean')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id="USGS-03586500",
+        ...     parameter_code="00060",
+        ...     time="2000-01-01/2003-01-05")
+        >>> data = utils.filter_data_by_month_day(
+        ...     df=df,
+        ...     month_day='01-01',
+        ...     data_column_name='value',
+        ...     date_column_name='time')
         >>> data.shape
         (4,)
     """
@@ -596,7 +609,9 @@ def munge_nwis_stats(df, include_metadata=True):
     return df
 
 
-def calculate_summary_statistics(df, data_column_name="00060_Mean"):
+def calculate_summary_statistics(df,
+                                 data_column_name="value",
+                                 date_column_name="time"):
     """
     Calculate summary statistics for a site.
 
@@ -604,12 +619,16 @@ def calculate_summary_statistics(df, data_column_name="00060_Mean"):
     ----------
     df : pandas.DataFrame
         DataFrame containing daily values for the site. Expected to be from
-        `dataretrieval.nwis.get_dv()`, or similar.
+        `dataretrieval.waterdata.get_daily()`, or similar, and the site id
+        is in a column named "monitoring_location_id".
 
     data_column_name : str, optional
         Name of the column in the dv_df DataFrame that contains the data of
-        interest. Default is "00060_Mean" which is the mean daily discharge
+        interest. Default is "value" which is the mean daily discharge
         column.
+
+    date_column_name : str, optional
+        Name of column containing date information.
 
     Returns
     -------
@@ -618,19 +637,23 @@ def calculate_summary_statistics(df, data_column_name="00060_Mean"):
 
     Examples
     --------
-    Get some NWIS data and apply the function to get the summary statistics.
+    Get some USGS data and apply the function to get the summary statistics.
 
     .. doctest::
 
-        >>> df, _ = dataretrieval.nwis.get_dv(
-        ...     "03586500", parameterCd="00060",
-        ...     startDT="2010-01-01", endDT="2010-12-31")
-        >>> summary_df = utils.calculate_summary_statistics(df)
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id="USGS-03586500",
+        ...     parameter_code="00060",
+        ...     time="2010-01-01/2010-12-31")
+        >>> summary_df = utils.calculate_summary_statistics(
+        ...     df=df,
+        ...     data_column_name='value',
+        ...     date_column_name='time')
         >>> summary_df.shape
         (8, 1)
         >>> print(summary_df)
                     Summary Statistics
-        Site number           03586500
+        Site number      USGS-03586500
         Begin date          2010-01-01
         End date            2010-12-31
         Count                      365
@@ -643,11 +666,10 @@ def calculate_summary_statistics(df, data_column_name="00060_Mean"):
     summary_dict = {}
     # populate it
     # site number (assumes USGS site number format)
-    summary_dict['Site number'] = str(int(df.at[df.index[0],
-                                                'site_no'])).zfill(8)
+    summary_dict['Site number'] = df['monitoring_location_id'][0]
     # dates
-    summary_dict['Begin date'] = df.index.min().strftime('%Y-%m-%d')
-    summary_dict['End date'] = df.index.max().strftime('%Y-%m-%d')
+    summary_dict['Begin date'] = df[date_column_name].min().strftime('%Y-%m-%d')  # noqa: E501
+    summary_dict['End date'] = df[date_column_name].max().strftime('%Y-%m-%d')
     # count
     summary_dict['Count'] = df[data_column_name].count()
     # minimum
@@ -670,13 +692,15 @@ def calculate_summary_statistics(df, data_column_name="00060_Mean"):
     return summary_df
 
 
-def filter_to_common_time(df_list):
-    """Filter a list of dataframes to common times based on index.
+def filter_to_common_time(df_list,
+                          date_column_name=None):
+    """Filter a list of dataframes to common times based on index
+    or date column name.
 
     This function takes a list of dataframes and filters them to only include
-    the common times based on the index of the dataframes. This is necessary
-    before comparing the timeseries and calculating statistics between two or
-    more timeseries.
+    the common times based on the index or date column name of the dataframes.
+    This is necessary before comparing the timeseries and calculating
+    statistics between two or more timeseries.
 
     Parameters
     ----------
@@ -684,7 +708,11 @@ def filter_to_common_time(df_list):
         List of pandas.DataFrame objects to filter to common times.
         DataFrames assumed to have date-time information in the index.
         Expect input to be the output from a function like
-        dataretrieval.nwis.get_dv() or similar.
+        dataretrieval.waterdata.get_daily() or similar.
+    date_column_name : str, optional
+        Name of column containing date information in the data frames
+        in the list. If None, the index of
+        `df_list` is used. Default is None.
 
     Returns
     -------
@@ -695,31 +723,38 @@ def filter_to_common_time(df_list):
 
     Examples
     --------
-    Get some NWIS data.
+    Get some USGS data.
 
     .. doctest::
 
-            >>> df1, md1 = dataretrieval.nwis.get_dv(
-            ...     "03586500", parameterCd="00060",
-            ...     start="2018-12-15", end="2019-01-07")
-            >>> df2, md2 = dataretrieval.nwis.get_dv(
-            ...     "01646500", parameterCd="00060",
-            ...     start="2019-01-01", end="2019-01-14")
+            >>> df1, md1 = dataretrieval.waterdata.get_daily(
+            ...     monitoring_location_id="USGS-03586500",
+            ...     parameter_code="00060",
+            ...     time="2018-12-15/2019-01-07")
+            >>> df2, md2 = dataretrieval.waterdata.get_daily(
+            ...     monitoring_location_id="USGS-01646500",
+            ...     parameter_code="00060",
+            ...     time="2019-01-01/2019-01-14")
             >>> type(df1)
-            <class 'pandas.core.frame.DataFrame'>
+            <class 'geopandas.geodataframe.GeoDataFrame'>
             >>> type(df2)
-            <class 'pandas.core.frame.DataFrame'>
+            <class 'geopandas.geodataframe.GeoDataFrame'>
 
     Filter the dataframes to common times.
 
     .. doctest::
 
-            >>> df_list, n_obs = utils.filter_to_common_time([df1, df2])
+            >>> df_list, n_obs = utils.filter_to_common_time(
+            ...     df_list=[df1, df2],
+            ...     date_column_name='time')
             >>> df_list[0].shape
-            (7, 3)
+            (7, 11)
             >>> df_list[1].shape
-            (7, 3)
+            (7, 11)
     """
+    # Convert date column to index if not None
+    if date_column_name is not None:
+        df_list = [df.set_index(date_column_name) for df in df_list]
     # get the common index
     common_index = df_list[0].index
     for df in df_list:
@@ -829,33 +864,40 @@ def categorize_flows(df,
     Examples
     --------
     Categorize streamflow based on calculated percentiles for streamflow
-    records downloaded from NWIS.
+    records downloaded from USGS Water Data.
 
     .. doctest::
         :skipif: True  # dataretrieval functions break CI pipeline
 
-        >>> data, _ = dataretrieval.nwis.get_dv(
-        ...     "04288000", parameterCd="00060",
-        ...     start="1900-01-01", end="2021-12-31")
+        >>> data, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id="USGS-04288000",
+        ...     parameter_code="00060",
+        ...     time="1900-01-01/2021-12-31")
         >>> pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501
-        ...     data, '00060_Mean',
+        ...     df=data,
+        ...     data_column_name='value',
+        ...     date_column_name='time',
         ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],
         ...     method='linear')
-        >>> new_data, _ = dataretrieval.nwis.get_dv(
-        ...     "04288000", parameterCd="00060",
-        ...     start="2022-05-01", end="2022-05-07")
+        >>> new_data, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id="USGS-04288000",
+        ...     parameter_code="00060",
+        ...     time="2022-05-01/2022-05-07")
         >>> new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501
-        ...     new_data, '00060_Mean', pcts_df)
+        ...     df=new_data,
+        ...     data_column_name='value',
+        ...     percentile_df=pcts_df,
+        ...     date_column_name='time')
         >>> new_percentiles = utils.categorize_flows(new_percentiles,
         ...     'est_pct', schema_name='NWD')
         >>> new_percentiles[['est_pct', 'flow_cat']].values
-        [[13.62, 'Below normal'],
-        [14.15, 'Below normal'],
-        [14.29, 'Below normal'],
+        [[14.1, 'Below normal'],
+        [28.03, 'Normal'],
+        [15.24, 'Below normal'],
+        [13.2, 'Below normal'],
         [23.41, 'Below normal'],
-        [27.44, 'Normal'],
-        [16.2, 'Below normal'],
-        [12.81, 'Below normal']]
+        [17.16, 'Below normal'],
+        [12.41, 'Below normal']]
     """
 
     if custom_schema is None:

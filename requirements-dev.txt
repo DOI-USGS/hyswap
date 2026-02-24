@@ -4,6 +4,7 @@ coverage
 flake8
 pylint
 pydocstringformatter
+docutils<0.22
 dataretrieval
 matplotlib
 folium

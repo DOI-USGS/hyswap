@@ -2,26 +2,26 @@
 Flow Duration Curves
 --------------------
 
-These examples show how flow duration curves can be constructed by fetching data from NWIS using `dataretrieval`, analyzing that data using functions provided by `hyswap` (:obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`), and then plotted using another `hyswap` function (:obj:`hyswap.plots.plot_flow_duration_curve`).
+These examples show how flow duration curves can be constructed by fetching data from USGS Water DAta using `dataretrieval`, analyzing that data using functions provided by `hyswap` (:obj:`hyswap.exceedance.calculate_exceedance_probability_from_values_multiple`), and then plotted using another `hyswap` function (:obj:`hyswap.plots.plot_flow_duration_curve`).
 For more information on flow duration curves, see the 1959 USGS report by James K. Searcy, titled `"Flow-duration curves" <https://doi.org/10.3133/wsp1542A>`_.
 
 
-Creating a Flow Duration Curve for Site 01646500
-************************************************
+Creating a Flow Duration Curve for Site USGS-01646500
+******************************************************
 
-First we will fetch all streamflow data for a single site from NWIS using the `dataretrieval` package.
+First we will fetch all streamflow data for a single site from USGS Water Data using the `dataretrieval` package.
 
 .. plot::
     :context: reset
     :include-source:
 
     # get data from a single site
-    siteno = '01646500'
-    df, md = dataretrieval.nwis.get_dv(site=siteno, parameterCd='00060',
-                                       startDT='1900-01-01')
+    siteno = 'USGS-01646500'
+    df, md = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code='00060',
+                                       time='1900-01-01/..')
 
 This data can be filtered to only include "approved" data.
-Data quality is coded as "A" for "approved" and "P" for "provisional".
+Data quality is coded as "Approved" and "Provisional".
 `hyswap` has a utility function to help with this.
 
 .. plot::
@@ -29,7 +29,7 @@ Data quality is coded as "A" for "approved" and "P" for "provisional".
     :include-source:
 
     # filter to only approved data
-    df = hyswap.utils.filter_approved_data(df, '00060_Mean_cd')
+    df = hyswap.utils.filter_approved_data(df, 'approval_status')
 
 Now we can calculate the exceedance probabilities for 10,000 evenly spaced values between the minimum and maximum values in the data.
 
@@ -38,11 +38,11 @@ Now we can calculate the exceedance probabilities for 10,000 evenly spaced value
     :include-source:
 
     # generate 10,000 evenly spaced values between the min and max
-    values = np.linspace(df['00060_Mean'].min(), df['00060_Mean'].max(), 10000)
+    values = np.linspace(df['value'].min(), df['value'].max(), 10000)
 
     # calculate exceedance probabilities
     exceedance_probabilities = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
-        values, df['00060_Mean'])
+        values, df['value'])
 
 Finally, we can plot the flow duration curve using these exceedance probability values and :obj:`hyswap.plots.plot_flow_duration_curve`, which leverages `matplotlib`.
 
@@ -74,20 +74,20 @@ In this example we will plot multiple flow duration curves on the same axes.
     fig, ax = plt.subplots(figsize=(8, 6))
 
     # create list of sites
-    sitenos = ["07108900", "07103980", "07103987"]
+    sitenos = ["USGS-07108900", "USGS-07103980", "USGS-07103987"]
 
     # loop through sites to get data and plot it
     for site in sitenos:
-        df, md = dataretrieval.nwis.get_dv(
-            site, parameterCd="00060", startDT="1776-07-04")
+        df, md = dataretrieval.waterdata.get_daily(
+            monitoring_location_id=site, parameter_code="00060", time="1776-07-04/..")
 
         # create 10,000 evenly spaced values min-max
         values = np.linspace(
-            df['00060_Mean'].min(), df['00060_Mean'].max(), 10000)
+            df['value'].min(), df['value'].max(), 10000)
 
         # calculate exceedance probabilities
         exp = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
-            values, df['00060_Mean'])
+            values, df['value'])
 
         # plot flow duration curve for this site
         ax = hyswap.plots.plot_flow_duration_curve(
@@ -114,29 +114,29 @@ To make it obvious which points are observations, we will define them as small b
     :include-source:
 
     # get data from a single site
-    siteno = '06216900'
-    df, md = dataretrieval.nwis.get_dv(site=siteno, parameterCd='00060',
-                                    startDT='1900-01-01')
+    siteno = 'USGS-06216900'
+    df, md = dataretrieval.waterdata.get_daily(monitoring_location_id=siteno, parameter_code='00060',
+                                    time='1900-01-01/..')
     # filter to only approved data
-    df = hyswap.utils.filter_approved_data(df, '00060_Mean_cd')
+    df = hyswap.utils.filter_approved_data(df, 'approval_status')
 
     # generate 10,000 evenly spaced values between the min and max
-    values = np.linspace(df['00060_Mean'].min(), df['00060_Mean'].max(), 10000)
+    values = np.linspace(df['value'].min(), df['value'].max(), 10000)
 
     # calculate exceedance probabilities
     exceedance_probabilities = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
-        values, df['00060_Mean'])
+        values, df['value'])
 
     # calculate exceedance probabilities for the observations
     obs_probs = hyswap.exceedance.calculate_exceedance_probability_from_values_multiple(
-        df['00060_Mean'], df['00060_Mean'])
+        df['value'], df['value'])
 
     # plot
     fig, ax = plt.subplots(figsize=(8, 5))
     # plot the flow duration curve
     ax = hyswap.plots.plot_flow_duration_curve(
         values, exceedance_probabilities, ax=ax,
-        observations=df['00060_Mean'],
+        observations=df['value'],
         observation_probabilities=obs_probs,
         scatter_kwargs={'c': 'k', 's': 10, 'zorder': 10},
         title=f'Flow Duration Curve for USGS Site {siteno}')

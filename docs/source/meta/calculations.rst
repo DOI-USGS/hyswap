@@ -11,8 +11,6 @@ The ``hyswap`` package functions assume that provided streamflow data are qualit
 * regulated flows or transitions from regulated to unregulated flows (or vice versa)
 * major watershed changes
 
-For users who are applying ``hyswap`` functions directly to data retrieved from USGS NWIS, please be aware that non-standard parameter names occasionally occur (e.g. `00060_2_Mean` or `00060_incorrect_Mean` instead of simply `00060_Mean`). Reasons for this could be to indicate that a site has an upstream and downstream sensor, a sensor was moved in the water column, or a site was measured multiple times. This package treats sites with non-standard parameter names as outliers and skips those sites. Users should take appropriate steps to check for non-standard parameter names and determine appropriate data handling steps based on their needs.
-
 Streamflow Percentiles
 ----------------------
 
@@ -137,7 +135,7 @@ Spatial datasets describing the respective drainage basin boundaries of the stre
 
 Each geospatial streamgage drainage basin boundary is overlain on a geospatial dataset of hydrologic units (the polygons outlined in thick gray-brown lines in Figure 1 example) to determine the area of intersection within the two datasets. For each overlapping area of hydrologic units and streamgage drainage basin boundaries, the fraction of the basin in the hydrologic unit and the fraction of the hydrologic unit in the basin are calculated. These fractions are then multiplied by each other to compute a weighting factor for each basin in the runoff calculation.
 
-You can find an example intersection dataset between CONUS hydrologic units and streamgage basins in the `hyswap-example-notebooks repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_. This intersection dataset was created using the `surface water geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/surface-water-geospatial-data-assembly>`_.
+You can find an example intersection dataset between CONUS hydrologic units and streamgage basins in the `hyswap-example-notebooks repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-example-notebooks>`_. This intersection dataset was created using the `hyswap water geospatial data assembly repository <https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap-geospatial-data-assembly>`_.
 
 Workflow for Estimating Area-Based Runoff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -146,8 +144,10 @@ After obtaining a table of intersecting hydrologic units and streamgage basins, 
 
 1. For each unit of time with runoff data at one or more streamgages whose basins intersect the hydrologic unit, obtain a weighted average of all runoff values. 
 2. If a hydrologic unit and a streamgage basin have near perfect overlap (e.g. the proportion of the hydrologic unit's area in the basin is greater than 0.9 and the proportion of the basin's area in the hydrologic unit is greater than 0.9), simply use the runoff values from that streamgage basin. If perfect overlap does not exist, use a weighted average of runoff values from:
-  (a) all streamgage basins *contained* by the hydrologic unit, and 
-  (b) the smallest streamgage basin that *contains* the hydrologic unit 
+
+  a. all streamgage basins *contained* by the hydrologic unit, and
+  b. the smallest streamgage basin that *contains* the hydrologic unit
+  
 
 Note that in cases where there is near perfect overlap for multiple streamgage basins and a hydrologic unit, the streamgage basin-hydrologic unit intersection with the *highest* weight is used to estimate runoff. This is the same method used to determine the smallest streamgage basin that contains the hydrologic unit: among all the streamgage basins that contain the hydrologic unit (in other words, the proportion of the hydrologic unit's area in the streamgage basins is roughly 1), find the hydrologic unit-streamgage basin intersection with the highest weight (which means the proportion of the streamgage basin's area in the hydrologic unit is the largest). See Figure 1 for an example of this workflow. Note that in Figure 1, 'Fraction#' is analogous to 'proportion of shape X's area in shape Y'.
 
@@ -205,9 +205,9 @@ Helsel, D.R., Hirsch, R.M., Ryberg, K.R., Archfield, S.A., and Gilroy, E.J., 202
 
 Magyar, J.C. & Sambridge, M., 2023. Hydrological objective functions and ensemble averaging with the Wasserstein distance, Hydrol. Earth Syst. Sci., 27, 991–1010, https://doi.org/10.5194/hess-27-991-2023.
 
-U.S. Geological Survey, 2011. USGS Streamgage NHDPlus Version 1 Basins 2011. Data Series [DS-719] `water.usgs.gov/lookup/getspatial?streamgagebasins <https://water.usgs.gov/lookup/getspatial?streamgagebasins>`_
+U.S. Geological Survey, 2011. USGS Streamgage NHDPlus Version 1 Basins 2011. Data Series [DS-719] `sciencebase.gov/catalog/item/631405ccd34e36012efa32dc <https://www.sciencebase.gov/catalog/item/631405ccd34e36012efa32dc>`_
 
-U.S. Geological Survey, 2023. USGS water data for the Nation: U.S. Geological Survey National Water Information System database, accessed at https://dx.doi.org/10.5066/F7P55KJN.
+U.S. Geological Survey, 2023. USGS water data for the Nation: U.S. Geological Survey National Water Information System database, accessed at https://waterdata.usgs.gov/.
 
 Weibull, W., 1939. A statistical theory of strength of materials, Ingeniors Vetenskaps Akademien Handlinga, no. 153, 9. 17
 

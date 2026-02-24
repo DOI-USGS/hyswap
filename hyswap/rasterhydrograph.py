@@ -77,10 +77,14 @@ def format_data(df, data_column_name, date_column_name=None,
     .. doctest::
         :skipif: True  # dataretrieval functions break CI pipeline
 
-        >>> df, _ = dataretrieval.nwis.get_dv(
-        ...     "03586500", parameterCd="00060",
-        ...     start="2000-01-01", end="2002-12-31")
-        >>> df_formatted = rasterhydrograph.format_data(df, '00060_Mean')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...     monitoring_location_id="USGS-03586500",
+        ...     parameter_code="00060",
+        ...     time="2000-01-01/2002-12-31")
+        >>> df_formatted = rasterhydrograph.format_data(
+        ...     df=df,
+        ...     data_column_name='value',
+        ...     date_column_name='time')
         >>> df_formatted.index[0]
         2000
         >>> len(df_formatted.columns)
@@ -218,7 +222,8 @@ def _check_inputs(df, data_column_name, date_column_name,
         if not isinstance(begin_year, int):
             raise TypeError('begin_year must be an integer')
         if date_column_name is not None:
-            if begin_year < df['date'].dt.year.min():
+            df[date_column_name] = pd.to_datetime(df[date_column_name])
+            if begin_year < df[date_column_name].dt.year.min():
                 raise ValueError('begin_year must be greater than or equal to '
                                  'the minimum year in the data')
         else:
@@ -231,7 +236,8 @@ def _check_inputs(df, data_column_name, date_column_name,
         if not isinstance(end_year, int):
             raise TypeError('end_year must be an integer')
         if date_column_name is not None:
-            if end_year > df['date'].dt.year.max():
+            df[date_column_name] = pd.to_datetime(df[date_column_name])
+            if end_year > df[date_column_name].dt.year.max():
                 raise ValueError('end_year must be less than or equal to the '
                                  'maximum year in the data')
         else:

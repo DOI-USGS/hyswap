@@ -5,6 +5,7 @@
 [![coverage-report-image](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/badges/main/coverage.svg)](https://code.usgs.gov/water/computational-tools/surface-water-work/hyswap/-/commits/main)
 [![PyPI version](https://badge.fury.io/py/hyswap.svg)](https://badge.fury.io/py/hyswap)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hyswap)](https://img.shields.io/pypi/pyversions/hyswap)
+![Downloads](https://static.pepy.tech/badge/hyswap)
 
 ## Overview
 

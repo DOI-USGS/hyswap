@@ -10,6 +10,7 @@ stages:
 variables:
   R_PROFILE: "$R_HOME/etc/Rprofile.site"
 
+
 Build Package:
   stage: build
   script:
@@ -60,6 +61,8 @@ Build Documentation:
     - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
     - pip install .
+    # Add API USGS PAT to python environment
+    - export API_USGS_PAT=${API_USGS_PAT}
     # Test and build documentation
     - cd docs
     - make docs

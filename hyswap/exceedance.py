@@ -131,21 +131,20 @@ def calculate_exceedance_probability_from_values(x, values_to_compare,
         ...     5, [1, 2, 3, 4]).item()
         0.0
 
-    Fetch some data from NWIS and calculate the exceedance probability
-    for a value of 300 cfs. This is close to the maximum stream flow
-    value for this gage and date range, so the exceedance probability
-    is very small.
+    Fetch some data from USGS Water Data and calculate the exceedance
+    probability for a value of 300 cfs. This is close to the maximum
+    stream flow value for this gage and date range, so the exceedance
+    probability is very small.
 
     .. doctest::
         :skipif: True  # skips this block of code as it broke CI pipeline
 
-        >>> df, _ = dataretrieval.nwis.get_dv(
-        ...    site='10171000',
-        ...    start='2000-01-01',
-        ...    end='2020-01-01')
+        >>> df, _ = dataretrieval.waterdata.get_daily(
+        ...    monitoring_location_id='USGS-10171000',
+        ...    time='2000-01-01/2020-01-01')
         >>> np.round(
         ...    exceedance.calculate_exceedance_probability_from_values(
-        ...        300, df['00060_Mean']),
+        ...        300, df['value']),
         ...        6)
         0.000137
     """
@@ -278,20 +277,22 @@ def calculate_exceedance_probability_from_values_multiple(values,
         ...     [1, 1.25, 2.5], [1, 2, 3, 4], method='Type 4')
         array([1.  , 0.75, 0.5 ])
 
-    Fetch some data from NWIS and calculate the exceedance probability for a
-    set of 5 values spaced evenly between the minimum and maximum values.
+    Fetch some data from USGS Water Data and calculate the exceedance
+    probability for a set of 5 values spaced evenly between the minimum and
+    maximum values.
 
     .. doctest::
         :skipif: True  # skips this block of code as it broke CI pipeline
 
-        >>> df, _ = dataretrieval.nwis.get_gwlevels(site='434400121275801',
-        ...                                         start='2000-01-01',
-        ...                                         end='2020-01-01')
-        >>> values = np.linspace(df['lev_va'].min(),
-        ...                      df['lev_va'].max(), 5)
+        >>> df, _ = dataretrieval.waterdata.get_field_measurements(
+        ...     monitoring_location_id='USGS-434400121275801',
+        ...     parameter_code="72019",
+        ...     time='2000-01-01/2020-01-01')
+        >>> values = np.linspace(df['value'].min(),
+        ...     df['value'].max(), 5)
         >>> exceedance.calculate_exceedance_probability_from_values_multiple(
-        ...     values, df['lev_va'])
-        array([1.        , 0.96363636, 0.83636364, 0.47272727, 0.01818182])
+        ...     values, df['value'])
+        array([0.98214286, 0.94642857, 0.82142857, 0.46428571, 0.01785714])
     """
     return np.array([calculate_exceedance_probability_from_values(
         x, values_to_compare, method=method) for x in values])
