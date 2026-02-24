@@ -5,17 +5,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.exceedance &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>hyswap.exceedance &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -217,21 +217,20 @@
 <span class="sd">        ...     5, [1, 2, 3, 4]).item()</span>
 <span class="sd">        0.0</span>
 
-<span class="sd">    Fetch some data from NWIS and calculate the exceedance probability</span>
-<span class="sd">    for a value of 300 cfs. This is close to the maximum stream flow</span>
-<span class="sd">    value for this gage and date range, so the exceedance probability</span>
-<span class="sd">    is very small.</span>
+<span class="sd">    Fetch some data from USGS Water Data and calculate the exceedance</span>
+<span class="sd">    probability for a value of 300 cfs. This is close to the maximum</span>
+<span class="sd">    stream flow value for this gage and date range, so the exceedance</span>
+<span class="sd">    probability is very small.</span>
 
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # skips this block of code as it broke CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...    site=&#39;10171000&#39;,</span>
-<span class="sd">        ...    start=&#39;2000-01-01&#39;,</span>
-<span class="sd">        ...    end=&#39;2020-01-01&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...    monitoring_location_id=&#39;USGS-10171000&#39;,</span>
+<span class="sd">        ...    time=&#39;2000-01-01/2020-01-01&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; np.round(</span>
 <span class="sd">        ...    exceedance.calculate_exceedance_probability_from_values(</span>
-<span class="sd">        ...        300, df[&#39;00060_Mean&#39;]),</span>
+<span class="sd">        ...        300, df[&#39;value&#39;]),</span>
 <span class="sd">        ...        6)</span>
 <span class="sd">        0.000137</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -370,20 +369,22 @@
 <span class="sd">        ...     [1, 1.25, 2.5], [1, 2, 3, 4], method=&#39;Type 4&#39;)</span>
 <span class="sd">        array([1.  , 0.75, 0.5 ])</span>
 
-<span class="sd">    Fetch some data from NWIS and calculate the exceedance probability for a</span>
-<span class="sd">    set of 5 values spaced evenly between the minimum and maximum values.</span>
+<span class="sd">    Fetch some data from USGS Water Data and calculate the exceedance</span>
+<span class="sd">    probability for a set of 5 values spaced evenly between the minimum and</span>
+<span class="sd">    maximum values.</span>
 
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # skips this block of code as it broke CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_gwlevels(site=&#39;434400121275801&#39;,</span>
-<span class="sd">        ...                                         start=&#39;2000-01-01&#39;,</span>
-<span class="sd">        ...                                         end=&#39;2020-01-01&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; values = np.linspace(df[&#39;lev_va&#39;].min(),</span>
-<span class="sd">        ...                      df[&#39;lev_va&#39;].max(), 5)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_field_measurements(</span>
+<span class="sd">        ...     monitoring_location_id=&#39;USGS-434400121275801&#39;,</span>
+<span class="sd">        ...     parameter_code=&quot;72019&quot;,</span>
+<span class="sd">        ...     time=&#39;2000-01-01/2020-01-01&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; values = np.linspace(df[&#39;value&#39;].min(),</span>
+<span class="sd">        ...     df[&#39;value&#39;].max(), 5)</span>
 <span class="sd">        &gt;&gt;&gt; exceedance.calculate_exceedance_probability_from_values_multiple(</span>
-<span class="sd">        ...     values, df[&#39;lev_va&#39;])</span>
-<span class="sd">        array([1.        , 0.96363636, 0.83636364, 0.47272727, 0.01818182])</span>
+<span class="sd">        ...     values, df[&#39;value&#39;])</span>
+<span class="sd">        array([0.98214286, 0.94642857, 0.82142857, 0.46428571, 0.01785714])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">calculate_exceedance_probability_from_values</span><span class="p">(</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">values_to_compare</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">])</span></div>

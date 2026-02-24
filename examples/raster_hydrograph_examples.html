@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raster Hydrographs &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>Raster Hydrographs &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -50,8 +50,8 @@
 <li class="toctree-l2"><a class="reference internal" href="index.html#flow-duration-curve-examples">Flow Duration Curve Examples</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#raster-hydrograph-examples">Raster Hydrograph Examples</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Raster Hydrographs</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#daily-data-raster-hydrograph-example-site-03586500">Daily Data Raster Hydrograph Example (Site 03586500)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#day-average-raster-hydrograph-example-site-03586500">7-Day Average Raster Hydrograph Example (Site 03586500)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#daily-data-raster-hydrograph-example-site-usgs-03586500">Daily Data Raster Hydrograph Example (Site USGS-03586500)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#day-average-raster-hydrograph-example-site-usgs-03586500">7-Day Average Raster Hydrograph Example (Site USGS-03586500)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#raster-hydrograph-over-a-water-year">Raster Hydrograph Over a “Water Year”</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#raster-hydrograph-over-a-climate-year-with-alt-colors">Raster Hydrograph Over a “Climate Year” with Alt. Colors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#raster-hydrograph-of-non-streamflow-data">Raster Hydrograph of Non-Streamflow Data</a></li>
@@ -102,20 +102,20 @@
              
   <section id="raster-hydrographs">
 <h1>Raster Hydrographs<a class="headerlink" href="#raster-hydrographs" title="Link to this heading"></a></h1>
-<p>These examples show how raster hydrographs can be constructed by fetching data from NWIS using <cite>dataretrieval</cite>, formatting that data using functions provided by <cite>hyswap</cite> (<a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a>), and then plotting using <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_raster_hydrograph" title="hyswap.plots.plot_raster_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_raster_hydrograph</span></code></a>.</p>
-<section id="daily-data-raster-hydrograph-example-site-03586500">
-<h2>Daily Data Raster Hydrograph Example (Site 03586500)<a class="headerlink" href="#daily-data-raster-hydrograph-example-site-03586500" title="Link to this heading"></a></h2>
-<p>First we will fetch 20 years of streamflow data for a single site from NWIS using the <cite>dataretrieval</cite> package.</p>
+<p>These examples show how raster hydrographs can be constructed by fetching data from USGS Water Data using <cite>dataretrieval</cite>, formatting that data using functions provided by <cite>hyswap</cite> (<a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a>), and then plotting using <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_raster_hydrograph" title="hyswap.plots.plot_raster_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_raster_hydrograph</span></code></a>.</p>
+<section id="daily-data-raster-hydrograph-example-site-usgs-03586500">
+<h2>Daily Data Raster Hydrograph Example (Site USGS-03586500)<a class="headerlink" href="#daily-data-raster-hydrograph-example-site-usgs-03586500" title="Link to this heading"></a></h2>
+<p>First we will fetch 20 years of streamflow data for a single site from USGS Water Data using the <cite>dataretrieval</cite> package.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
-<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;03586500&quot;</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;USGS-03586500&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2000-01-01/2020-12-31&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This data can be formatted using <cite>hyswap</cite> to prepare it for plotting as a
 raster hydrograph.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># format the data</span>
-<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+<span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now the data is arranged with years on the index (rows) and days of the year as columns, this makes it easy to plot as a raster hydrograph with <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_raster_hydrograph" title="hyswap.plots.plot_raster_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_raster_hydrograph</span></code></a>.</p>
@@ -132,17 +132,17 @@ raster hydrograph.</p>
 <img alt="../_images/raster_hydrograph_examples-3.png" class="plot-directive" src="../_images/raster_hydrograph_examples-3.png" />
 </figure>
 </section>
-<section id="day-average-raster-hydrograph-example-site-03586500">
-<h2>7-Day Average Raster Hydrograph Example (Site 03586500)<a class="headerlink" href="#day-average-raster-hydrograph-example-site-03586500" title="Link to this heading"></a></h2>
+<section id="day-average-raster-hydrograph-example-site-usgs-03586500">
+<h2>7-Day Average Raster Hydrograph Example (Site USGS-03586500)<a class="headerlink" href="#day-average-raster-hydrograph-example-site-usgs-03586500" title="Link to this heading"></a></h2>
 <p>The same data can be plotted as a 7-day average raster hydrograph by passing the <cite>window_width</cite> argument to <a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
-<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;03586500&quot;</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;USGS-03586500&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2000-01-01/2020-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># format the data for a 7-day rolling average</span>
 <span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">window_width</span><span class="o">=</span><span class="s1">&#39;7-day&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">window_width</span><span class="o">=</span><span class="s1">&#39;7-day&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -164,13 +164,13 @@ raster hydrograph.</p>
 <p>There is also support for visualizing the raster hydrograph over the course of a water year, which begins on October 1st and ends on September 30th of the following year.
 The ending year is the year that is displayed on the y-axis of the raster hydrograph, for example, the water year 2020 would be displayed as 2020 on the y-axis, but would actually contain data from October 1st, 2019 to September 30th, 2020.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
-<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;08110500&quot;</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1975-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;1995-12-31&quot;</span><span class="p">)</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;USGS-08110500&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1975-01-01/1995-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># format the data</span>
 <span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -192,13 +192,13 @@ The ending year is the year that is displayed on the y-axis of the raster hydrog
 The ending year is the year that is displayed on the y-axis of the raster hydrograph, for example, the climate year 2020 would be displayed as 2020 on the y-axis, but would actually contain data from April 1st, 2019 to March 31th, 2020.</p>
 <p>In this example, we will also change the color of the raster hydrograph to be shades of yellow, orange, and red, and show how that can be done by passing the <cite>cmap</cite> keyword argument to <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_raster_hydrograph" title="hyswap.plots.plot_raster_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_raster_hydrograph</span></code></a> while specifying a <cite>matplotlib</cite> colormap.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
-<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;12205000&quot;</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1995-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2015-12-31&quot;</span><span class="p">)</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;USGS-12205000&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1995-01-01/2015-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># format the data</span>
 <span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -216,13 +216,13 @@ The ending year is the year that is displayed on the y-axis of the raster hydrog
 </figure>
 <p>We can also use just a subset of the available data if we wish by specifying start and end years using the <cite>begin_year</cite> and <cite>end_year</cite> keyword arguments to <a class="reference internal" href="../reference/index.html#hyswap.rasterhydrograph.format_data" title="hyswap.rasterhydrograph.format_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.rasterhydrograph.format_data</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get data from a single site</span>
-<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;12205000&quot;</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1995-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2015-12-31&quot;</span><span class="p">)</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;USGS-12205000&quot;</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1995-01-01/2015-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># format the data to years 2000-2010</span>
 <span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
     <span class="n">begin_year</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="mi">2010</span><span class="p">)</span>
 
 <span class="c1"># plot</span>
@@ -244,16 +244,16 @@ The ending year is the year that is displayed on the y-axis of the raster hydrog
 <h2>Raster Hydrograph of Non-Streamflow Data<a class="headerlink" href="#raster-hydrograph-of-non-streamflow-data" title="Link to this heading"></a></h2>
 <p>The functions used above to generate raster hydrographs graphically depicting streamflow over time can also be used to visualize other types of data.
 For example, we can visualize a “raster hydrograph” of the water level at a station over time.
-We will use station 02311500 in Florida as an example.</p>
+We will use station USGS-02311500 in Florida as an example.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get stage data from a single site</span>
-<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;02311500&quot;</span>
-<span class="n">parameterCd</span> <span class="o">=</span> <span class="s2">&quot;00065&quot;</span>  <span class="c1"># code for gage height</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="n">parameterCd</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;USGS-02311500&quot;</span>
+<span class="n">parameter_code</span> <span class="o">=</span> <span class="s2">&quot;00065&quot;</span>  <span class="c1"># code for gage height</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameter_code</span><span class="o">=</span><span class="n">parameter_code</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2000-01-01/2020-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># format the data</span>
 <span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00065_Mean&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -271,14 +271,14 @@ We will use station 02311500 in Florida as an example.</p>
 <p>We can improve this visualization by turning off the logarithmic color scale by setting the normalization of the colorbar to be <cite>None</cite> which overrides the default normalization of <cite>matplotlib.colors.LogNorm</cite>.
 The default scheme is logarithmic because this is the most common way to visualize streamflow data, but for other types of data, a linear scale may be more appropriate.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get stage data from a single site</span>
-<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;02311500&quot;</span>
-<span class="n">parameterCd</span> <span class="o">=</span> <span class="s2">&quot;00065&quot;</span>  <span class="c1"># code for gage height</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameterCd</span><span class="o">=</span><span class="n">parameterCd</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2000-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2020-12-31&quot;</span><span class="p">)</span>
+<span class="n">siteno</span> <span class="o">=</span> <span class="s2">&quot;USGS-02311500&quot;</span>
+<span class="n">parameter_code</span> <span class="o">=</span> <span class="s2">&quot;00065&quot;</span>  <span class="c1"># code for gage height</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">siteno</span><span class="p">,</span> <span class="n">parameter_code</span><span class="o">=</span><span class="n">parameter_code</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2000-01-01/2020-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># format the data</span>
 <span class="n">df_formatted</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">rasterhydrograph</span><span class="o">.</span><span class="n">format_data</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00065_Mean&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>

@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Similarity Measures &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>Similarity Measures &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -105,22 +105,21 @@
 <section id="pearson-s-r-correlations-between-5-stations">
 <h2>Pearson’s <em>r</em> Correlations Between 5 Stations<a class="headerlink" href="#pearson-s-r-correlations-between-5-stations" title="Link to this heading"></a></h2>
 <p>The following example shows the correlations between streamflow at 5 stations (07374525, 07374000, 07289000, 07032000, 07024175) along the Mississippi River, listed from downstream to upstream.
-First we have to fetch the streamflow data for these stations, to do this we will use the <cite>dataretrieval</cite> package to access the NWIS database.</p>
+First we have to fetch the streamflow data for these stations, to do this we will use the <cite>dataretrieval</cite> package to access the USGS Water Data database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
-<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;07024175&quot;</span><span class="p">]</span>
+<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;USGS-07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07024175&quot;</span><span class="p">]</span>
 
-<span class="c1"># fetch some streamflow data from NWIS as a list of dataframes</span>
+<span class="c1"># fetch some streamflow data from USGS Water Data as a list of dataframes</span>
 <span class="n">df_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">site_list</span><span class="p">:</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2012-01-01&quot;</span><span class="p">,</span>
-                                      <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">,</span>
-                                      <span class="n">parameterCd</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">site</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2012-01-01/2022-12-31&quot;</span><span class="p">,</span>
+                                      <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
     <span class="n">df_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Once we’ve collected the streamflow data, we will calculate the pair-wise correlations between the stations using the <a class="reference internal" href="../reference/index.html#hyswap.similarity.calculate_correlations" title="hyswap.similarity.calculate_correlations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.similarity.calculate_correlations</span></code></a> function and then plot the results using <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_similarity_heatmap" title="hyswap.plots.plot_similarity_heatmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_similarity_heatmap</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># calculate correlations</span>
-<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_correlations</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_correlations</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>
@@ -140,18 +139,17 @@ First we have to fetch the streamflow data for these stations, to do this we wil
 </figure>
 <p>If we’d like, we can display the specific values of the correlations by setting the <cite>show_values</cite> argument to <cite>True</cite> in the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_similarity_heatmap" title="hyswap.plots.plot_similarity_heatmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_similarity_heatmap</span></code></a> function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
-<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;07024175&quot;</span><span class="p">]</span>
+<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;USGS-07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07024175&quot;</span><span class="p">]</span>
 
-<span class="c1"># fetch some streamflow data from NWIS as a list of dataframes</span>
+<span class="c1"># fetch some streamflow data from USGS Water Data as a list of dataframes</span>
 <span class="n">df_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">site_list</span><span class="p">:</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2012-01-01&quot;</span><span class="p">,</span>
-                                      <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">,</span>
-                                      <span class="n">parameterCd</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">site</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2012-01-01/2022-12-31&quot;</span><span class="p">,</span>
+                                      <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
     <span class="n">df_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># calculate correlations</span>
-<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_correlations</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_correlations</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>
@@ -178,18 +176,17 @@ The Wasserstein Distance is a measure of the distance between two probability di
 Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.wasserstein_distance()</cite> function, and are therefore specifically calculating the “first” Wasserstein Distance between two time-series.
 Note that we are using the reverse default colormap so that the distance information aligns with the similarity plots above, where more similar = yellow and less similar = blue.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
-<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;07024175&quot;</span><span class="p">]</span>
+<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;USGS-07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07024175&quot;</span><span class="p">]</span>
 
-<span class="c1"># fetch some streamflow data from NWIS as a list of dataframes</span>
+<span class="c1"># fetch some streamflow data from USGS Water Data as a list of dataframes</span>
 <span class="n">df_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">site_list</span><span class="p">:</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2012-01-01&quot;</span><span class="p">,</span>
-                                      <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">,</span>
-                                      <span class="n">parameterCd</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">site</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2012-01-01/2022-12-31&quot;</span><span class="p">,</span>
+                                      <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
     <span class="n">df_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># calculate Wasserstein Distances</span>
-<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_wasserstein_distance</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_wasserstein_distance</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>
@@ -216,18 +213,17 @@ The <cite>energy_dist</cite> is a statistical distance between two probability d
 Specifically in <cite>hyswap</cite>, we utilize the <cite>scipy.stats.energy_distance()</cite> function.
 Note that we are using the reverse default colormap so that the distance information aligns with the similarity plots above, where more similar = yellow and less similar = blue.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the data from these 5 sites</span>
-<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;07024175&quot;</span><span class="p">]</span>
+<span class="n">site_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;USGS-07374525&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07374000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07289000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07032000&quot;</span><span class="p">,</span> <span class="s2">&quot;USGS-07024175&quot;</span><span class="p">]</span>
 
-<span class="c1"># fetch some streamflow data from NWIS as a list of dataframes</span>
+<span class="c1"># fetch some streamflow data from USGS Water Data as a list of dataframes</span>
 <span class="n">df_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">site_list</span><span class="p">:</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2012-01-01&quot;</span><span class="p">,</span>
-                                      <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">,</span>
-                                      <span class="n">parameterCd</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="n">monitoring_location_id</span><span class="o">=</span><span class="n">site</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2012-01-01/2022-12-31&quot;</span><span class="p">,</span>
+                                      <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">)</span>
     <span class="n">df_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># calculate Wasserstein Distances</span>
-<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_energy_distance</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;00060_Mean&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="p">,</span> <span class="n">n_obs</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">similarity</span><span class="o">.</span><span class="n">calculate_energy_distance</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
 <span class="c1"># make plot</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_similarity_heatmap</span><span class="p">(</span>

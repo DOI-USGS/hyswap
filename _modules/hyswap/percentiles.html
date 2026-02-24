@@ -5,17 +5,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.percentiles &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>hyswap.percentiles &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -390,11 +390,12 @@
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;1776-01-01&quot;, end=&quot;2022-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;1776-01-01/2022-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; results = percentiles.calculate_variable_percentile_thresholds_by_day_of_year(  # noqa: E501</span>
-<span class="sd">        ...     df, &quot;00060_Mean&quot;)</span>
+<span class="sd">        ...     df=df, data_column_name=&quot;value&quot;, date_column_name=&quot;time&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; len(results.index)  # 366 days in a leap year</span>
 <span class="sd">        366</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -594,11 +595,12 @@
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;1776-01-01&quot;, end=&quot;2022-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;1776-01-01/2022-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; results = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
-<span class="sd">        ...     df, &quot;00060_Mean&quot;)</span>
+<span class="sd">        ...     df=df, data_column_name=&quot;value&quot;, date_column_name=&quot;time&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; len(results.index)  # 366 days in a leap year</span>
 <span class="sd">        366</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -622,6 +624,7 @@
 
     <span class="c1"># set the df index</span>
     <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">date_column_name</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span>
 
     <span class="c1"># do rolling average for time as needed</span>
@@ -699,7 +702,8 @@
 <span class="sd">        DataFrame where columns are the percentile thresholds values and the</span>
 <span class="sd">        values are stored in a row called &quot;values&quot;. Typically generated by the</span>
 <span class="sd">        `calculate_fixed_percentile_thresholds` functions but could be</span>
-<span class="sd">        provided manually or from data pulled from the NWIS stats service.</span>
+<span class="sd">        provided manually or from data pulled from the USGS Water Data stats</span>
+<span class="sd">        service.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -722,25 +726,29 @@
 <span class="sd">        50.0</span>
 
 <span class="sd">    Calculate the percentiles associated with multiple values for some data</span>
-<span class="sd">    downloaded from NWIS.</span>
+<span class="sd">    downloaded from the Water Data APIs.</span>
 
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-04288000&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;1900-01-01/2021-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_fixed_percentile_thresholds(</span>
-<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     data=data,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;,</span>
 <span class="sd">        ...     percentiles=[5, 10, 25, 50, 75, 90, 95,],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;2022-01-01&quot;, end=&quot;2022-01-07&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-04288000&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;2022-01-01/2022-01-07&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; new_data[&#39;est_pct&#39;] = percentiles.calculate_fixed_percentile_from_value(  # noqa: E501</span>
-<span class="sd">        ...     new_data[&#39;00060_Mean&#39;], pcts_df)</span>
+<span class="sd">        ...     new_data[&#39;value&#39;], pcts_df)</span>
 <span class="sd">        &gt;&gt;&gt; new_data[&#39;est_pct&#39;].to_list()</span>
-<span class="sd">        [62.9, 75.0, 55.65, 47.54, 53.55, 55.32, 50.97]</span>
+<span class="sd">        [47.54, 75.0, 53.55, 55.32, 62.9, 55.65, 50.97]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># extract percentile levels and values</span>
@@ -793,7 +801,7 @@
 <span class="sd">        DataFrame containing threshold percentiles of data by day of year.</span>
 <span class="sd">        Typically generated by the `calculate_variable_percentile_thresholds`</span>
 <span class="sd">        function but could be provided manually or from data pulled from the</span>
-<span class="sd">        NWIS stats service.</span>
+<span class="sd">        USGS Water Data stats service.</span>
 
 <span class="sd">    month_day : str</span>
 <span class="sd">        string of month-day of year to lookup percentile thresholds for value</span>
@@ -806,16 +814,19 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Calculate the percentile associated with a value using flow records</span>
-<span class="sd">    downloaded from NWIS.</span>
+<span class="sd">    downloaded from the Water Data APIs.</span>
 
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;1776-01-01&quot;, end=&quot;2022-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;1776-01-01/2022-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
-<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     df=data,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;,</span>
 <span class="sd">        ...     percentiles=[5, 10, 25, 50, 75, 90, 95],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentile = percentiles.calculate_variable_percentile_from_value(  # noqa: E501</span>
@@ -865,7 +876,7 @@
 <span class="sd">        DataFrame containing threshold percentiles of data by day of year.</span>
 <span class="sd">        Typically generated by the `calculate_variable_percentile_thresholds`</span>
 <span class="sd">        functions but could be provided manually or from data pulled from the</span>
-<span class="sd">        NWIS stats service.</span>
+<span class="sd">        USGS Water Data stats service.</span>
 
 <span class="sd">    date_column_name : str, optional</span>
 <span class="sd">        Name of column containing date information. If None, the index of</span>
@@ -879,23 +890,30 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Calculate the percentiles associated with multiple values using flow</span>
-<span class="sd">    records downloaded from NWIS.</span>
+<span class="sd">    records downloaded from the Water Data APIs.</span>
 
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-04288000&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;1900-01-01/2021-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
-<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     df=data,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;,</span>
 <span class="sd">        ...     percentiles=[5, 10, 25, 50, 75, 90, 95],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;2022-01-01&quot;, end=&quot;2022-01-07&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-04288000&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;2022-01-01/2022-01-07&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501</span>
-<span class="sd">        ...     new_data, &#39;00060_Mean&#39;, pcts_df)</span>
+<span class="sd">        ...     df=new_data,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     percentile_df=pcts_df,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles[&#39;est_pct&#39;].to_list()</span>
 <span class="sd">        [64.81, 77.7, 56.67, 45.0, 55.59, 59.38, 49.12]</span>
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -5,17 +5,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.rasterhydrograph &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>hyswap.rasterhydrograph &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -160,10 +160,14 @@
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;2000-01-01&quot;, end=&quot;2002-12-31&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; df_formatted = rasterhydrograph.format_data(df, &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;2000-01-01/2002-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; df_formatted = rasterhydrograph.format_data(</span>
+<span class="sd">        ...     df=df,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; df_formatted.index[0]</span>
 <span class="sd">        2000</span>
 <span class="sd">        &gt;&gt;&gt; len(df_formatted.columns)</span>
@@ -304,7 +308,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">begin_year</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;begin_year must be an integer&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">begin_year</span> <span class="o">&lt;</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">begin_year</span> <span class="o">&lt;</span> <span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;begin_year must be greater than or equal to &#39;</span>
                                  <span class="s1">&#39;the minimum year in the data&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -317,7 +322,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end_year</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;end_year must be an integer&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">end_year</span> <span class="o">&gt;</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">end_year</span> <span class="o">&gt;</span> <span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">max</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;end_year must be less than or equal to the &#39;</span>
                                  <span class="s1">&#39;maximum year in the data&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

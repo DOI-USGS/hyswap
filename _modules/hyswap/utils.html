@@ -5,17 +5,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.utils &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>hyswap.utils &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -99,8 +99,11 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pandas.DataFrame</span>
-<span class="sd">        A filtered dataframe containing only approved data, denoted by an</span>
-<span class="sd">        &quot;A&quot; in the filter column.</span>
+<span class="sd">        A filtered dataframe containing only approved data, denoted by a</span>
+<span class="sd">        capital &quot;A&quot; in the filter column. This function works for legacy</span>
+<span class="sd">        Water Services data, that return only an &quot;A&quot; for approved, and</span>
+<span class="sd">        the modernized Water Data APIs, that return the full word,</span>
+<span class="sd">        &quot;Approved&quot;.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -111,7 +114,7 @@
 
 <span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({</span>
 <span class="sd">        ...     &#39;df&#39;: [1, 2, 3, 4, 5],</span>
-<span class="sd">        ...     &#39;approved&#39;: [&#39;A&#39;, &#39;A, e&#39;, &#39;A&#39;, &#39;P&#39;, &#39;P&#39;]})</span>
+<span class="sd">        ...     &#39;approved&#39;: [&#39;Approved&#39;, &#39;A, e&#39;, &#39;A&#39;, &#39;P&#39;, &#39;P&#39;]})</span>
 <span class="sd">        &gt;&gt;&gt; df.shape</span>
 <span class="sd">        (5, 2)</span>
 
@@ -260,10 +263,15 @@
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;2000-01-01&quot;, end=&quot;2003-01-05&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; data = utils.filter_data_by_time(df, 1, &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;2000-01-01/2003-01-05&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; data = utils.filter_data_by_time(</span>
+<span class="sd">        ...     df=df,</span>
+<span class="sd">        ...     value=1,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; data.shape</span>
 <span class="sd">        (4,)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -391,10 +399,15 @@
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;2000-01-01&quot;, end=&quot;2003-01-05&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; data = utils.filter_data_by_month_day(df, &#39;01-01&#39;, &#39;00060_Mean&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;2000-01-01/2003-01-05&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; data = utils.filter_data_by_month_day(</span>
+<span class="sd">        ...     df=df,</span>
+<span class="sd">        ...     month_day=&#39;01-01&#39;,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; data.shape</span>
 <span class="sd">        (4,)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -703,7 +716,9 @@
 
 <div class="viewcode-block" id="calculate_summary_statistics">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.calculate_summary_statistics">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s2">&quot;00060_Mean&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">calculate_summary_statistics</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                                 <span class="n">data_column_name</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span>
+                                 <span class="n">date_column_name</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate summary statistics for a site.</span>
 
@@ -711,12 +726,16 @@
 <span class="sd">    ----------</span>
 <span class="sd">    df : pandas.DataFrame</span>
 <span class="sd">        DataFrame containing daily values for the site. Expected to be from</span>
-<span class="sd">        `dataretrieval.nwis.get_dv()`, or similar.</span>
+<span class="sd">        `dataretrieval.waterdata.get_daily()`, or similar, and the site id</span>
+<span class="sd">        is in a column named &quot;monitoring_location_id&quot;.</span>
 
 <span class="sd">    data_column_name : str, optional</span>
 <span class="sd">        Name of the column in the dv_df DataFrame that contains the data of</span>
-<span class="sd">        interest. Default is &quot;00060_Mean&quot; which is the mean daily discharge</span>
+<span class="sd">        interest. Default is &quot;value&quot; which is the mean daily discharge</span>
 <span class="sd">        column.</span>
+
+<span class="sd">    date_column_name : str, optional</span>
+<span class="sd">        Name of column containing date information.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -725,19 +744,23 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Get some NWIS data and apply the function to get the summary statistics.</span>
+<span class="sd">    Get some USGS data and apply the function to get the summary statistics.</span>
 
 <span class="sd">    .. doctest::</span>
 
-<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     startDT=&quot;2010-01-01&quot;, endDT=&quot;2010-12-31&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; summary_df = utils.calculate_summary_statistics(df)</span>
+<span class="sd">        &gt;&gt;&gt; df, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;2010-01-01/2010-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; summary_df = utils.calculate_summary_statistics(</span>
+<span class="sd">        ...     df=df,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; summary_df.shape</span>
 <span class="sd">        (8, 1)</span>
 <span class="sd">        &gt;&gt;&gt; print(summary_df)</span>
 <span class="sd">                    Summary Statistics</span>
-<span class="sd">        Site number           03586500</span>
+<span class="sd">        Site number      USGS-03586500</span>
 <span class="sd">        Begin date          2010-01-01</span>
 <span class="sd">        End date            2010-12-31</span>
 <span class="sd">        Count                      365</span>
@@ -750,11 +773,10 @@
     <span class="n">summary_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># populate it</span>
     <span class="c1"># site number (assumes USGS site number format)</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Site number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                                <span class="s1">&#39;site_no&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Site number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;monitoring_location_id&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># dates</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Begin date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;End date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Begin date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;End date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">date_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="c1"># count</span>
     <span class="n">summary_dict</span><span class="p">[</span><span class="s1">&#39;Count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">data_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
     <span class="c1"># minimum</span>
@@ -780,13 +802,15 @@
 
 <div class="viewcode-block" id="filter_to_common_time">
 <a class="viewcode-back" href="../../reference/index.html#hyswap.utils.filter_to_common_time">[docs]</a>
-<span class="k">def</span> <span class="nf">filter_to_common_time</span><span class="p">(</span><span class="n">df_list</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a list of dataframes to common times based on index.</span>
+<span class="k">def</span> <span class="nf">filter_to_common_time</span><span class="p">(</span><span class="n">df_list</span><span class="p">,</span>
+                          <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter a list of dataframes to common times based on index</span>
+<span class="sd">    or date column name.</span>
 
 <span class="sd">    This function takes a list of dataframes and filters them to only include</span>
-<span class="sd">    the common times based on the index of the dataframes. This is necessary</span>
-<span class="sd">    before comparing the timeseries and calculating statistics between two or</span>
-<span class="sd">    more timeseries.</span>
+<span class="sd">    the common times based on the index or date column name of the dataframes.</span>
+<span class="sd">    This is necessary before comparing the timeseries and calculating</span>
+<span class="sd">    statistics between two or more timeseries.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -794,7 +818,11 @@
 <span class="sd">        List of pandas.DataFrame objects to filter to common times.</span>
 <span class="sd">        DataFrames assumed to have date-time information in the index.</span>
 <span class="sd">        Expect input to be the output from a function like</span>
-<span class="sd">        dataretrieval.nwis.get_dv() or similar.</span>
+<span class="sd">        dataretrieval.waterdata.get_daily() or similar.</span>
+<span class="sd">    date_column_name : str, optional</span>
+<span class="sd">        Name of column containing date information in the data frames</span>
+<span class="sd">        in the list. If None, the index of</span>
+<span class="sd">        `df_list` is used. Default is None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -805,31 +833,38 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Get some NWIS data.</span>
+<span class="sd">    Get some USGS data.</span>
 
 <span class="sd">    .. doctest::</span>
 
-<span class="sd">            &gt;&gt;&gt; df1, md1 = dataretrieval.nwis.get_dv(</span>
-<span class="sd">            ...     &quot;03586500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">            ...     start=&quot;2018-12-15&quot;, end=&quot;2019-01-07&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; df2, md2 = dataretrieval.nwis.get_dv(</span>
-<span class="sd">            ...     &quot;01646500&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">            ...     start=&quot;2019-01-01&quot;, end=&quot;2019-01-14&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; df1, md1 = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">            ...     monitoring_location_id=&quot;USGS-03586500&quot;,</span>
+<span class="sd">            ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">            ...     time=&quot;2018-12-15/2019-01-07&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; df2, md2 = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">            ...     monitoring_location_id=&quot;USGS-01646500&quot;,</span>
+<span class="sd">            ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">            ...     time=&quot;2019-01-01/2019-01-14&quot;)</span>
 <span class="sd">            &gt;&gt;&gt; type(df1)</span>
-<span class="sd">            &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;</span>
+<span class="sd">            &lt;class &#39;geopandas.geodataframe.GeoDataFrame&#39;&gt;</span>
 <span class="sd">            &gt;&gt;&gt; type(df2)</span>
-<span class="sd">            &lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;</span>
+<span class="sd">            &lt;class &#39;geopandas.geodataframe.GeoDataFrame&#39;&gt;</span>
 
 <span class="sd">    Filter the dataframes to common times.</span>
 
 <span class="sd">    .. doctest::</span>
 
-<span class="sd">            &gt;&gt;&gt; df_list, n_obs = utils.filter_to_common_time([df1, df2])</span>
+<span class="sd">            &gt;&gt;&gt; df_list, n_obs = utils.filter_to_common_time(</span>
+<span class="sd">            ...     df_list=[df1, df2],</span>
+<span class="sd">            ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; df_list[0].shape</span>
-<span class="sd">            (7, 3)</span>
+<span class="sd">            (7, 11)</span>
 <span class="sd">            &gt;&gt;&gt; df_list[1].shape</span>
-<span class="sd">            (7, 3)</span>
+<span class="sd">            (7, 11)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert date column to index if not None</span>
+    <span class="k">if</span> <span class="n">date_column_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">date_column_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">]</span>
     <span class="c1"># get the common index</span>
     <span class="n">common_index</span> <span class="o">=</span> <span class="n">df_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
     <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">df_list</span><span class="p">:</span>
@@ -945,33 +980,40 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Categorize streamflow based on calculated percentiles for streamflow</span>
-<span class="sd">    records downloaded from NWIS.</span>
+<span class="sd">    records downloaded from USGS Water Data.</span>
 
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True  # dataretrieval functions break CI pipeline</span>
 
-<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;1900-01-01&quot;, end=&quot;2021-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; data, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-04288000&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;1900-01-01/2021-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; pcts_df = percentiles.calculate_variable_percentile_thresholds_by_day(  # noqa: E501</span>
-<span class="sd">        ...     data, &#39;00060_Mean&#39;,</span>
+<span class="sd">        ...     df=data,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;,</span>
 <span class="sd">        ...     percentiles=[0, 5, 10, 25, 75, 90, 95, 100],</span>
 <span class="sd">        ...     method=&#39;linear&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.nwis.get_dv(</span>
-<span class="sd">        ...     &quot;04288000&quot;, parameterCd=&quot;00060&quot;,</span>
-<span class="sd">        ...     start=&quot;2022-05-01&quot;, end=&quot;2022-05-07&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; new_data, _ = dataretrieval.waterdata.get_daily(</span>
+<span class="sd">        ...     monitoring_location_id=&quot;USGS-04288000&quot;,</span>
+<span class="sd">        ...     parameter_code=&quot;00060&quot;,</span>
+<span class="sd">        ...     time=&quot;2022-05-01/2022-05-07&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles = percentiles.calculate_multiple_variable_percentiles_from_values(  # noqa: E501</span>
-<span class="sd">        ...     new_data, &#39;00060_Mean&#39;, pcts_df)</span>
+<span class="sd">        ...     df=new_data,</span>
+<span class="sd">        ...     data_column_name=&#39;value&#39;,</span>
+<span class="sd">        ...     percentile_df=pcts_df,</span>
+<span class="sd">        ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles = utils.categorize_flows(new_percentiles,</span>
 <span class="sd">        ...     &#39;est_pct&#39;, schema_name=&#39;NWD&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles[[&#39;est_pct&#39;, &#39;flow_cat&#39;]].values</span>
-<span class="sd">        [[13.62, &#39;Below normal&#39;],</span>
-<span class="sd">        [14.15, &#39;Below normal&#39;],</span>
-<span class="sd">        [14.29, &#39;Below normal&#39;],</span>
+<span class="sd">        [[14.1, &#39;Below normal&#39;],</span>
+<span class="sd">        [28.03, &#39;Normal&#39;],</span>
+<span class="sd">        [15.24, &#39;Below normal&#39;],</span>
+<span class="sd">        [13.2, &#39;Below normal&#39;],</span>
 <span class="sd">        [23.41, &#39;Below normal&#39;],</span>
-<span class="sd">        [27.44, &#39;Normal&#39;],</span>
-<span class="sd">        [16.2, &#39;Below normal&#39;],</span>
-<span class="sd">        [12.81, &#39;Below normal&#39;]]</span>
+<span class="sd">        [17.16, &#39;Below normal&#39;],</span>
+<span class="sd">        [12.41, &#39;Below normal&#39;]]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">custom_schema</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

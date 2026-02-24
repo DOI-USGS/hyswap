@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Percentile Calculation Examples &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>Percentile Calculation Examples &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -112,18 +112,18 @@ and is not intended to be used for calculating percentile thresholds separately 
 <p>By default this method calculates percentiles using the Weibull distribution
 with an alpha parameter of 0 and a beta parameter of 0. The Weibull
 distribution is set as the default for percentile calculations after the USGS
-<a class="reference external" href="https://pubs.er.usgs.gov/publication/tm4B5">Guidelines for determining flood flow frequency — Bulletin 17C</a>, Appendix 5.</p>
-<p>Below is an example of fetching NWIS streamflow data for a USGS gage and then
+<a class="reference external" href="https://pubs.usgs.gov/publication/tm4B5">Guidelines for determining flood flow frequency — Bulletin 17C</a>, Appendix 5.</p>
+<p>Below is an example of fetching streamflow data for a USGS gage and then
 calculating the 10th, 50th, and 90th percentiles for that data.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
-                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s2">&quot;USGS-03586500&quot;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1776-01-01/2022-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate percentiles</span>
 <span class="n">pct_values</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">],</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
 
 <span class="c1"># print percentile values (corresponding to 10th, 50th, 90th percentiles)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pct_values</span><span class="p">)</span>
@@ -145,17 +145,17 @@ function.
 This function also defaults to using the Weibull distribution to calculate
 percentiles, but can use other methods as well just like the
 <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_thresholds" title="hyswap.percentiles.calculate_fixed_percentile_thresholds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_thresholds</span></code></a> function.</p>
-<p>Below is an example of fetching NWIS streamflow data for a USGS gage and then
+<p>Below is an example of fetching streamflow data for a USGS gage and then
 calculating the 10th, 50th, and 90th percentiles for each day of the year.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
-                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s2">&quot;USGS-03586500&quot;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1776-01-01/2022-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate percentiles by day</span>
 <span class="n">pcts</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
 
 <span class="c1"># print first 5 rows of the percentile dataframe</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pcts</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
@@ -178,23 +178,22 @@ and options for this function.</p>
 </section>
 <section id="interpolating-new-percentiles-using-previously-calculated-percentiles">
 <h2>Interpolating New Percentiles Using Previously Calculated Percentiles<a class="headerlink" href="#interpolating-new-percentiles-using-previously-calculated-percentiles" title="Link to this heading"></a></h2>
-<p>To support faster calculations of percentiles without the need to repeatedly fetch all historic data from NWIS, the
-<a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_from_value" title="hyswap.percentiles.calculate_fixed_percentile_from_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_from_value</span></code></a> and
-:obj:<a href="#id1"><span class="problematic" id="id2">`</span></a>hyswap.percentiles.calculate_variable_percentile_from_value`functions support the
+<p>To support faster calculations of percentiles without the need to repeatedly fetch all historic data from the USGS Water Data APIs, the
+<a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_fixed_percentile_from_value" title="hyswap.percentiles.calculate_fixed_percentile_from_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_fixed_percentile_from_value</span></code></a> and <a class="reference internal" href="../reference/index.html#hyswap.percentiles.calculate_variable_percentile_from_value" title="hyswap.percentiles.calculate_variable_percentile_from_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.percentiles.calculate_variable_percentile_from_value</span></code></a> functions support the
 interpolation of a new percentile value for a measurement given a previously
 calculated set of percentiles and their associated values.</p>
-<p>First is an example of fetching NWIS streamflow data for a USGS gage and then
+<p>First is an example of fetching streamflow data for a USGS gage and then
 calculating the 10th, 50th, and 90th fixed-threshold percentiles using all of the data.
 Then, a new fixed-threshold percentile value is interpolated for a measurement of 100.0 cfs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
-                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s2">&quot;USGS-03586500&quot;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1776-01-01/2022-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate percentiles</span>
 <span class="n">pct_values</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_thresholds</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">],</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">90</span><span class="p">])</span>
 
 <span class="c1"># calculate the percentile associated with 100.0 cfs</span>
 <span class="n">pct</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_fixed_percentile_from_value</span><span class="p">(</span>
@@ -205,19 +204,19 @@ Then, a new fixed-threshold percentile value is interpolated for a measurement o
 <span class="mf">51.74</span>
 </pre></div>
 </div>
-<p>Next is an example of fetching NWIS streamflow data for a USGS gage and then
+<p>Next is an example of fetching streamflow data for a USGS gage and then
 calculating the variable-threshold percentiles using all of the data.
 Then, a new variable-threshold percentile value is interpolated for a measurement
 of 100.0 cfs on September 1st.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
-                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s2">&quot;USGS-03586500&quot;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1776-01-01/2022-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate percentiles</span>
 <span class="n">pct_values</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 
 <span class="c1"># calculate the percentile associated with 100.0 cfs for September 1st</span>
 <span class="n">pct</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_from_value</span><span class="p">(</span>
@@ -229,29 +228,29 @@ of 100.0 cfs on September 1st.</p>
 </pre></div>
 </div>
 <p>Percentiles can also be calculated for multiple streamflow values at once. Below
-is an example of fetching NWIS streamflow data for a USGS gage and then
+is an example of fetching streamflow data for a USGS gage and then
 calculating variable-threshold percentiles using all of the data.
 Then, new variable-threshold percentile values are interpolated for measurements
 from a recent month.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1776-01-01&quot;</span><span class="p">,</span>
-                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s2">&quot;USGS-03586500&quot;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1776-01-01/2022-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate percentiles</span>
 <span class="n">pct_values</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 
-<span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">new_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span>
-                                  <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2023-01-31&quot;</span><span class="p">)</span>
+<span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">new_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s2">&quot;USGS-03586500&quot;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2023-01-01/2023-01-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate the percentile associated streamflow for January, 2023</span>
 <span class="n">pcts</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_multiple_variable_percentiles_from_values</span><span class="p">(</span>
-    <span class="n">new_df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">pct_values</span><span class="p">)</span>
+    <span class="n">new_df</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">pct_values</span><span class="p">)</span>
 
 <span class="c1"># print that percentile value</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pcts</span><span class="p">[</span><span class="s1">&#39;est_pct&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
@@ -269,8 +268,8 @@ associated values from the NWIS statistics service for a USGS gage and then
 calculating a new variable-threshold percentile value for a measurement of 100.0 cfs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
 <span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nwis</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                        <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                        <span class="n">statReportType</span><span class="o">=</span><span class="s2">&quot;daily&quot;</span><span class="p">)</span>
+<span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+<span class="n">statReportType</span><span class="o">=</span><span class="s2">&quot;daily&quot;</span><span class="p">)</span>
 
 <span class="c1"># munge the data</span>
 <span class="n">munged_df</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">munge_nwis_stats</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -292,36 +291,37 @@ conditions, the category of a given streamflow can be determined using
 <a class="reference internal" href="../reference/index.html#hyswap.utils.categorize_flows" title="hyswap.utils.categorize_flows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.utils.categorize_flows</span></code></a>. The function assigns a category to a given
 streamflow observation based on interpolated percentiles and a given categorization
 schema.</p>
-<p>Below is an example of fetching NWIS streamflow data for a USGS gage and then
+<p>Below is an example of fetching streamflow data for a USGS gage and then
 calculating the variable-threshold percentiles using all of the data.
 Then, new variable-threshold percentile values are interpolated for measurements
 from a recent month and flow categories assigned.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;04288000&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1900-01-01&quot;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s2">&quot;USGS-04288000&quot;</span><span class="p">,</span>
+                                  <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;1900-01-01&quot;</span><span class="p">,</span>
                                   <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate percentiles</span>
 <span class="n">pct_values</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_variable_percentile_thresholds_by_day</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
 
-<span class="c1"># fetch data from NWIS using dataretrieval</span>
-<span class="n">new_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
-                                  <span class="n">parameterCd</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
-                                  <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span>
+<span class="c1"># fetch data from USGS using dataretrieval</span>
+<span class="n">new_df</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span><span class="s2">&quot;03586500&quot;</span><span class="p">,</span>
+                                  <span class="n">parameter_code</span><span class="o">=</span><span class="s2">&quot;00060&quot;</span><span class="p">,</span>
+                                  <span class="n">time</span><span class="o">=</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span>
                                   <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2023-01-31&quot;</span><span class="p">)</span>
 
 <span class="c1"># calculate the percentile associated with streamflow for January, 2023</span>
 <span class="n">new_df</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">percentiles</span><span class="o">.</span><span class="n">calculate_multiple_variable_percentiles_from_values</span><span class="p">(</span>
-    <span class="n">new_df</span><span class="p">,</span> <span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="n">pct_values</span><span class="p">)</span>
+    <span class="n">new_df</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">pct_values</span><span class="p">)</span>
 
 <span class="c1"># categorize streamflow using the default categorization schema</span>
 <span class="n">flow_cat</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">categorize_flows</span><span class="p">(</span><span class="n">new_df</span><span class="p">,</span> <span class="s1">&#39;est_pct&#39;</span><span class="p">,</span> <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;NWD&#39;</span><span class="p">)</span>
 
 <span class="c1"># print that flow categorizations</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">flow_cat</span><span class="p">[[</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span> <span class="s1">&#39;est_pct&#39;</span><span class="p">,</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-                            <span class="mi">00060</span><span class="n">_Mean</span>  <span class="n">est_pct</span>           <span class="n">flow_cat</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">flow_cat</span><span class="p">[[</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;est_pct&#39;</span><span class="p">,</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+                            <span class="n">value</span>  <span class="n">est_pct</span>           <span class="n">flow_cat</span>
 <span class="n">datetime</span>
 <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="mf">112.0</span>    <span class="mf">26.70</span>             <span class="n">Normal</span>
 <span class="mi">2023</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">02</span> <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>       <span class="mf">103.0</span>    <span class="mf">23.75</span>       <span class="n">Below</span> <span class="n">normal</span>

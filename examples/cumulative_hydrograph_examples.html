@@ -6,17 +6,17 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cumulative Streamflow Hydrographs &mdash; hyswap 0.1.dev1+gedb8ab9 documentation</title>
+  <title>Cumulative Streamflow Hydrographs &mdash; hyswap 0.1.dev1+g359fbc7e9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a5a528e8"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=f7d90dbf"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -106,16 +106,21 @@
 <p>The following examples show how to fetch data and calculate values for a cumulative streamflow hydrograph before plotting the cumulative hydrograph using the <cite>hyswap</cite> <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_cumulative_hydrograph" title="hyswap.plots.plot_cumulative_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_cumulative_hydrograph</span></code></a> function.</p>
 <section id="cumulative-streamflow-over-the-2021-water-year">
 <h2>Cumulative Streamflow Over The 2021 Water Year<a class="headerlink" href="#cumulative-streamflow-over-the-2021-water-year" title="Link to this heading"></a></h2>
-<p>First we will fetch some streamflow data from the NWIS service using the <cite>dataretrieval</cite> package.
+<p>First we will fetch some streamflow data from the USGS Water Data APIs using the <cite>dataretrieval</cite> package.
 In this example we will fetch 20 years of data from a single site and then use the <code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plot.plot_cumulative_hydrograph</span></code> function to calculate (via <a class="reference internal" href="../reference/index.html#hyswap.cumulative.calculate_daily_cumulative_values" title="hyswap.cumulative.calculate_daily_cumulative_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.cumulative.calculate_daily_cumulative_values</span></code></a>) and plot cumulative flows.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
-    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-12-31&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the USGS Water Data APIs</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s1">&#39;USGS-06803495&#39;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s1">&#39;2001-01-01/2021-12-31&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span><span class="n">target_years</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span>
+    <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
+    <span class="n">target_years</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;water&#39;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -130,14 +135,18 @@ In this example we will fetch 20 years of data from a single site and then use t
 <h2>Cumulative Streamflow Over The 2021 Calendar Year<a class="headerlink" href="#cumulative-streamflow-over-the-2021-calendar-year" title="Link to this heading"></a></h2>
 <p>We can also calculate and visualize the cumulative streamflow hydrograph for the 2021 calendar year, rather than the water year.
 The code is very similar, we simply do not specify the <cite>year_type</cite> argument in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plot.plot_cumulative_hydrograph</span></code> function, as the default is to use the calendar year.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
-    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-12-31&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the USGS Water Data APIs</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s1">&#39;USGS-06803495&#39;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s1">&#39;2001-01-01/2021-12-31&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span>
+    <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
     <span class="n">target_years</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -152,14 +161,18 @@ The code is very similar, we simply do not specify the <cite>year_type</cite> ar
 <h2>Cumulative Streamflow Over The 2021 Climate Year<a class="headerlink" href="#cumulative-streamflow-over-the-2021-climate-year" title="Link to this heading"></a></h2>
 <p>We can also calculate and visualize the cumulative streamflow hydrograph for the 2021 climate year, rather than the water year or the calendar year.
 The code is very similar, we simply specify the <cite>year_type</cite> argument in the <code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plot.plot_cumulative_hydrograph</span></code> function to be ‘climate’.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
-    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-12-31&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the USGS Water Data APIs</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s1">&#39;USGS-06803495&#39;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s1">&#39;2001-01-01/2021-12-31&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span>
+    <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
     <span class="n">target_years</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">year_type</span><span class="o">=</span><span class="s1">&#39;climate&#39;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
@@ -175,15 +188,18 @@ The code is very similar, we simply specify the <cite>year_type</cite> argument 
 <h2>Visualizing the Minimum and Maximum Cumulative Percentile Values<a class="headerlink" href="#visualizing-the-minimum-and-maximum-cumulative-percentile-values" title="Link to this heading"></a></h2>
 <p>We can also visualize the minimum and maximum cumulative percentile values for a given year as dotted and dashed lines respectively.
 We will use the calendar year example to showcase this functionality.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
-    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-12-31&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the USGS Water Data APIs</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s1">&#39;USGS-06803495&#39;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s1">&#39;2001-01-01/2021-12-31&#39;</span><span class="p">)</span>
 
-<span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span>
+    <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
     <span class="n">target_years</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="n">max_year</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -201,14 +217,18 @@ We will use the calendar year example to showcase this functionality.</p>
 <p>We are not limited to explicitly visualizing the cumulative streamflow from individual years.
 We can supply multiple <cite>target_years</cite> as a list, and each will be plotted as an individual cumulative discharge line with an associated label in the legend.
 Below is an example of this functionality wherein we plot the cumulative discharge for years 2010, 2015, and 2020.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
-    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-12-31&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the USGS Water Data APIs</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s1">&#39;USGS-06803495&#39;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s1">&#39;2001-01-01/2021-12-31&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span>
+    <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
     <span class="n">target_years</span><span class="o">=</span><span class="p">[</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">2015</span><span class="p">,</span> <span class="mi">2020</span><span class="p">],</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -225,14 +245,19 @@ Below is an example of this functionality wherein we plot the cumulative dischar
 The percentile thresholds used as the upper and lower-bound of the shaded area can be specified using the <cite>envelope_pct</cite> argument.
 The color and transparency, as well as other properties, of the filled region can be customized by passing keyword arguments to the <a class="reference internal" href="../reference/index.html#hyswap.plots.plot_cumulative_hydrograph" title="hyswap.plots.plot_cumulative_hydrograph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.plots.plot_cumulative_hydrograph</span></code></a> function, as those arguments are passed to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">matplotlib.axes.Axes.fill_between()</span></code> function.
 We provide an example of doing this by filling between the 10th and 90th percentiles, and making the filled region red and semi-transparent.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the NWIS service</span>
-<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">nwis</span><span class="o">.</span><span class="n">get_dv</span><span class="p">(</span>
-    <span class="s1">&#39;06803495&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2001-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-12-31&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get some data from the USGS Water Data APIs</span>
+<span class="n">df</span><span class="p">,</span> <span class="n">md</span> <span class="o">=</span> <span class="n">dataretrieval</span><span class="o">.</span><span class="n">waterdata</span><span class="o">.</span><span class="n">get_daily</span><span class="p">(</span>
+    <span class="n">monitoring_location_id</span><span class="o">=</span><span class="s1">&#39;USGS-06803495&#39;</span><span class="p">,</span>
+    <span class="n">parameter_code</span><span class="o">=</span><span class="s1">&#39;00060&#39;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="s1">&#39;2001-01-01/2021-12-31&#39;</span><span class="p">)</span>
 
 <span class="c1"># plot the cumulative streamflow hydrograph</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">hyswap</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plot_cumulative_hydrograph</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="mi">2021</span><span class="p">,</span> <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;00060_Mean&#39;</span><span class="p">,</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">target_years</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+    <span class="n">data_column_name</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span>
+    <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span>
     <span class="n">envelope_pct</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Cumulative Streamflow Hydrograph&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
