@@ -190,17 +190,17 @@ Glossary
 
 .. _Jones and others (2022): https://pubs.usgs.gov/tm/11/a3/
 
-.. _USGS Water Science Glossary: https://www.usgs.gov/special-topics/water-science-school/science/water-science-glossary
+.. _USGS Water Science Glossary: https://www.usgs.gov/water-science-school/science/water-science-glossary
 
-.. _USGS NWIS: https://waterdata.usgs.gov/nwis
+.. _USGS NWIS: https://waterdata.usgs.gov/
 
 .. _Searcy (1959): https://doi.org/10.3133/wsp1542A
 
 .. _Koehler (2004): https://repository.arizona.edu/handle/10150/280516
 
-.. _USGS Water Science School (2018): https://www.usgs.gov/special-topics/water-science-school/science/100-year-flood
+.. _USGS Water Science School (2018): permanently to https://www.usgs.gov/water-science-school/science/100-year-flood
 
-.. _USGS Water Science School (2019): https://www.usgs.gov/special-topics/water-science-school/science/streamflow-and-water-cycle
+.. _USGS Water Science School (2019): https://www.usgs.gov/water-science-school/science/streamflow-and-water-cycle
 
 .. _USGS Watershed Boundary Dataset: https://www.usgs.gov/national-hydrography/watershed-boundary-dataset
 

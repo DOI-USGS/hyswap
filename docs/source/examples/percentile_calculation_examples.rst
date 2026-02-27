@@ -95,8 +95,7 @@ Interpolating New Percentiles Using Previously Calculated Percentiles
 *********************************************************************
 
 To support faster calculations of percentiles without the need to repeatedly fetch all historic data from the USGS Water Data APIs, the
-:obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` and 
-:obj:`hyswap.percentiles.calculate_variable_percentile_from_value`functions support the
+:obj:`hyswap.percentiles.calculate_fixed_percentile_from_value` and :obj:`hyswap.percentiles.calculate_variable_percentile_from_value` functions support the
 interpolation of a new percentile value for a measurement given a previously
 calculated set of percentiles and their associated values.
 
@@ -262,4 +261,4 @@ from a recent month and flow categories assigned.
 
 .. _`numpy.percentile`: https://numpy.org/doc/stable/reference/generated/numpy.percentile.html
 
-.. _`Guidelines for determining flood flow frequency — Bulletin 17C`: https://pubs.er.usgs.gov/publication/tm4B5
+.. _`Guidelines for determining flood flow frequency — Bulletin 17C`: https://pubs.usgs.gov/publication/tm4B5

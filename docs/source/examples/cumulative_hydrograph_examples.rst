@@ -8,14 +8,14 @@ The following examples show how to fetch data and calculate values for a cumulat
 Cumulative Streamflow Over The 2021 Water Year
 **********************************************
 
-First we will fetch some streamflow data from the USGS Water Data service using the `dataretrieval` package.
+First we will fetch some streamflow data from the USGS Water Data APIs using the `dataretrieval` package.
 In this example we will fetch 20 years of data from a single site and then use the :obj:`hyswap.plot.plot_cumulative_hydrograph` function to calculate (via :obj:`hyswap.cumulative.calculate_daily_cumulative_values`) and plot cumulative flows.
 
 .. plot::
     :context: reset
     :include-source:
 
-    # get some data from the USGS Water Data service
+    # get some data from the USGS Water Data APIs
     df, md = dataretrieval.waterdata.get_daily(
         monitoring_location_id='USGS-06803495',
         parameter_code='00060',
@@ -43,7 +43,7 @@ The code is very similar, we simply do not specify the `year_type` argument in t
     :context: reset
     :include-source:
 
-    # get some data from the USGS Water Data service
+    # get some data from the USGS Water Data APIs
     df, md = dataretrieval.waterdata.get_daily(
         monitoring_location_id='USGS-06803495',
         parameter_code='00060',
@@ -70,7 +70,7 @@ The code is very similar, we simply specify the `year_type` argument in the :obj
     :context: reset
     :include-source:
 
-    # get some data from the USGS Water Data service
+    # get some data from the USGS Water Data APIs
     df, md = dataretrieval.waterdata.get_daily(
         monitoring_location_id='USGS-06803495',
         parameter_code='00060',
@@ -98,7 +98,7 @@ We will use the calendar year example to showcase this functionality.
     :context: reset
     :include-source:
 
-    # get some data from the USGS Water Data service
+    # get some data from the USGS Water Data APIs
     df, md = dataretrieval.waterdata.get_daily(
         monitoring_location_id='USGS-06803495',
         parameter_code='00060',
@@ -128,7 +128,7 @@ Below is an example of this functionality wherein we plot the cumulative dischar
     :context: reset
     :include-source:
 
-    # get some data from the USGS Water Data service
+    # get some data from the USGS Water Data APIs
     df, md = dataretrieval.waterdata.get_daily(
         monitoring_location_id='USGS-06803495',
         parameter_code='00060',
@@ -157,7 +157,7 @@ We provide an example of doing this by filling between the 10th and 90th percent
     :context: reset
     :include-source:
 
-    # get some data from the USGS Water Data service
+    # get some data from the USGS Water Data APIs
     df, md = dataretrieval.waterdata.get_daily(
         monitoring_location_id='USGS-06803495',
         parameter_code='00060',
