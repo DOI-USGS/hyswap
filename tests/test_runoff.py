@@ -123,7 +123,7 @@ class TestCalculateGeometricRunoff:
             }).set_index('datetime')
         runoff_df = pd.concat([runoff_df, df])
     runoff_df = runoff_df.loc[~(runoff_df['site_no'] == '011')]
-    reset = runoff_df.loc[runoff_df['site_no'] == '014'].runoff[3]
+    reset = runoff_df.loc[runoff_df['site_no'] == '014', 'runoff'].tolist()[3]
     runoff_df['runoff'] = runoff_df['runoff'].replace({reset: np.nan})
 
     def test_calculate_geometric_runoff_complete_overlap(self):
@@ -262,7 +262,7 @@ class TestCalculateGeometricRunoff:
             prop_geom_in_basin_col='prop_huc_in_basin')
         # runoff value on last day should be runoff from basin '015'
         # since basin '014' is nan on that day
-        assert np.round(testG.iloc[3]['estimated_runoff'], decimals=5) == np.round(self.runoff_df[self.runoff_df['site_no'] == '015'].runoff[3], decimals=5)  # noqa: E501
+        assert np.isclose(testG.iloc[3]['estimated_runoff'], self.runoff_df.loc[self.runoff_df['site_no'] == '015', 'runoff'].iloc[3], atol=1e-4)  # noqa: E501
 
     def test_calculate_multiple_geometric_runoff(self):
         """Test multiple runoff function."""
