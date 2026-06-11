@@ -246,7 +246,7 @@ class TestFormatData:
         assert len(df_out.index) == 5
         assert len(df_out.columns) == 365
         # assert day 1 of 2018 has no data, is NaN
-        assert np.isnan(df_out.loc[2018,'01-01'])
+        assert np.isnan(df_out.loc[2018, '01-01'])
         # assert day 32 of 2022 has no data, is NaN
         assert np.isnan(df_out.loc[2022, '02-01'])
 

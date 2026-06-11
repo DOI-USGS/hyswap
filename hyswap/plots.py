@@ -652,7 +652,7 @@ def plot_cumulative_hydrograph(df,
             label=f"Highest observed cumulative flow ({max_y})"
             )
     if min_year:
-        cumulative_max_per_yr = cumulative_df.groupby('index_year')['cumulative'].max()
+        cumulative_max_per_yr = cumulative_df.groupby('index_year')['cumulative'].max()  # noqa: E501
         min_y = cumulative_max_per_yr.idxmin()
         min_year_df = cumulative_df[
             cumulative_df['index_year'] == min_y]
