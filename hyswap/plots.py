@@ -641,8 +641,8 @@ def plot_cumulative_hydrograph(df,
                         zorder=zorder)
     # plot min/max if desired
     if max_year:
-        cumulative_max_per_yr = cumulative_df.groupby('index_year')['cumulative'].max()
-        max_y = cumulative_max_per_yr.idxmax()
+        max_y = cumulative_df.loc[
+            cumulative_df['cumulative'].idxmax()]['index_year']
         max_year_df = cumulative_df[
             cumulative_df['index_year'] == max_y]
         ax.plot(
