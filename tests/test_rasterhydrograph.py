@@ -246,9 +246,9 @@ class TestFormatData:
         assert len(df_out.index) == 5
         assert len(df_out.columns) == 365
         # assert day 1 of 2018 has no data, is NaN
-        assert np.isnan(df_out.loc[2018][0])
-        # assert day 350 of 2022 has no data, is NaN
-        assert np.isnan(df_out.loc[2022][349])
+        assert np.isnan(df_out.loc[2018, '01-01'])
+        # assert day 32 of 2022 has no data, is NaN
+        assert np.isnan(df_out.loc[2022, '02-01'])
 
     def test_format_data_date_index(self):
         """Test the public function format_data."""
@@ -263,9 +263,9 @@ class TestFormatData:
         assert len(df_out.index) == 5
         assert len(df_out.columns) == 365
         # assert day 1 of 2018 has no data, is NaN
-        assert np.isnan(df_out.loc[2018][0])
-        # assert day 350 of 2022 has no data, is NaN
-        assert np.isnan(df_out.loc[2022][349])
+        assert np.isnan(df_out.loc[2018, '01-01'])
+        # assert day 32 of 2022 has no data, is NaN
+        assert np.isnan(df_out.loc[2022, '02-01'])
 
     def test_format_data_beginning_year(self):
         """Test the public function format_data."""
@@ -280,9 +280,9 @@ class TestFormatData:
         assert len(df_out.index) == 4
         assert len(df_out.columns) == 365
         # assert day 1 of 2019 has data, is not NaN
-        assert ~np.isnan(df_out.loc[2019][0])
-        # assert day 350 of 2022 has no data, is NaN
-        assert np.isnan(df_out.loc[2022][349])
+        assert ~np.isnan(df_out.loc[2019, '01-01'])
+        # assert day 32 of 2022 has no data, is NaN
+        assert np.isnan(df_out.loc[2022, '02-01'])
 
     def test_format_data_end_year(self):
         """Test the public function format_data."""
@@ -297,9 +297,9 @@ class TestFormatData:
         assert len(df_out.index) == 4
         assert len(df_out.columns) == 365
         # assert day 1 of 2018 has no data, is NaN
-        assert np.isnan(df_out.loc[2018][0])
-        # assert day 350 of 2021 has data, is not NaN
-        assert ~np.isnan(df_out.loc[2021][349])
+        assert np.isnan(df_out.loc[2018, '01-01'])
+        # assert day 32 of 2021 has data, is NaN
+        assert ~np.isnan(df_out.loc[2021, '02-01'])
 
     def test_format_data_seven_day_averaging(self):
         """Test the public function format_data."""
@@ -316,9 +316,9 @@ class TestFormatData:
         assert len(df_7out.index) == 5
         assert len(df_7out.columns) == 365
         # assert day 1 of 2018 has no data, is NaN
-        assert np.isnan(df_7out.loc[2018][0])
-        # assert day 350 of 2022 has no data, is NaN
-        assert np.isnan(df_7out.loc[2022][349])
+        assert np.isnan(df_7out.loc[2018, '01-01'])
+        # assert day 32 of 2022 has no data, is NaN
+        assert np.isnan(df_7out.loc[2022, '02-01'])
         # check that there are non-NaN values in the data frame
         assert ~np.isnan(df_7out.values).all()
 
@@ -341,9 +341,9 @@ class TestFormatData:
         # check that there are non-NaN values in the data frame
         assert ~np.isnan(df_out_water.values).all()
         # check that day 1 of year 2019 is 10/1/2018
-        assert df_out_water.loc[2019][0] == df_out.loc[2018][273]
+        assert df_out_water.loc[2019].iloc[0] == df_out.loc[2018, '10-01']
         # check that the last day of year 2020 is 9/30/2020
-        assert df_out_water.loc[2020][364] == df_out.loc[2020][272]
+        assert df_out_water.loc[2020].iloc[-1] == df_out.loc[2020, '09-30']
 
     def test_format_data_avg_water_year(self):
         """Test the public function format_data."""
@@ -367,9 +367,9 @@ class TestFormatData:
         # check that there are non-NaN values in the data frame
         assert ~np.isnan(df_7out_water.values).all()
         # check that day 1 of year 2019 is 10/1/2018
-        assert df_7out_water.loc[2019][0] == df_7out.loc[2018][273]
+        assert df_7out_water.loc[2019].iloc[0] == df_7out.loc[2018, '10-01']
         # check that the last day of year 2020 is 9/30/2020
-        assert df_7out_water.loc[2020][364] == df_7out.loc[2020][272]
+        assert df_7out_water.loc[2020].iloc[-1] == df_7out.loc[2020, '09-30']
 
     def test_format_data_climate_year(self):
         """Test the public function format_data."""
@@ -391,9 +391,9 @@ class TestFormatData:
         # check that there are non-NaN values in the data frame
         assert ~np.isnan(df_out_climate.values).all()
         # check that day 1 of year 2020 is 4/1/2019
-        assert df_out_climate.loc[2020][0] == df_out.loc[2019][90]
+        assert df_out_climate.loc[2020].iloc[0] == df_out.loc[2019, '04-01']
         # check that the last day of year 2021 is 3/31/2021
-        assert df_out_climate.loc[2021][364] == df_out.loc[2021][89]
+        assert df_out_climate.loc[2021].iloc[-1] == df_out.loc[2021, '03-31']
 
     def test_format_data_avg_climate_year(self):
         """Test the public function format_data."""

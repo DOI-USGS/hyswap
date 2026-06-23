@@ -39,7 +39,7 @@ class TestRollingAverage:
                                                     7.5, 8.5, 9.5]
         # check that first element is NaN since day 1 does not have a 2-day
         # trailing window.
-        assert np.isnan(df_out["data"][0])
+        assert np.isnan(df_out["data"].iloc[0])
         # check that the data column is in both dataframes
         assert "data" in df.columns
         assert "data" in df_out.columns
@@ -61,7 +61,7 @@ class TestRollingAverage:
         # check that last element is NaN since day 10 does not have a 2-day
         # leading window (since center=True, which changes the window
         # orientation).
-        assert np.isnan(df_out["data"][9])
+        assert np.isnan(df_out["data"].iloc[9])
 
     def test_rolling_average_kwarg_02(self):
         # make a data frame with some dates and data
