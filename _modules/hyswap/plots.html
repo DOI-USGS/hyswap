@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.plots &mdash; hyswap 0.1.dev1+g4a2513560 documentation</title>
+  <title>hyswap.plots &mdash; hyswap 0.1.dev1+g565056a81 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=75cfc82d"></script>
+      <script src="../../_static/documentation_options.js?v=c94b644c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -744,8 +744,8 @@
             <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Highest observed cumulative flow (</span><span class="si">{</span><span class="n">max_y</span><span class="si">}</span><span class="s2">)&quot;</span>
             <span class="p">)</span>
     <span class="k">if</span> <span class="n">min_year</span><span class="p">:</span>
-        <span class="n">min_y</span> <span class="o">=</span> <span class="n">cumulative_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-            <span class="n">cumulative_df</span><span class="p">[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmin</span><span class="p">()][</span><span class="s1">&#39;index_year&#39;</span><span class="p">]</span>
+        <span class="n">cumulative_max_per_yr</span> <span class="o">=</span> <span class="n">cumulative_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;index_year&#39;</span><span class="p">)[</span><span class="s1">&#39;cumulative&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>  <span class="c1"># noqa: E501</span>
+        <span class="n">min_y</span> <span class="o">=</span> <span class="n">cumulative_max_per_yr</span><span class="o">.</span><span class="n">idxmin</span><span class="p">()</span>
         <span class="n">min_year_df</span> <span class="o">=</span> <span class="n">cumulative_df</span><span class="p">[</span>
             <span class="n">cumulative_df</span><span class="p">[</span><span class="s1">&#39;index_year&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">min_y</span><span class="p">]</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>

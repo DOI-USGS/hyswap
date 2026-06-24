@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analysis of Streamflow Conditions and Historical Streamflows at a Single Gage &mdash; hyswap 0.1.dev1+g4a2513560 documentation</title>
+  <title>Analysis of Streamflow Conditions and Historical Streamflows at a Single Gage &mdash; hyswap 0.1.dev1+g565056a81 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=75cfc82d"></script>
+      <script src="../_static/documentation_options.js?v=c94b644c"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -119,7 +119,7 @@
 <h2>Download streamflow data from USGS Water Data for an example site<a class="headerlink" href="#Download-streamflow-data-from-USGS-Water-Data-for-an-example-site" title="Link to this heading"></a></h2>
 <p>For demonstration purposes, retrieving data for gage 04288000 - MAD RIVER AT MORETOWN, VT.</p>
 <p>Users can identify streamflow gage locations and site ID numbers through the <a class="reference external" href="https://dashboard.waterdata.usgs.gov/app/nwd/en/">USGS National Water Dashboard</a></p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
@@ -141,6 +141,15 @@
 <span class="n">station_name</span> <span class="o">=</span> <span class="n">station_name</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;monitoring_location_name&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Retrieving: daily · 1 page · 35,695 rows · 407/1,000 requests remaining
+Retrieving: monitoring-locations · 1 page · 1 rows · 407/1,000 requests remaining
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -404,11 +413,11 @@
     </tr>
     <tr>
       <th>End date</th>
-      <td>2025-07-30</td>
+      <td>2026-04-27</td>
     </tr>
     <tr>
       <th>Count</th>
-      <td>35367</td>
+      <td>35638</td>
     </tr>
     <tr>
       <th>Minimum</th>
@@ -416,7 +425,7 @@
     </tr>
     <tr>
       <th>Mean</th>
-      <td>275.58</td>
+      <td>275.29</td>
     </tr>
     <tr>
       <th>Median</th>
@@ -665,82 +674,82 @@
     <tr>
       <th>01-01</th>
       <td>42.0</td>
-      <td>55.9</td>
+      <td>55.95</td>
       <td>70.0</td>
       <td>108.0</td>
       <td>155.0</td>
-      <td>292.5</td>
-      <td>461.8</td>
-      <td>804.4</td>
+      <td>291.25</td>
+      <td>460.9</td>
+      <td>802.2</td>
       <td>1780.0</td>
-      <td>249.55</td>
-      <td>97</td>
+      <td>249.24</td>
+      <td>98</td>
       <td>1929</td>
-      <td>2025</td>
+      <td>2026</td>
     </tr>
     <tr>
       <th>01-02</th>
       <td>45.0</td>
-      <td>53.8</td>
+      <td>53.9</td>
       <td>70.0</td>
       <td>105.0</td>
-      <td>153.0</td>
-      <td>297.5</td>
-      <td>498.0</td>
-      <td>692.9</td>
+      <td>154.0</td>
+      <td>295.25</td>
+      <td>497.0</td>
+      <td>686.45</td>
       <td>1500.0</td>
-      <td>238.15</td>
-      <td>97</td>
+      <td>237.9</td>
+      <td>98</td>
       <td>1929</td>
-      <td>2025</td>
+      <td>2026</td>
     </tr>
     <tr>
       <th>01-03</th>
       <td>45.0</td>
-      <td>53.7</td>
-      <td>77.4</td>
+      <td>53.85</td>
+      <td>77.7</td>
       <td>110.0</td>
-      <td>160.0</td>
-      <td>278.0</td>
-      <td>424.0</td>
-      <td>522.4</td>
+      <td>165.0</td>
+      <td>277.0</td>
+      <td>422.0</td>
+      <td>520.2</td>
       <td>800.0</td>
-      <td>214.72</td>
-      <td>97</td>
+      <td>214.34</td>
+      <td>98</td>
       <td>1929</td>
-      <td>2025</td>
+      <td>2026</td>
     </tr>
     <tr>
       <th>01-04</th>
       <td>40.0</td>
       <td>56.0</td>
-      <td>77.8</td>
-      <td>102.5</td>
-      <td>170.0</td>
-      <td>289.0</td>
-      <td>393.6</td>
-      <td>536.0</td>
+      <td>77.9</td>
+      <td>103.75</td>
+      <td>169.5</td>
+      <td>288.5</td>
+      <td>392.8</td>
+      <td>535.0</td>
       <td>680.0</td>
-      <td>207.44</td>
-      <td>97</td>
+      <td>207.05</td>
+      <td>98</td>
       <td>1929</td>
-      <td>2025</td>
+      <td>2026</td>
     </tr>
     <tr>
       <th>01-05</th>
       <td>36.0</td>
-      <td>58.8</td>
-      <td>75.6</td>
-      <td>104.0</td>
-      <td>155.0</td>
-      <td>254.5</td>
+      <td>58.9</td>
+      <td>75.8</td>
+      <td>104.5</td>
+      <td>157.5</td>
+      <td>252.25</td>
       <td>360.0</td>
-      <td>500.3</td>
+      <td>498.65</td>
       <td>1470.0</td>
-      <td>212.14</td>
-      <td>97</td>
+      <td>211.63</td>
+      <td>98</td>
       <td>1929</td>
-      <td>2025</td>
+      <td>2026</td>
     </tr>
   </tbody>
 </table>
