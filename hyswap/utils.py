@@ -949,7 +949,7 @@ def retrieve_schema(schema_name):
     ----------
     schema_name : str
         Name of the categorization schema that should be used to categorize
-        streamflow. Available options are 'NWD', 'WaterWatch,
+        streamflow. Available options are 'NWD', 'WDFN_stats', 'WaterWatch,
         'WaterWatch_Drought', 'WaterWatch_Flood', 'WaterWatch_BrownBlue', and
         'NIDIS_Drought'.
 
@@ -987,6 +987,20 @@ def retrieve_schema(schema_name):
                   'low_color': '#e82f3e',
                   'high_label': 'All-time high for this day',
                   'high_color': "#1f296b"}
+    elif schema_name.lower() == 'wdfn_stats':
+        schema = {'ranges': [0, 5, 10, 25, 75, 90, 95, 100],
+                  'labels': [
+                    "Extremely below normal",
+                    "Much below normal",
+                    "Below normal",
+                    "Normal",
+                    "Above normal",
+                    "Much above normal",
+                    "Extremely above normal",
+                  ],
+                  'colors': ["#4d4438", "#8e704f", "#c7a97b",
+                             "#ddf9c7", "#aacdec", "#4f97d1",
+                             "#2c608a"]}
     elif schema_name.lower() == 'waterwatch':
         schema = {'ranges': [0, 10, 25, 75, 90, 100],
                   'labels': ['Low', 'Much below normal', 'Below normal',
