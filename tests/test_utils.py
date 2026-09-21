@@ -548,7 +548,7 @@ class TestCategorizationSchema:
 
     def test_retrieve_schema_exists(self):
         """Test the function retrieve_schema."""
-        schema = utils.retrieve_schema('NWD')
+        schema = utils.retrieve_schema('WDFN_stats')
         assert isinstance(schema, dict)
         assert 'ranges' in schema.keys()
         assert 'labels' in schema.keys()
@@ -560,7 +560,7 @@ class TestCategorizationSchema:
 
     def test_retrieve_schema_casesensitive(self):
         """Test the function retrieve_schema."""
-        schema = utils.retrieve_schema('Nwd')
+        schema = utils.retrieve_schema('wdFn_statS')
         assert isinstance(schema, dict)
 
 
