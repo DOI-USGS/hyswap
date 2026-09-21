@@ -155,7 +155,9 @@ linkcheck_ignore = [
     r'https://doi.org/10.1098/rsta.2019.0431',
     r'https://doi.org/10.1111/j.1752-1688.2011.00578.x',
     r'https://doi.org/10.3133/tm11A3',
-    r'https://doi.org/10.1002/wrcr.20070'
+    r'https://doi.org/10.1002/wrcr.20070',
+    r'https://doi.org/10.3133/tm4A3',
+    r'https://pubs.usgs.gov/publication/tm4B5'
 ]
 
 linkcheck_exclude_documents = [
