@@ -960,8 +960,8 @@ def retrieve_schema(schema_name):
 
     Examples
     --------
-    Retrieve the categorization schema 'WDFN_stats' to categorization flow similar to
-    the USGS National Water Dashboard
+    Retrieve the categorization schema 'WDFN_stats' to categorization flow
+    similar to the USGS National Water Dashboard
 
     .. doctest::
         :skipif: True
