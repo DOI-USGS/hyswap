@@ -806,7 +806,7 @@ def categorize_flows(df,
                      date_column_name=None,
                      min_years=None,
                      percentile_df=None,
-                     schema_name='NWD',
+                     schema_name='WDFN_stats',
                      custom_schema=None):
     """Function to categorize streamflows based on percentile ranges
 
@@ -843,7 +843,7 @@ def categorize_flows(df,
 
     schema_name : str, optional
         Name of the categorization schema that should be used to categorize
-        streamflow. Default is "NWD" schema.
+        streamflow. Default is "WDFN_stats" schema.
 
     custom_schema : dict, optional
         Python dictionary describing custom schema to use for categorizing
@@ -889,7 +889,7 @@ def categorize_flows(df,
         ...     percentile_df=pcts_df,
         ...     date_column_name='time')
         >>> new_percentiles = utils.categorize_flows(new_percentiles,
-        ...     'est_pct', schema_name='NWD')
+        ...     'est_pct', schema_name='WDFN_stats')
         >>> new_percentiles[['est_pct', 'flow_cat']].values
         [[14.1, 'Below normal'],
         [28.03, 'Normal'],
@@ -949,7 +949,7 @@ def retrieve_schema(schema_name):
     ----------
     schema_name : str
         Name of the categorization schema that should be used to categorize
-        streamflow. Available options are 'NWD', 'WaterWatch,
+        streamflow. Available options are 'WDFN_stats', 'WaterWatch,
         'WaterWatch_Drought', 'WaterWatch_Flood', 'WaterWatch_BrownBlue', and
         'NIDIS_Drought'.
 
@@ -960,13 +960,13 @@ def retrieve_schema(schema_name):
 
     Examples
     --------
-    Retrieve the categorization schema 'NWD' to categorization flow similar to
-    the USGS National Water Dashboard
+    Retrieve the categorization schema 'WDFN_stats' to categorization flow
+    similar to the USGS National Water Dashboard
 
     .. doctest::
         :skipif: True
 
-        >>> schema = utils.retrieve_schema('NWD')
+        >>> schema = utils.retrieve_schema('WDFN_stats')
         >>> print(schema)
         {'ranges': [0, 10, 25, 76, 90, 100],
         'labels': ['Much below normal', 'Below normal', 'Normal',
@@ -977,16 +977,20 @@ def retrieve_schema(schema_name):
         'high_label': 'All-time high for this day',
         'high_color': '#1f296b'}
     """
-    if schema_name.lower() == 'nwd':
-        schema = {'ranges': [0, 10, 25, 76, 90, 100],
-                  'labels': ['Much below normal', 'Below normal', 'Normal',
-                             'Above normal', 'Much above normal'],
-                  'colors': ['#b24249', '#e8ac49', '#44f24e', '#5fd7d9',
-                             '#2641f1'],
-                  'low_label': 'All-time low for this day',
-                  'low_color': '#e82f3e',
-                  'high_label': 'All-time high for this day',
-                  'high_color': "#1f296b"}
+    if schema_name.lower() == 'wdfn_stats':
+        schema = {'ranges': [0, 5, 10, 25, 75, 90, 95, 100],
+                  'labels': [
+                    "Extremely below normal",
+                    "Much below normal",
+                    "Below normal",
+                    "Normal",
+                    "Above normal",
+                    "Much above normal",
+                    "Extremely above normal",
+                  ],
+                  'colors': ["#4d4438", "#8e704f", "#c7a97b",
+                             "#ddf9c7", "#aacdec", "#4f97d1",
+                             "#2c608a"]}
     elif schema_name.lower() == 'waterwatch':
         schema = {'ranges': [0, 10, 25, 75, 90, 100],
                   'labels': ['Low', 'Much below normal', 'Below normal',

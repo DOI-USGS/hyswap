@@ -247,7 +247,7 @@ from a recent month and flow categories assigned.
         new_df, 'value', pct_values)
 
     # categorize streamflow using the default categorization schema
-    flow_cat = hyswap.utils.categorize_flows(new_df, 'est_pct', schema_name='NWD')
+    flow_cat = hyswap.utils.categorize_flows(new_df, 'est_pct', schema_name='WDFN_stats')
 
     # print that flow categorizations
     print(flow_cat[['value', 'est_pct', 'flow_cat']].head())
