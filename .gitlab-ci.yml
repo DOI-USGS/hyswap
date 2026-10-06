@@ -7,10 +7,6 @@ stages:
   - deploy
   - validate
 
-variables:
-  R_PROFILE: "$R_HOME/etc/Rprofile.site"
-
-
 Build Package:
   stage: build
   script:
@@ -72,20 +68,22 @@ Build Documentation:
   rules:
     -  if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_BRANCH == "main"'
 
-Deploy Documentation:
-  image: ${ARTIFACTORY_URL}/docker-official-mirror/rocker/shiny-verse:4.1.2
+# Publish the Sphinx HTML built in "Build Documentation" to GitLab Pages.
+# The job must be named "pages" and publish a folder named "public".
+pages:
   stage: deploy
+  needs:
+    - job: Build Documentation
+      artifacts: true
   script:
-    # set Rprofile repositories
-    - echo "options(Ncpus=$(nproc --all), repos=c(GSPM='$GSPM', CRAN='$CRAN'))" >> $R_PROFILE
-    # install packages
-    - Rscript -e "install.packages(c('rsconnect', 'connectapi'))"
-    # create manifest file for deployment
-    - Rscript -e "rsconnect::writeManifest(appDir='$CI_PROJECT_DIR/docs/build')"
-    # deploy docs to RStudio Connect
-    - Rscript -e "task <- connectapi::deploy(connectapi::connect(), connectapi::bundle_dir('$CI_PROJECT_DIR/docs/build'), name='hyswap-docs') |> connectapi::set_vanity_url(url = 'hyswap-docs') |> connectapi::content_update_access_type('all')"
+    - mv docs/build/html public
+  artifacts:
+    paths:
+      - public
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" && $CONNECT_API_KEY != null && $CONNECT_SERVER != null'
+    # Same rule as "Build Documentation" so the docs it builds are always available.
+    # Note: an MR pipeline deploys that MR's docs to the live site before merging.
+    -  if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_BRANCH == "main"'
 
 Validate Inventory:
     stage: validate
