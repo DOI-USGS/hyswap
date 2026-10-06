@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>hyswap.utils &mdash; hyswap 0.1.dev1+g4c4c963dc documentation</title>
+  <title>hyswap.utils &mdash; hyswap 0.1.dev1+g56fe1bf08 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
@@ -13,7 +13,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=7312ab93"></script>
+      <script src="../../_static/documentation_options.js?v=ff39beba"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -922,7 +922,7 @@
                      <span class="n">date_column_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">min_years</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">percentile_df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;NWD&#39;</span><span class="p">,</span>
+                     <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;WDFN_stats&#39;</span><span class="p">,</span>
                      <span class="n">custom_schema</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to categorize streamflows based on percentile ranges</span>
 
@@ -959,7 +959,7 @@
 
 <span class="sd">    schema_name : str, optional</span>
 <span class="sd">        Name of the categorization schema that should be used to categorize</span>
-<span class="sd">        streamflow. Default is &quot;NWD&quot; schema.</span>
+<span class="sd">        streamflow. Default is &quot;WDFN_stats&quot; schema.</span>
 
 <span class="sd">    custom_schema : dict, optional</span>
 <span class="sd">        Python dictionary describing custom schema to use for categorizing</span>
@@ -1005,7 +1005,7 @@
 <span class="sd">        ...     percentile_df=pcts_df,</span>
 <span class="sd">        ...     date_column_name=&#39;time&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles = utils.categorize_flows(new_percentiles,</span>
-<span class="sd">        ...     &#39;est_pct&#39;, schema_name=&#39;NWD&#39;)</span>
+<span class="sd">        ...     &#39;est_pct&#39;, schema_name=&#39;WDFN_stats&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; new_percentiles[[&#39;est_pct&#39;, &#39;flow_cat&#39;]].values</span>
 <span class="sd">        [[14.1, &#39;Below normal&#39;],</span>
 <span class="sd">        [28.03, &#39;Normal&#39;],</span>
@@ -1068,7 +1068,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    schema_name : str</span>
 <span class="sd">        Name of the categorization schema that should be used to categorize</span>
-<span class="sd">        streamflow. Available options are &#39;NWD&#39;, &#39;WaterWatch,</span>
+<span class="sd">        streamflow. Available options are &#39;WDFN_stats&#39;, &#39;WaterWatch,</span>
 <span class="sd">        &#39;WaterWatch_Drought&#39;, &#39;WaterWatch_Flood&#39;, &#39;WaterWatch_BrownBlue&#39;, and</span>
 <span class="sd">        &#39;NIDIS_Drought&#39;.</span>
 
@@ -1079,13 +1079,13 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Retrieve the categorization schema &#39;NWD&#39; to categorization flow similar to</span>
-<span class="sd">    the USGS National Water Dashboard</span>
+<span class="sd">    Retrieve the categorization schema &#39;WDFN_stats&#39; to categorization flow</span>
+<span class="sd">    similar to the USGS National Water Dashboard</span>
 
 <span class="sd">    .. doctest::</span>
 <span class="sd">        :skipif: True</span>
 
-<span class="sd">        &gt;&gt;&gt; schema = utils.retrieve_schema(&#39;NWD&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; schema = utils.retrieve_schema(&#39;WDFN_stats&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; print(schema)</span>
 <span class="sd">        {&#39;ranges&#39;: [0, 10, 25, 76, 90, 100],</span>
 <span class="sd">        &#39;labels&#39;: [&#39;Much below normal&#39;, &#39;Below normal&#39;, &#39;Normal&#39;,</span>
@@ -1096,16 +1096,20 @@
 <span class="sd">        &#39;high_label&#39;: &#39;All-time high for this day&#39;,</span>
 <span class="sd">        &#39;high_color&#39;: &#39;#1f296b&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;nwd&#39;</span><span class="p">:</span>
-        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Much below normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Below normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Normal&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;Above normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Much above normal&#39;</span><span class="p">],</span>
-                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;#b24249&#39;</span><span class="p">,</span> <span class="s1">&#39;#e8ac49&#39;</span><span class="p">,</span> <span class="s1">&#39;#44f24e&#39;</span><span class="p">,</span> <span class="s1">&#39;#5fd7d9&#39;</span><span class="p">,</span>
-                             <span class="s1">&#39;#2641f1&#39;</span><span class="p">],</span>
-                  <span class="s1">&#39;low_label&#39;</span><span class="p">:</span> <span class="s1">&#39;All-time low for this day&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;low_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#e82f3e&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;high_label&#39;</span><span class="p">:</span> <span class="s1">&#39;All-time high for this day&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;high_color&#39;</span><span class="p">:</span> <span class="s2">&quot;#1f296b&quot;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;wdfn_stats&#39;</span><span class="p">:</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                  <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">&quot;Extremely below normal&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Much below normal&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Below normal&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Normal&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Above normal&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Much above normal&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Extremely above normal&quot;</span><span class="p">,</span>
+                  <span class="p">],</span>
+                  <span class="s1">&#39;colors&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;#4d4438&quot;</span><span class="p">,</span> <span class="s2">&quot;#8e704f&quot;</span><span class="p">,</span> <span class="s2">&quot;#c7a97b&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;#ddf9c7&quot;</span><span class="p">,</span> <span class="s2">&quot;#aacdec&quot;</span><span class="p">,</span> <span class="s2">&quot;#4f97d1&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;#2c608a&quot;</span><span class="p">]}</span>
     <span class="k">elif</span> <span class="n">schema_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;waterwatch&#39;</span><span class="p">:</span>
         <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ranges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
                   <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="s1">&#39;Much below normal&#39;</span><span class="p">,</span> <span class="s1">&#39;Below normal&#39;</span><span class="p">,</span>

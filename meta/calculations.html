@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculations Quick-Reference &mdash; hyswap 0.1.dev1+g4c4c963dc documentation</title>
+  <title>Calculations Quick-Reference &mdash; hyswap 0.1.dev1+g56fe1bf08 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=7312ab93"></script>
+      <script src="../_static/documentation_options.js?v=ff39beba"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -175,8 +175,8 @@ the year.</p></td>
 <h3>Flow Categorization<a class="headerlink" href="#flow-categorization" title="Link to this heading"></a></h3>
 <p>Streamflow observations at a streamgage can be assigned a flow condition category using <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> by use of the <cite>hyswap</cite> <a class="reference internal" href="../reference/index.html#hyswap.utils.categorize_flows" title="hyswap.utils.categorize_flows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hyswap.utils.categorize_flows</span></code></a> function. Streamflow percentiles or interpolated estimated streamflow percentiles are compared to a categorization schema. Multiple categorization schema are available in <code class="docutils literal notranslate"><span class="pre">hyswap</span></code> with the default being flow categories similar to those displayed on the USGS National Water Dashboard. Categorization schema are applicable to both variable and fixed percentile types. Available schema are described below:</p>
 <dl>
-<dt>“NWD” – Categorization schema similar to the USGS National Water Dashboard, <em>default</em></dt><dd><p>Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles</p>
-<a class="reference internal image-reference" href="../_images/nwd.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to the National Water Dashboard." src="../_images/nwd.png" style="width: 800px;" />
+<dt>“WDFN_stats” – Categorization schema similar to the Water Data for the Nation statistical plots, <em>default</em></dt><dd><p>Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles</p>
+<a class="reference internal image-reference" href="../_images/wdfn_stats.png"><img alt="Categorization schema of percentile ranges, labels, and color palette similar to the Water Data for the Nation statistical plots." src="../_images/wdfn_stats.png" style="width: 800px;" />
 </a>
 </dd>
 <dt>“WaterWatch” – Categorization schema similar to the USGS WaterWatch website</dt><dd><p>Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles</p>

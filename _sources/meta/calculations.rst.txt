@@ -74,12 +74,12 @@ Flow Categorization
 ^^^^^^^^^^^^^^^^^^^
 Streamflow observations at a streamgage can be assigned a flow condition category using ``hyswap`` by use of the `hyswap` :obj:`hyswap.utils.categorize_flows` function. Streamflow percentiles or interpolated estimated streamflow percentiles are compared to a categorization schema. Multiple categorization schema are available in ``hyswap`` with the default being flow categories similar to those displayed on the USGS National Water Dashboard. Categorization schema are applicable to both variable and fixed percentile types. Available schema are described below:
 
-"NWD" -- Categorization schema similar to the USGS National Water Dashboard, *default*
+"WDFN_stats" -- Categorization schema similar to the Water Data for the Nation statistical plots, *default*
   Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles
 
-  .. image:: ../reference/nwd.png
+  .. image:: ../reference/wdfn_stats.png
     :width: 800
-    :alt: Categorization schema of percentile ranges, labels, and color palette similar to the National Water Dashboard. 
+    :alt: Categorization schema of percentile ranges, labels, and color palette similar to the Water Data for the Nation statistical plots.
 
 "WaterWatch" -- Categorization schema similar to the USGS WaterWatch website
   Categorizes streamflow across all range of possible streamflow magnitudes. Typically used with variable percentiles

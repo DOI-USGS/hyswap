@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Module Dependency Graph &mdash; hyswap 0.1.dev1+g4c4c963dc documentation</title>
+  <title>Module Dependency Graph &mdash; hyswap 0.1.dev1+g56fe1bf08 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -14,7 +14,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=7312ab93"></script>
+      <script src="../_static/documentation_options.js?v=ff39beba"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -233,7 +233,7 @@ column.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hyswap.utils.categorize_flows">
-<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">categorize_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NWD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#categorize_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.categorize_flows" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">hyswap.utils.</span></span><span class="sig-name descname"><span class="pre">categorize_flows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile_col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_column_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_years</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'WDFN_stats'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_schema</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/hyswap/utils.html#categorize_flows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hyswap.utils.categorize_flows" title="Link to this definition"></a></dt>
 <dd><p>Function to categorize streamflows based on percentile ranges</p>
 <p>This function assigns a category to each streamflow observation for a
 single site by comparing the estimated percentile to a schema of percentile
@@ -257,7 +257,7 @@ but could be provided manually. Must be indexed by month_day and
 include <cite>count</cite> column that represents number of years of records for
 that day of year.</p></li>
 <li><p><strong>schema_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the categorization schema that should be used to categorize
-streamflow. Default is “NWD” schema.</p></li>
+streamflow. Default is “WDFN_stats” schema.</p></li>
 <li><p><strong>custom_schema</strong> (<em>dict</em><em>, </em><em>optional</em>) – Python dictionary describing custom schema to use for categorizing
 streamflow based on percentiles. Required in dict is ‘ranges’, an array
 of percentile cut points and ‘labels’, a list of category labels that
@@ -299,7 +299,7 @@ records downloaded from USGS Water Data.</p>
 <span class="gp">... </span>    <span class="n">percentile_df</span><span class="o">=</span><span class="n">pcts_df</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">date_column_name</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_percentiles</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">categorize_flows</span><span class="p">(</span><span class="n">new_percentiles</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="s1">&#39;est_pct&#39;</span><span class="p">,</span> <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;NWD&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="s1">&#39;est_pct&#39;</span><span class="p">,</span> <span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;WDFN_stats&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_percentiles</span><span class="p">[[</span><span class="s1">&#39;est_pct&#39;</span><span class="p">,</span> <span class="s1">&#39;flow_cat&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
 <span class="go">[[14.1, &#39;Below normal&#39;],</span>
 <span class="go">[28.03, &#39;Normal&#39;],</span>
@@ -652,7 +652,7 @@ calculate_variable_percentile_thresholds_by_day function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>schema_name</strong> (<em>str</em>) – Name of the categorization schema that should be used to categorize
-streamflow. Available options are ‘NWD’, ‘WaterWatch,
+streamflow. Available options are ‘WDFN_stats’, ‘WaterWatch,
 ‘WaterWatch_Drought’, ‘WaterWatch_Flood’, ‘WaterWatch_BrownBlue’, and
 ‘NIDIS_Drought’.</p>
 </dd>
@@ -664,9 +664,9 @@ streamflow. Available options are ‘NWD’, ‘WaterWatch,
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Retrieve the categorization schema ‘NWD’ to categorization flow similar to
-the USGS National Water Dashboard</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">retrieve_schema</span><span class="p">(</span><span class="s1">&#39;NWD&#39;</span><span class="p">)</span>
+<p>Retrieve the categorization schema ‘WDFN_stats’ to categorization flow
+similar to the USGS National Water Dashboard</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">retrieve_schema</span><span class="p">(</span><span class="s1">&#39;WDFN_stats&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
 <span class="go">{&#39;ranges&#39;: [0, 10, 25, 76, 90, 100],</span>
 <span class="go">&#39;labels&#39;: [&#39;Much below normal&#39;, &#39;Below normal&#39;, &#39;Normal&#39;,</span>
