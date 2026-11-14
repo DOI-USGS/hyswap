@@ -159,8 +159,12 @@ def calculate_fixed_percentile_thresholds(
     df_out = pd.DataFrame(data={"values": pct}, index=percentiles)
 
     if mask_out_of_range:
-        min_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmin(data), data, method=method))*100  # noqa: E501
-        max_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmax(data), data, method=method))*100  # noqa: E501
+        # rank the min/max against the non-missing values only, NA values
+        # must not count toward the sample size
+        valid = np.asarray(data, dtype=float)
+        valid = valid[~np.isnan(valid)]
+        min_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmin(data), valid, method=method))*100  # noqa: E501
+        max_pct_rank = (1 - calculate_exceedance_probability_from_values(np.nanmax(data), valid, method=method))*100  # noqa: E501
         df_out.loc[(df_out.index > max_pct_rank) | (df_out.index < min_pct_rank)] = np.nan  # noqa: E501
 
     # transpose so percentile levels are columns
@@ -170,11 +174,11 @@ def calculate_fixed_percentile_thresholds(
     if include_min_max:
         # add min as first column of dataframe and max as last column
         if ignore_na:
-            df_out.insert(0, 'min', np.min(data))
-            df_out['max'] = np.max(data)
-        else:
             df_out.insert(0, 'min', np.nanmin(data))
             df_out['max'] = np.nanmax(data)
+        else:
+            df_out.insert(0, 'min', np.min(data))
+            df_out['max'] = np.max(data)
     if include_metadata:
         if isinstance(data, pd.Series):
             if not data.index.inferred_type == "datetime64":
@@ -185,7 +189,10 @@ def calculate_fixed_percentile_thresholds(
             df_out['mean'] = np.round(np.nanmean(data), 2)
         else:
             df_out['mean'] = np.round(np.mean(data), 2)
-        df_out['count'] = len(data)
+        if ignore_na:
+            df_out['count'] = data.count()
+        else:
+            df_out['count'] = len(data)
         df_out['start_yr'] = data.index.min().strftime('%Y')
         df_out['end_yr'] = data.index.max().strftime('%Y')
 

@@ -69,6 +69,36 @@ class TestCalculateFixedPercentileThresholds:
         assert percentiles_.values.tolist()[0] == [
             0.0, 5.0, 10.0, 25.0, 50.0, 75.0, 90.0, 95.0, 100.0]
 
+    def test_with_nans_masking_and_metadata(self):
+        # NA values must not count toward the sample size used to mask
+        # out-of-range percentiles or toward the reported count
+        data = pd.Series(
+            np.arange(100, dtype=float),
+            index=pd.date_range('2020-01-01', periods=100))
+        data_w_na = pd.concat([data, pd.Series(
+            np.nan, index=pd.date_range('2020-04-10', periods=50))])
+        expected = percentiles.calculate_fixed_percentile_thresholds(data)
+        percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
+            data_w_na)
+        # reference values from numpy on the non-missing values only
+        ref = np.percentile(data.values, [5, 10, 25, 50, 75, 90, 95],
+                            method='weibull')
+        np.testing.assert_allclose(
+            percentiles_[['p05', 'p10', 'p25', 'p50', 'p75', 'p90',
+                          'p95']].values[0].astype(float), ref)
+        cols = ['min', 'p05', 'p10', 'p25', 'p50', 'p75', 'p90', 'p95',
+                'max', 'mean', 'count']
+        assert percentiles_[cols].values.tolist() == \
+            expected[cols].values.tolist()
+        assert percentiles_['count'].iloc[0] == 100
+
+    def test_with_nans_array_min_max(self):
+        # min and max of a 1-D array input ignore NA values
+        data = np.array([np.nan, 1.0, 2.0, 3.0, 4.0, np.nan])
+        percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
+            data, percentiles=[50], include_metadata=False)
+        assert percentiles_.values.tolist()[0] == [1.0, 2.5, 4.0]
+
     def test_with_nans_and_not_ignore_na(self):
         # test with some nan values and not ignoring NAs
         percentiles_ = percentiles.calculate_fixed_percentile_thresholds(
